@@ -57,6 +57,8 @@ class Export extends Action {
 		$date       = date( 'M j, Y | g:i A', strtotime( $post->post_date ) );
 		$byline     = 'by ' . ucfirst( $author ) . ' | ' . $date ;
 
+		do_action( 'apple_news_pre_base_content', $post );
+
 		$base_content = new Exporter_Content(
 			$post->ID,
 			$post->post_title,
@@ -69,6 +71,8 @@ class Export extends Action {
 			$byline,
 			$this->fetch_content_settings()
 		);
+
+		do_action( 'apple_news_post_base_content', $post );
 
 		return new Exporter( $base_content, null, $this->settings );
 	}
