@@ -166,6 +166,13 @@ class Exporter {
 	 * @access private
 	 */
 	private function generate_json() {
+
+		/**
+		 * Provides access to modify the output from an external plugin
+		 * including the workspace, builders and components
+		 */
+		do_action_ref_array( 'apple_news_pre_generate_json', array( &$this ) );
+
 		// Base JSON
 		$json = array(
 			'version'    => '0.10',
