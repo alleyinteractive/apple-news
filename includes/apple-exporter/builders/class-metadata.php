@@ -28,6 +28,16 @@ class Metadata extends Builder {
 			$meta['thumbnailURL'] = $thumb_url;
 		}
 
+		// Add canonical URL.
+		$meta['canonicalURL'] = get_permalink( $this->content_id() );
+
+		// Add plugin information to the generator metadata
+		$plugin_data = apple_news_get_plugin_data();
+
+		$meta['generatorIdentifier'] = sanitize_title_with_dashes( $plugin_data['Name'] );
+		$meta['generatorName'] = $plugin_data['Name'];
+		$meta['generatorVersion'] = $plugin_data['Version'];
+
 		return apply_filters( 'apple_news_metadata', $meta, $this->content_id() );
 	}
 

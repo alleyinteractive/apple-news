@@ -155,7 +155,12 @@ class Exporter {
 		$this->generate();
 
 		// Some use cases for this function expect it to return the JSON.
-		return $this->get_json();
+		$json = $this->get_json();
+
+		// Clean after the export action.
+		$this->clean_workspace();
+
+		return $json;
 	}
 
 	/**

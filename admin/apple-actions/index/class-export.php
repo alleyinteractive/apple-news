@@ -55,14 +55,45 @@ class Export extends Action {
 		// Fetch WP_Post object, and all required post information to fill up the
 		// Exporter_Content instance.
 		$post       = get_post( $this->id );
+
+		// Build the excerpt if required
+		$excerpt = ( empty( $post->post_excerpt ) ) ? wp_trim_excerpt( $post->post_content ) : $post->post_excerpt;
+
+		// Get the post thumbnail
 		$post_thumb = wp_get_attachment_url( get_post_thumbnail_id( $this->id ) ) ?: null;
-		$author     = get_the_author_meta( 'display_name', $post->post_author );
-		$date       = date( 'M j, Y | g:i A', strtotime( $post->post_date ) );
-		$byline     = 'by ' . ucfirst( $author ) . ' | ' . $date ;
+
+		// Get the author
+		$author = ucfirst( get_the_author_meta( 'display_name', $post->post_author ) );
+
+		// Set the default date format
+		$date_format = 'M j, Y | g:i A';
+
+		// Check for a custom byline format
+		$byline_format = $this->get_setting( 'byline_format' );
+		if ( ! empty( $byline_format ) ) {
+			// Find and replace the author format placeholder the name, if set
+			$byline = str_replace( '#author#', $author, $byline_format );
+
+			// Attempt to parse the date format from the remaining string
+			$matches = array();
+			preg_match( '/#(.*?)#/', $byline, $matches );
+			if ( ! empty( $matches[1] ) ) {
+				// Set the date using the custom format
+				$byline = str_replace( $matches[0], date( $matches[1], strtotime( $post->post_date ) ), $byline );
+			}
+
+		} else {
+			// Use the default format
+			$byline = sprintf(
+				'by %1$s | %2$s',
+				$author,
+				date( $date_format, strtotime( $post->post_date ) )
+			);
+		}
 
 		// Filter each of our items before passing into the exporter class.
 		$title      = apply_filters( 'apple_news_exporter_title', $post->post_title, $post->ID );
-		$excerpt    = apply_filters( 'apple_news_exporter_excerpt', $post->post_excerpt, $post->ID );
+		$excerpt    = apply_filters( 'apple_news_exporter_excerpt', $excerpt, $post->ID );
 		$post_thumb = apply_filters( 'apple_news_exporter_post_thumb', $post_thumb, $post->ID );
 		$date       = apply_filters( 'apple_news_exporter_date', $date, $post->ID );
 		$byline     = apply_filters( 'apple_news_exporter_byline', $byline, $post->ID );
@@ -108,3 +139,4 @@ class Export extends Action {
 	}
 
 }
+

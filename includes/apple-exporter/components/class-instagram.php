@@ -34,14 +34,17 @@ class Instagram extends Component {
 	 */
 	protected function build( $text ) {
 		// Find instagram URL in HTML string
-		if ( ! preg_match( '#https?://instagr(\.am|am\.com)/p/([^/]+)/#', $text, $matches ) ) {
+		// Include optional `www.` - the embed processing includes `www.` in the resulting blockquote.
+		if ( ! preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/p/([^/]+)/#', $text, $matches ) ) {
 			return null;
 		}
 
 		$url = $matches[0];
+
 		$this->json = array(
 			'role' => 'instagram',
-			'URL'  => $url,
+			// Remove `www.` from URL as AN parser doesn't allow for it.
+			'URL'  => str_replace( 'www.', '', $url ),
 		);
 	}
 

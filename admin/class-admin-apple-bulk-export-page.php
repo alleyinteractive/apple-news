@@ -96,7 +96,27 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Sanitize input data
 		$id = absint( $_GET['id'] );
 
-		// TODO: Move push action to shared
+		// Ensure the post exists and that it's published
+		$post = get_post( $id );
+		if ( empty( $post ) ) {
+			echo json_encode( array(
+				'success' => false,
+				'error'   => __( 'This post no longer exists.', 'apple-news' ),
+			) );
+			wp_die();
+		}
+
+		if ( 'publish' != $post->post_status ) {
+			echo json_encode( array(
+				'success' => false,
+				'error'   => sprintf(
+					__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
+					$id
+				),
+			) );
+			wp_die();
+		}
+
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
 		try {
 			$errors = $action->perform();

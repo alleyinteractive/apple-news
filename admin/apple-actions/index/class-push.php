@@ -113,7 +113,7 @@ class Push extends API_Action {
 	 */
 	private function push() {
 		if ( ! $this->is_api_configuration_valid() ) {
-			throw new \Apple_Actions\Action_Exception( __( 'Your API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( __( 'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
 		}
 
 		/**
@@ -184,6 +184,15 @@ class Push extends API_Action {
 
 			do_action( 'apple_news_after_push', $this->id, $result );
 		} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
+
+			// Remove the pending designation if it exists
+			delete_post_meta( $this->id, 'apple_news_api_pending' );
+
+			// Remove the async in progress flag
+			delete_post_meta( $this->id, 'apple_news_api_async_in_progress' );
+
+			$this->clean_workspace();
+
 			if ( preg_match( '#WRONG_REVISION#', $e->getMessage() ) ) {
 				throw new \Apple_Actions\Action_Exception( __( 'It seems like the article was updated by another call. If the problem persists, try removing and pushing again.', 'apple-news' ) );
 			} else {

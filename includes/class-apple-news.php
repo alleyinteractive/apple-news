@@ -30,7 +30,7 @@ class Apple_News {
 	 * @var string
 	 * @access protected
 	 */
-	protected $version = '1.0.0';
+	protected $version = '1.0.3';
 
 	/**
 	 * Extracts the filename for bundling an asset.

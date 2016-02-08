@@ -22,10 +22,11 @@
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Pull quote position', 'apple-news' ) ?></th>
 				<td>
+					<?php $pullquote_position = ! empty( $post_meta['apple_news_pullquote_position'][0] ) ? $post_meta['apple_news_pullquote_position'][0] : false; ?>
 					<select name="pullquote_position">
-						<option <?php selected( $post_meta['apple_news_pullquote_position'][0], 'top' ) ?> value="top"><?php esc_html_e( 'top', 'apple-news' ) ?></option>
-						<option <?php selected( $post_meta['apple_news_pullquote_position'][0], 'middle' ) ?> value="middle"><?php esc_html_e( 'middle', 'apple-news' ) ?></option>
-						<option <?php selected( $post_meta['apple_news_pullquote_position'][0], 'bottom' ) ?> value="bottom"><?php esc_html_e( 'bottom', 'apple-news' ) ?></option>
+						<option <?php selected( $pullquote_position, 'top' ) ?> value="top"><?php esc_html_e( 'top', 'apple-news' ) ?></option>
+						<option <?php selected( $pullquote_position, 'middle' ) ?> value="middle"><?php esc_html_e( 'middle', 'apple-news' ) ?></option>
+						<option <?php selected( $pullquote_position, 'bottom' ) ?> value="bottom"><?php esc_html_e( 'bottom', 'apple-news' ) ?></option>
 					</select>
 					<p class="description"><?php esc_html_e( 'The position in the article the pull quote will appear.', 'apple-news' ) ?></p>
 				</td>

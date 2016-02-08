@@ -107,14 +107,6 @@ class Admin_Apple_Notice {
 	 * @access public
 	 */
 	public static function show() {
-		// Only execute on Apple admin pages unless this is in async mode.
-		// In that case, messages should be displayed everywhere since publishing
-		// may complete after the user has navigated away from Apple News.
-		$current_screen = get_current_screen();
-		if ( 'yes' !== self::$settings->get( 'api_async' ) && false === stripos( $current_screen->base, '_apple' ) ) {
-			return;
-		}
-
 		// Check for notices
 		$notices = self::get_user_meta( get_current_user_id(), self::KEY );
 		if ( empty( $notices ) ) {

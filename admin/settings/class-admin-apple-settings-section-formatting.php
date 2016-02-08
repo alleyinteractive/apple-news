@@ -78,6 +78,13 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label'   => __( 'Byline font color', 'apple-news' ),
 				'type'    => 'color',
 			),
+			'byline_format' => array(
+				'label'				=> __( 'Byline format', 'apple-news' ),
+				'type' 				=> 'text',
+				'description' => __( 'Set the byline format. Two tokens can be present, #author# to denote the location of the author name and a <a href="http://php.net/manual/en/function.date.php" target="blank">PHP date format</a> string also encapsulated by #. The default format is "by #author# | #M j, Y | g:i A#".', 'apple-news' ),
+				'size'				=> 40,
+				'required'		=> false,
+			),
 			'header_font' => array(
 				'label'   => '',
 				'type'    => 'font',
@@ -154,7 +161,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			'byline' => array(
 				'label'       => __( 'Byline', 'apple-news' ),
 				'description' => __( "The byline displays the article's author and date", 'apple-news' ),
-				'settings'    => array( 'byline_font', 'byline_size', 'byline_color' ),
+				'settings'    => array( 'byline_font', 'byline_size', 'byline_color', 'byline_format' ),
 			),
 			'headings' => array(
 				'label'       => __( 'Headings', 'apple-news' ),

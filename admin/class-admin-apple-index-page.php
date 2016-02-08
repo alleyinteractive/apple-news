@@ -273,6 +273,16 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access private
 	 */
 	private function push_action( $id ) {
+		// Ensure the post is published
+		if ( 'publish' != get_post_status( $id ) ) {
+			$this->notice_error( sprintf(
+				__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
+				$id
+			) );
+			return;
+		}
+
+		// Push the post
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
 		try {
 			$action->perform();

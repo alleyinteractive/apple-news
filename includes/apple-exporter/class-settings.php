@@ -42,6 +42,7 @@ class Settings {
 		'byline_font'     => 'AvenirNext-Medium',
 		'byline_size'     => 17,
 		'byline_color'    => '#53585F',
+		'byline_format'		=> 'by #author# | #M j, Y | g:i A#',
 
 		'header_font'     => 'AvenirNext-Bold',
 		'header_color'    => '#000',
