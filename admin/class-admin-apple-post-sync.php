@@ -49,7 +49,7 @@ class Admin_Apple_Post_Sync {
 	 * @param WP_Post $post
 	 * @access public
 	 */
-	public function do_publish( $id, $post ) {
+	public function do_publish( $id, $post, $type = 'automatic' ) {
 		if ( 'publish' != $post->post_status
 			|| ! in_array( $post->post_type, $this->settings->get( 'post_types' ) )
 			|| ! current_user_can( apply_filters( 'apple_news_publish_capability', 'manage_options' ) ) ) {
@@ -64,8 +64,8 @@ class Admin_Apple_Post_Sync {
 
 		// Proceed based on the current settings for auto publish and update.
 		$updated = get_post_meta( $id, 'apple_news_api_id', true );
-		if ( $updated && 'yes' != $this->settings->get( 'api_autosync_update' )
-			|| ! $updated && 'yes' != $this->settings->get( 'api_autosync' ) ) {
+		if ( 'automatic' == $type && $updated && 'yes' != $this->settings->get( 'api_autosync_update' )
+			|| 'automatic' == $type && ! $updated && 'yes' != $this->settings->get( 'api_autosync' ) ) {
 			return;
 		}
 
