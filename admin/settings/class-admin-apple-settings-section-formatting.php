@@ -151,9 +151,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type'    => 'integer',
 				'description'	=> __( 'The margin to use above and below inserted ads.', 'apple-news' ),
 			),
-			'meta_component_order' => array(
-				'callback'	=> array( get_class( $this ), 'render_meta_component_order' ),
-			),
+
 		);
 
 		// Add the groups
