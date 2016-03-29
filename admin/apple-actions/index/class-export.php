@@ -57,7 +57,7 @@ class Export extends Action {
 		$post       = get_post( $this->id );
 
 		// Build the excerpt if required
-		$excerpt = ( empty( $post->post_excerpt ) ) ? wp_trim_words( strip_shortcodes( $post->post_content, 55 ) ) : $post->post_excerpt;
+		$excerpt = ( empty( $post->post_excerpt ) ) ? wp_trim_words( strip_shortcodes( $post->post_content ), 55 ) : $post->post_excerpt;
 
 		// Get the post thumbnail
 		$post_thumb = wp_get_attachment_url( get_post_thumbnail_id( $this->id ) ) ?: null;
