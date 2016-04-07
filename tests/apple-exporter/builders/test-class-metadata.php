@@ -26,6 +26,15 @@ class Metadata_Test extends WP_UnitTestCase {
 		$this->assertEquals( 'This is an intro.', $result[ 'excerpt' ] );
 	}
 
+	public function testEmptyIntro() {
+		$content = new Exporter_Content( 1, 'My Title', '<p>Hello, World!</p>', '' );
+		$builder = new Metadata( $content, $this->settings );
+		$result  = $builder->to_array();
+
+		$this->assertEquals( 5, count( $result ) );
+		$this->assertEquals( 'Hello, World!', $result[ 'excerpt' ] );
+	}
+
 	public function testCover() {
 		$content = new Exporter_Content( 1, 'My Title', '<p>Hello, World!</p>', null, '/etc/somefile.jpg' );
 		$builder = new Metadata( $content, $this->settings );
