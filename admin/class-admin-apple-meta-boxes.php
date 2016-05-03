@@ -77,7 +77,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Do the publish
 		$post_sync = new Admin_Apple_Post_Sync( $this->settings );
-		$post_sync->do_publish( $post_id, $post );
+		$post_sync->do_publish( $post_id, $post, 'manual' );
 	}
 
 	/**
