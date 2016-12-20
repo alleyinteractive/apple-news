@@ -46,6 +46,11 @@ class Push extends API_Action {
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
 		if ( 'yes' === $this->settings->get( 'api_async' ) && false === $doing_async ) {
+			// Skip post async publishing if filtered
+			if ( apply_filters( 'apple_news_skip_push', false, $this->id ) ) {
+					return;
+			}
+
 			// Do not proceed if this is already pending publish
 			$pending = get_post_meta( $this->id, 'apple_news_api_pending', true );
 			if ( ! empty( $pending ) ) {
