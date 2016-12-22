@@ -154,6 +154,6 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			__FILE__ ) .  '../assets/css/bulk-export.css' );
 		wp_enqueue_script( $this->plugin_slug . '_bulk_export_js', plugin_dir_url(
 			__FILE__ ) .  '../assets/js/bulk-export.js', array( 'jquery' ),
-			static::$version, true );
+			self::$version, true );
 	}
 }
