@@ -64,6 +64,11 @@ class Settings {
 		'pullquote_transform'			=> 'uppercase',
 		'pullquote_line_height' 	=> 48,
 
+		'pre_font'  							=> 'Menlo-Regular',
+		'pre_size'  							=> 18,
+		'pre_color' 							=> '#333',
+		'pre_line_height' 				=> 24,
+
 		'component_alerts' 				=> 'none',
 		'json_alerts'							=> 'warn',
 

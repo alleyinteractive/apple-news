@@ -149,6 +149,22 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label'   => __( 'Pull quote transformation', 'apple-news' ),
 				'type'    => array( 'none', 'uppercase' ),
 			),
+			'pre_font' => array(
+				'label'   => '',
+				'type'    => 'font',
+			),
+			'pre_size' => array(
+				'label'   => __( 'Pre font size', 'apple-news' ),
+				'type'    => 'integer',
+			),
+			'pre_color' => array(
+				'label'   => __( 'Pre color', 'apple-news' ),
+				'type'    => 'color',
+			),
+			'pre_line_height' => array(
+				'label'   => __( 'Pre line height', 'apple-news' ),
+				'type'    => 'integer',
+			),
 			'gallery_type' => array(
 				'label'   => __( 'Gallery type', 'apple-news' ),
 				'type'    => array( 'gallery', 'mosaic' ),
@@ -207,6 +223,11 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 					__( 'Pull quote', 'apple-news' )
 				),
 				'settings'    => array( 'pullquote_font', 'pullquote_size', 'pullquote_color', 'pullquote_border_color', 'pullquote_border_style', 'pullquote_border_width', 'pullquote_transform' ),
+			),
+			'pre' => array(
+				'label'       => __( 'Pre', 'apple-news' ),
+				'description' => 'Text in &lt;pre&gt; tags.',
+				'settings'    => array( 'pre_font', 'pre_size', 'pre_color', 'pre_line_height' ),
 			),
 			'gallery' => array(
 				'label'       => __( 'Gallery', 'apple-news' ),
