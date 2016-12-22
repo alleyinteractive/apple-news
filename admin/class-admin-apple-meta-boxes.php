@@ -329,7 +329,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		wp_enqueue_script( $this->plugin_slug . '_meta_boxes_js', plugin_dir_url(
 			__FILE__ ) .  '../assets/js/meta-boxes.js', array( 'jquery' ),
-			$this->version, true );
+			static::$version, true );
 
 		// Localize the JS file for handling frontend actions.
 		wp_localize_script( $this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(

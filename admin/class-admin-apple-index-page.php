@@ -262,7 +262,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		wp_enqueue_style( $this->plugin_slug . '_export_table_css', plugin_dir_url(
 			__FILE__ ) .  '../assets/css/export-table.css' );
 		wp_enqueue_script( $this->plugin_slug . '_export_table_js', plugin_dir_url(
-			__FILE__ ) .  '../assets/js/export-table.js', array( 'jquery', 'jquery-ui-datepicker' ), $this->version, true );
+			__FILE__ ) .  '../assets/js/export-table.js', array( 'jquery', 'jquery-ui-datepicker' ), static::$version, true );
 	}
 
 	/**
