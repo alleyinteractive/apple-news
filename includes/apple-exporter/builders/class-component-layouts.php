@@ -113,7 +113,7 @@ class Component_Layouts extends Builder {
 			$col_start = 0;
 			if ( 'right' == $position ) {
 				if ( $component->is_anchor_target() ) {
-					$col_start = $layout_columns - $body_column_span + $alignment_offset;
+					$col_start = $alignment_offset;
 				} else {
 					$col_start = $body_column_span - $alignment_offset;
 				}
@@ -126,7 +126,7 @@ class Component_Layouts extends Builder {
 			if ( $component->is_anchor_target() ) {
 				$col_span = $body_column_span - $alignment_offset;
 			} else {
-				$col_span = $layout_columns - $body_column_span + $alignment_offset;
+				$col_span = $alignment_offset;
 			}
 
 			// Finally, register the layout
