@@ -1,165 +1,158 @@
 <?php
+/**
+ * Publish to Apple News Includes: Apple_Exporter\Settings class
+ *
+ * Contains a class which is used to manage user-defined and computed settings.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter
+ * @since 0.4.0
+ */
 namespace Apple_Exporter;
 
 /**
- * Settings used in exporting. In a WordPress context, these can be loaded
- * as WordPress options defined in the plugin.
+ * Manages user-defined and computed settings used in exporting.
+ *
+ * In a WordPress context, these can be loaded as WordPress options defined in the
+ * plugin.
+ *
+ * @since 0.4.0
  */
 class Settings {
 
 	/**
 	 * Exporter's default settings.
 	 *
+	 * These settings can be overridden on the plugin settings screen.
+	 *
 	 * @var array
 	 * @access private
 	 */
-	private $settings = array(
+	private $_settings = array(
+
 		// API information.
-		'api_key'         				=> '',
-		'api_secret'      				=> '',
-		'api_channel'     				=> '',
-		'api_autosync'    				=> 'yes',
-		'api_autosync_update'			=> 'yes',
-		'api_async'    						=> 'no',
+		'api_key' => '',
+		'api_secret' => '',
+		'api_channel' => '',
+		'api_autosync' => 'yes',
+		'api_autosync_update' => 'yes',
+		'api_async' => 'no',
 
-		'post_types'      				=> array( 'post' ),
-		'show_metabox'    				=> 'yes',
+		'post_types' => array( 'post' ),
+		'show_metabox' => 'yes',
 
-		'layout_margin'   				=> 100,
-		'layout_gutter'   				=> 20,
+		'layout_margin' => 100,
+		'layout_gutter' => 20,
 
-		'body_font'        				=> 'AvenirNext-Regular',
-		'body_size'        				=> 18,
-		'body_color'       				=> '#4f4f4f',
-		'body_link_color'  				=> '#428bca',
-		'body_background_color'   => '#fafafa',
-		'body_orientation' 				=> 'left',
-		'body_line_height' 				=> 24,
+		'body_font' => 'AvenirNext-Regular',
+		'body_size' => 18,
+		'body_color' => '#4f4f4f',
+		'body_link_color' => '#428bca',
+		'body_background_color' => '#fafafa',
+		'body_orientation' => 'left',
+		'body_line_height' => 24,
 
-		'initial_dropcap' 				=> 'yes',
-		'dropcap_font'    				=> 'AvenirNext-Bold',
-		'dropcap_color'   				=> '#4f4f4f',
+		'initial_dropcap' => 'yes',
+		'dropcap_font' => 'AvenirNext-Bold',
+		'dropcap_color' => '#4f4f4f',
 
-		'byline_font'     				=> 'AvenirNext-Medium',
-		'byline_size'     				=> 13,
-		'byline_color'    				=> '#7c7c7c',
-		'byline_format'						=> 'by #author# | #M j, Y | g:i A#',
+		'byline_font' => 'AvenirNext-Medium',
+		'byline_size' => 13,
+		'byline_color' => '#7c7c7c',
+		'byline_format' => 'by #author# | #M j, Y | g:i A#',
 
-		'header_font'     				=> 'AvenirNext-Bold',
-		'header_color'    				=> '#333333',
-		'header1_size'    				=> 48,
-		'header2_size'						=> 32,
-		'header3_size'    				=> 24,
-		'header4_size'    				=> 21,
-		'header5_size'    				=> 18,
-		'header6_size'    				=> 16,
-		'header_line_height' 			=> 52,
+		'header_font' => 'AvenirNext-Bold',
+		'header_color' => '#333333',
+		'header1_size' => 48,
+		'header2_size' => 32,
+		'header3_size' => 24,
+		'header4_size' => 21,
+		'header5_size' => 18,
+		'header6_size' => 16,
+		'header_line_height' => 52,
 
-		'pullquote_font'  				=> 'AvenirNext-Bold',
-		'pullquote_size'  				=> 48,
-		'pullquote_color' 				=> '#53585f',
-		'pullquote_border_color' 	=> '#53585f',
-		'pullquote_border_style' 	=> 'solid',
-		'pullquote_border_width' 	=> '3',
-		'pullquote_transform'			=> 'uppercase',
-		'pullquote_line_height' 	=> 48,
+		'pullquote_font' => 'AvenirNext-Bold',
+		'pullquote_size' => 48,
+		'pullquote_color' => '#53585f',
+		'pullquote_border_color' => '#53585f',
+		'pullquote_border_style' => 'solid',
+		'pullquote_border_width' => '3',
+		'pullquote_transform' => 'uppercase',
+		'pullquote_line_height' => 48,
 
-		'component_alerts' 				=> 'none',
-		'json_alerts'							=> 'warn',
+		'component_alerts' => 'none',
+		'json_alerts' => 'warn',
 
-		'use_remote_images' 			=> 'no',
+		'use_remote_images' => 'no',
 
 		// This can either be gallery or mosaic.
-		'gallery_type'   					=> 'gallery',
+		'gallery_type' => 'gallery',
 
 		// Ad settings
-		'enable_advertisement' 		=> 'yes',
-		'ad_frequency' 						=> 1,
-		'ad_margin' 							=> 15,
+		'enable_advertisement' => 'yes',
+		'ad_frequency' => 1,
+		'ad_margin' => 15,
 
 		// Default component order
-		'meta_component_order' 		=> array( 'cover', 'title', 'byline' ),
+		'meta_component_order' => array( 'cover', 'title', 'byline' ),
 	);
 
 	/**
-	 * Get a setting.
+	 * Magic method to get a computed or stored settings value.
 	 *
-	 * @param string $name
-	 * @return mixed
+	 * @param string $name The setting name to retrieve.
+	 *
 	 * @access public
+	 * @return mixed The value for the setting.
 	 */
-	public function get( $name ) {
-		// Check for computed settings
+	public function __get( $name ) {
+
+		// Check for computed settings.
 		if ( method_exists( $this, $name ) ) {
 			return $this->$name();
 		}
 
-		// Check for regular settings
-		if ( ! array_key_exists( $name, $this->settings ) ) {
-			return null;
+		// Check for regular settings.
+		if ( isset( $this->_settings[ $name ] ) ) {
+			return $this->_settings[ $name ];
 		}
 
-		return $this->settings[ $name ];
+		return null;
 	}
 
 	/**
-	 * Set a setting.
+	 * Magic method to determine whether a given property is set.
 	 *
-	 * @param string $name
-	 * @param mixed $value
-	 * @return mixed
+	 * @param string $name The setting name to check.
+	 *
 	 * @access public
+	 * @return bool Whether the property is set or not.
 	 */
-	public function set( $name, $value ) {
-		$this->settings[ $name ] = $value;
-		return $value;
+	public function __isset( $name ) {
+
+		// Check for computed settings.
+		if ( method_exists( $this, $name ) ) {
+			return true;
+		}
+
+		// Check for regular settings.
+		if ( isset( $this->_settings[ $name ] ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * Get all settings.
+	 * Magic method for setting property values.
 	 *
-	 * @return array
+	 * @param string $name The setting name to update.
+	 * @param mixed $value The new value for the setting.
+	 *
 	 * @access public
 	 */
-	public function all() {
-		return $this->settings;
-	}
-
-	// COMPUTED SETTINGS are those settings which are not shown in the frontend
-	// and cannot be changed directly, instead, they are a logical representation
-	// of a combination of other settings. For example, if the body orientation
-	// is "center", the layout_width computed property is 768, otherwise, it's
-	// 1024.
-	// -------------------------------------------------------------------------
-
-	/**
-	 * Get the layout width.
-	 *
-	 * @return string
-	 * @access public
-	 */
-	public function layout_width() {
-		return 'center' == $this->get( 'body_orientation' ) ? 768 : 1024;
-	}
-
-	/**
-	 * Get the layout columns.
-	 *
-	 * @return string
-	 * @access public
-	 */
-	public function layout_columns() {
-		return 'center' == $this->get( 'body_orientation' ) ? 9 : 7;
-	}
-
-	/**
-	 * Get the body column span.
-	 *
-	 * @return string
-	 * @access public
-	 */
-	public function body_column_span() {
-		return 'center' == $this->get( 'body_orientation' ) ? 7 : 5;
+	public function __set( $name, $value ) {
+		$this->_settings[ $name ] = $value;
 	}
 
 	/**
@@ -168,11 +161,86 @@ class Settings {
 	 * layouts, as centered layouts have more columns.
 	 *
 	 * @since 0.4.0
-	 * @return string
+	 *
 	 * @access public
+	 * @return int The number of columns for aligned components to span.
 	 */
 	public function alignment_offset() {
-		return 'center' == $this->get( 'body_orientation' ) ? 3 : 2;
+		return ( 'center' === $this->body_orientation ) ? 5 : 4;
 	}
 
+	/**
+	 * Get all settings.
+	 *
+	 * @access public
+	 * @return array The array of all settings defined in this class.
+	 */
+	public function all() {
+		return $this->_settings;
+	}
+
+	/**
+	 * Get the body column span.
+	 *
+	 * @access public
+	 * @return int The number of columns for the body to span.
+	 */
+	public function body_column_span() {
+		return 7;
+	}
+
+	/**
+	 * Get a setting.
+	 *
+	 * @param string $name The setting key to retrieve.
+	 *
+	 * @deprecated 1.2.1 Replaced by magic __get() method.
+	 *
+	 * @see \Apple_Exporter\Settings::__get()
+	 *
+	 * @access public
+	 * @return mixed The value for the requested setting.
+	 */
+	public function get( $name ) {
+		return $this->$name;
+	}
+
+	/**
+	 * Get the computed layout columns.
+	 *
+	 * @access public
+	 * @return int The number of layout columns to use.
+	 */
+	public function layout_columns() {
+		return ( 'center' === $this->body_orientation ) ? 9 : 7;
+	}
+
+	/**
+	 * Get the computed layout width.
+	 *
+	 * @access public
+	 * @return int The correct layout width based on the body orientation.
+	 */
+	public function layout_width() {
+		return ( 'center' === $this->body_orientation ) ? 768 : 1024;
+	}
+
+	/**
+	 * Set a setting.
+	 *
+	 * @param string $name The setting key to modify.
+	 * @param mixed $value The new value for the setting.
+	 *
+	 * @deprecated 1.2.1 Replaced by magic __set() method.
+	 *
+	 * @see \Apple_Exporter\Settings::__set()
+	 *
+	 * @access public
+	 * @return mixed The new value for the setting.
+	 */
+	public function set( $name, $value ) {
+		$this->$name = $value;
+
+		return $value;
+	}
 }
