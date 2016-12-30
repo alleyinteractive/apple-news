@@ -178,7 +178,7 @@ class Components extends Builder {
 					'role' => 'container',
 					'layout' => array(
 						'columnStart' => 0,
-						'columnSpan' => 7,
+						'columnSpan' => $this->get_setting( 'layout_columns' ),
 						'ignoreDocumentMargin' => true,
 					),
 					'style' => array(

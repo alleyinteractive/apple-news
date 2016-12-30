@@ -48,13 +48,13 @@ class Cover extends Component {
 		$this->register_full_width_layout( 'headerPhotoLayout', array(
 			'ignoreDocumentMargin' => true,
 			'columnStart' => 0,
-			'columnSpan' => 7,
+			'columnSpan' => $this->get_setting( 'layout_columns' ),
 		) );
 
 		$this->register_full_width_layout( 'headerBelowTextPhotoLayout', array(
 			'ignoreDocumentMargin' => true,
 			'columnStart' => 0,
-			'columnSpan' => 7,
+			'columnSpan' => $this->get_setting( 'layout_columns' ),
 			'margin' => array(
 				'top' => 30,
 				'bottom' => 0,
