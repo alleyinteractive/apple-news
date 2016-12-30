@@ -8,6 +8,7 @@
  * @subpackage Apple_Exporter
  * @since 0.4.0
  */
+
 namespace Apple_Exporter;
 
 /**

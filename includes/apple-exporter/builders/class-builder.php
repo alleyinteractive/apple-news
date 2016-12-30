@@ -1,9 +1,24 @@
 <?php
+/**
+ * Publish to Apple News Includes: Apple_Exporter\Builders\Builder abstract class
+ *
+ * Contains an abstract class to form the foundation of component builders.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter
+ * @since 0.4.0
+ */
+
 namespace Apple_Exporter\Builders;
 
+use Apple_Exporter\Exporter_Content;
+use Apple_Exporter\Exporter_Content_Settings;
+
 /**
- * A base abstract builder. All builders must implement a build method, in
- * which they return an array to represent a part of the final article.
+ * A base abstract builder from which all other builders inherit.
+ *
+ * All builders must implement a build method, in which they return an array to
+ * represent a part of the final article.
  *
  * @since 0.4.0
  */
@@ -29,9 +44,14 @@ abstract class Builder {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param Exporter_Content $content The content object to load.
+	 * @param Exporter_Content_Settings $settings The settings object to load.
+	 *
+	 * @access public
 	 */
-	function __construct( $content, $settings ) {
-		$this->content  = $content;
+	public function __construct( $content, $settings ) {
+		$this->content = $content;
 		$this->settings = $settings;
 	}
 
@@ -39,7 +59,7 @@ abstract class Builder {
 	 * Returns an array of the content.
 	 *
 	 * @access public
-	 * @return array
+	 * @return array The content in array format.
 	 */
 	public function to_array() {
 		return $this->build();
@@ -48,92 +68,102 @@ abstract class Builder {
 	/**
 	 * Builds the content.
 	 *
-	 * @abstract
 	 * @access protected
 	 */
 	protected abstract function build();
-
-	// Isolate dependencies
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Gets the content ID.
-	 *
-	 * @access protected
-	 * @return mixed
-	 */
-	protected function content_id() {
-		return $this->content->id();
-	}
-
-	/**
-	 * Gets the content title.
-	 *
-	 * @access protected
-	 * @return string
-	 */
-	protected function content_title() {
-		return $this->content->title() ?: __( 'Untitled Article', 'apple-news' );
-	}
-
-	/**
-	 * Gets the content body.
-	 *
-	 * @access protected
-	 * @return string
-	 */
-	protected function content_text() {
-		return $this->content->content();
-	}
-
-	/**
-	 * Gets the content intro.
-	 *
-	 * @access protected
-	 * @return Intro
-	 */
-	protected function content_intro() {
-		return $this->content->intro();
-	}
-
-	/**
-	 * Gets the content cover.
-	 *
-	 * @access protected
-	 * @return Cover
-	 */
-	protected function content_cover() {
-		return $this->content->cover();
-	}
-
-	/**
-	 * Gets a content setting.
-	 * @access protected
-	 * @param string $name
-	 * @return string
-	 */
-	protected function content_setting( $name ) {
-		return $this->content->get_setting( $name );
-	}
 
 	/**
 	 * Gets the content byline.
 	 *
 	 * @access protected
-	 * @return Byline
+	 * @return string The byline from the content object.
 	 */
 	protected function content_byline() {
 		return $this->content->byline();
 	}
 
 	/**
+	 * Gets the content cover.
+	 *
+	 * @access protected
+	 * @return string The URL for the cover image from the content object.
+	 */
+	protected function content_cover() {
+		return $this->content->cover();
+	}
+
+	/**
+	 * Gets the content ID.
+	 *
+	 * @access protected
+	 * @return int The ID from the content object.
+	 */
+	protected function content_id() {
+		return $this->content->id();
+	}
+
+	/**
+	 * Gets the content intro.
+	 *
+	 * @access protected
+	 * @return string The intro from the content object.
+	 */
+	protected function content_intro() {
+		return $this->content->intro();
+	}
+
+	/**
 	 * Gets the content nodes.
 	 *
 	 * @access protected
-	 * @return array
+	 * @return array The nodes from the content object.
 	 */
 	protected function content_nodes() {
 		return $this->content->nodes();
+	}
+
+	/**
+	 * Gets a content setting.
+	 *
+	 * @param string $name The setting name to retrieve.
+	 *
+	 * @access protected
+	 * @return mixed The value for the setting.
+	 */
+	protected function content_setting( $name ) {
+		return $this->content->get_setting( $name );
+	}
+
+	/**
+	 * Gets the content body.
+	 *
+	 * @access protected
+	 * @return string The body text from the content object.
+	 */
+	protected function content_text() {
+		return $this->content->content();
+	}
+
+	/**
+	 * Gets the content title.
+	 *
+	 * @access protected
+	 * @return string The title from the content object, or a fallback title.
+	 */
+	protected function content_title() {
+		return $this->content->title() ?: __( 'Untitled Article', 'apple-news' );
+	}
+
+	/**
+	 * Gets a content setting by key.
+	 *
+	 * @param string $name The setting name to retrieve.
+	 *
+	 * @access protected
+	 * @return mixed The value of the setting.
+	 */
+	protected function get_setting( $name ) {
+		return $this->settings->$name;
 	}
 
 	/**
@@ -142,18 +172,6 @@ abstract class Builder {
 	 * @access protected
 	 */
 	protected function set_content_property( $name, $value ) {
-		return $this->content->set_property( $name, $value );
+		$this->content->set_property( $name, $value );
 	}
-
-	/**
-	 * Gets a content setting by key.
-	 *
-	 * @access protected
-	 * @param string $name
-	 * @return mixed
-	 */
-	protected function get_setting( $name ) {
-		return $this->settings->get( $name );
-	}
-
 }

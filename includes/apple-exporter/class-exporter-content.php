@@ -153,7 +153,7 @@ class Exporter_Content {
 	 * @access public
 	 */
 	public function get_setting( $name ) {
-		return $this->settings->get( $name );
+		return $this->settings->$name;
 	}
 
 	/**
