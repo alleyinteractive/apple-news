@@ -114,6 +114,8 @@ class Component_Layouts extends Builder {
 			if ( 'right' == $position ) {
 				if ( $component->is_anchor_target() ) {
 					$col_start = $alignment_offset;
+				} elseif ( 'center' === $this->get_setting( 'body_orientation' ) ) {
+					$col_start = $layout_columns - $alignment_offset;
 				} else {
 					$col_start = $body_column_span - $alignment_offset;
 				}
