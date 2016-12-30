@@ -151,7 +151,9 @@ abstract class Builder {
 	 * @return string The title from the content object, or a fallback title.
 	 */
 	protected function content_title() {
-		return $this->content->title() ?: __( 'Untitled Article', 'apple-news' );
+		return $this->content->title()
+			? $this->content->title()
+			: __( 'Untitled Article', 'apple-news' );
 	}
 
 	/**
