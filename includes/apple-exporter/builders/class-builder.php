@@ -171,6 +171,9 @@ abstract class Builder {
 	/**
 	 * Updates a content property.
 	 *
+	 * @param string $name The setting key to modify.
+	 * @param mixed $value The new value for the setting.
+	 *
 	 * @access protected
 	 */
 	protected function set_content_property( $name, $value ) {
