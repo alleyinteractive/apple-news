@@ -42,6 +42,36 @@ class Components extends Builder {
 	}
 
 	/**
+	 * Estimates the number of characters in a line of text next to an image.
+	 *
+	 * @access private
+	 * @return int The estimated number of characters per line.
+	 */
+	private function _characters_per_image_line() {
+
+		// Get the body text size in points.
+		$pt = $this->get_setting( 'body_size' );
+
+		// Calculate the base estimated characters per line.
+		$cpl = 20 + 230 * pow( M_E, -0.144 * $pt );
+
+		// If the alignment is centered, cut CPL in half due to less available space.
+		if ( 'center' === $this->get_setting( 'body_orientation' ) ) {
+			$cpl /= 2;
+		}
+
+		// If using a condensed font, boost the CPL.
+		if ( false !== stripos( $this->get_setting( 'body_font' ), 'condensed' ) ) {
+			$cpl *= 1.5;
+		}
+
+		// Round up for good measure.
+		$cpl = ceil( $cpl );
+
+		return $cpl;
+	}
+
+	/**
 	 * Given an array of components in array format, group all the elements of
 	 * role 'body'. Ignore body elements that have an ID, as they are used for
 	 * anchoring.
