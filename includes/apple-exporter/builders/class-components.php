@@ -1,12 +1,24 @@
 <?php
+/**
+ * Publish to Apple News Includes: Apple_Exporter\Builders\Components class
+ *
+ * Contains a class for organizing content into components.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter
+ * @since 0.4.0
+ */
+
 namespace Apple_Exporter\Builders;
 
-use \Apple_Exporter\Component_Factory as Component_Factory;
-use \Apple_Exporter\Components\Component as Component;
-use \Apple_Exporter\Workspace as Workspace;
-use \Apple_News as Apple_News;
+use \Apple_Exporter\Component_Factory;
+use \Apple_Exporter\Components\Component;
+use \Apple_Exporter\Workspace;
+use \Apple_News;
 
 /**
+ * A class for organizing content into components.
+ *
  * @since 0.4.0
  */
 class Components extends Builder {
@@ -14,31 +26,43 @@ class Components extends Builder {
 	/**
 	 * Builds an array with all the components of this WordPress content.
 	 *
-	 * @return array
 	 * @access protected
+	 * @return array An array of component objects representing segmented content.
 	 */
 	protected function build() {
+
+		// Initialize.
 		$components = array();
 		$workspace = new Workspace( $this->content_id() );
 
-		// Handle body components first
+		// Loop through body components and process each.
 		foreach ( $this->split_into_components() as $component ) {
-			// Check if the component is valid
+
+			// Ensure that the component is valid.
 			$component_array = $component->to_array();
 			if ( is_wp_error( $component_array ) ) {
-				$workspace->log_error( 'component_errors', $component_array->get_error_message() );
-			} else {
-				$components[] = $component_array;
+				$workspace->log_error(
+					'component_errors',
+					$component_array->get_error_message()
+				);
+				continue;
 			}
+
+			// Add component to the array to be used in grouping.
+			$components[] = $component_array;
 		}
 
-		// Meta components are handled after and then prepended since
-		// they could change depending on the above body processing,
-		// such as if a thumbnail was used from the body.
+		// Process meta components.
+		//
+		// Meta components are handled after the body and then prepended, since they
+		// could change depending on the above body processing, such as if a
+		// thumbnail was used from the body.
 		$components = array_merge( $this->meta_components(), $components );
 
-		// Group body components to improve text flow at all orientations
-		return $this->group_body_components( $components );
+		// Group body components to improve text flow at all orientations.
+		$components = $this->_group_body_components( $components );
+
+		return $components;
 	}
 
 	/**
@@ -55,7 +79,7 @@ class Components extends Builder {
 		$body_size = $this->get_setting( 'body_size' );
 
 		// Calculate the base estimated characters per line.
-		$cpl = 20 + 230 * pow( M_E, -0.144 * $body_size );
+		$cpl = 20 + 230 * pow( M_E, - 0.144 * $body_size );
 
 		// If the alignment is centered, cut CPL in half due to less available space.
 		$body_orientation = $this->get_setting( 'body_orientation' );
@@ -98,111 +122,124 @@ class Components extends Builder {
 	}
 
 	/**
-	 * Given an array of components in array format, group all the elements of
-	 * role 'body'. Ignore body elements that have an ID, as they are used for
-	 * anchoring.
+	 * Adds the content of the current body collector buffer to components.
 	 *
-	 * Grouping body like this allows the Apple Format interpreter to render
-	 * proper paragraph spacing.
+	 * @param array $new_components The array of new components to augment.
+	 * @param Component $body_collector The component containing body text.
 	 *
-	 * @since 0.6.0
-	 * @param array $components
-	 * @return array
 	 * @access private
 	 */
-	private function group_body_components( $components ) {
+	private function _flush_body_collector( &$new_components, &$body_collector ) {
+
+		// Don't operate on an empty collector.
+		if ( is_null( $body_collector ) ) {
+			return;
+		}
+
+		// Flush the body collector.
+		$new_components[] = $body_collector;
+		$body_collector = null;
+	}
+
+	/**
+	 * Intelligently group all elements of role 'body'.
+	 *
+	 * Given an array of components in array format, group all the elements of role
+	 * 'body'. Ignore body elements that have an ID, as they are used for anchoring.
+	 * Grouping body like this allows the Apple Format interpreter to render proper
+	 * paragraph spacing.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @param array $components An array of Component objects to group.
+	 *
+	 * @access private
+	 * @return array
+	 */
+	private function _group_body_components( $components ) {
+
+		// Initialize.
 		$new_components = array();
 		$body_collector = null;
 
-		$i   = 0;
-		$len = count( $components );
-		while( $i < $len ) {
-			$component = $components[ $i ];
+		// Loop through components, grouping as necessary.
+		for ( $i = 0; $i < count( $components ); $i ++ ) {
 
 			// If the component is not body, no need to group, just add.
-			if ( 'body' != $component['role'] ) {
-				if ( ! is_null( $body_collector ) ) {
-					$body_collector['text'] = $body_collector['text'];
-					$new_components[] = $body_collector;
-					$body_collector   = null;
-				}
-
+			$component = $components[ $i ];
+			if ( 'body' !== $component['role'] ) {
+				$this->_flush_body_collector( $new_components, $body_collector );
 				$new_components[] = $component;
-				$i++;
+
 				continue;
 			}
 
 			// If the component is a body, test if it is an anchor target. For
 			// grouping an anchor target body several things need to happen:
-			if ( isset( $component['identifier'] )               	// The FIRST component must be an anchor target
-				&& isset( $components[ $i + 1 ]['anchor'] )      	// The SECOND must be the component to be anchored
-				&& isset( $components[ $i + 2 ]['role'] )
-				&& 'body' == $components[ $i + 2 ]['role']        	// The THIRD must be a body component
-				&& !isset( $components[ $i + 2 ]['identifier'] ) ) 	// which must not be an anchor target for another component
-			{
-				// Collect
-				if ( ! is_null( $body_collector ) ) {
-					$body_collector['text'] = $body_collector['text'];
-					$new_components[] = $body_collector;
-					$body_collector   = null;
-				}
-
+			//   - The first component must be an anchor target.
+			//   - The second must be the component to be anchored.
+			//   - The third must be a body component.
+			//   - The third must not be an anchor target for another component.
+			if ( isset( $component['identifier'] )
+			     && isset( $components[ $i + 1 ]['anchor'] )
+			     && isset( $components[ $i + 2 ]['role'] )
+			     && 'body' == $components[ $i + 2 ]['role']
+			     && ! isset( $components[ $i + 2 ]['identifier'] )
+			) {
+				$this->_flush_body_collector( $new_components, $body_collector );
 				$new_components[] = $components[ $i + 1 ];
-				$body_collector   = $component;
+				$body_collector = $component;
 				$body_collector['text'] .= $components[ $i + 2 ]['text'];
+				$i += 2;
 
-				$i += 3;
 				continue;
 			}
 
-			// Another case for anchor target grouping is when the component was anchored
-			// to the next element rather than the previous one, in that case:
-			if ( isset( $component['identifier'] )               	// The FIRST component must be an anchor target
-				&& isset( $components[ $i + 1 ]['role'] )
-				&& 'body' == $components[ $i + 1 ]['role']        	// The SECOND must be a body component
-				&& !isset( $components[ $i + 1 ]['identifier'] ) )	// which must not be an anchor target for another component
-			{
-				// Collect
-				if ( ! is_null( $body_collector ) ) {
-					$body_collector['text'] = $body_collector['text'];
-					$new_components[] = $body_collector;
-					$body_collector   = null;
-				}
-
+			// Another case for anchor target grouping is when the component was
+			// anchored to the next element rather than the previous one.
+			// In that case:
+			//   - The first component must be an anchor target.
+			//   - The second must be a body component.
+			//   - The second must not be an anchor target for another component.
+			if ( isset( $component['identifier'] )
+			     && isset( $components[ $i + 1 ]['role'] )
+			     && 'body' == $components[ $i + 1 ]['role']
+			     && ! isset( $components[ $i + 1 ]['identifier'] )
+			) {
+				$this->_flush_body_collector( $new_components, $body_collector );
 				$body_collector = $component;
 				$body_collector['text'] .= $components[ $i + 1 ]['text'];
+				$i ++;
 
-				$i += 2;
 				continue;
 			}
 
 			// If the component was an anchor target but failed to match the
 			// requirements for grouping, just add it, don't group it.
 			if ( isset( $component['identifier'] ) ) {
-				if ( ! is_null( $body_collector ) ) {
-					$body_collector['text'] = $body_collector['text'];
-					$new_components[] = $body_collector;
-					$body_collector   = null;
-				}
-
+				$this->_flush_body_collector( $new_components, $body_collector );
 				$new_components[] = $component;
-			} else {
-				// The component is not an anchor target, just collect.
-				if ( is_null( $body_collector ) ) {
-					$body_collector = $component;
-				} else {
-					$body_collector['text'] .= $component['text'];
-				}
+
+				continue;
 			}
 
-			$i++;
+			// If there is nothing in the collector, just use the current component.
+			if ( is_null( $body_collector ) ) {
+				$body_collector = $component;
+
+				continue;
+			}
+
+			// TODO: Perform calculation estimate for body grouping before adding.
+
+			// Add the body text of the current component to the collector text.
+			$body_collector['text'] .= $component['text'];
 		}
 
 		// Make a final check for the body collector, as it might not be empty
-		if ( ! is_null( $body_collector ) ) {
-			$body_collector['text'] = $body_collector['text'];
-			$new_components[] = $body_collector;
-		}
+		$this->_flush_body_collector( $new_components, $body_collector );
+
+		// TODO: REFACTOR FROM HERE
 
 		// Trim all body components before returning.
 		// Also set the layout for the final body component.
@@ -311,12 +348,13 @@ class Components extends Builder {
 	 * Anchor components that are marked as can_be_anchor_target.
 	 *
 	 * @param array &$components
+	 *
 	 * @access private
 	 */
 	private function anchor_components( &$components ) {
 		$len = count( $components );
 
-		for ( $i = 0; $i < $len; $i++ ) {
+		for ( $i = 0; $i < $len; $i ++ ) {
 
 			if ( ! isset( $components[ $i ] ) ) {
 				continue;
@@ -346,10 +384,10 @@ class Components extends Builder {
 			// element is an ad, use next instead. If the element is already
 			// anchoring something, also skip.
 			$counter = 1;
-			$len     = count( $components );
+			$len = count( $components );
 			while ( ! $target_component->can_be_anchor_target() && $i + $counter < $len ) {
 				$target_component = $components[ $i + $counter ];
-				$counter++;
+				$counter ++;
 			}
 
 			$this->anchor_together( $component, $target_component );
@@ -361,6 +399,7 @@ class Components extends Builder {
 	 *
 	 * @param Component $component
 	 * @param Component $target_component
+	 *
 	 * @access private
 	 */
 	private function anchor_together( $component, $target_component ) {
@@ -374,9 +413,9 @@ class Components extends Builder {
 		// If the component doesn't have it's own anchor settings, use the defaults.
 		if ( empty( $anchor_json ) ) {
 			$anchor_json = array(
-				'targetAnchorPosition'      => 'center',
-				'rangeStart'                => 0,
-				'rangeLength'               => 1,
+				'targetAnchorPosition' => 'center',
+				'rangeStart' => 0,
+				'rangeLength' => 1,
 			);
 		}
 
@@ -408,6 +447,7 @@ class Components extends Builder {
 	 * Add a thumbnail if needed.
 	 *
 	 * @param array &$components
+	 *
 	 * @access private
 	 */
 	private function add_thumbnail_if_needed( &$components ) {
@@ -469,21 +509,22 @@ class Components extends Builder {
 	 * Add a pullquote component if needed.
 	 *
 	 * @param array &$components
+	 *
 	 * @access private
 	 */
 	private function add_pullquote_if_needed( &$components ) {
 		// Must we add a pullquote?
-		$pullquote          = $this->content_setting( 'pullquote' );
+		$pullquote = $this->content_setting( 'pullquote' );
 		$pullquote_position = $this->content_setting( 'pullquote_position' );
-		$valid_positions    = array( 'top', 'middle', 'bottom' );
+		$valid_positions = array( 'top', 'middle', 'bottom' );
 
-		if ( empty( $pullquote ) || !in_array( $pullquote_position, $valid_positions ) ) {
+		if ( empty( $pullquote ) || ! in_array( $pullquote_position, $valid_positions ) ) {
 			return;
 		}
 
 		// Find position for pullquote
 		$start = 0; // Assume top position, which is the easiest, as it's always 0
-		$len   = count( $components );
+		$len = count( $components );
 
 		// If the position is not top, make some math for middle and bottom
 		if ( 'middle' == $pullquote_position ) {
@@ -494,7 +535,7 @@ class Components extends Builder {
 			$start = floor( ( $len / 4 ) * 3 );
 		}
 
-		for ( $position = $start; $position < $len; $position++ ) {
+		for ( $position = $start; $position < $len; $position ++ ) {
 			if ( $components[ $position ]->can_be_anchor_target() ) {
 				break;
 			}
@@ -521,6 +562,7 @@ class Components extends Builder {
 	 *
 	 * @param string $shortname
 	 * @param string $html
+	 *
 	 * @return Component
 	 * @access private
 	 */
@@ -532,6 +574,7 @@ class Components extends Builder {
 	 * Get a component from a node.
 	 *
 	 * @param DomNode $node
+	 *
 	 * @return Component
 	 * @access private
 	 */
