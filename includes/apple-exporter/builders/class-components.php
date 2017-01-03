@@ -66,14 +66,14 @@ class Components extends Builder {
 	}
 
 	/**
-	 * Estimates the number of characters in a line of text next to an image.
+	 * Estimates the number of chars in a line of text next to an anchored component.
 	 *
 	 * @since 1.2.1
 	 *
 	 * @access private
 	 * @return int The estimated number of characters per line.
 	 */
-	private function _characters_per_image_line() {
+	private function _characters_per_line_anchored() {
 
 		// Get the body text size in points.
 		$body_size = $this->get_setting( 'body_size' );
@@ -111,7 +111,7 @@ class Components extends Builder {
 		 * @param string $body_font The value for the body font setting.
 		 */
 		$cpl = apply_filters(
-			'apple_news_characters_per_image_line',
+			'apple_news_characters_per_line_anchored',
 			$cpl,
 			$body_size,
 			$body_orientation,
@@ -122,23 +122,45 @@ class Components extends Builder {
 	}
 
 	/**
-	 * Adds the content of the current body collector buffer to components.
+	 * Given an anchored component, estimate the minimum number of lines it occupies.
 	 *
-	 * @param array $new_components The array of new components to augment.
-	 * @param Component $body_collector The component containing body text.
+	 * @param Component $component The component anchoring to the body.
 	 *
 	 * @access private
+	 * @return int The estimated number of lines the anchored component occupies.
 	 */
-	private function _flush_body_collector( &$new_components, &$body_collector ) {
+	private function _get_anchor_buffer( $component ) {
 
-		// Don't operate on an empty collector.
-		if ( is_null( $body_collector ) ) {
-			return;
+		// If the anchored component is empty, bail.
+		if ( empty( $component ) ) {
+			return 0;
 		}
 
-		// Flush the body collector.
-		$new_components[] = $body_collector;
-		$body_collector = null;
+		// Get the estimated number of characters per line based on configuration.
+		$cpl = $this->_characters_per_line_anchored();
+
+		// TODO: Analyze the anchored component to estimate the height in lines.
+		$lines = 0;
+
+		return $lines;
+	}
+
+	/**
+	 * Given a body node, estimates the number of lines the text occupies.
+	 *
+	 * @param Component $component The component representing the body.
+	 *
+	 * @access private
+	 * @return int The estimated number of lines the body text occupies.
+	 */
+	private function _get_anchor_content_lines( $component ) {
+
+		// If the body component is empty, bail.
+		if ( empty( $component['text'] ) ) {
+			return 0;
+		}
+
+		return strlen( $component['text'] ) / $this->_characters_per_line_anchored();
 	}
 
 	/**
@@ -160,84 +182,60 @@ class Components extends Builder {
 
 		// Initialize.
 		$new_components = array();
-		$body_collector = null;
+		$anchor_buffer = 0;
+		$prev = null;
+		$current = null;
 
 		// Loop through components, grouping as necessary.
-		for ( $i = 0; $i < count( $components ); $i ++ ) {
+		foreach ( $components as $component ) {
 
-			// If the component is not body, no need to group, just add.
-			$component = $components[ $i ];
-			if ( 'body' !== $component['role'] ) {
-				$this->_flush_body_collector( $new_components, $body_collector );
-				$new_components[] = $component;
+			// Update positioning.
+			$prev = $current;
+			$current = $component;
 
+			// Handle first run.
+			if ( null === $prev ) {
 				continue;
 			}
 
-			// If the component is a body, test if it is an anchor target. For
-			// grouping an anchor target body several things need to happen:
-			//   - The first component must be an anchor target.
-			//   - The second must be the component to be anchored.
-			//   - The third must be a body component.
-			//   - The third must not be an anchor target for another component.
-			if ( isset( $component['identifier'] )
-			     && isset( $components[ $i + 1 ]['anchor'] )
-			     && isset( $components[ $i + 2 ]['role'] )
-			     && 'body' == $components[ $i + 2 ]['role']
-			     && ! isset( $components[ $i + 2 ]['identifier'] )
+			// Handle anchors.
+			if ( ! empty( $prev['identifier'] )
+			     && ! empty( $current['anchor'] )
+			     && $prev['identifier'] === $current['anchor']
 			) {
-				$this->_flush_body_collector( $new_components, $body_collector );
-				$new_components[] = $components[ $i + 1 ];
-				$body_collector = $component;
-				$body_collector['text'] .= $components[ $i + 2 ]['text'];
-				$i += 2;
-
-				continue;
-			}
-
-			// Another case for anchor target grouping is when the component was
-			// anchored to the next element rather than the previous one.
-			// In that case:
-			//   - The first component must be an anchor target.
-			//   - The second must be a body component.
-			//   - The second must not be an anchor target for another component.
-			if ( isset( $component['identifier'] )
-			     && isset( $components[ $i + 1 ]['role'] )
-			     && 'body' == $components[ $i + 1 ]['role']
-			     && ! isset( $components[ $i + 1 ]['identifier'] )
+				// Switch the position of the nodes so the anchor always comes first.
+				$temp = $current;
+				$current = $prev;
+				$prev = $temp;
+				$anchor_buffer = $this->_get_anchor_buffer( $prev );
+			} elseif ( ! empty( $current['identifier'] )
+			           && ! empty( $prev['anchor'] )
+			           && $prev['anchor'] === $current['identifier']
 			) {
-				$this->_flush_body_collector( $new_components, $body_collector );
-				$body_collector = $component;
-				$body_collector['text'] .= $components[ $i + 1 ]['text'];
-				$i ++;
+				$anchor_buffer = $this->_get_anchor_buffer( $prev );
+			}
 
+			// If the current node is not a body node, force-flatten the buffer.
+			if ( 'body' !== $current['role'] ) {
+				$anchor_buffer = 0;
+			} elseif ( $anchor_buffer > 0 ) {
+
+				// Subtract the lines in the current body element from the buffer.
+				$anchor_buffer -= $this->_get_anchor_content_lines( $current );
+			}
+
+			// Add the previous node if we are out of buffer or if it isn't body.
+			if ( $anchor_buffer <= 0 || 'body' !== $prev['role'] ) {
+				$new_components[] = $prev;
 				continue;
 			}
 
-			// If the component was an anchor target but failed to match the
-			// requirements for grouping, just add it, don't group it.
-			if ( isset( $component['identifier'] ) ) {
-				$this->_flush_body_collector( $new_components, $body_collector );
-				$new_components[] = $component;
-
-				continue;
-			}
-
-			// If there is nothing in the collector, just use the current component.
-			if ( is_null( $body_collector ) ) {
-				$body_collector = $component;
-
-				continue;
-			}
-
-			// TODO: Perform calculation estimate for body grouping before adding.
-
-			// Add the body text of the current component to the collector text.
-			$body_collector['text'] .= $component['text'];
+			// Merge the body content from the previous node into the current node.
+			$current['text'] .= $prev['text'];
 		}
 
-		// Make a final check for the body collector, as it might not be empty
-		$this->_flush_body_collector( $new_components, $body_collector );
+		// Add the final element from the loop in its final state.
+		$new_components[] = $current;
 
 		// TODO: REFACTOR FROM HERE
 
