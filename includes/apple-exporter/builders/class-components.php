@@ -44,31 +44,57 @@ class Components extends Builder {
 	/**
 	 * Estimates the number of characters in a line of text next to an image.
 	 *
+	 * @since 1.2.1
+	 *
 	 * @access private
 	 * @return int The estimated number of characters per line.
 	 */
 	private function _characters_per_image_line() {
 
 		// Get the body text size in points.
-		$pt = $this->get_setting( 'body_size' );
+		$body_size = $this->get_setting( 'body_size' );
 
 		// Calculate the base estimated characters per line.
-		$cpl = 20 + 230 * pow( M_E, -0.144 * $pt );
+		$cpl = 20 + 230 * pow( M_E, -0.144 * $body_size );
 
 		// If the alignment is centered, cut CPL in half due to less available space.
-		if ( 'center' === $this->get_setting( 'body_orientation' ) ) {
+		$body_orientation = $this->get_setting( 'body_orientation' );
+		if ( 'center' === $body_orientation ) {
 			$cpl /= 2;
 		}
 
 		// If using a condensed font, boost the CPL.
-		if ( false !== stripos( $this->get_setting( 'body_font' ), 'condensed' ) ) {
+		$body_font = $this->get_setting( 'body_font' );
+		if ( false !== stripos( $body_font, 'condensed' ) ) {
 			$cpl *= 1.5;
 		}
 
 		// Round up for good measure.
 		$cpl = ceil( $cpl );
 
-		return $cpl;
+		/**
+		 * Allows for filtering of the estimated characters per line.
+		 *
+		 * Themes and plugins can modify this value to make it more or less
+		 * aggressive, or provide an arbitrarily high number to effectively
+		 * eliminate intelligent grouping of body blocks.
+		 *
+		 * @since 1.2.1
+		 *
+		 * @param int $cpl The characters per line value to be filtered.
+		 * @param int $body_size The value for the body size setting in points.
+		 * @param string $body_orientation The value for the orientation setting.
+		 * @param string $body_font The value for the body font setting.
+		 */
+		$cpl = apply_filters(
+			'apple_news_characters_per_image_line',
+			$cpl,
+			$body_size,
+			$body_orientation,
+			$body_font
+		);
+
+		return ceil( absint( $cpl ) );
 	}
 
 	/**
