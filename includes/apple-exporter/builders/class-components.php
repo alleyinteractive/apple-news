@@ -122,6 +122,24 @@ class Components extends Builder {
 	}
 
 	/**
+	 * Performs additional processing on 'body' nodes to clean up data.
+	 *
+	 * @param Component &$component The component to clean up.
+	 *
+	 * @access private
+	 */
+	private function _clean_up_components( &$component ) {
+
+		// Only process 'body' nodes.
+		if ( 'body' !== $component['role'] ) {
+			return;
+		}
+
+		// Trim the fat.
+		$component['text'] = trim( $component['text'] );
+	}
+
+	/**
 	 * Given an anchored component, estimate the minimum number of lines it occupies.
 	 *
 	 * @param Component $component The component anchoring to the body.
@@ -182,6 +200,7 @@ class Components extends Builder {
 
 		// Initialize.
 		$new_components = array();
+		$cover_index = 0;
 		$anchor_buffer = 0;
 		$prev = null;
 		$current = null;
@@ -200,8 +219,9 @@ class Components extends Builder {
 
 			// Handle anchors.
 			if ( ! empty( $prev['identifier'] )
-			     && ! empty( $current['anchor'] )
-			     && $prev['identifier'] === $current['anchor']
+			     && ! empty( $current['anchor']['targetComponentIdentifier'] )
+			     && $prev['identifier']
+			        === $current['anchor']['targetComponentIdentifier']
 			) {
 				// Switch the position of the nodes so the anchor always comes first.
 				$temp = $current;
@@ -209,8 +229,9 @@ class Components extends Builder {
 				$prev = $temp;
 				$anchor_buffer = $this->_get_anchor_buffer( $prev );
 			} elseif ( ! empty( $current['identifier'] )
-			           && ! empty( $prev['anchor'] )
-			           && $prev['anchor'] === $current['identifier']
+			           && ! empty( $prev['anchor']['targetComponentIdentifier'] )
+			           && $prev['anchor']['targetComponentIdentifier']
+			              === $current['identifier']
 			) {
 				$anchor_buffer = $this->_get_anchor_buffer( $prev );
 			}
@@ -219,12 +240,15 @@ class Components extends Builder {
 			if ( 'body' !== $current['role'] ) {
 				$anchor_buffer = 0;
 			} elseif ( $anchor_buffer > 0 ) {
-
-				// Subtract the lines in the current body element from the buffer.
 				$anchor_buffer -= $this->_get_anchor_content_lines( $current );
 			}
 
-			// Add the previous node if we are out of buffer or if it isn't body.
+			// Keep track of the header position.
+			if ( 'header' === $prev['role'] ) {
+				$cover_index = count( $new_components );
+			}
+
+				// Add the previous node if we are out of buffer or if it isn't body.
 			if ( $anchor_buffer <= 0 || 'body' !== $prev['role'] ) {
 				$new_components[] = $prev;
 				continue;
@@ -237,53 +261,42 @@ class Components extends Builder {
 		// Add the final element from the loop in its final state.
 		$new_components[] = $current;
 
-		// TODO: REFACTOR FROM HERE
+		// Perform text cleanup on each node.
+		array_walk( $new_components, array( $this, '_clean_up_components' ) );
 
-		// Trim all body components before returning.
-		// Also set the layout for the final body component.
-		$cover_index = null;
-		foreach ( $new_components as $i => $component ) {
-			if ( 'body' == $component['role'] ) {
-				$new_components[ $i ]['text'] = trim( $new_components[ $i ]['text'] );
-
-				if ( ( $i + 1 ) === count( $new_components ) ) {
-					$new_components[ $i ]['layout'] = 'body-layout-last';
-				}
-			}
-
-			// Find the location of the cover for later
-			if ( 'header' == $component['role'] ) {
-				$cover_index = $i;
-			}
+		// If the final node has a role of 'body', add 'body-layout-last' layout.
+		$last = count( $new_components ) - 1;
+		if ( 'body' === $new_components[ $last ]['role'] ) {
+			$new_components[ $last ]['layout'] = 'body-layout-last';
 		}
 
-		// Finally, all components after the cover must be grouped
-		// to avoid issues with parallax text scroll.
-		//
-		// If no cover was found, this is unnecessary.
-		if ( null !== $cover_index ) {
-			$regrouped_components = array_slice( $new_components, 0, $cover_index + 1 );
-
-			if ( count( $new_components ) > $cover_index + 1 ) {
-				$regrouped_components[] = array(
-					'role' => 'container',
-					'layout' => array(
-						'columnStart' => 0,
-						'columnSpan' => $this->get_setting( 'layout_columns' ),
-						'ignoreDocumentMargin' => true,
-					),
-					'style' => array(
-						'backgroundColor' => $this->get_setting( 'body_background_color' ),
-					),
-					'components' => array_slice( $new_components, $cover_index + 1 ),
-				);
-			}
-		} else {
-			$regrouped_components = $new_components;
+		// Determine if there is a cover in the middle of content.
+		if ( count( $new_components ) <= $cover_index + 1 ) {
+			return $new_components;
 		}
 
-		return $regrouped_components;
+		// All components after the cover must be grouped to avoid issues with
+		// parallax text scroll.
+		$regrouped_components = array(
+			'role' => 'container',
+			'layout' => array(
+				'columnSpan' => $this->get_setting( 'layout_columns' ),
+				'columnStart' => 0,
+				'ignoreDocumentMargin' => true,
+			),
+			'style' => array(
+				'backgroundColor' => $this->get_setting( 'body_background_color' ),
+			),
+			'components' => array_slice( $new_components, $cover_index + 1 ),
+		);
+
+		return array_merge(
+			array_slice( $new_components, 0, $cover_index + 1 ),
+			array( $regrouped_components )
+		);
 	}
+
+	// TODO: REFACTOR FROM HERE
 
 	/**
 	 * Meta components are those which were not created from the HTML content.
