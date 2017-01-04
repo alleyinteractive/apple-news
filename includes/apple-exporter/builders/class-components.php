@@ -36,7 +36,7 @@ class Components extends Builder {
 		$workspace = new Workspace( $this->content_id() );
 
 		// Loop through body components and process each.
-		foreach ( $this->split_into_components() as $component ) {
+		foreach ( $this->_split_into_components() as $component ) {
 
 			// Ensure that the component is valid.
 			$component_array = $component->to_array();
@@ -347,33 +347,33 @@ class Components extends Builder {
 		return $components;
 	}
 
-	// TODO: REFACTOR FROM HERE
-
 	/**
 	 * Split components from the source WordPress content.
 	 *
-	 * @return array
 	 * @access private
+	 * @return array An array of Component objects representing the content.
 	 */
-	private function split_into_components() {
-		// Loop though the first-level nodes of the body element. Components
-		// might include child-components, like an Cover and Image.
-		$result = array();
-		$errors = array();
+	private function _split_into_components() {
 
+		// Loop though the first-level nodes of the body element. Components might
+		// include child-components, like an Cover and Image.
+		$components = array();
 		foreach ( $this->content_nodes() as $node ) {
-			$result = array_merge( $result, $this->get_components_from_node( $node ) );
+			$components = array_merge(
+				$components,
+				$this->get_components_from_node( $node )
+			);
 		}
 
-		// Process the result some more. It gets passed by reference for efficiency.
-		// It's not like it's a big memory save but still relevant.
-		// FIXME: Maybe this could have been done in a better way?
-		$this->add_thumbnail_if_needed( $result );
-		$this->anchor_components( $result );
-		$this->add_pullquote_if_needed( $result );
+		// Perform additional processing after components have been created.
+		$this->add_thumbnail_if_needed( $components );
+		$this->anchor_components( $components );
+		$this->add_pullquote_if_needed( $components );
 
-		return $result;
+		return $components;
 	}
+
+	// TODO: REFACTOR FROM HERE
 
 	/**
 	 * Anchor components that are marked as can_be_anchor_target.
