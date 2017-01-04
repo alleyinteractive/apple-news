@@ -247,7 +247,7 @@ class Components extends Builder {
 			$ratio = $this->_get_image_ratio( $component['URL'] );
 		}
 
-		return $alc / $ratio;
+		return ceil( $alc / $ratio );
 	}
 
 	/**
@@ -267,7 +267,9 @@ class Components extends Builder {
 			return 0;
 		}
 
-		return strlen( $component['text'] ) / $this->_characters_per_line_anchored();
+		return ceil(
+			strlen( $component['text'] ) / $this->_characters_per_line_anchored()
+		);
 	}
 
 	/**
