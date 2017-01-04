@@ -200,7 +200,7 @@ class Components extends Builder {
 
 		// Initialize.
 		$new_components = array();
-		$cover_index = 0;
+		$cover_index = null;
 		$anchor_buffer = 0;
 		$prev = null;
 		$current = null;
@@ -271,7 +271,9 @@ class Components extends Builder {
 		}
 
 		// Determine if there is a cover in the middle of content.
-		if ( count( $new_components ) <= $cover_index + 1 ) {
+		if ( null === $cover_index
+		     || count( $new_components ) <= $cover_index + 1
+		) {
 			return $new_components;
 		}
 
