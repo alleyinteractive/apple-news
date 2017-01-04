@@ -121,6 +121,22 @@ class Components extends Builder {
 	}
 
 	/**
+	 * Estimates the number of text lines that would fit next to a square anchor.
+	 *
+	 * Used when extrapolating to estimate the number of lines that would fit next
+	 * to an anchored component at the largest screen size when using an anchor
+	 * size ratio calculated using width/height.
+	 *
+	 * @since 1.2.1
+	 *
+	 * @access private
+	 * @return int Estimated number of text lines that fit next to a square anchor.
+	 */
+	private function _anchor_lines_coefficient() {
+		return ceil( 18 / $this->get_setting( 'body_size' ) * 18 );
+	}
+
+	/**
 	 * Estimates the number of chars in a line of text next to an anchored component.
 	 *
 	 * @since 1.2.1
@@ -155,8 +171,8 @@ class Components extends Builder {
 		 * Allows for filtering of the estimated characters per line.
 		 *
 		 * Themes and plugins can modify this value to make it more or less
-		 * aggressive, or provide an arbitrarily high number to effectively
-		 * eliminate intelligent grouping of body blocks.
+		 * aggressive, or set this value to 0 to eliminate intelligent grouping of
+		 * body blocks.
 		 *
 		 * @since 1.2.1
 		 *
@@ -181,6 +197,8 @@ class Components extends Builder {
 	 *
 	 * @param Component &$component The component to clean up.
 	 *
+	 * @since 1.2.1
+	 *
 	 * @access private
 	 */
 	private function _clean_up_components( &$component ) {
@@ -199,6 +217,8 @@ class Components extends Builder {
 	 *
 	 * @param Component $component The component anchoring to the body.
 	 *
+	 * @since 1.2.1
+	 *
 	 * @access private
 	 * @return int The estimated number of lines the anchored component occupies.
 	 */
@@ -209,19 +229,33 @@ class Components extends Builder {
 			return 0;
 		}
 
-		// Get the estimated number of characters per line based on configuration.
-		$cpl = $this->_characters_per_line_anchored();
+		// Get the anchor lines coefficient (lines of text for a 1:1 anchor).
+		$alc = $this->_anchor_lines_coefficient();
 
-		// TODO: Analyze the anchored component to estimate the height in lines.
-		$lines = 0;
+		// Determine anchored component size ratio. Defaults to 1 (square).
+		$ratio = 1;
+		if ( 'container' === $component['role']
+		     && ! empty( $component['components'][0]['URL'] )
+		) {
 
-		return $lines;
+			// Calculate base ratio.
+			$ratio = $this->_get_image_ratio( $component['components'][0]['URL'] );
+
+			// Add some buffer for the caption.
+			$ratio /= 1.2;
+		} elseif ( 'photo' === $component['role'] && ! empty( $component['URL'] ) ) {
+			$ratio = $this->_get_image_ratio( $component['URL'] );
+		}
+
+		return $alc / $ratio;
 	}
 
 	/**
 	 * Given a body node, estimates the number of lines the text occupies.
 	 *
 	 * @param Component $component The component representing the body.
+	 *
+	 * @since 1.2.1
 	 *
 	 * @access private
 	 * @return int The estimated number of lines the body text occupies.
@@ -234,6 +268,35 @@ class Components extends Builder {
 		}
 
 		return strlen( $component['text'] ) / $this->_characters_per_line_anchored();
+	}
+
+	/**
+	 * Attempts to get an image ratio from a URL.
+	 *
+	 * @param string $url The image URL to probe for ratio data.
+	 *
+	 * @since 1.2.1
+	 *
+	 * @access private
+	 * @return float An image ratio (width/height) for the given image.
+	 */
+	private function _get_image_ratio( $url ) {
+
+		// Strip URL formatting for easier matching.
+		$url = urldecode( $url );
+
+		// Attempt to extract the ratio using WordPress.com CDN/Photon format.
+		if ( preg_match( '/resize=([0-9]+),([0-9]+)/', $url, $matches ) ) {
+			return $matches[1] / $matches[2];
+		}
+
+		// Attempt to extract the ratio using standard WordPress size names.
+		if ( preg_match( '/-([0-9]+)x([0-9]+)\./', $url, $matches ) ) {
+			return $matches[1] / $matches[2];
+		}
+
+		// To be safe, fall back to assuming the image is twice as tall as its width.
+		return 0.5;
 	}
 
 	/**
@@ -291,11 +354,9 @@ class Components extends Builder {
 				$anchor_buffer = $this->_get_anchor_buffer( $prev );
 			}
 
-			// If the current node is not a body node, force-flatten the buffer.
+			// If the current node is not a body element, force-flatten the buffer.
 			if ( 'body' !== $current['role'] ) {
 				$anchor_buffer = 0;
-			} elseif ( $anchor_buffer > 0 ) {
-				$anchor_buffer -= $this->_get_anchor_content_lines( $current );
 			}
 
 			// Keep track of the header position.
@@ -303,14 +364,23 @@ class Components extends Builder {
 				$cover_index = count( $new_components );
 			}
 
-				// Add the previous node if we are out of buffer or if it isn't body.
-			if ( $anchor_buffer <= 0 || 'body' !== $prev['role'] ) {
+			// If the previous element is not a body element, or no buffer left, add.
+			if ( 'body' !== $prev['role'] || $anchor_buffer <= 0 ) {
+
+				// If the current element is a body element, adjust buffer.
+				if ( 'body' === $current['role'] ) {
+					$anchor_buffer -= $this->_get_anchor_content_lines( $current );
+				}
+
+				// Add the node.
 				$new_components[] = $prev;
 				continue;
 			}
 
 			// Merge the body content from the previous node into the current node.
-			$current['text'] .= $prev['text'];
+			$anchor_buffer -= $this->_get_anchor_content_lines( $current );
+			$prev['text'] .= $current['text'];
+			$current = $prev;
 		}
 
 		// Add the final element from the loop in its final state.
