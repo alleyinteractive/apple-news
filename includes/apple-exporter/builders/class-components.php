@@ -115,7 +115,7 @@ class Components extends Builder {
 
 			// If a suitable anchor target was found, link the two.
 			if ( $target_component->can_be_anchor_target() ) {
-				$this->anchor_together( $component, $target_component );
+				$this->_anchor_together( $component, $target_component );
 			}
 		}
 	}
@@ -134,6 +134,59 @@ class Components extends Builder {
 	 */
 	private function _anchor_lines_coefficient() {
 		return ceil( 18 / $this->get_setting( 'body_size' ) * 18 );
+	}
+
+	/**
+	 * Given two components, anchor the first one to the second.
+	 *
+	 * @param Component $component The anchor.
+	 * @param Component $target_component The anchor target.
+	 *
+	 * @access private
+	 */
+	private function _anchor_together( $component, $target_component ) {
+
+		// Don't anchor something that has already been anchored.
+		if ( $target_component->is_anchor_target() ) {
+			return;
+		}
+
+		// Get the component's anchor settings, if set.
+		$anchor_json = $component->get_json( 'anchor' );
+
+		// If the component doesn't have its own anchor settings, use the defaults.
+		if ( empty( $anchor_json ) ) {
+			$anchor_json = array(
+				'targetAnchorPosition' => 'center',
+				'rangeStart' => 0,
+				'rangeLength' => 1,
+			);
+		}
+
+		// Regardless of what the component class specifies, add the
+		// targetComponentIdentifier here. There's no way for the class to know what
+		// this is before this point.
+		$anchor_json['targetComponentIdentifier'] = $target_component->uid();
+
+		// Add the JSON back to the component.
+		$component->set_json( 'anchor', $anchor_json );
+
+		// Given $component, find out the opposite position.
+		$other_position = Component::ANCHOR_LEFT;
+		if ( ( Component::ANCHOR_AUTO === $component->get_anchor_position()
+		       && 'left' !== $this->get_setting( 'body_orientation' ) )
+		     || Component::ANCHOR_LEFT == $component->get_anchor_position()
+		) {
+			$other_position = Component::ANCHOR_RIGHT;
+		}
+
+		// The anchor method adds the required layout, thus making the actual
+		// anchoring. This must be called after using the UID, because we need to
+		// distinguish target components from anchor ones and components with
+		// UIDs are always anchor targets.
+		$target_component->set_anchor_position( $other_position );
+		$target_component->anchor();
+		$component->anchor();
 	}
 
 	/**
@@ -503,55 +556,6 @@ class Components extends Builder {
 	// TODO: REFACTOR FROM HERE
 
 	/**
-	 * Given two components, anchor the first one to the second.
-	 *
-	 * @param Component $component
-	 * @param Component $target_component
-	 *
-	 * @access private
-	 */
-	private function anchor_together( $component, $target_component ) {
-		if ( $target_component->is_anchor_target() ) {
-			return;
-		}
-
-		// Get the component's anchor settings, if set
-		$anchor_json = $component->get_json( 'anchor' );
-
-		// If the component doesn't have it's own anchor settings, use the defaults.
-		if ( empty( $anchor_json ) ) {
-			$anchor_json = array(
-				'targetAnchorPosition' => 'center',
-				'rangeStart' => 0,
-				'rangeLength' => 1,
-			);
-		}
-
-		// Regardless of what the component class specifies,
-		// add the targetComponentIdentifier here.
-		// There's no way for the class to know what this is before this point.
-		$anchor_json['targetComponentIdentifier'] = $target_component->uid();
-
-		// Add the JSON back to the component
-		$component->set_json( 'anchor', $anchor_json );
-
-		// Given $component, find out the opposite position.
-		$other_position = null;
-		if ( Component::ANCHOR_AUTO == $component->get_anchor_position() ) {
-			$other_position = 'left' == $this->get_setting( 'body_orientation' ) ? Component::ANCHOR_LEFT : Component::ANCHOR_RIGHT;
-		} else {
-			$other_position = Component::ANCHOR_LEFT == $component->get_anchor_position() ? Component::ANCHOR_RIGHT : Component::ANCHOR_LEFT;
-		}
-		$target_component->set_anchor_position( $other_position );
-		// The anchor method adds the required layout, thus making the actual
-		// anchoring. This must be called after using the UID, because we need to
-		// distinguish target components from anchor ones and components with
-		// UIDs are always anchor targets.
-		$target_component->anchor();
-		$component->anchor();
-	}
-
-	/**
 	 * Add a thumbnail if needed.
 	 *
 	 * @param array &$components
@@ -659,7 +663,7 @@ class Components extends Builder {
 		$component->set_anchor_position( Component::ANCHOR_AUTO );
 
 		// Anchor $component to the target component: $components[ $position ]
-		$this->anchor_together( $component, $components[ $position ] );
+		$this->_anchor_together( $component, $components[ $position ] );
 
 		// Add component in position
 		array_splice( $components, $position, 0, array( $component ) );
