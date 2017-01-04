@@ -57,7 +57,7 @@ class Components extends Builder {
 		// Meta components are handled after the body and then prepended, since they
 		// could change depending on the above body processing, such as if a
 		// thumbnail was used from the body.
-		$components = array_merge( $this->meta_components(), $components );
+		$components = array_merge( $this->_meta_components(), $components );
 
 		// Group body components to improve text flow at all orientations.
 		$components = $this->_group_body_components( $components );
@@ -298,38 +298,56 @@ class Components extends Builder {
 		);
 	}
 
-	// TODO: REFACTOR FROM HERE
-
 	/**
+	 * Returns an array of meta component objects.
+	 *
 	 * Meta components are those which were not created from the HTML content.
 	 * These include the title, the cover (i.e. post thumbnail) and the byline.
 	 *
-	 * @return array
 	 * @access private
+	 * @return array An array of Component objects representing metadata.
 	 */
-	private function meta_components() {
-		$components = array();
+	private function _meta_components() {
 
-		// Get the component order
+		// Attempt to get the component order.
 		$meta_component_order = $this->get_setting( 'meta_component_order' );
-		if ( ! empty( $meta_component_order ) && is_array( $meta_component_order ) ) {
-			foreach ( $meta_component_order as $i => $component ) {
-				$method = 'content_' . $component;
-				if ( method_exists( $this, $method ) && $this->$method() ) {
-					$component = $this->get_component_from_shortname( $component, $this->$method() )->to_array();
+		if ( empty( $meta_component_order )
+		     || ! is_array( $meta_component_order )
+		) {
+			return array();
+		}
 
-					// Cover needs different margins when it's not first
-					if ( 'header' === $component['role'] && 0 !== $i ) {
-						$component['layout'] = 'headerBelowTextPhotoLayout';
-					}
+		// Build array of meta components using specified order.
+		$components = array();
+		foreach ( $meta_component_order as $i => $component ) {
 
-					$components[] = $component;
-				}
+			// Determine if component is loadable.
+			$method = 'content_' . $component;
+			if ( ! method_exists( $this, $method )
+			     || ! ( $content = $this->$method() )
+			) {
+				continue;
 			}
+
+			// Attempt to load component.
+			$component = $this->get_component_from_shortname( $component, $content );
+			if ( ! ( $component instanceof Component ) ) {
+				continue;
+			}
+			$component = $component->to_array();
+
+			// If the cover isn't first, give it a different layout.
+			if ( 'header' === $component['role'] && 0 !== $i ) {
+				$component['layout'] = 'headerBelowTextPhotoLayout';
+			}
+
+			$components[] = $component;
 		}
 
 		return $components;
 	}
+
+	// TODO: REFACTOR FROM HERE
 
 	/**
 	 * Split components from the source WordPress content.
