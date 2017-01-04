@@ -66,6 +66,61 @@ class Components extends Builder {
 	}
 
 	/**
+	 * Anchor components that are marked as can_be_anchor_target.
+	 *
+	 * @param array &$components An array of Component objects to process.
+	 *
+	 * @access private
+	 */
+	private function _anchor_components( &$components ) {
+
+		// If there are not at least two components, ignore anchoring.
+		$total = count( $components );
+		if ( $total < 2 ) {
+			return;
+		}
+
+		// Loop through components and search for anchor mappings.
+		for ( $i = 0; $i < $total; $i ++ ) {
+
+			// Only operate on components that are anchor targets.
+			$component = $components[ $i ];
+			if ( $component->is_anchor_target()
+			     || Component::ANCHOR_NONE == $component->get_anchor_position()
+			) {
+				continue;
+			}
+
+			// Anchor this component to the next component. If there is no next
+			// component available, try with the previous one.
+			if ( ! empty( $components[ $i + 1 ] ) ) {
+				$target_component = $components[ $i + 1 ];
+			} else {
+				$target_component = $components[ $i - 1 ];
+			}
+
+			// Search for a suitable anchor target.
+			$offset = 0;
+			while ( ! $target_component->can_be_anchor_target() ) {
+
+				// Determine whether it is possible to seek forward.
+				$offset ++;
+				if ( empty( $components[ $i + $offset ] ) ) {
+					break;
+				}
+
+				// Seek to the next target component.
+				$target_component = $components[ $i + $offset ];
+			}
+
+			// If a suitable anchor target was found, link the two.
+			if ( $target_component->can_be_anchor_target() ) {
+				$this->anchor_together( $component, $target_component );
+			}
+		}
+	}
+
+	/**
 	 * Estimates the number of chars in a line of text next to an anchored component.
 	 *
 	 * @since 1.2.1
@@ -367,63 +422,13 @@ class Components extends Builder {
 
 		// Perform additional processing after components have been created.
 		$this->add_thumbnail_if_needed( $components );
-		$this->anchor_components( $components );
+		$this->_anchor_components( $components );
 		$this->add_pullquote_if_needed( $components );
 
 		return $components;
 	}
 
 	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Anchor components that are marked as can_be_anchor_target.
-	 *
-	 * @param array &$components
-	 *
-	 * @access private
-	 */
-	private function anchor_components( &$components ) {
-		$len = count( $components );
-
-		for ( $i = 0; $i < $len; $i ++ ) {
-
-			if ( ! isset( $components[ $i ] ) ) {
-				continue;
-			}
-
-			$component = $components[ $i ];
-
-			if ( $component->is_anchor_target() || Component::ANCHOR_NONE == $component->get_anchor_position() ) {
-				continue;
-			}
-
-			// Anchor this component to previous component. If there's no previous
-			// component available, try with the next one.
-			if ( empty( $components[ $i - 1 ] ) ) {
-				// Check whether this is the only component of the article, if it is,
-				// just ignore anchoring.
-				if ( empty( $components[ $i + 1 ] ) ) {
-					return;
-				} else {
-					$target_component = $components[ $i + 1 ];
-				}
-			} else {
-				$target_component = $components[ $i - 1 ];
-			}
-
-			// Skip advertisement elements, they must span all width. If the previous
-			// element is an ad, use next instead. If the element is already
-			// anchoring something, also skip.
-			$counter = 1;
-			$len = count( $components );
-			while ( ! $target_component->can_be_anchor_target() && $i + $counter < $len ) {
-				$target_component = $components[ $i + $counter ];
-				$counter ++;
-			}
-
-			$this->anchor_together( $component, $target_component );
-		}
-	}
 
 	/**
 	 * Given two components, anchor the first one to the second.
