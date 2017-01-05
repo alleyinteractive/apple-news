@@ -214,7 +214,7 @@ class Components extends Builder {
 			// Only operate on components that are anchor targets.
 			$component = $components[ $i ];
 			if ( $component->is_anchor_target()
-			     || Component::ANCHOR_NONE == $component->get_anchor_position()
+			     || Component::ANCHOR_NONE === $component->get_anchor_position()
 			) {
 				continue;
 			}
