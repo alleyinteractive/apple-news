@@ -52,6 +52,7 @@ class Settings {
 		'body_background_color' => '#fafafa',
 		'body_orientation' => 'left',
 		'body_line_height' => 24,
+		'body_tracking' => 0.0,
 
 		'initial_dropcap' => 'yes',
 		'dropcap_font' => 'AvenirNext-Bold',

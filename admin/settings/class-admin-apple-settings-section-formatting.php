@@ -58,6 +58,10 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label'   => __( 'Body alignment', 'apple-news' ),
 				'type'    => array( 'left', 'center', 'right' ),
 			),
+			'body_tracking' => array(
+				'label'   => __( 'Body tracking (% of font size)', 'apple-news' ),
+				'type'    => 'int',
+			),
 			'initial_dropcap' => array(
 				'label'   => __( 'Use initial drop cap', 'apple-news' ),
 				'type'    => array( 'yes', 'no' ),
@@ -182,7 +186,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			),
 			'body' => array(
 				'label'       => __( 'Body', 'apple-news' ),
-				'settings'    => array( 'body_font', 'body_size', 'body_color', 'body_link_color', 'body_background_color', 'body_orientation' ),
+				'settings'    => array( 'body_font', 'body_size', 'body_tracking', 'body_color', 'body_link_color', 'body_background_color', 'body_orientation' ),
 			),
 			'dropcap' => array(
 				'label'       => __( 'Drop Cap', 'apple-news' ),

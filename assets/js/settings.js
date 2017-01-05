@@ -119,6 +119,7 @@
 		// Body
 		appleNewsSetCSS( '.apple-news-settings-preview p', 'body_font', 'font-family', null, null );
 		appleNewsSetCSS( '.apple-news-settings-preview p', 'body_size', 'font-size', 'px', null );
+		appleNewsSetCSS( '.apple-news-settings-preview p', 'body_tracking', 'letter-spacing', 'px', $( '#body_size' ).val() / 100 );
 		appleNewsSetCSS( '.apple-news-settings-preview p', 'body_color', 'color', null, null );
 		appleNewsSetCSS( '.apple-news-settings-preview a', 'body_link_color', 'color', null, null );
 		appleNewsSetCSS( '.apple-news-settings-preview', 'body_background_color', 'background-color', null, null );

@@ -177,16 +177,17 @@ class Body extends Component {
 	 */
 	private function get_default_style() {
 		return array(
-			'textAlignment' 			=> 'left',
-			'fontName'      			=> $this->get_setting( 'body_font' ),
-			'fontSize'      			=> intval( $this->get_setting( 'body_size' ) ),
-			'lineHeight'    			=> intval( $this->get_setting( 'body_line_height' ) ),
-			'textColor'     			=> $this->get_setting( 'body_color' ),
-			'linkStyle'     			=> array(
+			'textAlignment' => 'left',
+			'fontName' => $this->get_setting( 'body_font' ),
+			'fontSize' => intval( $this->get_setting( 'body_size' ) ),
+			'tracking' => intval( $this->get_setting( 'body_tracking' ) ) / 100,
+			'lineHeight' => intval( $this->get_setting( 'body_line_height' ) ),
+			'textColor' => $this->get_setting( 'body_color' ),
+			'linkStyle' => array(
 				'textColor' => $this->get_setting( 'body_link_color' )
 			),
-			'paragraphSpacingBefore' 	=> 18,
-			'paragraphSpacingAfter'		=> 18,
+			'paragraphSpacingBefore' => 18,
+			'paragraphSpacingAfter' => 18,
 		);
 	}
 
