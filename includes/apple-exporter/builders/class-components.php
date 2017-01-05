@@ -16,6 +16,7 @@ use \Apple_Exporter\Components\Component;
 use \Apple_Exporter\Components\Image;
 use \Apple_Exporter\Workspace;
 use \Apple_News;
+use \DOMNode;
 
 /**
  * A class for organizing content into components.
@@ -107,7 +108,7 @@ class Components extends Builder {
 		}
 
 		// Build a new component and set the anchor position to AUTO.
-		$component = $this->get_component_from_shortname(
+		$component = $this->_get_component_from_shortname(
 			'blockquote',
 			'<blockquote>' . $pullquote . '</blockquote>'
 		);
@@ -453,6 +454,31 @@ class Components extends Builder {
 	}
 
 	/**
+	 * Get a component from the shortname.
+	 *
+	 * @param string $shortname The shortname to look up.
+	 * @param string $html The HTML source to extract from.
+	 *
+	 * @access private
+	 * @return Component The component extracted from the HTML.
+	 */
+	private function _get_component_from_shortname( $shortname, $html = null ) {
+		return Component_Factory::get_component( $shortname, $html );
+	}
+
+	/**
+	 * Get a component from a node.
+	 *
+	 * @param DOMNode $node
+	 *
+	 * @return Component
+	 * @access private
+	 */
+	private function _get_components_from_node( $node ) {
+		return Component_Factory::get_components_from_node( $node );
+	}
+
+	/**
 	 * Attempts to get an image ratio from a URL.
 	 *
 	 * @param string $url The image URL to probe for ratio data.
@@ -637,7 +663,7 @@ class Components extends Builder {
 			}
 
 			// Attempt to load component.
-			$component = $this->get_component_from_shortname( $component, $content );
+			$component = $this->_get_component_from_shortname( $component, $content );
 			if ( ! ( $component instanceof Component ) ) {
 				continue;
 			}
@@ -668,7 +694,7 @@ class Components extends Builder {
 		foreach ( $this->content_nodes() as $node ) {
 			$components = array_merge(
 				$components,
-				$this->get_components_from_node( $node )
+				$this->_get_components_from_node( $node )
 			);
 		}
 
@@ -679,32 +705,4 @@ class Components extends Builder {
 
 		return $components;
 	}
-
-	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Get a component from the shortname.
-	 *
-	 * @param string $shortname
-	 * @param string $html
-	 *
-	 * @return Component
-	 * @access private
-	 */
-	private function get_component_from_shortname( $shortname, $html = null ) {
-		return Component_Factory::get_component( $shortname, $html );
-	}
-
-	/**
-	 * Get a component from a node.
-	 *
-	 * @param DomNode $node
-	 *
-	 * @return Component
-	 * @access private
-	 */
-	private function get_components_from_node( $node ) {
-		return Component_Factory::get_components_from_node( $node );
-	}
-
 }
