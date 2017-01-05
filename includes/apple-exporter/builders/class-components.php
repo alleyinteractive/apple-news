@@ -67,6 +67,60 @@ class Components extends Builder {
 	}
 
 	/**
+	 * Add a pullquote component if needed.
+	 *
+	 * @param array &$components An array of Component objects to analyze.
+	 *
+	 * @access private
+	 */
+	private function _add_pullquote_if_needed( &$components ) {
+
+		// Must we add a pullquote?
+		$pullquote = $this->content_setting( 'pullquote' );
+		$pullquote_position = $this->content_setting( 'pullquote_position' );
+		$valid_positions = array( 'top', 'middle', 'bottom' );
+		if ( empty( $pullquote )
+		     || ! in_array( $pullquote_position, $valid_positions )
+		) {
+			return;
+		}
+
+		// If the position is not top, make some math for middle and bottom.
+		$start = 0;
+		$total = count( $components );
+		if ( 'middle' == $pullquote_position ) {
+			$start = floor( $total / 2 );
+		} elseif ( 'bottom' == $pullquote_position ) {
+			$start = floor( ( $total / 4 ) * 3 );
+		}
+
+		// Look for potential anchor targets.
+		for ( $position = $start; $position < $total; $position ++ ) {
+			if ( $components[ $position ]->can_be_anchor_target() ) {
+				break;
+			}
+		}
+
+		// If none was found, do not add.
+		if ( ! $components[ $position ]->can_be_anchor_target() ) {
+			return;
+		}
+
+		// Build a new component and set the anchor position to AUTO.
+		$component = $this->get_component_from_shortname(
+			'blockquote',
+			'<blockquote>' . $pullquote . '</blockquote>'
+		);
+		$component->set_anchor_position( Component::ANCHOR_AUTO );
+
+		// Anchor the newly created pullquote component to the target component.
+		$this->_anchor_together( $component, $components[ $position ] );
+
+		// Add component in position.
+		array_splice( $components, $position, 0, array( $component ) );
+	}
+
+	/**
 	 * Add a thumbnail if needed.
 	 *
 	 * @param array &$components An array of Component objects to analyze.
@@ -621,64 +675,12 @@ class Components extends Builder {
 		// Perform additional processing after components have been created.
 		$this->_add_thumbnail_if_needed( $components );
 		$this->_anchor_components( $components );
-		$this->add_pullquote_if_needed( $components );
+		$this->_add_pullquote_if_needed( $components );
 
 		return $components;
 	}
 
 	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Add a pullquote component if needed.
-	 *
-	 * @param array &$components
-	 *
-	 * @access private
-	 */
-	private function add_pullquote_if_needed( &$components ) {
-		// Must we add a pullquote?
-		$pullquote = $this->content_setting( 'pullquote' );
-		$pullquote_position = $this->content_setting( 'pullquote_position' );
-		$valid_positions = array( 'top', 'middle', 'bottom' );
-
-		if ( empty( $pullquote ) || ! in_array( $pullquote_position, $valid_positions ) ) {
-			return;
-		}
-
-		// Find position for pullquote
-		$start = 0; // Assume top position, which is the easiest, as it's always 0
-		$len = count( $components );
-
-		// If the position is not top, make some math for middle and bottom
-		if ( 'middle' == $pullquote_position ) {
-			// Place it in the middle
-			$start = floor( $len / 2 );
-		} else if ( 'bottom' == $pullquote_position ) {
-			// Start looking at the third quarter
-			$start = floor( ( $len / 4 ) * 3 );
-		}
-
-		for ( $position = $start; $position < $len; $position ++ ) {
-			if ( $components[ $position ]->can_be_anchor_target() ) {
-				break;
-			}
-		}
-
-		// If none was found, do not add
-		if ( ! $components[ $position ]->can_be_anchor_target() ) {
-			return;
-		}
-
-		// Build a new component and set the anchor position to AUTO
-		$component = $this->get_component_from_shortname( 'blockquote', "<blockquote>$pullquote</blockquote>" );
-		$component->set_anchor_position( Component::ANCHOR_AUTO );
-
-		// Anchor $component to the target component: $components[ $position ]
-		$this->_anchor_together( $component, $components[ $position ] );
-
-		// Add component in position
-		array_splice( $components, $position, 0, array( $component ) );
-	}
 
 	/**
 	 * Get a component from the shortname.
