@@ -108,6 +108,11 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type'    => 'float',
 				'sanitize' => 'floatval',
 			),
+			'header_tracking' => array(
+				'label'   => __( 'Header tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
 			'header_color' => array(
 				'label'   => __( 'Header font color', 'apple-news' ),
 				'type'    => 'color',
@@ -222,7 +227,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label'       => __( 'Headings', 'apple-news' ),
 				'settings'    => array( 'header_font', 'header_color', 'header1_size',
 				  'header2_size', 'header3_size', 'header4_size', 'header4_size',
-				  'header5_size', 'header6_size', 'header_line_height' ),
+				  'header5_size', 'header6_size', 'header_line_height', 'header_tracking' ),
 			),
 			'pullquote' => array(
 				'label'       => __( 'Pull quote', 'apple-news' ),

@@ -72,6 +72,7 @@ class Settings {
 		'header5_size' => 18,
 		'header6_size' => 16,
 		'header_line_height' => 52,
+		'header_tracking' => 0,
 
 		'pullquote_font' => 'AvenirNext-Bold',
 		'pullquote_size' => 48,
