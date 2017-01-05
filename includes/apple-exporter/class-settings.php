@@ -52,7 +52,7 @@ class Settings {
 		'body_background_color' => '#fafafa',
 		'body_orientation' => 'left',
 		'body_line_height' => 24,
-		'body_tracking' => 0.0,
+		'body_tracking' => 0,
 
 		'initial_dropcap' => 'yes',
 		'dropcap_font' => 'AvenirNext-Bold',
@@ -81,6 +81,7 @@ class Settings {
 		'pullquote_border_width' => '3',
 		'pullquote_transform' => 'uppercase',
 		'pullquote_line_height' => 48,
+		'pullquote_tracking' => 0,
 
 		'component_alerts' => 'none',
 		'json_alerts' => 'warn',

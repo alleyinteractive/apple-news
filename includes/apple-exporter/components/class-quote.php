@@ -87,12 +87,13 @@ class Quote extends Component {
 	private function set_style() {
 		$this->json['textStyle'] = 'default-pullquote';
 		$this->register_style( 'default-pullquote', array(
-			'fontName'      => $this->get_setting( 'pullquote_font' ),
-			'fontSize'      => intval( $this->get_setting( 'pullquote_size' ) ),
-			'textColor'     => $this->get_setting( 'pullquote_color' ),
+			'fontName' => $this->get_setting( 'pullquote_font' ),
+			'fontSize' => intval( $this->get_setting( 'pullquote_size' ) ),
+			'textColor' => $this->get_setting( 'pullquote_color' ),
 			'textTransform' => $this->get_setting( 'pullquote_transform' ),
-			'lineHeight'    => intval( $this->get_setting( 'pullquote_line_height' ) ),
+			'lineHeight' => intval( $this->get_setting( 'pullquote_line_height' ) ),
 			'textAlignment' => $this->find_text_alignment(),
+			'tracking' => intval( $this->get_setting( 'pullquote_tracking' ) ) / 100,
 		) );
 	}
 
