@@ -26,11 +26,6 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 
 		// Add the settings
 		$this->settings = array(
-			'pullquote_line_height' => array(
-				'label'   => __( 'Pull quote Line Height', 'apple-news' ),
-				'type'    => 'float',
-				'sanitize' => 'floatval',
-			),
 			'header_line_height' => array(
 				'label'   => __( 'Heading Line Height', 'apple-news' ),
 				'type'    => 'float',
@@ -57,7 +52,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 		$this->groups = array(
 			'line_heights' => array(
 				'label'       => __( 'Line Heights', 'apple-news' ),
-				'settings'    => array( 'pullquote_line_height', 'header_line_height' ),
+				'settings'    => array( 'header_line_height' ),
 			),
 			'alerts' => array(
 				'label'       => __( 'Alerts', 'apple-news' ),

@@ -47,7 +47,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type'    => 'color',
 			),
 			'body_line_height' => array(
-				'label'    => __( 'Body Line Height', 'apple-news' ),
+				'label'    => __( 'Body line height', 'apple-news' ),
 				'type'     => 'float',
 				'sanitize' => 'floatval',
 			),
@@ -154,6 +154,11 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label'   => __( 'Pull quote border width', 'apple-news' ),
 				'type'    => 'integer',
 			),
+			'pullquote_line_height' => array(
+				'label'   => __( 'Pull quote line height', 'apple-news' ),
+				'type'    => 'float',
+				'sanitize' => 'floatval',
+			),
 			'pullquote_transform' => array(
 				'label'   => __( 'Pull quote transformation', 'apple-news' ),
 				'type'    => array( 'none', 'uppercase' ),
@@ -215,7 +220,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 					__( 'Articles can have an optional', 'apple-news' ),
 					__( 'Pull quote', 'apple-news' )
 				),
-				'settings'    => array( 'pullquote_font', 'pullquote_size', 'pullquote_color', 'pullquote_border_color', 'pullquote_border_style', 'pullquote_border_width', 'pullquote_transform' ),
+				'settings'    => array( 'pullquote_font', 'pullquote_size', 'pullquote_line_height', 'pullquote_color', 'pullquote_border_color', 'pullquote_border_style', 'pullquote_border_width', 'pullquote_transform' ),
 			),
 			'gallery' => array(
 				'label'       => __( 'Gallery', 'apple-news' ),
