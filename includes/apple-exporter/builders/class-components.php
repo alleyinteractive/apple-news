@@ -13,6 +13,7 @@ namespace Apple_Exporter\Builders;
 
 use \Apple_Exporter\Component_Factory;
 use \Apple_Exporter\Components\Component;
+use \Apple_Exporter\Components\Image;
 use \Apple_Exporter\Workspace;
 use \Apple_News;
 
@@ -63,6 +64,78 @@ class Components extends Builder {
 		$components = $this->_group_body_components( $components );
 
 		return $components;
+	}
+
+	/**
+	 * Add a thumbnail if needed.
+	 *
+	 * @param array &$components An array of Component objects to analyze.
+	 *
+	 * @access private
+	 */
+	private function _add_thumbnail_if_needed( &$components ) {
+
+		// If a thumbnail is already defined, just return.
+		if ( $this->content_cover() ) {
+			return;
+		}
+
+		// Otherwise, iterate over the components and look for the first image.
+		foreach ( $components as $i => $component ) {
+
+			// Skip anything that isn't an image.
+			if ( ! $component instanceof Image ) {
+				continue;
+			}
+
+			// Get the bundle URL of this class.
+			$json_url = $component->get_json( 'URL' );
+			if ( empty( $json_url ) ) {
+				$json_components = $component->get_json( 'components' );
+				if ( ! empty( $json_components[0]['URL'] ) ) {
+					$json_url = $json_components[0]['URL'];
+				}
+			}
+
+			// If we were unsuccessful in getting a URL for the image, bail.
+			if ( empty( $json_url ) ) {
+				return;
+			}
+
+			// Isolate the bundle URL basename
+			$bundle_basename = str_replace( 'bundle://', '', $json_url );
+
+			// We need to find the original URL from the bundle meta because it's
+			// needed in order to override the thumbnail.
+			$workspace = new Workspace( $this->content_id() );
+			$bundles = $workspace->get_bundles();
+
+			// If we can't get the bundles, we can't search for the URL, so bail.
+			if ( empty( $bundles ) ) {
+				return;
+			}
+
+			// Try to get the original URL for the image.
+			$original_url = '';
+			foreach ( $bundles as $bundle_url ) {
+				if ( $bundle_basename == Apple_News::get_filename( $bundle_url ) ) {
+					$original_url = $bundle_url;
+					break;
+				}
+			}
+
+			// If we can't find the original URL, we can't proceed.
+			if ( empty( $original_url ) ) {
+				return;
+			}
+
+			// Use this image as the cover and remove it from the body to avoid
+			// duplication.
+			$this->set_content_property( 'cover', $original_url );
+			unset( $components[ $i ] );
+			$components = array_values( $components );
+			break;
+		}
 	}
 
 	/**
@@ -546,7 +619,7 @@ class Components extends Builder {
 		}
 
 		// Perform additional processing after components have been created.
-		$this->add_thumbnail_if_needed( $components );
+		$this->_add_thumbnail_if_needed( $components );
 		$this->_anchor_components( $components );
 		$this->add_pullquote_if_needed( $components );
 
@@ -554,68 +627,6 @@ class Components extends Builder {
 	}
 
 	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Add a thumbnail if needed.
-	 *
-	 * @param array &$components
-	 *
-	 * @access private
-	 */
-	private function add_thumbnail_if_needed( &$components ) {
-		// If a thumbnail is already defined, just return.
-		if ( $this->content_cover() ) {
-			return;
-		}
-
-		// Otherwise, iterate over the components and look for the first image.
-		foreach ( $components as $i => $component ) {
-			if ( is_a( $component, 'Apple_Exporter\Components\Image' ) ) {
-				// Get the bundle URL of this class.
-				$json_url = $component->get_json( 'URL' );
-				if ( empty( $json_url ) ) {
-					$json_components = $component->get_json( 'components' );
-					if ( ! empty( $json_components[0]['URL'] ) ) {
-						$json_url = $json_components[0]['URL'];
-					}
-				}
-
-				if ( empty( $json_url ) ) {
-					return;
-				}
-
-				// Isolate the bundle URL basename
-				$bundle_basename = str_replace( 'bundle://', '', $json_url );
-
-				// We need to find the original URL from the bundle meta because it's needed
-				// in order to override the thumbnail.
-				$workspace = new Workspace( $this->content_id() );
-				$bundles = $workspace->get_bundles();
-				if ( empty( $bundles ) ) {
-					// We can't proceed without the original URL and something odd has happened here anyway.
-					return;
-				}
-
-				$original_url = '';
-				foreach ( $bundles as $bundle_url ) {
-					if ( $bundle_basename == Apple_News::get_filename( $bundle_url ) ) {
-						$original_url = $bundle_url;
-						break;
-					}
-				}
-
-				// If we can't find the original URL, we can't proceed.
-				if ( empty( $original_url ) ) {
-					return;
-				}
-
-				// Use this image as the cover and remove it from the body to avoid duplication.
-				$this->set_content_property( 'cover', $original_url );
-				unset( $components[ $i ] );
-				break;
-			}
-		}
-	}
 
 	/**
 	 * Add a pullquote component if needed.
