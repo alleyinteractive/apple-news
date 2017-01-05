@@ -60,6 +60,7 @@ class Settings {
 
 		'byline_font' => 'AvenirNext-Medium',
 		'byline_size' => 13,
+		'byline_tracking' => 0,
 		'byline_color' => '#7c7c7c',
 		'byline_format' => 'by #author# | #M j, Y | g:i A#',
 

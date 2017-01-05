@@ -88,6 +88,11 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label'   => __( 'Byline font size', 'apple-news' ),
 				'type'    => 'integer',
 			),
+			'byline_tracking' => array(
+				'label'   => __( 'Byline tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
 			'byline_color' => array(
 				'label'   => __( 'Byline font color', 'apple-news' ),
 				'type'    => 'color',
@@ -221,7 +226,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			'byline' => array(
 				'label'       => __( 'Byline', 'apple-news' ),
 				'description' => __( "The byline displays the article's author and publish date", 'apple-news' ),
-				'settings'    => array( 'byline_font', 'byline_size', 'byline_color', 'byline_format' ),
+				'settings'    => array( 'byline_font', 'byline_size', 'byline_tracking', 'byline_color', 'byline_format' ),
 			),
 			'headings' => array(
 				'label'       => __( 'Headings', 'apple-news' ),
