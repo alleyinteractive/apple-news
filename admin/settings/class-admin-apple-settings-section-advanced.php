@@ -26,11 +26,6 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 
 		// Add the settings
 		$this->settings = array(
-			'header_line_height' => array(
-				'label'   => __( 'Heading Line Height', 'apple-news' ),
-				'type'    => 'float',
-				'sanitize' => 'floatval',
-			),
 			'component_alerts' => array(
 				'label'   => __( 'Component Alerts', 'apple-news' ),
 				'type'    => array( 'none', 'warn', 'fail' ),
@@ -50,10 +45,6 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 
 		// Add the groups
 		$this->groups = array(
-			'line_heights' => array(
-				'label'       => __( 'Line Heights', 'apple-news' ),
-				'settings'    => array( 'header_line_height' ),
-			),
 			'alerts' => array(
 				'label'       => __( 'Alerts', 'apple-news' ),
 				'settings'    => array( 'component_alerts', 'json_alerts' ),
