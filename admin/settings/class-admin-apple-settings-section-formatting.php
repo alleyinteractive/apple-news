@@ -64,8 +64,9 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type'    => array( 'left', 'center', 'right' ),
 			),
 			'body_tracking' => array(
-				'label'   => __( 'Body tracking (% of font size)', 'apple-news' ),
-				'type'    => 'int',
+				'label'   => __( 'Body tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
 			),
 			'initial_dropcap' => array(
 				'label'   => __( 'Use initial drop cap', 'apple-news' ),
@@ -160,8 +161,9 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'sanitize' => 'floatval',
 			),
 			'pullquote_tracking' => array(
-				'label'   => __( 'Pullquote tracking (% of font size)', 'apple-news' ),
-				'type'    => 'int',
+				'label'   => __( 'Pullquote tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
 			),
 			'pullquote_transform' => array(
 				'label'   => __( 'Pull quote transformation', 'apple-news' ),
