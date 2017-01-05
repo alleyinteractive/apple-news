@@ -46,6 +46,11 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label'   => __( 'Body font color', 'apple-news' ),
 				'type'    => 'color',
 			),
+			'body_line_height' => array(
+				'label'    => __( 'Body Line Height', 'apple-news' ),
+				'type'     => 'float',
+				'sanitize' => 'floatval',
+			),
 			'body_link_color' => array(
 				'label'   => __( 'Body font hyperlink color', 'apple-news' ),
 				'type'    => 'color',
@@ -186,7 +191,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			),
 			'body' => array(
 				'label'       => __( 'Body', 'apple-news' ),
-				'settings'    => array( 'body_font', 'body_size', 'body_tracking', 'body_color', 'body_link_color', 'body_background_color', 'body_orientation' ),
+				'settings'    => array( 'body_font', 'body_size', 'body_line_height', 'body_tracking', 'body_color', 'body_link_color', 'body_background_color', 'body_orientation' ),
 			),
 			'dropcap' => array(
 				'label'       => __( 'Drop Cap', 'apple-news' ),
