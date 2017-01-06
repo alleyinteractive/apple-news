@@ -30,7 +30,7 @@ class Title extends Component {
 			'fontName' => $this->get_setting( 'header1_font' ),
 			'fontSize' => intval( $this->get_setting( 'header1_size' ) ),
 			'lineHeight' => intval( $this->get_setting( 'header1_line_height' ) ),
-			'tracking' => $this->get_setting( 'header1_tracking' ),
+			'tracking' => intval( $this->get_setting( 'header1_tracking' ) ) / 100,
 			'textColor' => $this->get_setting( 'header1_color' ),
 			'textAlignment' => $this->find_text_alignment(),
 		) );
