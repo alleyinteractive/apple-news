@@ -109,22 +109,112 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'size'				=> 40,
 				'required'		=> false,
 			),
-			'header_font' => array(
+			'header1_font' => array(
 				'label'   => '',
 				'type'    => 'font',
 			),
-			'header_line_height' => array(
-				'label'   => __( 'Header line height', 'apple-news' ),
+			'header2_font' => array(
+				'label'   => '',
+				'type'    => 'font',
+			),
+			'header3_font' => array(
+				'label'   => '',
+				'type'    => 'font',
+			),
+			'header4_font' => array(
+				'label'   => '',
+				'type'    => 'font',
+			),
+			'header5_font' => array(
+				'label'   => '',
+				'type'    => 'font',
+			),
+			'header6_font' => array(
+				'label'   => '',
+				'type'    => 'font',
+			),
+			'header1_line_height' => array(
+				'label'   => __( 'Header 1 line height', 'apple-news' ),
 				'type'    => 'float',
 				'sanitize' => 'floatval',
 			),
-			'header_tracking' => array(
-				'label'   => __( 'Header tracking', 'apple-news' ),
+			'header2_line_height' => array(
+				'label'   => __( 'Header 2 line height', 'apple-news' ),
+				'type'    => 'float',
+				'sanitize' => 'floatval',
+			),
+			'header3_line_height' => array(
+				'label'   => __( 'Header 3 line height', 'apple-news' ),
+				'type'    => 'float',
+				'sanitize' => 'floatval',
+			),
+			'header4_line_height' => array(
+				'label'   => __( 'Header 4 line height', 'apple-news' ),
+				'type'    => 'float',
+				'sanitize' => 'floatval',
+			),
+			'header5_line_height' => array(
+				'label'   => __( 'Header 5 line height', 'apple-news' ),
+				'type'    => 'float',
+				'sanitize' => 'floatval',
+			),
+			'header6_line_height' => array(
+				'label'   => __( 'Header 6 line height', 'apple-news' ),
+				'type'    => 'float',
+				'sanitize' => 'floatval',
+			),
+			'header1_tracking' => array(
+				'label'   => __( 'Header 1 tracking', 'apple-news' ),
 				'type'    => 'integer',
 				'description' => __( '(Percentage of font size)', 'apple-news' ),
 			),
-			'header_color' => array(
-				'label'   => __( 'Header font color', 'apple-news' ),
+			'header2_tracking' => array(
+				'label'   => __( 'Header 2 tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
+			'header3_tracking' => array(
+				'label'   => __( 'Header 3 tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
+			'header4_tracking' => array(
+				'label'   => __( 'Header 4 tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
+			'header5_tracking' => array(
+				'label'   => __( 'Header 5 tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
+			'header6_tracking' => array(
+				'label'   => __( 'Header 6 tracking', 'apple-news' ),
+				'type'    => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
+			'header1_color' => array(
+				'label'   => __( 'Header 1 font color', 'apple-news' ),
+				'type'    => 'color',
+			),
+			'header2_color' => array(
+				'label'   => __( 'Header 2 font color', 'apple-news' ),
+				'type'    => 'color',
+			),
+			'header3_color' => array(
+				'label'   => __( 'Header 3 font color', 'apple-news' ),
+				'type'    => 'color',
+			),
+			'header4_color' => array(
+				'label'   => __( 'Header 4 font color', 'apple-news' ),
+				'type'    => 'color',
+			),
+			'header5_color' => array(
+				'label'   => __( 'Header 5 font color', 'apple-news' ),
+				'type'    => 'color',
+			),
+			'header6_color' => array(
+				'label'   => __( 'Header 6 font color', 'apple-news' ),
 				'type'    => 'color',
 			),
 			'header1_size' => array(
@@ -233,11 +323,65 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'description' => __( "The byline displays the article's author and publish date", 'apple-news' ),
 				'settings'    => array( 'byline_font', 'byline_size', 'byline_line_height', 'byline_tracking', 'byline_color', 'byline_format' ),
 			),
-			'headings' => array(
-				'label'       => __( 'Headings', 'apple-news' ),
-				'settings'    => array( 'header_font', 'header_color', 'header1_size',
-				  'header2_size', 'header3_size', 'header4_size', 'header4_size',
-				  'header5_size', 'header6_size', 'header_line_height', 'header_tracking' ),
+			'heading1' => array(
+				'label' => __( 'Heading 1', 'apple-news' ),
+				'settings' => array(
+                    'header1_font',
+                    'header1_color',
+                    'header1_size',
+                    'header1_line_height',
+                    'header1_tracking',
+                ),
+			),
+			'heading2' => array(
+				'label' => __( 'Heading 2', 'apple-news' ),
+				'settings' => array(
+					'header2_font',
+					'header2_color',
+					'header2_size',
+					'header2_line_height',
+					'header2_tracking',
+				),
+			),
+			'heading3' => array(
+				'label' => __( 'Heading 3', 'apple-news' ),
+				'settings' => array(
+					'header3_font',
+					'header3_color',
+					'header3_size',
+					'header3_line_height',
+					'header3_tracking',
+				),
+			),
+			'heading4' => array(
+				'label' => __( 'Heading 4', 'apple-news' ),
+				'settings' => array(
+					'header4_font',
+					'header4_color',
+					'header4_size',
+					'header4_line_height',
+					'header4_tracking',
+				),
+			),
+			'heading5' => array(
+				'label' => __( 'Heading 5', 'apple-news' ),
+				'settings' => array(
+					'header5_font',
+					'header5_color',
+					'header5_size',
+					'header5_line_height',
+					'header5_tracking',
+				),
+			),
+			'heading6' => array(
+				'label' => __( 'Heading 6', 'apple-news' ),
+				'settings' => array(
+					'header6_font',
+					'header6_color',
+					'header6_size',
+					'header6_line_height',
+					'header6_tracking',
+				),
 			),
 			'pullquote' => array(
 				'label'       => __( 'Pull quote', 'apple-news' ),
