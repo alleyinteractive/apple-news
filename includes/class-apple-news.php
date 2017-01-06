@@ -79,6 +79,49 @@ class Apple_News {
 	}
 
 	/**
+	 * Migrate legacy header settings to new format.
+	 *
+	 * @param array $wp_settings An array of settings loaded from WP options.
+	 *
+	 * @access public
+	 * @return array The modified settings array.
+	 */
+	public function migrate_header_settings( $wp_settings ) {
+
+		// Check for presence of legacy font setting.
+		if ( ! empty( $wp_settings['header_font'] ) ) {
+			$wp_settings['header1_font'] = $wp_settings['header_font'];
+			$wp_settings['header2_font'] = $wp_settings['header_font'];
+			$wp_settings['header3_font'] = $wp_settings['header_font'];
+			$wp_settings['header4_font'] = $wp_settings['header_font'];
+			$wp_settings['header5_font'] = $wp_settings['header_font'];
+			$wp_settings['header6_font'] = $wp_settings['header_font'];
+		}
+
+		// Check for presence of legacy color setting.
+		if ( ! empty( $wp_settings['header_color'] ) ) {
+			$wp_settings['header1_color'] = $wp_settings['header_color'];
+			$wp_settings['header2_color'] = $wp_settings['header_color'];
+			$wp_settings['header3_color'] = $wp_settings['header_color'];
+			$wp_settings['header4_color'] = $wp_settings['header_color'];
+			$wp_settings['header5_color'] = $wp_settings['header_color'];
+			$wp_settings['header6_color'] = $wp_settings['header_color'];
+		}
+
+		// Check for presence of legacy line height setting.
+		if ( ! empty( $wp_settings['header_line_height'] ) ) {
+			$wp_settings['header1_line_height'] = $wp_settings['header_line_height'];
+			$wp_settings['header2_line_height'] = $wp_settings['header_line_height'];
+			$wp_settings['header3_line_height'] = $wp_settings['header_line_height'];
+			$wp_settings['header4_line_height'] = $wp_settings['header_line_height'];
+			$wp_settings['header5_line_height'] = $wp_settings['header_line_height'];
+			$wp_settings['header6_line_height'] = $wp_settings['header_line_height'];
+		}
+
+		return $wp_settings;
+	}
+
+	/**
 	 * Attempt to migrate settings from an older version of this plugin
 	 *
 	 * @param Settings $settings
