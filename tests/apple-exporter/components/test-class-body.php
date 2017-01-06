@@ -34,35 +34,6 @@ class Body_Test extends Component_TestCase {
 	}
 
 	/**
-	 * Ensures that HTML tags are remvoed when running a build.
-	 *
-	 * @access public
-	 */
-	public function testBuildingRemovesTags() {
-
-		// Setup.
-		$body_component = new Body(
-			'<p>my text</p>',
-			null,
-			$this->settings,
-			$this->styles,
-			$this->layouts
-		);
-
-		// Test.
-		$this->assertEquals(
-			array(
-				'text' => "my text\n\n",
-				'role' => 'body',
-				'format' => 'markdown',
-				'textStyle' => 'dropcapBodyStyle',
-				'layout' => 'body-layout',
-			),
-			$body_component->to_array()
-		);
-	}
-
-	/**
 	 * Test the `apple_news_body_json` filter.
 	 *
 	 * @access public
@@ -71,7 +42,7 @@ class Body_Test extends Component_TestCase {
 
 		// Setup.
 		$this->settings->set( 'initial_dropcap', 'no' );
-		$body_component = new Body(
+		$component = new Body(
 			'<p>my text</p>',
 			null,
 			$this->settings,
@@ -84,16 +55,8 @@ class Body_Test extends Component_TestCase {
 		);
 
 		// Test.
-		$this->assertEquals(
-			array(
-				'text' => "my text\n\n",
-				'role' => 'body',
-				'format' => 'markdown',
-				'textStyle' => 'fancy-body',
-				'layout' => 'body-layout',
-			),
-			$body_component->to_array()
-		);
+		$result = $component->to_array();
+		$this->assertEquals( 'fancy-body', $result['textStyle'] );
 
 		// Teardown.
 		remove_filter(
@@ -110,11 +73,11 @@ class Body_Test extends Component_TestCase {
 	public function testSettings() {
 
 		// Setup.
-		$html = <<<HTML
-<p>Lorem ipsum.</p>
-<p>Dolor sit amet.</p>
-HTML;
-		$content = new Exporter_Content( 3, 'Title', $html );
+		$content = new Exporter_Content(
+			3,
+			'Title',
+			'<p>Lorem ipsum.</p><p>Dolor sit amet.</p>'
+		);
 
 		// Set body settings.
 		$this->settings->body_font = 'TestFontName';
@@ -152,6 +115,35 @@ HTML;
 		$this->assertEquals(
 			0.5,
 			$json['componentTextStyles']['default-body']['tracking']
+		);
+	}
+
+	/**
+	 * Tests the transformation process from a paragraph to a Body component.
+	 *
+	 * @access public
+	 */
+	public function testTransform() {
+
+		// Setup.
+		$component = new Body(
+			'<p>my text</p>',
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$this->assertEquals(
+			array(
+				'text' => "my text\n\n",
+				'role' => 'body',
+				'format' => 'markdown',
+				'textStyle' => 'dropcapBodyStyle',
+				'layout' => 'body-layout',
+			),
+			$component->to_array()
 		);
 	}
 

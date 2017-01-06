@@ -34,7 +34,7 @@ class Byline_Test extends Component_TestCase {
 	}
 
 	/**
-	 * Test the `apple_news_body_json` filter.
+	 * Test the `apple_news_byline_json` filter.
 	 *
 	 * @access public
 	 */
@@ -88,7 +88,7 @@ class Byline_Test extends Component_TestCase {
 			'Test byline'
 		);
 
-		// Set body settings.
+		// Set byline settings.
 		$this->settings->byline_font = 'TestFontName';
 		$this->settings->byline_size = 20;
 		$this->settings->byline_color = '#abcdef';
@@ -99,7 +99,7 @@ class Byline_Test extends Component_TestCase {
 		$exporter = new Exporter( $content, null, $this->settings );
 		$json = json_decode( $exporter->export(), true );
 
-		// Validate body settings in generated JSON.
+		// Validate byline settings in generated JSON.
 		$this->assertEquals(
 			'TestFontName',
 			$json['componentTextStyles']['default-byline']['fontName']
