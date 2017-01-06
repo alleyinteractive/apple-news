@@ -2,7 +2,7 @@
 /**
  * Publish to Apple News Tests: Body_Test class
  *
- * Contains a class which is used to test the Apple_Exporter\Components\Body class.
+ * Contains a class which is used to test Apple_Exporter\Components\Body.
  *
  * @package Apple_News
  * @subpackage Tests

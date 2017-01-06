@@ -2,7 +2,7 @@
 /**
  * Publish to Apple News Tests: Byline_Test class
  *
- * Contains a class which is used to test the Apple_Exporter\Components\Byline class.
+ * Contains a class which is used to test Apple_Exporter\Components\Byline.
  *
  * @package Apple_News
  * @subpackage Tests

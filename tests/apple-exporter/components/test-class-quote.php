@@ -2,7 +2,7 @@
 /**
  * Publish to Apple News Tests: Quote_Test class
  *
- * Contains a class which is used to test the Apple_Exporter\Components\Quote class.
+ * Contains a class which is used to test Apple_Exporter\Components\Quote.
  *
  * @package Apple_News
  * @subpackage Tests
