@@ -35,9 +35,11 @@ class Byline extends Component {
 		$this->json[ 'textStyle' ] = 'default-byline';
 		$this->register_style( 'default-byline', array(
 			'textAlignment' => $this->find_text_alignment(),
-			'fontName'      => $this->get_setting( 'byline_font' ),
-			'fontSize'      => intval( $this->get_setting( 'byline_size' ) ),
-			'textColor'     => $this->get_setting( 'byline_color' ),
+			'fontName' => $this->get_setting( 'byline_font' ),
+			'fontSize' => intval( $this->get_setting( 'byline_size' ) ),
+			'lineHeight' => intval( $this->get_setting( 'byline_line_height' ) ),
+			'tracking' => intval( $this->get_setting( 'byline_tracking' ) ) / 100,
+			'textColor' => $this->get_setting( 'byline_color' ),
 		) );
 	}
 
