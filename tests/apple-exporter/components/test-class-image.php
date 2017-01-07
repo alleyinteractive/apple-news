@@ -139,8 +139,9 @@ class Image_Test extends Component_TestCase {
 		$content = new Exporter_Content(
 			3,
 			'Title',
-			'<img src="http://someurl.com/filename.jpg" alt="Example" />' . "\n\n"
-			. '<img src="http://someurl.com/filename.jpg" alt="Example" />'
+			'<img src="http://someurl.com/filename.jpg" alt="Example" />',
+			null,
+			'http://someurl.com/cover.jpg'
 		);
 
 		// Set image settings.
