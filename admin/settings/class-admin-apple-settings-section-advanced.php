@@ -56,6 +56,11 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'type'    => array( 'yes', 'no' ),
 				'description' => __( 'Allow the Apple News API to retrieve images remotely rather than bundle them. This setting is recommended if you are having any issues with publishing images. If your images are not publicly accessible, such as on a development site, you cannot use this feature.', 'apple-news' ),
 			),
+			'full_bleed_images' => array(
+				'label'   => __( 'Use Full-Bleed Images?', 'apple-news' ),
+				'type'    => array( 'yes', 'no' ),
+				'description' => __( 'If set to yes, images that are centered or have no alignment will span edge-to-edge rather than being constrained within the body margins.', 'apple-news' ),
+			),
 		);
 
 		// Add the groups
@@ -70,7 +75,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 			),
 			'images' => array(
 				'label'       => __( 'Image Settings', 'apple-news' ),
-				'settings'    => array( 'use_remote_images' ),
+				'settings'    => array( 'use_remote_images', 'full_bleed_images' ),
 			),
 		);
 

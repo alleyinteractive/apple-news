@@ -92,10 +92,23 @@ class Image extends Component {
 	 * @access private
 	 */
 	private function register_non_anchor_layout() {
+
+		// Set base layout settings.
+		$layout = array(
+			'margin' => array(
+				'bottom' => 25,
+				'top' => 25,
+			),
+		);
+
+		// Add full bleed image option.
+		if ( 'yes' === $this->get_setting( 'full_bleed_images' ) ) {
+			$layout['ignoreDocumentMargin'] = true;
+		}
+
+		// Register the layout.
 		$this->json['layout'] = 'full-width-image';
-		$this->register_full_width_layout( 'full-width-image', array(
-			'margin' => array( 'top' => 25, 'bottom' => 25 ),
-		) );
+		$this->register_full_width_layout( 'full-width-image', $layout );
 	}
 
 	/**
@@ -130,6 +143,8 @@ class Image extends Component {
 	 * @access private
 	 */
 	private function group_component( $caption ) {
+
+		// Roll up the image component into a container.
 		$image_component = $this->json;
 		$this->json = array(
 			'role' => 'container',
@@ -149,6 +164,10 @@ class Image extends Component {
 				),
 			),
 		);
-	}
 
+		// Add full bleed image option.
+		if ( 'yes' === $this->get_setting( 'full_bleed_images' ) ) {
+			$this->json['layout']['ignoreDocumentMargin'] = true;
+		}
+	}
 }
