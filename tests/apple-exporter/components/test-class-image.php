@@ -13,6 +13,7 @@ require_once __DIR__ . '/class-component-testcase.php';
 use Apple_Exporter\Components\Image;
 use Apple_Exporter\Exporter;
 use Apple_Exporter\Exporter_Content;
+use Apple_Exporter\Workspace;
 
 /**
  * A class which is used to test the Apple_Exporter\Components\Image class.
@@ -136,25 +137,23 @@ class Image_Test extends Component_TestCase {
 	public function testSettings() {
 
 		// Setup.
-		$content = new Exporter_Content(
-			3,
-			'Title',
-			'<img src="http://someurl.com/filename.jpg" alt="Example" />',
-			null,
-			'http://someurl.com/cover.jpg'
-		);
-
-		// Set image settings.
 		$this->settings->full_bleed_images = 'yes';
-
-		// Run the export.
-		$exporter = new Exporter( $content, null, $this->settings );
-		$json = json_decode( $exporter->export(), true );
-
-		// Validate image settings in generated JSON.
-		$this->assertEquals(
-			true,
-			$json['componentLayouts']['full-width-image']['ignoreDocumentMargin']
+		$html = <<<HTML
+<figure>
+	<img src="http://someurl.com/filename.jpg" alt="Example">
+	<figcaption class="wp-caption-text">Caption Text</figcaption>
+</figure>
+HTML;
+		$component = new Image(
+			$html,
+			new Workspace( 1 ),
+			$this->settings,
+			$this->styles,
+			$this->layouts
 		);
+		$result = $component->to_array();
+
+		// Test.
+		$this->assertEquals( true, $result['layout']['ignoreDocumentMargin'] );
 	}
 }
