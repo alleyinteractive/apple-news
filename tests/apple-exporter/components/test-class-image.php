@@ -14,7 +14,7 @@ class Image_Test extends Component_TestCase {
 		$workspace->bundle_source( 'filename.jpg', 'http://someurl.com/filename.jpg' )->shouldBeCalled();
 
 		// Pass the mock workspace as a dependency
-		$component = new Image( '<img src="http://someurl.com/filename.jpg" alt="Example" />',
+		$component = new Image( '<img src="http://someurl.com/filename.jpg" alt="Example" align="left" />',
 			$workspace->reveal(), $this->settings, $this->styles, $this->layouts );
 
 		$result = $component->to_array();
@@ -31,7 +31,7 @@ class Image_Test extends Component_TestCase {
 		$workspace->bundle_source( 'filename.jpg', 'http://someurl.com/filename.jpg' )->shouldNotBeCalled();
 
 		// Pass the mock workspace as a dependency
-		$component = new Image( '<img src="http://someurl.com/filename.jpg" alt="Example" />',
+		$component = new Image( '<img src="http://someurl.com/filename.jpg" alt="Example" align="left" />',
 			$workspace->reveal(), $this->settings, $this->styles, $this->layouts );
 
 		$result = $component->to_array();
