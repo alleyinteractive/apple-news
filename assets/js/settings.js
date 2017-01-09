@@ -199,6 +199,14 @@
 		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-pull-quote', 'pullquote_border_width', 'border-bottom-width', 'px', null );
 		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-pull-quote', 'pullquote_line_height', 'line-height', 'px', .75 );
 
+		// Monospaced
+		appleNewsSetCSS( '.apple-news-settings-preview pre', 'monospaced_font', 'font-family', null, null );
+		appleNewsSetCSS( '.apple-news-settings-preview pre', 'monospaced_size', 'font-size', 'px', null );
+		appleNewsSetCSS( '.apple-news-settings-preview pre', 'monospaced_tracking', 'letter-spacing', 'px', $( '#monospaced_size' ).val() / 100 );
+		appleNewsSetCSS( '.apple-news-settings-preview pre', 'monospaced_color', 'color', null, null );
+		appleNewsSetCSS( '.apple-news-settings-preview pre', 'monospaced_line_height', 'line-height', 'px', null );
+		appleNewsSetCSS( '.apple-news-settings-preview pre', 'monospaced_line_height', 'margin-bottom', 'px', null );
+
 		// Component order
 		var componentOrder = $( '#meta-component-order-sort' ).sortable( 'toArray' );
 		if ( '' !== componentKey ) {

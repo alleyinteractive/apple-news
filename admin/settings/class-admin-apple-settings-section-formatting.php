@@ -288,6 +288,28 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label' => __( 'Pull quote transformation', 'apple-news' ),
 				'type' => array( 'none', 'uppercase' ),
 			),
+			'monospaced_font' => array(
+				'label' => '',
+				'type' => 'font',
+			),
+			'monospaced_size' => array(
+				'label' => __( 'Monospaced font size', 'apple-news' ),
+				'type' => 'integer',
+			),
+			'monospaced_color' => array(
+				'label' => __( 'Monospaced font color', 'apple-news' ),
+				'type' => 'color',
+			),
+			'monospaced_line_height' => array(
+				'label' => __( 'Monospaced line height', 'apple-news' ),
+				'type' => 'float',
+				'sanitize' => 'floatval',
+			),
+			'monospaced_tracking' => array(
+				'label' => __( 'Monospaced tracking', 'apple-news' ),
+				'type' => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
 			'gallery_type' => array(
 				'label' => __( 'Gallery type', 'apple-news' ),
 				'type' => array( 'gallery', 'mosaic' ),
@@ -434,6 +456,16 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 					'pullquote_transform'
 				),
 			),
+			'monospaced' => array(
+				'label' => __( 'Monospaced', 'apple-news' ),
+				'settings' => array(
+					'monospaced_font',
+					'monospaced_size',
+					'monospaced_line_height',
+					'monospaced_tracking',
+					'monospaced_color',
+				),
+			),
 			'gallery' => array(
 				'label' => __( 'Gallery', 'apple-news' ),
 				'description' => __( 'Can either be a standard gallery, or mosaic.', 'apple-news' ),
@@ -532,6 +564,12 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				<p>In eu la	cus porttitor, pellentesque diam et, tristique elit. Mauris justo odio, efficitur sit amet aliquet id, aliquam placerat turpis.</p>
 				<div class="apple-news-pull-quote">Lorem ipsum dolor sit amet.</div>
 				<p>Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque ipsum mi, sagittis eget sodales et, volutpat at felis.</p>
+                <pre>
+.code-sample {
+    font-family: monospace;
+    white-space: pre;
+}
+                </pre>
 				</div>
 			</div>
 		</div>

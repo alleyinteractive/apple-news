@@ -106,6 +106,12 @@ class Settings {
 		'pullquote_line_height' => 48,
 		'pullquote_tracking' => 0,
 
+		'monospaced_font' => 'Menlo-Regular',
+		'monospaced_size' => 16,
+		'monospaced_color' => '#4f4f4f',
+		'monospaced_line_height' => 20,
+		'monospaced_tracking' => 0,
+
 		'component_alerts' => 'none',
 		'json_alerts' => 'warn',
 
