@@ -27,10 +27,10 @@ class Parser {
 	/**
 	 * The format to use. Valid values are 'html' and 'markdown'.
 	 *
-	 * @access private
+	 * @access public
 	 * @var string
 	 */
-	private $_format;
+	public $format;
 
 	/**
 	 * Initializes the object with the format setting.
@@ -40,7 +40,7 @@ class Parser {
 	 * @access public
 	 */
 	public function __construct( $format = 'markdown' ) {
-		$this->_format = ( $format === 'html' ) ? 'html' : 'markdown';
+		$this->format = ( $format === 'html' ) ? 'html' : 'markdown';
 	}
 
 	/**
@@ -59,7 +59,7 @@ class Parser {
 		}
 
 		// Fork for format.
-		if ( 'html' === $this->_format ) {
+		if ( 'html' === $this->format ) {
 			return $this->_parse_html( $html );
 		} else {
 			return $this->_parse_markdown( $html );

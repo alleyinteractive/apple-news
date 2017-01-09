@@ -54,7 +54,7 @@ class Quote extends Component {
 			'components' => array( array(
 				'role'   => 'quote',
 				'text'   => $this->parser->parse( $text ),
-				'format' => 'markdown',
+				'format' => $this->parser->format,
 				'layout' => 'quote-layout',
 				'textStyle' => 'default-pullquote',
 			) ),

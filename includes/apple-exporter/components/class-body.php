@@ -107,7 +107,7 @@ class Body extends Component {
 		$this->json = array(
 			'role'   => 'body',
 			'text'   => $this->parser->parse( $text ),
-			'format' => 'markdown',
+			'format' => $this->parser->format,
 		);
 
 		if ( 'yes' == $this->get_setting( 'initial_dropcap' ) ) {
@@ -119,6 +119,16 @@ class Body extends Component {
 		}
 
 		$this->set_default_layout();
+	}
+
+	/**
+	 * Whether HTML format is enabled for this component type.
+	 *
+	 * @access protected
+	 * @return bool Whether HTML format is enabled for this component type.
+	 */
+	protected function html_enabled() {
+		return true;
 	}
 
 	/**

@@ -158,16 +158,8 @@ abstract class Component {
 				? 'html'
 				: 'markdown';
 
-			// Force markdown for certain component types.
-			if ( ! function_exists( 'get_called_class' )
-				|| ! in_array(
-					get_called_class(),
-					array(
-						'Body',
-						'Intro',
-					)
-				)
-			) {
+			// Only allow HTML if the component supports it.
+			if ( ! $this->html_enabled() ) {
 				$format = 'markdown';
 			}
 
@@ -363,6 +355,18 @@ abstract class Component {
 	 */
 	protected function get_setting( $name ) {
 		return $this->settings->get( $name );
+	}
+
+	/**
+	 * Whether HTML format is enabled for this component type.
+	 *
+	 * This function is intended to be overridden in child classes.
+	 *
+	 * @access protected
+	 * @return bool Whether HTML format is enabled for this component type.
+	 */
+	protected function html_enabled() {
+		return false;
 	}
 
 	/**

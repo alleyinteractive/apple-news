@@ -78,7 +78,7 @@ class Heading extends Component {
 		$this->json = array(
 			'role'   => 'heading' . $level,
 			'text'   => trim( $this->parser->parse( $text ) ),
-			'format' => 'markdown',
+			'format' => $this->parser->format,
 		);
 
 		$this->set_style( $level );
