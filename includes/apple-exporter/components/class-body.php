@@ -36,8 +36,8 @@ class Body extends Component {
 	 * @access public
 	 */
 	public static function node_matches( $node ) {
-		// We are only interested in p, ul and ol
-		if ( ! in_array( $node->nodeName, array( 'p', 'ul', 'ol' ) ) ) {
+		// We are only interested in p, pre, ul and ol
+		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ) ) ) {
 			return null;
 		}
 
