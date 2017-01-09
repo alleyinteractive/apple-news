@@ -111,6 +111,7 @@ class Settings {
 
 		'use_remote_images' => 'no',
 		'full_bleed_images' => 'no',
+		'html_support' => 'no',
 
 		// This can either be gallery or mosaic.
 		'gallery_type' => 'gallery',
