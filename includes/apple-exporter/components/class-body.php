@@ -106,7 +106,7 @@ class Body extends Component {
 	protected function build( $text ) {
 		$this->json = array(
 			'role'   => 'body',
-			'text'   => $this->markdown->parse( $text ),
+			'text'   => $this->parser->parse( $text ),
 			'format' => 'markdown',
 		);
 
