@@ -88,6 +88,14 @@ class Apple_News {
 	 */
 	public function migrate_header_settings( $wp_settings ) {
 
+		// Check for presence of any legacy header setting.
+		if ( empty( $wp_settings['header_font'] )
+			&& empty( $wp_settings['header_color'] )
+			&& empty( $wp_settings['header_line_height'] )
+		) {
+			return $wp_settings;
+		}
+
 		// Check for presence of legacy font setting.
 		if ( ! empty( $wp_settings['header_font'] ) ) {
 			$wp_settings['header1_font'] = $wp_settings['header_font'];
@@ -96,6 +104,7 @@ class Apple_News {
 			$wp_settings['header4_font'] = $wp_settings['header_font'];
 			$wp_settings['header5_font'] = $wp_settings['header_font'];
 			$wp_settings['header6_font'] = $wp_settings['header_font'];
+			unset( $wp_settings['header_font'] );
 		}
 
 		// Check for presence of legacy color setting.
@@ -106,6 +115,7 @@ class Apple_News {
 			$wp_settings['header4_color'] = $wp_settings['header_color'];
 			$wp_settings['header5_color'] = $wp_settings['header_color'];
 			$wp_settings['header6_color'] = $wp_settings['header_color'];
+			unset( $wp_settings['header_color'] );
 		}
 
 		// Check for presence of legacy line height setting.
@@ -116,7 +126,11 @@ class Apple_News {
 			$wp_settings['header4_line_height'] = $wp_settings['header_line_height'];
 			$wp_settings['header5_line_height'] = $wp_settings['header_line_height'];
 			$wp_settings['header6_line_height'] = $wp_settings['header_line_height'];
+			unset( $wp_settings['header_line_height'] );
 		}
+
+		// Store the updated option to remove the legacy setting names.
+		update_option( self::$option_name, $wp_settings, 'no' );
 
 		return $wp_settings;
 	}
