@@ -457,7 +457,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				),
 			),
 			'monospaced' => array(
-				'label' => __( 'Monospaced', 'apple-news' ),
+				'label' => __( 'Monospaced (<pre>, <code>, <samp>)', 'apple-news' ),
 				'settings' => array(
 					'monospaced_font',
 					'monospaced_size',
