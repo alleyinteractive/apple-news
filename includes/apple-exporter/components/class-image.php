@@ -104,6 +104,9 @@ class Image extends Component {
 		// Add full bleed image option.
 		if ( 'yes' === $this->get_setting( 'full_bleed_images' ) ) {
 			$layout['ignoreDocumentMargin'] = true;
+		} else {
+			$layout['columnSpan'] = $this->get_setting( 'layout_columns' ) - 4;
+			$layout['columnStart'] = 2;
 		}
 
 		// Register the layout.
