@@ -352,6 +352,58 @@ class Heading_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Tests the function to migrate legacy header settings.
+	 *
+	 * @see Apple_News::migrate_header_settings()
+	 *
+	 * @access public
+	 */
+	public function testSettingsMigration() {
+
+		// Test with default settings.
+		$this->assertEmpty( $this->settings->header_color );
+		$this->assertEmpty( $this->settings->header_font );
+		$this->assertEmpty( $this->settings->header_line_height );
+
+		// Set legacy settings to test migration.
+		$wp_settings = array(
+			'header_color' => '#abcdef',
+			'header_font' => 'TestFont',
+			'header_line_height' => 128,
+		);
+		update_option( Apple_News::$option_name, $wp_settings );
+
+		// Run legacy settings through migrate script.
+		$admin_settings = new Admin_Apple_Settings();
+		$settings = $admin_settings->fetch_settings();
+
+		// Ensure legacy settings have been stripped.
+		$this->assertEmpty( $this->settings->header_color );
+		$this->assertEmpty( $this->settings->header_font );
+		$this->assertEmpty( $this->settings->header_line_height );
+
+		// Ensure legacy settings were applied to new values.
+		$this->assertEquals( '#abcdef', $settings->header1_color );
+		$this->assertEquals( '#abcdef', $settings->header2_color );
+		$this->assertEquals( '#abcdef', $settings->header3_color );
+		$this->assertEquals( '#abcdef', $settings->header4_color );
+		$this->assertEquals( '#abcdef', $settings->header5_color );
+		$this->assertEquals( '#abcdef', $settings->header6_color );
+		$this->assertEquals( 'TestFont', $settings->header1_font );
+		$this->assertEquals( 'TestFont', $settings->header2_font );
+		$this->assertEquals( 'TestFont', $settings->header3_font );
+		$this->assertEquals( 'TestFont', $settings->header4_font );
+		$this->assertEquals( 'TestFont', $settings->header5_font );
+		$this->assertEquals( 'TestFont', $settings->header6_font );
+		$this->assertEquals( 128, $settings->header1_line_height );
+		$this->assertEquals( 128, $settings->header2_line_height );
+		$this->assertEquals( 128, $settings->header3_line_height );
+		$this->assertEquals( 128, $settings->header4_line_height );
+		$this->assertEquals( 128, $settings->header5_line_height );
+		$this->assertEquals( 128, $settings->header6_line_height );
+	}
+
+	/**
 	 * Ensures that headings are produced from heading tags.
 	 *
 	 * @access public
