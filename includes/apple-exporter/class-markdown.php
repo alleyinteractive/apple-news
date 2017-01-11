@@ -75,7 +75,7 @@ class Markdown {
 			case 'em':
 				return $this->_parse_node_emphasis( $node );
 			case 'br':
-				return '  ' . "\n";
+				return "\n";
 			case 'p':
 				return $this->_parse_node_paragraph( $node );
 			case 'a':
@@ -122,13 +122,9 @@ class Markdown {
 	 * @return string The processed node, converted to a string.
 	 */
 	private function _parse_node_heading( $node ) {
-
-		// Get the heading level.
-		preg_match( '/h(\d)/', $node->nodeName, $matches );
-
 		return sprintf(
 			'%s %s' . "\n",
-			str_repeat( '#', $matches[1] ),
+			str_repeat( '#', intval( substr( $node->nodeName, 1, 1 ) ) ),
 			$this->parse_nodes( $node->childNodes )
 		);
 	}

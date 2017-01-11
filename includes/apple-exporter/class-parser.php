@@ -40,7 +40,7 @@ class Parser {
 	 * @access public
 	 */
 	public function __construct( $format = 'markdown' ) {
-		$this->format = ( $format === 'html' ) ? 'html' : 'markdown';
+		$this->format = ( 'html' === $format  ) ? 'html' : 'markdown';
 	}
 
 	/**

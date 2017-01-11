@@ -44,7 +44,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => 'integer',
 			),
 			'body_font' => array(
-				'label' => '',
+				'label' => __( 'Body font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'body_size' => array(
@@ -82,7 +82,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => array( 'yes', 'no' ),
 			),
 			'dropcap_font' => array(
-				'label' => '',
+				'label' => __( 'Dropcap font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'dropcap_color' => array(
@@ -90,7 +90,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => 'color',
 			),
 			'byline_font' => array(
-				'label' => '',
+				'label' => __( 'Byline font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'byline_size' => array(
@@ -119,27 +119,27 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'required' => false,
 			),
 			'header1_font' => array(
-				'label' => '',
+				'label' => __( 'Header 1 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header2_font' => array(
-				'label' => '',
+				'label' => __( 'Header 2 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header3_font' => array(
-				'label' => '',
+				'label' => __( 'Header 3 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header4_font' => array(
-				'label' => '',
+				'label' => __( 'Header 4 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header5_font' => array(
-				'label' => '',
+				'label' => __( 'Header 5 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header6_font' => array(
-				'label' => '',
+				'label' => __( 'Header 6 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header1_line_height' => array(
@@ -251,7 +251,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => 'integer',
 			),
 			'pullquote_font' => array(
-				'label' => '',
+				'label' => __( 'Pullquote font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'pullquote_size' => array(
@@ -289,7 +289,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => array( 'none', 'uppercase' ),
 			),
 			'monospaced_font' => array(
-				'label' => '',
+				'label' => __( 'Monospaced font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'monospaced_size' => array(
