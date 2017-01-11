@@ -44,7 +44,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => 'integer',
 			),
 			'body_font' => array(
-				'label' => '',
+				'label' => __( 'Body font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'body_size' => array(
@@ -82,7 +82,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => array( 'yes', 'no' ),
 			),
 			'dropcap_font' => array(
-				'label' => '',
+				'label' => __( 'Dropcap font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'dropcap_color' => array(
@@ -90,7 +90,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => 'color',
 			),
 			'byline_font' => array(
-				'label' => '',
+				'label' => __( 'Byline font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'byline_size' => array(
@@ -119,27 +119,27 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'required' => false,
 			),
 			'header1_font' => array(
-				'label' => '',
+				'label' => __( 'Header 1 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header2_font' => array(
-				'label' => '',
+				'label' => __( 'Header 2 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header3_font' => array(
-				'label' => '',
+				'label' => __( 'Header 3 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header4_font' => array(
-				'label' => '',
+				'label' => __( 'Header 4 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header5_font' => array(
-				'label' => '',
+				'label' => __( 'Header 5 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header6_font' => array(
-				'label' => '',
+				'label' => __( 'Header 6 font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'header1_line_height' => array(
@@ -251,7 +251,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => 'integer',
 			),
 			'pullquote_font' => array(
-				'label' => '',
+				'label' => __( 'Pullquote font face', 'apple-news' ),
 				'type' => 'font',
 			),
 			'pullquote_size' => array(
@@ -287,6 +287,28 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			'pullquote_transform' => array(
 				'label' => __( 'Pull quote transformation', 'apple-news' ),
 				'type' => array( 'none', 'uppercase' ),
+			),
+			'monospaced_font' => array(
+				'label' => __( 'Monospaced font face', 'apple-news' ),
+				'type' => 'font',
+			),
+			'monospaced_size' => array(
+				'label' => __( 'Monospaced font size', 'apple-news' ),
+				'type' => 'integer',
+			),
+			'monospaced_color' => array(
+				'label' => __( 'Monospaced font color', 'apple-news' ),
+				'type' => 'color',
+			),
+			'monospaced_line_height' => array(
+				'label' => __( 'Monospaced line height', 'apple-news' ),
+				'type' => 'float',
+				'sanitize' => 'floatval',
+			),
+			'monospaced_tracking' => array(
+				'label' => __( 'Monospaced tracking', 'apple-news' ),
+				'type' => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
 			),
 			'gallery_type' => array(
 				'label' => __( 'Gallery type', 'apple-news' ),
@@ -434,6 +456,16 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 					'pullquote_transform'
 				),
 			),
+			'monospaced' => array(
+				'label' => __( 'Monospaced (<pre>, <code>, <samp>)', 'apple-news' ),
+				'settings' => array(
+					'monospaced_font',
+					'monospaced_size',
+					'monospaced_line_height',
+					'monospaced_tracking',
+					'monospaced_color',
+				),
+			),
 			'gallery' => array(
 				'label' => __( 'Gallery', 'apple-news' ),
 				'description' => __( 'Can either be a standard gallery, or mosaic.', 'apple-news' ),
@@ -532,6 +564,12 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				<p>In eu la	cus porttitor, pellentesque diam et, tristique elit. Mauris justo odio, efficitur sit amet aliquet id, aliquam placerat turpis.</p>
 				<div class="apple-news-pull-quote">Lorem ipsum dolor sit amet.</div>
 				<p>Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque ipsum mi, sagittis eget sodales et, volutpat at felis.</p>
+                <pre>
+.code-sample {
+    font-family: monospace;
+    white-space: pre;
+}
+                </pre>
 				</div>
 			</div>
 		</div>

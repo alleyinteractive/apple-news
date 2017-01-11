@@ -66,6 +66,43 @@ class Body_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Tests HTML formatting.
+	 *
+	 * @access public
+	 */
+	public function testHTML() {
+
+		// Setup.
+		$this->settings->html_support = 'yes';
+		$html = <<<HTML
+<p>Lorem ipsum. <a href="https://wordpress.org">Dolor sit amet</a>.</p>
+<pre>
+	Preformatted text.
+</pre>
+<p>Testing a <code>code sample</code>.</p>
+HTML;
+		$component = new Body(
+			$html,
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$this->assertEquals(
+			array(
+				'text' => $html,
+				'role' => 'body',
+				'format' => 'html',
+				'textStyle' => 'dropcapBodyStyle',
+				'layout' => 'body-layout',
+			),
+			$component->to_array()
+		);
+	}
+
+	/**
 	 * Tests body settings.
 	 *
 	 * @access public

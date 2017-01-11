@@ -92,7 +92,7 @@ class Workspace {
 		// JSON should be decoded before being stored.
 		// Otherwise, stripslashes_deep could potentially remove valid characters
 		// such as newlines (\n).s
-		$decoded_json = json_decode( sanitize_text_field( $json ) );
+		$decoded_json = json_decode( $json );
 		if ( null === $decoded_json ) {
 			// This is invalid JSON.
 			// Store as an empty string.

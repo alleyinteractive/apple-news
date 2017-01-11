@@ -36,8 +36,8 @@ class Body extends Component {
 	 * @access public
 	 */
 	public static function node_matches( $node ) {
-		// We are only interested in p, ul and ol
-		if ( ! in_array( $node->nodeName, array( 'p', 'ul', 'ol' ) ) ) {
+		// We are only interested in p, pre, ul and ol
+		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ) ) ) {
 			return null;
 		}
 
@@ -106,8 +106,8 @@ class Body extends Component {
 	protected function build( $text ) {
 		$this->json = array(
 			'role'   => 'body',
-			'text'   => $this->markdown->parse( $text ),
-			'format' => 'markdown',
+			'text'   => $this->parser->parse( $text ),
+			'format' => $this->parser->format,
 		);
 
 		if ( 'yes' == $this->get_setting( 'initial_dropcap' ) ) {
@@ -119,6 +119,16 @@ class Body extends Component {
 		}
 
 		$this->set_default_layout();
+	}
+
+	/**
+	 * Whether HTML format is enabled for this component type.
+	 *
+	 * @access protected
+	 * @return bool Whether HTML format is enabled for this component type.
+	 */
+	protected function html_enabled() {
+		return true;
 	}
 
 	/**

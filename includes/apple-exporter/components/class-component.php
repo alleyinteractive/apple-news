@@ -3,6 +3,8 @@ namespace Apple_Exporter\Components;
 
 require_once __DIR__ . '/../class-markdown.php';
 
+use Apple_Exporter\Parser;
+
 /**
  * Base component class. All components must inherit from this class and
  * implement its abstract method "build".
@@ -112,6 +114,16 @@ abstract class Component {
 	protected $layouts;
 
 	/**
+	 * The parser to use for this component.
+	 *
+	 * @since 1.2.1
+	 *
+	 * @access protected
+	 * @var Parser
+	 */
+	protected $parser;
+
+	/**
 	 * UID for this component.
 	 *
 	 * @since 0.4.0
@@ -128,16 +140,33 @@ abstract class Component {
 	 * @param Settings $settings
 	 * @param Component_Text_Styles $styles
 	 * @param Component_Layouts $layouts
-	 * @param Markdown $markdown
+	 * @param Parser $parser
 	 */
-	function __construct( $text, $workspace, $settings, $styles, $layouts, $markdown = null ) {
+	function __construct( $text, $workspace, $settings, $styles, $layouts, $parser = null ) {
 		$this->workspace = $workspace;
 		$this->settings  = $settings;
 		$this->styles    = $styles;
 		$this->layouts   = $layouts;
-		$this->markdown  = $markdown ?: new \Apple_Exporter\Markdown();
 		$this->text      = $text;
 		$this->json      = null;
+
+		// Negotiate parser.
+		if ( empty( $parser ) ) {
+
+			// Load format from settings.
+			$format = ( 'yes' === $this->settings->html_support )
+				? 'html'
+				: 'markdown';
+
+			// Only allow HTML if the component supports it.
+			if ( ! $this->html_enabled() ) {
+				$format = 'markdown';
+			}
+
+			// Init new parser with the appropriate format.
+			$parser = new Parser( $format );
+		}
+		$this->parser = $parser;
 
 		// Once the text is set, build proper JSON. Store as an array.
 		$this->build( $this->text );
@@ -326,6 +355,18 @@ abstract class Component {
 	 */
 	protected function get_setting( $name ) {
 		return $this->settings->get( $name );
+	}
+
+	/**
+	 * Whether HTML format is enabled for this component type.
+	 *
+	 * This function is intended to be overridden in child classes.
+	 *
+	 * @access protected
+	 * @return bool Whether HTML format is enabled for this component type.
+	 */
+	protected function html_enabled() {
+		return false;
 	}
 
 	/**

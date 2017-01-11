@@ -46,6 +46,17 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'type' => array( 'yes', 'no' ),
 				'description' => __( 'If set to yes, images that are centered or have no alignment will span edge-to-edge rather than being constrained within the body margins.', 'apple-news' ),
 			),
+			'html_support' => array(
+				'label' => __( 'Enable HTML support?', 'apple-news' ),
+				'type' => array( 'yes', 'no' ),
+				'description' => sprintf(
+					'%s <a href="%s" target="_blank">%s</a> %s',
+					__( 'Experimental. If set to yes, certain text fields will use', 'apple-news' ),
+					__( 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/HTMLMarkupforAppleNewsFormat.html', 'apple-news' ),
+					__( 'Apple News HTML format', 'apple-news' ),
+					__( 'instead of Markdown, allowing for proper display of certain HTML tags in content.', 'apple-news' )
+				)
+			),
 		);
 
 		// Add the groups
@@ -57,6 +68,10 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 			'images' => array(
 				'label'       => __( 'Image Settings', 'apple-news' ),
 				'settings'    => array( 'use_remote_images', 'full_bleed_images' ),
+			),
+			'format' => array(
+				'label'       => __( 'Format Settings', 'apple-news' ),
+				'settings'    => array( 'html_support' ),
 			),
 		);
 
