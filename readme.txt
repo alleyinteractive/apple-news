@@ -1,12 +1,12 @@
 === Publish To Apple News ===
-Contributors: potatomaster, alleyinteractive, beezwaxbuzz, gosukiwi, pilaf, jaygonzales, brianschick
-Donate link: http://wordpress.org
+Contributors: potatomaster, kevinfodness, alleyinteractive, beezwaxbuzz, gosukiwi, pilaf, jaygonzales, brianschick
+Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv3 or later
-License URI: http://www.gnu.org/licenses/gpl.html
+License URI: https://www.gnu.org/licenses/gpl.html
 
 Enable your WordPress blog content to be published to your Apple News channel.
 
@@ -44,6 +44,20 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 1.2.1 =
+* Added an experimental setting to enable HTML format on body elements.
+* Added settings for monospaced fonts, which applies to <pre>, <code>, and <samp> elements in body components when HTML formatting is enabled.
+* Added additional text formatting options, including tracking (letter-spacing) and line height.
+* Split text formatting options for headings to allow full customization per heading level.
+* Modified logic for image alignment so that centered and non-aligned images now appear centered instead of right-aligned.
+* Added an option for full-bleed images that will cause all centered and non-aligned images to display edge-to-edge.
+* Added logic to intelligently split body elements around anchor targets to allow for more opportunities for ad insertion.
+* Modified column span logic on left and right orientation to align the right side of the text with the right side of right-aligned images.
+* Fixed a bug caused by hardcoded column spans on center orientation.
+* Fixed a PHP warning about accessing a static class method using arrow syntax.
+* Added unit test coverage for new functionality.
+* Refactored several core files to conform to WordPress standards and PHP best practices.
 
 = 1.2.0 =
 * Added a live preview of the font being selected (macOS only).
