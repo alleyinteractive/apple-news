@@ -69,8 +69,9 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'type' => 'color',
 			),
 			'body_orientation' => array(
-				'label' => __( 'Body alignment', 'apple-news' ),
+				'label' => __( 'Body orientation', 'apple-news' ),
 				'type' => array( 'left', 'center', 'right' ),
+                'description' => __( 'Controls margins on larger screens. Left orientation includes one column of margin on the right, right orientation includes one column of margin on the left, and center orientation includes one column of margin on either side.', 'apple-news' ),
 			),
 			'body_tracking' => array(
 				'label' => __( 'Body tracking', 'apple-news' ),

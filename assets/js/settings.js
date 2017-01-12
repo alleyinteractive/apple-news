@@ -123,7 +123,6 @@
 		appleNewsSetCSS( '.apple-news-settings-preview p', 'body_color', 'color', null, null );
 		appleNewsSetCSS( '.apple-news-settings-preview a', 'body_link_color', 'color', null, null );
 		appleNewsSetCSS( '.apple-news-settings-preview', 'body_background_color', 'background-color', null, null );
-		appleNewsSetCSS( '.apple-news-settings-preview p', 'body_orientation', 'text-align', null, null );
 		appleNewsSetCSS( '.apple-news-settings-preview p', 'body_line_height', 'line-height', 'px', null );
 		appleNewsSetCSS( '.apple-news-settings-preview p', 'body_line_height', 'margin-bottom', 'px', null );
 		appleNewsSetCSS( '.apple-news-image', 'body_line_height', 'margin-bottom', 'px', null );
