@@ -44,6 +44,7 @@ class Settings {
 
 		'layout_margin' => 100,
 		'layout_gutter' => 20,
+		'layout_width' => 1024,
 
 		'body_font' => 'AvenirNext-Regular',
 		'body_size' => 18,
@@ -200,7 +201,7 @@ class Settings {
 	 * @return int The number of columns for aligned components to span.
 	 */
 	public function alignment_offset() {
-		return ( 'center' === $this->body_orientation ) ? 5 : 4;
+		return ( 'center' === $this->body_orientation ) ? 5 : 3;
 	}
 
 	/**
@@ -220,7 +221,27 @@ class Settings {
 	 * @return int The number of columns for the body to span.
 	 */
 	public function body_column_span() {
-		return 7;
+		return ( 'center' === $this->body_orientation ) ? 7 : 6;
+	}
+
+	/**
+	 * Get the left margin column offset.
+	 *
+	 * @access public
+	 * @return int The number of columns to offset on the left.
+	 */
+	public function body_offset() {
+		switch ( $this->body_orientation ) {
+			case 'right':
+				return $this->layout_columns - $this->body_column_span;
+			case 'center':
+				return floor(
+					( $this->layout_columns - $this->body_column_span ) / 2
+				);
+				break;
+			default:
+				return 0;
+		}
 	}
 
 	/**
@@ -247,16 +268,6 @@ class Settings {
 	 */
 	public function layout_columns() {
 		return ( 'center' === $this->body_orientation ) ? 9 : 7;
-	}
-
-	/**
-	 * Get the computed layout width.
-	 *
-	 * @access public
-	 * @return int The correct layout width based on the body orientation.
-	 */
-	public function layout_width() {
-		return ( 'center' === $this->body_orientation ) ? 768 : 1024;
 	}
 
 	/**

@@ -132,27 +132,6 @@ class Body extends Component {
 	}
 
 	/**
-	 * Get the start column for the body based on the layout.
-	 *
-	 * @access private
-	 */
-	private function get_col_start() {
-		// Find out where the body must start according to the body orientation.
-		// Orientation defaults to left, thus, col_start is 0.
-		$col_start = 0;
-		switch ( $this->get_setting( 'body_orientation' ) ) {
-		case 'right':
-			$col_start = $this->get_setting( 'layout_columns' ) - $this->get_setting( 'body_column_span' );
-			break;
-		case 'center':
-			$col_start = floor( ( $this->get_setting( 'layout_columns' ) - $this->get_setting( 'body_column_span' ) ) / 2 );
-			break;
-		}
-
-		return $col_start;
-	}
-
-	/**
 	 * Set the default layout for the component.
 	 *
 	 * @access private
@@ -160,7 +139,7 @@ class Body extends Component {
 	private function set_default_layout() {
 		$this->json[ 'layout' ] = 'body-layout';
 		$this->register_layout( 'body-layout', array(
-			'columnStart' => $this->get_col_start(),
+			'columnStart' => $this->get_setting( 'body_offset' ),
 			'columnSpan'  => $this->get_setting( 'body_column_span' ),
 			'margin'      => array(
 				'top' => 12,
@@ -170,7 +149,7 @@ class Body extends Component {
 
 		// Also pre-register the layout that will be used later for the last body component
 		$this->register_layout( 'body-layout-last', array(
-			'columnStart' => $this->get_col_start(),
+			'columnStart' => $this->get_setting( 'body_offset' ),
 			'columnSpan'  => $this->get_setting( 'body_column_span' ),
 			'margin'      => array(
 				'top' => 12,

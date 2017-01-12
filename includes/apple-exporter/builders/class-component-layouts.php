@@ -103,21 +103,24 @@ class Component_Layouts extends Builder {
 		$layout_name = "anchor-layout-$position";
 
 		if ( ! $this->layout_exists( $layout_name ) ) {
-			// Cache settings
+
+			// Cache settings.
+			$body_orientation = $this->get_setting( 'body_orientation' );
+			$body_offset = $this->get_setting( 'body_offset' );
 			$alignment_offset = $this->get_setting( 'alignment_offset' );
 			$body_column_span = $this->get_setting( 'body_column_span' );
-			$layout_columns   = $this->get_setting( 'layout_columns' );
+			$layout_columns = $this->get_setting( 'layout_columns' );
 
 			// Find out the starting column. This is easy enough if we are anchoring
 			// left, but for right side alignment, we have to make some math :)
-			$col_start = 0;
-			if ( 'right' == $position ) {
+			$col_start = $body_offset;
+			if ( 'right' === $position ) {
 				if ( $component->is_anchor_target() ) {
-					$col_start = $alignment_offset;
-				} elseif ( 'center' === $this->get_setting( 'body_orientation' ) ) {
-					$col_start = $layout_columns - $alignment_offset;
+					$col_start += $alignment_offset;
+				} elseif ( 'center' === $body_orientation ) {
+					$col_start += $layout_columns - $alignment_offset;
 				} else {
-					$col_start = $body_column_span - $alignment_offset;
+					$col_start += $body_column_span - $alignment_offset;
 				}
 			}
 

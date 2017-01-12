@@ -418,7 +418,7 @@ abstract class Component {
 	 */
 	protected function register_full_width_layout( $name, $spec ) {
 		// Initial colStart and colSpan
-		$col_start = 0;
+		$col_start = $this->get_setting( 'body_offset' );
 		$col_span  = $this->get_setting( 'layout_columns' );
 
 		// If the body is centered, don't span the full width, but the same with of
