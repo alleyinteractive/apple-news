@@ -118,10 +118,12 @@ class Component_Layouts extends Builder {
 				if ( $component->is_anchor_target() ) {
 					$col_start += $alignment_offset;
 				} elseif ( 'center' === $body_orientation ) {
-					$col_start += $layout_columns - $alignment_offset;
+					$col_start = $layout_columns - $alignment_offset;
 				} else {
 					$col_start += $body_column_span - $alignment_offset;
 				}
+			} elseif ( 'left' === $position && 'center' === $body_orientation ) {
+				$col_start = 0;
 			}
 
 			// Find the column span. For the target element, let's use the same

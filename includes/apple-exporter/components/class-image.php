@@ -82,7 +82,10 @@ class Image extends Component {
 	private function register_anchor_layout() {
 		$this->json['layout'] = 'anchored-image';
 		$this->register_layout( 'anchored-image', array(
-			'margin' => array( 'top' => 25, 'bottom' => 25 ),
+			'margin' => array(
+				'bottom' => 25,
+				'top' => 25,
+			),
 		) );
 	}
 
