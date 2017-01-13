@@ -438,20 +438,16 @@ abstract class Component {
 	}
 
 	/**
-	 * Some components follow this rule:
-	 *  1. If the body is centered, text here should be centered too
-	 *  2. Otherwise, align left
-	 *
-	 * This method returns either 'center' or 'left', as needed.
+	 * Returns the text alignment.
 	 *
 	 * @since 0.8.0
-	 * @return string
+	 *
 	 * @access protected
+	 * @return string The value for textAlignment.
 	 */
 	protected function find_text_alignment() {
-		if ( 'center' == $this->get_setting( 'body_orientation' ) ) {
-			return 'center';
-		}
+
+		// TODO: In a future release, update this logic to respect "align" values.
 
 		return 'left';
 	}
