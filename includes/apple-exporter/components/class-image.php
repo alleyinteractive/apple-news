@@ -161,8 +161,8 @@ class Image extends Component {
 					'text'      => $caption,
 					'textStyle' => array(
 						'textAlignment' => $this->find_caption_alignment(),
-						'fontSize'      => intval( $this->get_setting( 'body_size' ) - 2 ),
-						'fontName'      => $this->get_setting( 'body_font' ),
+						'fontSize'      => intval( $this->get_setting( 'caption_size' ) ),
+						'fontName'      => $this->get_setting( 'caption_font' ),
 					),
 					'layout' => array(
 						'margin' => array( 'top' => 20 ),

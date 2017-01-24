@@ -97,6 +97,12 @@ class Settings {
 		'header5_tracking' => 0,
 		'header6_tracking' => 0,
 
+		'caption_font' => 'AvenirNext-Regular',
+		'caption_size' => 16,
+		'caption_color' => '#4f4f4f',
+		'caption_line_height' => 24,
+		'caption_tracking' => 0,
+
 		'pullquote_font' => 'AvenirNext-Bold',
 		'pullquote_size' => 48,
 		'pullquote_color' => '#53585f',
