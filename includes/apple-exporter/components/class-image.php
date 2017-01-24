@@ -157,12 +157,15 @@ class Image extends Component {
 			'components' => array(
 				$image_component,
 				array(
-					'role'      => 'caption',
-					'text'      => $caption,
+					'role' => 'caption',
+					'text' => $caption,
 					'textStyle' => array(
 						'textAlignment' => $this->find_caption_alignment(),
-						'fontSize'      => intval( $this->get_setting( 'caption_size' ) ),
-						'fontName'      => $this->get_setting( 'caption_font' ),
+						'fontName' => $this->get_setting( 'caption_font' ),
+						'fontSize' => intval( $this->get_setting( 'caption_size' ) ),
+						'tracking' => intval( $this->get_setting( 'caption_tracking' ) ) / 100,
+						'lineHeight' => intval( $this->get_setting( 'caption_line_height' ) ),
+						'textColor' => $this->get_setting( 'caption_color' ),
 					),
 					'layout' => array(
 						'margin' => array( 'top' => 20 ),
