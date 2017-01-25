@@ -98,7 +98,7 @@ class Settings {
 		'header5_tracking' => 0,
 		'header6_tracking' => 0,
 
-		'caption_font' => 'AvenirNext-Regular',
+		'caption_font' => 'AvenirNext-Italic',
 		'caption_size' => 16,
 		'caption_color' => '#4f4f4f',
 		'caption_line_height' => 24,
