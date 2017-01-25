@@ -107,6 +107,11 @@ class Apple_News {
 			     && isset( $wp_settings[ $body_setting ] )
 			) {
 				$wp_settings[ $caption_setting ] = $wp_settings[ $body_setting ];
+
+				// Adjust font size down by 2 to match legacy handling.
+				if ( 'font' === $setting ) {
+					$wp_settings[ $caption_setting ] -= 2;
+				}
 			}
 		}
 
