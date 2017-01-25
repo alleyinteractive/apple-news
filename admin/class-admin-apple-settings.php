@@ -192,6 +192,9 @@ class Admin_Apple_Settings extends Apple_News {
 			// Check for presence of legacy header settings and migrate to new.
 			$wp_settings = $this->migrate_header_settings( $wp_settings );
 
+			// Ensure caption settings are set properly.
+			$wp_settings = $this->migrate_caption_settings( $wp_settings );
+
 			// Merge settings in the option with defaults.
 			foreach ( $settings->all() as $key => $value ) {
 				$wp_value = ( empty( $wp_settings[ $key ] ) )

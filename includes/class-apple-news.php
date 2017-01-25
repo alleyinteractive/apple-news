@@ -79,6 +79,44 @@ class Apple_News {
 	}
 
 	/**
+	 * Migrate legacy caption settings to new format.
+	 *
+	 * @param array $wp_settings An array of settings loaded from WP options.
+	 *
+	 * @access public
+	 * @return array The modified settings array.
+	 */
+	public function migrate_caption_settings( $wp_settings ) {
+
+		// Check for the presence of caption-specific settings.
+		if ( isset( $wp_settings['caption_color'] )
+		     && isset( $wp_settings['caption_font'] )
+		     && isset( $wp_settings['caption_line_height'] )
+		     && isset( $wp_settings['caption_size'] )
+		     && isset( $wp_settings['caption_tracking'] )
+		) {
+			return $wp_settings;
+		}
+
+		// Migrate settings, as necessary.
+		$settings = array( 'color', 'font', 'line_height', 'size', 'tracking' );
+		foreach ( $settings as $setting ) {
+			$body_setting = 'body_' . $setting;
+			$caption_setting = 'caption_' . $setting;
+			if ( ! isset( $wp_settings[ $caption_setting ] )
+			     && isset( $wp_settings[ $body_setting ] )
+			) {
+				$wp_settings[ $caption_setting ] = $wp_settings[ $body_setting ];
+			}
+		}
+
+		// Store the updated option to save the new setting names.
+		update_option( self::$option_name, $wp_settings, 'no' );
+
+		return $wp_settings;
+	}
+
+	/**
 	 * Migrate legacy header settings to new format.
 	 *
 	 * @param array $wp_settings An array of settings loaded from WP options.
