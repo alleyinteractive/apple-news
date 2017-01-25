@@ -130,7 +130,7 @@ class Image_Test extends Component_TestCase {
 	}
 
 	/**
-	 * Tests body settings.
+	 * Tests image and image caption settings.
 	 *
 	 * @access public
 	 */
@@ -138,6 +138,11 @@ class Image_Test extends Component_TestCase {
 
 		// Setup.
 		$this->settings->full_bleed_images = 'yes';
+		$this->settings->caption_color = '#abcdef';
+		$this->settings->caption_font = 'TestFontName';
+		$this->settings->caption_line_height = 28;
+		$this->settings->caption_size = 20;
+		$this->settings->caption_tracking = 50;
 		$html = <<<HTML
 <figure>
 	<img src="http://someurl.com/filename.jpg" alt="Example">
@@ -155,5 +160,25 @@ HTML;
 
 		// Test.
 		$this->assertEquals( true, $result['layout']['ignoreDocumentMargin'] );
+		$this->assertEquals(
+			'#abcdef',
+			$result['components'][1]['textStyle']['textColor']
+		);
+		$this->assertEquals(
+			'TestFontName',
+			$result['components'][1]['textStyle']['fontName']
+		);
+		$this->assertEquals(
+			28,
+			$result['components'][1]['textStyle']['lineHeight']
+		);
+		$this->assertEquals(
+			20,
+			$result['components'][1]['textStyle']['fontSize']
+		);
+		$this->assertEquals(
+			0.5,
+			$result['components'][1]['textStyle']['tracking']
+		);
 	}
 }
