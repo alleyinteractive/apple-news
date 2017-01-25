@@ -371,7 +371,7 @@ class Heading_Test extends Component_TestCase {
 			'header_font' => 'TestFont',
 			'header_line_height' => 128,
 		);
-		update_option( Apple_News::$option_name, $wp_settings );
+		update_option( Apple_News::OPTION_NAME, $wp_settings );
 
 		// Run legacy settings through migrate script.
 		$admin_settings = new Admin_Apple_Settings();

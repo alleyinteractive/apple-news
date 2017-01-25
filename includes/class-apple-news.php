@@ -1,52 +1,36 @@
 <?php
 /**
+ * Publish to Apple News Includes: Apple_News class
+ *
+ * Contains a class which is used to manage the Publish to Apple News plugin.
+ *
+ * @package Apple_News
+ * @since 0.2.0
+ */
+
+/**
  * Base plugin class with core plugin information and shared functionality
  * between frontend and backend plugin classes.
  *
- * @author  Federico Ramirez
- * @since   0.2.0
+ * @author Federico Ramirez
+ * @since 0.2.0
  */
 class Apple_News {
 
 	/**
-	 * Plugin slug.
-	 *
-	 * @var string
-	 * @access protected
+	 * Link to support for the plugin on github.
 	 */
-	protected $plugin_slug = 'apple_news';
-
-	/**
-	 * Plugin domain.
-	 *
-	 * @var string
-	 * @access protected
-	 */
-	protected $plugin_domain = 'apple-news';
+	const GITHUB_SUPPORT = 'https://github.com/alleyinteractive/apple-news/issues';
 
 	/**
 	 * Option name for settings.
-	 *
-	 * @var string
-	 * @access public
 	 */
-	public static $option_name = 'apple_news_settings';
+	const OPTION_NAME = 'apple_news_settings';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.
-	 *
-	 * @var string
-	 * @access public
 	 */
-	public static $wordpress_org_support_url = 'https://wordpress.org/support/plugin/publish-to-apple-news';
-
-	/**
-	 * Link to support for the plugin on github.
-	 *
-	 * @var string
-	 * @access public
-	 */
-	public static $github_support_url = 'https://github.com/alleyinteractive/apple-news/issues';
+	const WP_SUPPORT = 'https://wordpress.org/support/plugin/publish-to-apple-news';
 
 	/**
 	 * Plugin version.
@@ -57,13 +41,32 @@ class Apple_News {
 	public static $version = '1.2.1';
 
 	/**
-	 * Extracts the filename for bundling an asset.
-	 * This functionality is used in a number of classes that do not have a common ancestor.
+	 * Plugin domain.
 	 *
 	 * @var string
 	 * @access protected
 	 */
+	protected $plugin_domain = 'apple-news';
+
+	/**
+	 * Plugin slug.
+	 *
+	 * @var string
+	 * @access protected
+	 */
+	protected $plugin_slug = 'apple_news';
+
+	/**
+	 * Extracts the filename for bundling an asset.
+	 *
+	 * This functionality is used in a number of classes that do not have a common
+	 * ancestor.
+	 *
+	 * @access public
+	 * @return string The filename for an asset to be bundled.
+	 */
 	public static function get_filename( $path ) {
+
 		// Remove any URL parameters.
 		// This is important for sites using WordPress VIP or Jetpack Photon.
 		$url_parts = parse_url( $path );
@@ -71,38 +74,68 @@ class Apple_News {
 			return '';
 		}
 
-		// Get the filename
-		$filename = basename( $url_parts['path'] );
-
-		// Remove any spaces and return the filename
-		return str_replace( ' ', '', $filename );
+		return str_replace( ' ', '', basename( $url_parts['path'] ) );
 	}
 
 	/**
-	 * Validate settings and see if any updates need to be performed.
+	 * Displays support information for the plugin.
+	 *
+	 * @param string $format The format in which to return the information.
+	 * @param bool $with_padding Whether to include leading line breaks.
+	 *
+	 * @access public
+	 * @return string The HTML for the support info block.
+	 */
+	public static function get_support_info( $format = 'html', $with_padding = true ) {
+
+		// Construct base support info block.
+		$support_info = sprintf(
+			'%s <a href="%s">%s</a> %s <a href="%s">%s</a>.',
+			__(
+				'If you need assistance, please reach out for support on',
+				'apple-news'
+			),
+			esc_url( self::WP_SUPPORT ),
+			__( 'WordPress.org', 'apple-news' ),
+			__( 'or', 'apple-news' ),
+			esc_url( self::GITHUB_SUPPORT ),
+			__( 'GitHub', 'apple-news' )
+		);
+
+		// Remove tags, if requested.
+		if ( 'text' === $format ) {
+			$support_info = strip_tags( $support_info );
+		}
+
+		// Add leading padding, if requested.
+		if ( $with_padding ) {
+			if ( 'text' === $format ) {
+				$support_info = "\n\n" . $support_info;
+			} else {
+				$support_info = '<br /><br />' . $support_info;
+			}
+		}
+
+		return $support_info;
+	}
+
+	/**
+	 * Initialize the value of api_autosync_delete if not set.
 	 *
 	 * @param array $wp_settings An array of settings loaded from WP options.
 	 *
 	 * @access public
 	 * @return array The modified settings array.
 	 */
-	public function validate_settings( $wp_settings ) {
-		// If this option doesn't exist, either the site has never installed
-		// this plugin or they may be using an old version with individual
-		// options. To be safe, attempt to migrate values. This will happen only
-		// once.
-		if ( false === $wp_settings ) {
-			$wp_settings = $this->migrate_settings( $wp_settings );
+	public function migrate_api_settings( $wp_settings ) {
+		// Use the value of api_autosync_update for api_autosync_delete if not set
+		// since that was the previous value used to determine this behavior.
+		if ( empty( $wp_settings['api_autosync_delete'] )
+		     && ! empty( $wp_settings['api_autosync_update'] ) ) {
+
+			$wp_settings['api_autosync_delete'] = $wp_settings['api_autosync_update'];
+			update_option( self::OPTION_NAME, $wp_settings, 'no' );
 		}
-
-		// Check for presence of legacy header settings and migrate to new.
-		$wp_settings = $this->migrate_header_settings( $wp_settings );
-
-		// Check for presence of legacy API settings and migrate to new.
-		$wp_settings = $this->migrate_api_settings( $wp_settings );
-
-		// Ensure caption settings are set properly.
-		$wp_settings = $this->migrate_caption_settings( $wp_settings );
 
 		return $wp_settings;
 	}
@@ -145,7 +178,7 @@ class Apple_News {
 		}
 
 		// Store the updated option to save the new setting names.
-		update_option( self::$option_name, $wp_settings, 'no' );
+		update_option( self::OPTION_NAME, $wp_settings, 'no' );
 
 		return $wp_settings;
 	}
@@ -202,89 +235,77 @@ class Apple_News {
 		}
 
 		// Store the updated option to remove the legacy setting names.
-		update_option( self::$option_name, $wp_settings, 'no' );
+		update_option( self::OPTION_NAME, $wp_settings, 'no' );
 
 		return $wp_settings;
 	}
 
 	/**
-	 * Initialize the value of api_autosync_delete if not set.
+	 * Attempt to migrate settings from an older version of this plugin.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
+	 * @param array|object $wp_settings Settings loaded from WP options.
 	 *
 	 * @access public
 	 * @return array The modified settings array.
 	 */
-	public function migrate_api_settings( $wp_settings ) {
-		// Use the value of api_autosync_update for api_autosync_delete if not set
-		// since that was the previous value used to determine this behavior.
-		if ( empty( $wp_settings['api_autosync_delete'] )
-			&& ! empty( $wp_settings['api_autosync_update'] ) ) {
+	public function migrate_settings( $wp_settings ) {
 
-			$wp_settings['api_autosync_delete'] = $wp_settings['api_autosync_update'];
-			update_option( self::$option_name, $wp_settings, 'no' );
+		// If we are not given an object to update to an array, bail.
+		if ( ! is_object( $wp_settings ) ) {
+			return $wp_settings;
 		}
 
-		return $wp_settings;
-	}
-
-	/**
-	 * Attempt to migrate settings from an older version of this plugin
-	 *
-	 * @param Settings $settings
-	 */
-	public function migrate_settings( $settings ) {
-		$migrated_settings = array();
+		// Try to get all settings as an array to be merged.
+		$all_settings = $wp_settings->all();
+		if ( empty( $all_settings ) || ! is_array( $all_settings ) ) {
+			return $wp_settings;
+		}
 
 		// For each potential value, see if the WordPress option exists.
 		// If so, migrate its value into the new array format.
 		// If it doesn't exist, just use the default value.
-		if ( is_object( $settings ) ) {
-			$all_settings = $settings->all();
-			if ( ! empty( $all_settings ) && is_array( $all_settings ) ) {
-				foreach ( $all_settings as $key => $default ) {
-					$value = get_option( $key, $default );
-					$migrated_settings[ $key ] = $value;
-				}
-
-				// Store these settings
-				update_option( self::$option_name, $migrated_settings, 'no' );
-
-				// Delete the options to clean up
-				array_map( 'delete_option', array_keys( $migrated_settings ) );
-			}
+		$migrated_settings = array();
+		foreach ( $all_settings as $key => $default ) {
+			$value = get_option( $key, $default );
+			$migrated_settings[ $key ] = $value;
 		}
+
+		// Store these settings
+		update_option( self::OPTION_NAME, $migrated_settings, 'no' );
+
+		// Delete the options to clean up
+		array_map( 'delete_option', array_keys( $migrated_settings ) );
 
 		return $migrated_settings;
 	}
 
 	/**
-	 * Displays support information for the plugin.
+	 * Validate settings and see if any updates need to be performed.
 	 *
-	 * @var string $format
-	 * @var boolean $with_padding
-	 * @return string
+	 * @param array|object $wp_settings Settings loaded from WP options.
+	 *
 	 * @access public
+	 * @return array The modified settings array.
 	 */
-	public static function get_support_info( $format = 'html', $with_padding = true ) {
-		$support_info = sprintf(
-			__( 'If you need assistance with this issue, please reach out for support on <a href="%s">WordPress.org</a> or <a href="%s">github</a>.', 'apple-news' ),
-			esc_url( self::$wordpress_org_support_url ),
-			esc_url( self::$github_support_url )
-		);
+	public function validate_settings( $wp_settings ) {
 
-		if ( 'text' === $format ) {
-			$support_info = strip_tags( $support_info );
+		// If this option doesn't exist, either the site has never installed
+		// this plugin or they may be using an old version with individual
+		// options. To be safe, attempt to migrate values. This will happen only
+		// once.
+		if ( false === $wp_settings ) {
+			$wp_settings = $this->migrate_settings( $wp_settings );
 		}
 
-		if ( $with_padding ) {
-			if ( 'text' === $format ) {
-				$support_info = "\n\n" . $support_info;
-			} else {
-				$support_info = '<br /><br />' . $support_info;
-			}
-		}
+		// Check for presence of legacy header settings and migrate to new.
+		$wp_settings = $this->migrate_header_settings( $wp_settings );
 
-		return $support_info;
+		// Check for presence of legacy API settings and migrate to new.
+		$wp_settings = $this->migrate_api_settings( $wp_settings );
+
+		// Ensure caption settings are set properly.
+		$wp_settings = $this->migrate_caption_settings( $wp_settings );
+
+		return $wp_settings;
 	}
 }

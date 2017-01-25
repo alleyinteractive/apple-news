@@ -28,7 +28,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 		$apple_news = new Apple_News();
 		$apple_news->migrate_settings( $this->settings );
 
-		$migrated_settings = get_option( $apple_news::$option_name );
+		$migrated_settings = get_option( $apple_news::OPTION_NAME );
 		$this->assertNotEquals( $default_settings, $migrated_settings );
 
 		$default_settings['use_remote_images'] = 'yes';
@@ -36,18 +36,18 @@ class Apple_News_Test extends WP_UnitTestCase {
 	}
 
 	public function testSupportInfoHTML() {
-		$this->assertEquals( '<br /><br />If you need assistance with this issue, please reach out for support on <a href="https://wordpress.org/support/plugin/publish-to-apple-news">WordPress.org</a> or <a href="https://github.com/alleyinteractive/apple-news/issues">github</a>.', Apple_News::get_support_info() );
+		$this->assertEquals( '<br /><br />If you need assistance, please reach out for support on <a href="https://wordpress.org/support/plugin/publish-to-apple-news">WordPress.org</a> or <a href="https://github.com/alleyinteractive/apple-news/issues">GitHub</a>.', Apple_News::get_support_info() );
 	}
 
 	public function testSupportInfoHTMLNoPadding() {
-		$this->assertEquals( 'If you need assistance with this issue, please reach out for support on <a href="https://wordpress.org/support/plugin/publish-to-apple-news">WordPress.org</a> or <a href="https://github.com/alleyinteractive/apple-news/issues">github</a>.', Apple_News::get_support_info( 'html', false ) );
+		$this->assertEquals( 'If you need assistance, please reach out for support on <a href="https://wordpress.org/support/plugin/publish-to-apple-news">WordPress.org</a> or <a href="https://github.com/alleyinteractive/apple-news/issues">GitHub</a>.', Apple_News::get_support_info( 'html', false ) );
 	}
 
 	public function testSupportInfoText() {
-		$this->assertEquals( "\n\nIf you need assistance with this issue, please reach out for support on WordPress.org or github.", Apple_News::get_support_info( 'text' ) );
+		$this->assertEquals( "\n\nIf you need assistance, please reach out for support on WordPress.org or GitHub.", Apple_News::get_support_info( 'text' ) );
 	}
 
 	public function testSupportInfoTextNoPadding() {
-		$this->assertEquals( "If you need assistance with this issue, please reach out for support on WordPress.org or github.", Apple_News::get_support_info( 'text', false ) );
+		$this->assertEquals( "If you need assistance, please reach out for support on WordPress.org or GitHub.", Apple_News::get_support_info( 'text', false ) );
 	}
 }

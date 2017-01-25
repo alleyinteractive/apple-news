@@ -494,7 +494,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		}
 
 		$type  = $this->get_type_for( $name );
-		$settings = get_option( self::$option_name );
+		$settings = get_option( self::OPTION_NAME );
 		$value = self::get_value( $name, $settings );
 		$field = null;
 
@@ -718,7 +718,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 */
 	public static function get_value( $key, $saved_settings = null ) {
 		if ( empty( $saved_settings ) ) {
-			$saved_settings = get_option( self::$option_name );
+			$saved_settings = get_option( self::OPTION_NAME );
 		}
 		return ( isset( $saved_settings[ $key ] ) ) ? $saved_settings[ $key ] : self::get_default_for( $key );
 	}
@@ -739,7 +739,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		check_admin_referer( 'apple_news_options', 'apple_news_options' );
 
 		// Get the current Apple News settings
-		$settings = get_option( self::$option_name, array() );
+		$settings = get_option( self::OPTION_NAME, array() );
 
 		// Iterate over the settings and save each value.
 		// Settings can't be empty unless allowed, so if no value is found
@@ -763,7 +763,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		delete_transient( 'apple_news_sections' );
 
 		// Save to options
-		update_option( self::$option_name, $settings, 'no' );
+		update_option( self::OPTION_NAME, $settings, 'no' );
 	}
 
 }
