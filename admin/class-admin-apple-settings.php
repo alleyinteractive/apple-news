@@ -181,9 +181,6 @@ class Admin_Apple_Settings extends Apple_News {
 			$settings = new Settings();
 			$wp_settings = $this->validate_settings( get_option( self::$option_name ) );
 
-			// Ensure caption settings are set properly.
-			$wp_settings = $this->migrate_caption_settings( $wp_settings );
-
 			// Merge settings in the option with defaults.
 			foreach ( $settings->all() as $key => $value ) {
 				$wp_value = ( empty( $wp_settings[ $key ] ) )

@@ -101,6 +101,9 @@ class Apple_News {
 		// Check for presence of legacy API settings and migrate to new.
 		$wp_settings = $this->migrate_api_settings( $wp_settings );
 
+		// Ensure caption settings are set properly.
+		$wp_settings = $this->migrate_caption_settings( $wp_settings );
+
 		return $wp_settings;
 	}
 
