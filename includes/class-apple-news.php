@@ -19,18 +19,19 @@ class Apple_News {
 
 	/**
 	 * Link to support for the plugin on github.
+	 *
+	 * @var string
+	 * @access public
 	 */
-	const GITHUB_SUPPORT = 'https://github.com/alleyinteractive/apple-news/issues';
+	public static $github_support_url = 'https://github.com/alleyinteractive/apple-news/issues';
 
 	/**
 	 * Option name for settings.
+	 *
+	 * @var string
+	 * @access public
 	 */
-	const OPTION_NAME = 'apple_news_settings';
-
-	/**
-	 * Link to support for the plugin on WordPress.org.
-	 */
-	const WP_SUPPORT = 'https://wordpress.org/support/plugin/publish-to-apple-news';
+	public static $option_name = 'apple_news_settings';
 
 	/**
 	 * Plugin version.
@@ -39,6 +40,14 @@ class Apple_News {
 	 * @access public
 	 */
 	public static $version = '1.2.1';
+
+	/**
+	 * Link to support for the plugin on WordPress.org.
+	 *
+	 * @var string
+	 * @access public
+	 */
+	public static $wordpress_org_support_url = 'https://wordpress.org/support/plugin/publish-to-apple-news';
 
 	/**
 	 * Plugin domain.
@@ -95,10 +104,10 @@ class Apple_News {
 				'If you need assistance, please reach out for support on',
 				'apple-news'
 			),
-			esc_url( self::WP_SUPPORT ),
+			esc_url( self::$wordpress_org_support_url ),
 			__( 'WordPress.org', 'apple-news' ),
 			__( 'or', 'apple-news' ),
-			esc_url( self::GITHUB_SUPPORT ),
+			esc_url( self::$github_support_url ),
 			__( 'GitHub', 'apple-news' )
 		);
 
@@ -131,10 +140,11 @@ class Apple_News {
 		// Use the value of api_autosync_update for api_autosync_delete if not set
 		// since that was the previous value used to determine this behavior.
 		if ( empty( $wp_settings['api_autosync_delete'] )
-		     && ! empty( $wp_settings['api_autosync_update'] ) ) {
+		     && ! empty( $wp_settings['api_autosync_update'] )
+		) {
 
 			$wp_settings['api_autosync_delete'] = $wp_settings['api_autosync_update'];
-			update_option( self::OPTION_NAME, $wp_settings, 'no' );
+			update_option( self::$option_name, $wp_settings, 'no' );
 		}
 
 		return $wp_settings;
@@ -178,7 +188,7 @@ class Apple_News {
 		}
 
 		// Store the updated option to save the new setting names.
-		update_option( self::OPTION_NAME, $wp_settings, 'no' );
+		update_option( self::$option_name, $wp_settings, 'no' );
 
 		return $wp_settings;
 	}
@@ -195,8 +205,8 @@ class Apple_News {
 
 		// Check for presence of any legacy header setting.
 		if ( empty( $wp_settings['header_font'] )
-			&& empty( $wp_settings['header_color'] )
-			&& empty( $wp_settings['header_line_height'] )
+		     && empty( $wp_settings['header_color'] )
+		     && empty( $wp_settings['header_line_height'] )
 		) {
 			return $wp_settings;
 		}
@@ -235,7 +245,7 @@ class Apple_News {
 		}
 
 		// Store the updated option to remove the legacy setting names.
-		update_option( self::OPTION_NAME, $wp_settings, 'no' );
+		update_option( self::$option_name, $wp_settings, 'no' );
 
 		return $wp_settings;
 	}
@@ -271,7 +281,7 @@ class Apple_News {
 		}
 
 		// Store these settings
-		update_option( self::OPTION_NAME, $migrated_settings, 'no' );
+		update_option( self::$option_name, $migrated_settings, 'no' );
 
 		// Delete the options to clean up
 		array_map( 'delete_option', array_keys( $migrated_settings ) );

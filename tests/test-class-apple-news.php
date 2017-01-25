@@ -28,7 +28,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 		$apple_news = new Apple_News();
 		$apple_news->migrate_settings( $this->settings );
 
-		$migrated_settings = get_option( $apple_news::OPTION_NAME );
+		$migrated_settings = get_option( $apple_news::$option_name );
 		$this->assertNotEquals( $default_settings, $migrated_settings );
 
 		$default_settings['use_remote_images'] = 'yes';
