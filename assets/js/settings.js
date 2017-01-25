@@ -184,6 +184,15 @@
 		appleNewsSetCSS( '.apple-news-settings-preview h6', 'header6_tracking', 'letter-spacing', 'px', $( '#header6_size' ).val() / 100 );
 		appleNewsSetCSS( '.apple-news-settings-preview h6', 'header6_color', 'color', null, null );
 
+		// Image Caption
+		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-image-caption', 'caption_font', 'font-family', null, null );
+		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-image-caption', 'caption_size', 'font-size', 'px', null );
+		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-image-caption', 'caption_tracking', 'letter-spacing', 'px', $( '#body_size' ).val() / 100 );
+		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-image-caption', 'caption_color', 'color', null, null );
+		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-image-caption', 'caption_line_height', 'line-height', 'px', null );
+		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-image-caption', 'caption_line_height', 'padding-bottom', 'px', null );
+		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-image-caption', 'caption_line_height', 'padding-top', 'px', null );
+
 		// Pull quote
 		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-pull-quote', 'pullquote_font', 'font-family', null, null );
 		appleNewsSetCSS( '.apple-news-settings-preview div.apple-news-pull-quote', 'pullquote_size', 'font-size', 'px', .75 );

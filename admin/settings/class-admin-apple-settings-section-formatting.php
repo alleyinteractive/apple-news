@@ -591,6 +591,11 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 						esc_html__( 'Image', 'apple-news' )
 					);
 				?>
+                <?php printf(
+                        '<div class="apple-news-image-caption">%s</div>',
+                        esc_html__( 'Image caption', 'apple-news' )
+                    );
+                ?>
 				<p>Maecenas tortor dui, pellentesque ac ullamcorper quis, malesuada sit amet turpis. Nunc in tellus et justo dapibus sollicitudin.</p>
 				<h2>Quisque efficitur</h2>
 				<p>Quisque efficitur sit amet ex et venenatis. Morbi nisi nisi, ornare id iaculis eget, pulvinar ac dolor.</p>
