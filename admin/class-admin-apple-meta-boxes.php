@@ -122,6 +122,13 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 		update_post_meta( $post_id, 'apple_news_is_preview', $is_preview );
 
+		if ( ! empty( $_POST['apple_news_is_sponsored'] ) && 1 === intval( $_POST['apple_news_is_sponsored'] ) ) {
+			$is_sponsored = true;
+		} else {
+			$is_sponsored = false;
+		}
+		update_post_meta( $post_id, 'apple_news_is_sponsored', $is_sponsored );
+
 		if ( ! empty( $_POST['apple_news_pullquote'] ) ) {
 			$pullquote = sanitize_text_field( $_POST['apple_news_pullquote'] );
 		} else {
@@ -170,6 +177,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$deleted = get_post_meta( $post->ID, 'apple_news_api_deleted', true );
 		$pending = get_post_meta( $post->ID, 'apple_news_api_pending', true );
 		$is_preview = get_post_meta( $post->ID, 'apple_news_is_preview', true );
+		$is_sponsored = get_post_meta( $post->ID, 'apple_news_is_sponsored', true );
 		$pullquote = get_post_meta( $post->ID, 'apple_news_pullquote', true );
 		$pullquote_position = get_post_meta( $post->ID, 'apple_news_pullquote_position', true );
 
@@ -199,6 +207,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		<h3><?php esc_html_e( 'Preview?', 'apple-news' ) ?></h3>
 		<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ) ?>>
 		<p class="description"><?php esc_html_e( 'Check this to publish the article as a draft.' , 'apple-news' ) ?></p>
+		<h3><?php esc_html_e( 'Sponsored?', 'apple-news' ) ?></h3>
+		<input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $is_sponsored ) ?>>
+		<p class="description"><?php esc_html_e( 'Check this to indicate this article is sponsored content.' , 'apple-news' ) ?></p>
 		<h3><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></h3>
 		<textarea name="apple_news_pullquote" placeholder="<?php esc_attr_e( 'A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic.', 'apple-news' ) ?>" rows="6" class="large-text"><?php echo esc_textarea( $pullquote ) ?></textarea>
 		<p class="description"><?php esc_html_e( 'This is optional and can be left blank.', 'apple-news' ) ?></p>

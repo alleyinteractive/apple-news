@@ -37,6 +37,7 @@ class Settings {
 		'api_channel' => '',
 		'api_autosync' => 'yes',
 		'api_autosync_update' => 'yes',
+		'api_autosync_delete' => 'yes',
 		'api_async' => 'no',
 
 		'post_types' => array( 'post' ),

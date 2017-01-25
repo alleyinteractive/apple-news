@@ -6,6 +6,9 @@
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
 	>
+	<php>
+  	<const name="APPLE_NEWS_UNIT_TESTS" value="1" />
+  </php>
 	<testsuites>
 		<testsuite>
 			<directory prefix="test-" suffix=".php">./tests/</directory>

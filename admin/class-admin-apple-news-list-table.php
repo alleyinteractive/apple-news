@@ -187,11 +187,19 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			);
 		}
 
+		// If the article is pending, add a reset action in case it's stuck.
+		if ( ! empty( $pending ) ) {
+			$actions['reset'] = sprintf(
+				"<a href='%s' class='reset-button'>%s</a>",
+				esc_url( Admin_Apple_Index_Page::action_query_params( 'reset', $base_url ) ),
+				esc_html__( 'Reset', 'apple-news' )
+			);
+		}
 
 		// Add the delete action, if required
 		if ( get_post_meta( $item->ID, 'apple_news_api_id', true ) ) {
 			$actions['delete'] = sprintf(
-				"<a title='%s' href='%s'>%s</a>",
+				"<a title='%s' href='%s' class='delete-button'>%s</a>",
 				esc_html__( 'Delete from Apple News', 'apple-news' ),
 				esc_url( Admin_Apple_Index_Page::action_query_params( 'delete', $base_url ) ),
 				esc_html__( 'Delete', 'apple-news' )

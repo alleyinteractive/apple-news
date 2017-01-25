@@ -176,6 +176,12 @@ class Push extends API_Action {
 				$meta['data']['isPreview'] = $is_preview;
 			}
 
+			// Get the isSponsored setting
+			$is_sponsored = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
+			if ( true === $is_sponsored ) {
+				$meta['data']['isSponsored'] = $is_sponsored;
+			}
+
 			if ( $remote_id ) {
 				// Update the current article from the API in case the revision changed
 				$this->get();

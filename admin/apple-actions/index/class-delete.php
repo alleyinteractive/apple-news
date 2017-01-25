@@ -62,6 +62,7 @@ class Delete extends API_Action {
 
 			// Delete the API references and mark as deleted
 			delete_post_meta( $this->id, 'apple_news_api_id' );
+			delete_post_meta( $this->id, 'apple_news_api_revision' );
 			delete_post_meta( $this->id, 'apple_news_api_created_at' );
 			delete_post_meta( $this->id, 'apple_news_api_modified_at' );
 			delete_post_meta( $this->id, 'apple_news_api_share_url' );

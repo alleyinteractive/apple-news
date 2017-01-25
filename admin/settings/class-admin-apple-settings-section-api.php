@@ -39,11 +39,15 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 				'type'    => 'password',
 			),
 			'api_autosync' => array(
-				'label'   => __( 'Automatically publish to Apple News', 'apple-news' ),
+				'label'   => __( 'Automatically publish to Apple News when published in WordPress', 'apple-news' ),
 				'type'    => array( 'yes', 'no' ),
 			),
 			'api_autosync_update' => array(
-				'label'   => __( 'Automatically update Apple News', 'apple-news' ),
+				'label'   => __( 'Automatically update in Apple News when updated in WordPress', 'apple-news' ),
+				'type'    => array( 'yes', 'no' ),
+			),
+			'api_autosync_delete' => array(
+				'label'   => __( 'Automatically delete from Apple News when deleted in WordPress', 'apple-news' ),
 				'type'    => array( 'yes', 'no' ),
 			),
 			'api_async' => array(
@@ -57,7 +61,7 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 		$this->groups = array(
 			'apple_news' => array(
 				'label'       => __( 'Apple News API', 'apple-news' ),
-				'settings'    => array( 'api_channel', 'api_key', 'api_secret', 'api_autosync', 'api_autosync_update', 'api_async' ),
+				'settings'    => array( 'api_channel', 'api_key', 'api_secret', 'api_autosync', 'api_autosync_update', 'api_autosync_delete', 'api_async' ),
 			),
 		);
 

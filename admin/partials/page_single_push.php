@@ -29,6 +29,13 @@
 				</td>
 			</tr>
 			<tr>
+				<th scope="row"><?php esc_html_e( 'Sponsored?', 'apple-news' ) ?></th>
+				<td>
+					<input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $post_meta['apple_news_is_sponsored'][0] ) ?>>
+					<p class="description"><?php esc_html_e( 'Check this to indicate this article is sponsored content.' , 'apple-news' ) ?></p>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></th>
 				<td>
 					<textarea name="apple_news_pullquote" placeholder="<?php esc_attr_e( 'A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic.', 'apple-news' ) ?>" rows="10" class="large-text"><?php if ( ! empty( $post_meta[ 'apple_news_pullquote' ][0] ) ) { echo esc_textarea( $post_meta[ 'apple_news_pullquote' ][0] ); } ?></textarea>
