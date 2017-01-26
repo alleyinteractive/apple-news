@@ -63,6 +63,54 @@ class Apple_News_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensures that the migrate_blockquote_settings function migrates settings.
+	 *
+	 * @see Apple_News::migrate_blockquote_settings()
+	 *
+	 * @access public
+	 */
+	public function testMigrateBlockquoteSettings() {
+
+		// Setup.
+		$legacy_settings = $this->settings->all();
+		$legacy_settings['body_background_color'] = '#aaaaaa';
+		$legacy_settings['pullquote_border_color'] = '#abcdef';
+		$legacy_settings['pullquote_border_style'] = 'dashed';
+		$legacy_settings['pullquote_border_width'] = 10;
+		$legacy_settings['body_color'] = '#012345';
+		$legacy_settings['body_font'] = 'TestFont';
+		$legacy_settings['body_line_height'] = 30;
+		$legacy_settings['body_size'] = 20;
+		$legacy_settings['body_tracking'] = 10;
+		unset( $legacy_settings['blockquote_background_color'] );
+		unset( $legacy_settings['blockquote_border_color'] );
+		unset( $legacy_settings['blockquote_border_style'] );
+		unset( $legacy_settings['blockquote_border_width'] );
+		unset( $legacy_settings['blockquote_color'] );
+		unset( $legacy_settings['blockquote_font'] );
+		unset( $legacy_settings['blockquote_line_height'] );
+		unset( $legacy_settings['blockquote_size'] );
+		unset( $legacy_settings['blockquote_tracking'] );
+		$apple_news = new Apple_News();
+		update_option( $apple_news::$option_name, $legacy_settings );
+		$apple_news->migrate_blockquote_settings( $legacy_settings );
+
+		// Ensure the defaults did not overwrite the migrated legacy data.
+		$expected_settings = $legacy_settings;
+		$expected_settings['blockquote_background_color'] = '#999999';
+		$expected_settings['blockquote_border_color'] = '#abcdef';
+		$expected_settings['blockquote_border_style'] = 'dashed';
+		$expected_settings['blockquote_border_width'] = 10;
+		$expected_settings['blockquote_color'] = '#012345';
+		$expected_settings['blockquote_font'] = 'TestFont';
+		$expected_settings['blockquote_line_height'] = 30;
+		$expected_settings['blockquote_size'] = 20;
+		$expected_settings['blockquote_tracking'] = 10;
+		$migrated_settings = get_option( $apple_news::$option_name );
+		$this->assertEquals( $expected_settings, $migrated_settings );
+	}
+
+	/**
 	 * Ensures that the migrate_settings function properly migrates legacy settings.
 	 *
 	 * @see Apple_News::migrate_settings()
