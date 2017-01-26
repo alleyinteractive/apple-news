@@ -271,6 +271,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 		$notices = get_user_meta( $user_id, 'apple_news_notice', true );
 		$this->assertNotEmpty( $notices );
 
+		array_pop( $notices );
 		$component_notice = end( $notices );
 		$this->assertEquals( 'The following components are unsupported by Apple News and were removed: iframe', $component_notice['message'] );
 
@@ -349,6 +350,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 		$notices = get_user_meta( $user_id, 'apple_news_notice', true );
 		$this->assertNotEmpty( $notices );
 
+		array_pop( $notices );
 		$component_notice = end( $notices );
 		$this->assertEquals( 'The following JSON errors were detected: Invalid unicode character sequences were found that could cause display issues on Apple News: ÂÂîî', $component_notice['message'] );
 
