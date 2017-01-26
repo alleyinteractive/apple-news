@@ -64,7 +64,37 @@ class Quote extends Component {
 	 */
 	private function _build_blockquote( $text ) {
 
-		// TODO: WIRE THIS UP
+		// Set JSON for this element.
+		$this->json = array(
+			'role' => 'container',
+			'layout' => array(
+				'columnStart' => 3,
+				'columnSpan' => 4
+			),
+			'style' => array(
+				'border' => array (
+					'left' => array (
+						'width' => $this->get_setting( 'blockquote_border_width' ),
+						'style' => $this->get_setting( 'blockquote_border_style' ),
+						'color' => $this->get_setting( 'blockquote_border_color' ),
+					),
+				),
+			),
+			'components' => array(
+				array(
+					'role' => 'quote',
+					'text' => $this->parser->parse( $text ),
+					'format' => $this->parser->format,
+					'layout' => 'quote-layout',
+					'textStyle' => 'default-blockquote',
+				)
+			),
+		);
+
+		// Set component attributes.
+		$this->_set_blockquote_style();
+		$this->_set_layout();
+		$this->_set_blockquote_anchor();
 	}
 
 	/**
@@ -107,12 +137,65 @@ class Quote extends Component {
 
 		// Set component attributes.
 		$this->_set_pullquote_style();
-		$this->_set_pullquote_layout();
+		$this->_set_layout();
 		$this->_set_pullquote_anchor();
 	}
 
 	/**
-	 * Sets the anchor settings for this component.
+	 * Sets the anchor settings for a blockquote.
+	 *
+	 * @access private
+	 */
+	private function _set_blockquote_anchor() {
+		$this->set_anchor_position( Component::ANCHOR_AUTO );
+		$this->json['anchor'] = array(
+			'targetComponentIdentifier' => 'blockquoteAnchor',
+			'originAnchorPosition' => 'top',
+			'targetAnchorPosition' => 'top',
+			'rangeStart' => 0,
+			'rangeLength' => 10,
+		);
+	}
+
+	/**
+	 * Set the style for a blockquote.
+	 *
+	 * @access private
+	 */
+	private function _set_blockquote_style() {
+		$this->json['textStyle'] = 'default-blockquote';
+		$this->register_style(
+			'default-blockquote',
+			array(
+				'fontName' => $this->get_setting( 'blockquote_font' ),
+				'fontSize' => intval( $this->get_setting( 'blockquote_size' ) ),
+				'textColor' => $this->get_setting( 'blockquote_color' ),
+				'lineHeight' => intval( $this->get_setting( 'blockquote_line_height' ) ),
+				'textAlignment' => $this->find_text_alignment(),
+				'tracking' => intval( $this->get_setting( 'blockquote_tracking' ) ) / 100,
+			)
+		);
+	}
+
+	/**
+	 * Set the layout for the component.
+	 *
+	 * @access private
+	 */
+	private function _set_layout() {
+		$this->register_layout(
+			'quote-layout',
+			array(
+				'margin' => array(
+					'top' => 12,
+					'bottom' => 12,
+				),
+			)
+		);
+	}
+
+	/**
+	 * Sets the anchor settings for a pullquote.
 	 *
 	 * @access private
 	 */
@@ -128,24 +211,7 @@ class Quote extends Component {
 	}
 
 	/**
-	 * Set the layout for the component.
-	 *
-	 * @access private
-	 */
-	private function _set_pullquote_layout() {
-		$this->register_layout(
-			'quote-layout',
-			array(
-				'margin' => array(
-					'top' => 12,
-					'bottom' => 12,
-				),
-			)
-		);
-	}
-
-	/**
-	 * Set the style for the component.
+	 * Set the style for a pullquote.
 	 *
 	 * @access private
 	 */
