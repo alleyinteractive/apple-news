@@ -114,6 +114,16 @@ class Settings {
 		'pullquote_line_height' => 48,
 		'pullquote_tracking' => 0,
 
+		'blockquote_font' => 'AvenirNext-Regular',
+		'blockquote_size' => 18,
+		'blockquote_color' => '#4f4f4f',
+		'blockquote_border_color' => '#4f4f4f',
+		'blockquote_border_style' => 'solid',
+		'blockquote_border_width' => '3',
+		'blockquote_line_height' => 24,
+		'blockquote_tracking' => 0,
+		'blockquote_background_color' => '#e1e1e1',
+
 		'monospaced_font' => 'Menlo-Regular',
 		'monospaced_size' => 16,
 		'monospaced_color' => '#4f4f4f',

@@ -311,6 +311,44 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label' => __( 'Pull quote transformation', 'apple-news' ),
 				'type' => array( 'none', 'uppercase' ),
 			),
+			'blockquote_font' => array(
+				'label' => __( 'Blockquote font face', 'apple-news' ),
+				'type' => 'font',
+			),
+			'blockquote_size' => array(
+				'label' => __( 'Blockquote font size', 'apple-news' ),
+				'type' => 'integer',
+			),
+			'blockquote_color' => array(
+				'label' => __( 'Blockquote color', 'apple-news' ),
+				'type' => 'color',
+			),
+			'blockquote_border_color' => array(
+				'label' => __( 'Blockquote border color', 'apple-news' ),
+				'type' => 'color',
+			),
+			'blockquote_border_style' => array(
+				'label' => __( 'Blockquote border style', 'apple-news' ),
+				'type' => array( 'solid', 'dashed', 'dotted' ),
+			),
+			'blockquote_border_width' => array(
+				'label' => __( 'Blockquote border width', 'apple-news' ),
+				'type' => 'integer',
+			),
+			'blockquote_line_height' => array(
+				'label' => __( 'Blockquote line height', 'apple-news' ),
+				'type' => 'float',
+				'sanitize' => 'floatval',
+			),
+			'blockquote_tracking' => array(
+				'label' => __( 'Blockquote tracking', 'apple-news' ),
+				'type' => 'integer',
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+			),
+			'blockquote_background_color' => array(
+				'label' => __( 'Blockquote background color', 'apple-news' ),
+				'type' => 'color',
+			),
 			'monospaced_font' => array(
 				'label' => __( 'Monospaced font face', 'apple-news' ),
 				'type' => 'font',
@@ -489,6 +527,20 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 					'pullquote_transform'
 				),
 			),
+			'blockquote' => array(
+				'label' => __( 'Blockquote', 'apple-news' ),
+				'settings' => array(
+					'blockquote_font',
+					'blockquote_size',
+					'blockquote_line_height',
+					'blockquote_tracking',
+					'blockquote_color',
+					'blockquote_border_color',
+					'blockquote_border_style',
+					'blockquote_border_width',
+					'blockquote_background_color',
+				),
+			),
 			'monospaced' => array(
 				'label' => __( 'Monospaced (<pre>, <code>, <samp>)', 'apple-news' ),
 				'settings' => array(
@@ -599,8 +651,9 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				<p>Maecenas tortor dui, pellentesque ac ullamcorper quis, malesuada sit amet turpis. Nunc in tellus et justo dapibus sollicitudin.</p>
 				<h2>Quisque efficitur</h2>
 				<p>Quisque efficitur sit amet ex et venenatis. Morbi nisi nisi, ornare id iaculis eget, pulvinar ac dolor.</p>
+                <blockquote>Blockquote lorem ipsum dolor sit amet, efficitur sit amet aliquet id, aliquam placerat turpis.</blockquote>
 				<p>In eu la	cus porttitor, pellentesque diam et, tristique elit. Mauris justo odio, efficitur sit amet aliquet id, aliquam placerat turpis.</p>
-				<div class="apple-news-pull-quote">Lorem ipsum dolor sit amet.</div>
+				<div class="apple-news-pull-quote">Pull quote lorem ipsum dolor sit amet.</div>
 				<p>Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque ipsum mi, sagittis eget sodales et, volutpat at felis.</p>
                 <pre>
 .code-sample {

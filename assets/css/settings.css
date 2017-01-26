@@ -151,6 +151,11 @@ ul#meta-component-order-sort li:hover {
 	margin-bottom: 30px;
 }
 
+.apple-news-settings-preview blockquote {
+	margin: 0 0 1.5em;
+	padding: 1em;
+}
+
 .apple-news-byline.title-cover-byline,
 .apple-news-byline.byline-title-cover,
 .apple-news-byline.byline-cover-title,
