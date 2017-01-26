@@ -65,7 +65,75 @@ class Quote_Test extends Component_TestCase {
 	}
 
 	/**
-	 * Tests quote settings.
+	 * Tests blockquote settings.
+	 *
+	 * @access public
+	 */
+	public function testSettingsBlockquote() {
+
+		// Setup.
+		$content = new Exporter_Content(
+			3,
+			'Title',
+			'<blockquote><p>my quote</p></blockquote>'
+		);
+
+		// Set quote settings.
+		$this->settings->blockquote_font = 'TestFontName';
+		$this->settings->blockquote_size = 20;
+		$this->settings->blockquote_color = '#abcdef';
+		$this->settings->blockquote_line_height = 28;
+		$this->settings->blockquote_tracking = 50;
+		$this->settings->blockquote_background_color = '#fedcba';
+		$this->settings->blockquote_border_color = '#012345';
+		$this->settings->blockquote_border_style = 'dashed';
+		$this->settings->blockquote_border_width = 10;
+
+		// Run the export.
+		$exporter = new Exporter( $content, null, $this->settings );
+		$json = json_decode( $exporter->export(), true );
+
+		// Validate body settings in generated JSON.
+		$this->assertEquals(
+			'TestFontName',
+			$json['componentTextStyles']['default-blockquote']['fontName']
+		);
+		$this->assertEquals(
+			20,
+			$json['componentTextStyles']['default-blockquote']['fontSize']
+		);
+		$this->assertEquals(
+			'#abcdef',
+			$json['componentTextStyles']['default-blockquote']['textColor']
+		);
+		$this->assertEquals(
+			28,
+			$json['componentTextStyles']['default-blockquote']['lineHeight']
+		);
+		$this->assertEquals(
+			0.5,
+			$json['componentTextStyles']['default-blockquote']['tracking']
+		);
+		$this->assertEquals(
+			'#fedcba',
+			$json['components'][1]['style']['backgroundColor']
+		);
+		$this->assertEquals(
+			'#012345',
+			$json['components'][1]['style']['border']['all']['color']
+		);
+		$this->assertEquals(
+			'dashed',
+			$json['components'][1]['style']['border']['all']['style']
+		);
+		$this->assertEquals(
+			10,
+			$json['components'][1]['style']['border']['all']['width']
+		);
+	}
+
+	/**
+	 * Tests pullquote settings.
 	 *
 	 * @access public
 	 */
