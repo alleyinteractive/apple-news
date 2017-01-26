@@ -147,6 +147,69 @@ class Apple_News_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensures that the migrate_header_settings function migrates settings.
+	 *
+	 * @see Apple_News::migrate_header_settings()
+	 *
+	 * @access public
+	 */
+	public function testMigrateHeaderSettings() {
+
+		// Setup.
+		$legacy_settings = $this->settings->all();
+		$legacy_settings['header_color'] = '#abcdef';
+		$legacy_settings['header_font'] = 'TestFont';
+		$legacy_settings['header_line_height'] = 100;
+		unset( $legacy_settings['header1_color'] );
+		unset( $legacy_settings['header2_color'] );
+		unset( $legacy_settings['header3_color'] );
+		unset( $legacy_settings['header4_color'] );
+		unset( $legacy_settings['header5_color'] );
+		unset( $legacy_settings['header6_color'] );
+		unset( $legacy_settings['header1_font'] );
+		unset( $legacy_settings['header2_font'] );
+		unset( $legacy_settings['header3_font'] );
+		unset( $legacy_settings['header4_font'] );
+		unset( $legacy_settings['header5_font'] );
+		unset( $legacy_settings['header6_font'] );
+		unset( $legacy_settings['header1_line_height'] );
+		unset( $legacy_settings['header2_line_height'] );
+		unset( $legacy_settings['header3_line_height'] );
+		unset( $legacy_settings['header4_line_height'] );
+		unset( $legacy_settings['header5_line_height'] );
+		unset( $legacy_settings['header6_line_height'] );
+		$apple_news = new Apple_News();
+		update_option( $apple_news::$option_name, $legacy_settings );
+		$apple_news->migrate_header_settings( $legacy_settings );
+
+		// Ensure the defaults did not overwrite the migrated legacy data.
+		$expected_settings = $legacy_settings;
+		$expected_settings['header1_color'] = '#abcdef';
+		$expected_settings['header2_color'] = '#abcdef';
+		$expected_settings['header3_color'] = '#abcdef';
+		$expected_settings['header4_color'] = '#abcdef';
+		$expected_settings['header5_color'] = '#abcdef';
+		$expected_settings['header6_color'] = '#abcdef';
+		$expected_settings['header1_font'] = 'TestFont';
+		$expected_settings['header2_font'] = 'TestFont';
+		$expected_settings['header3_font'] = 'TestFont';
+		$expected_settings['header4_font'] = 'TestFont';
+		$expected_settings['header5_font'] = 'TestFont';
+		$expected_settings['header6_font'] = 'TestFont';
+		$expected_settings['header1_line_height'] = 100;
+		$expected_settings['header2_line_height'] = 100;
+		$expected_settings['header3_line_height'] = 100;
+		$expected_settings['header4_line_height'] = 100;
+		$expected_settings['header5_line_height'] = 100;
+		$expected_settings['header6_line_height'] = 100;
+		unset( $expected_settings['header_color'] );
+		unset( $expected_settings['header_font'] );
+		unset( $expected_settings['header_line_height'] );
+		$migrated_settings = get_option( $apple_news::$option_name );
+		$this->assertEquals( $expected_settings, $migrated_settings );
+	}
+
+	/**
 	 * Ensures that the migrate_settings function properly migrates legacy settings.
 	 *
 	 * @see Apple_News::migrate_settings()
