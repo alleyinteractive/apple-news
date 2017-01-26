@@ -111,6 +111,42 @@ class Apple_News_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensures that the migrate_caption_settings function migrates settings.
+	 *
+	 * @see Apple_News::migrate_caption_settings()
+	 *
+	 * @access public
+	 */
+	public function testMigrateCaptionSettings() {
+
+		// Setup.
+		$legacy_settings = $this->settings->all();
+		$legacy_settings['body_color'] = '#abcdef';
+		$legacy_settings['body_font'] = 'TestFont';
+		$legacy_settings['body_line_height'] = 40;
+		$legacy_settings['body_size'] = 30;
+		$legacy_settings['body_tracking'] = 10;
+		unset( $legacy_settings['caption_color'] );
+		unset( $legacy_settings['caption_font'] );
+		unset( $legacy_settings['caption_line_height'] );
+		unset( $legacy_settings['caption_size'] );
+		unset( $legacy_settings['caption_tracking'] );
+		$apple_news = new Apple_News();
+		update_option( $apple_news::$option_name, $legacy_settings );
+		$apple_news->migrate_caption_settings( $legacy_settings );
+
+		// Ensure the defaults did not overwrite the migrated legacy data.
+		$expected_settings = $legacy_settings;
+		$expected_settings['caption_color'] = '#abcdef';
+		$expected_settings['caption_font'] = 'TestFont';
+		$expected_settings['caption_line_height'] = 40;
+		$expected_settings['caption_size'] = 28;
+		$expected_settings['caption_tracking'] = 10;
+		$migrated_settings = get_option( $apple_news::$option_name );
+		$this->assertEquals( $expected_settings, $migrated_settings );
+	}
+
+	/**
 	 * Ensures that the migrate_settings function properly migrates legacy settings.
 	 *
 	 * @see Apple_News::migrate_settings()
