@@ -137,15 +137,93 @@ class Apple_News {
 	 * @return array The modified settings array.
 	 */
 	public function migrate_api_settings( $wp_settings ) {
+
 		// Use the value of api_autosync_update for api_autosync_delete if not set
 		// since that was the previous value used to determine this behavior.
 		if ( empty( $wp_settings['api_autosync_delete'] )
 		     && ! empty( $wp_settings['api_autosync_update'] )
 		) {
-
 			$wp_settings['api_autosync_delete'] = $wp_settings['api_autosync_update'];
 			update_option( self::$option_name, $wp_settings, 'no' );
 		}
+
+		return $wp_settings;
+	}
+
+	/**
+	 * Migrate legacy blockquote settings to new format.
+	 *
+	 * @param array $wp_settings An array of settings loaded from WP options.
+	 *
+	 * @access public
+	 * @return array The modified settings array.
+	 */
+	public function migrate_blockquote_settings( $wp_settings ) {
+
+		// Check for the presence of blockquote-specific settings.
+		if ( $this->_all_keys_exist( $wp_settings, array(
+			'blockquote_background_color',
+			'blockquote_border_color',
+			'blockquote_border_style',
+			'blockquote_border_width',
+			'blockquote_color',
+			'blockquote_font',
+			'blockquote_line_height',
+			'blockquote_size',
+			'blockquote_tracking',
+		) ) ) {
+			return $wp_settings;
+		}
+
+		// Set the background color to 90% of the body background.
+		if ( ! isset( $wp_settings['blockquote_background_color'] )
+		     && isset( $wp_settings['body_background_color'] )
+		) {
+
+			// Get current octets.
+			if ( 7 === strlen( $wp_settings['body_background_color'] ) ) {
+				$r = hexdec( substr( $wp_settings['body_background_color'], 1, 2 ) );
+				$g = hexdec( substr( $wp_settings['body_background_color'], 3, 2 ) );
+				$b = hexdec( substr( $wp_settings['body_background_color'], 5, 2 ) );
+			} elseif ( 4 === strlen( $wp_settings['body_background_color'] ) ) {
+				$r = substr( $wp_settings['body_background_color'], 1, 1 );
+				$g = substr( $wp_settings['body_background_color'], 2, 1 );
+				$b = substr( $wp_settings['body_background_color'], 3, 1 );
+				$r = hexdec( $r . $r );
+				$g = hexdec( $g . $g );
+				$b = hexdec( $b . $b );
+			} else {
+				$r = 250;
+				$g = 250;
+				$b = 250;
+			}
+
+			// Darken by 10% and recompile back into a hex string.
+			$wp_settings['blockquote_background_color'] = sprintf(
+				'#%s%s%s',
+				dechex( $r * .9 ),
+				dechex( $g * .9 ),
+				dechex( $b * .9 )
+			);
+		}
+
+		// Clone settings, as necessary.
+		$wp_settings = $this->_clone_settings(
+			$wp_settings,
+			array(
+				'blockquote_border_color' => 'pullquote_border_color',
+				'blockquote_border_style' => 'pullquote_border_style',
+				'blockquote_border_width' => 'pullquote_border_width',
+				'blockquote_color' => 'body_color',
+				'blockquote_font' => 'body_font',
+				'blockquote_line_height' => 'body_line_height',
+				'blockquote_size' => 'body_size',
+				'blockquote_tracking' => 'body_tracking',
+			)
+		);
+
+		// Store the updated option to save the new setting names.
+		update_option( self::$option_name, $wp_settings, 'no' );
 
 		return $wp_settings;
 	}
@@ -161,31 +239,33 @@ class Apple_News {
 	public function migrate_caption_settings( $wp_settings ) {
 
 		// Check for the presence of caption-specific settings.
-		if ( isset( $wp_settings['caption_color'] )
-		     && isset( $wp_settings['caption_font'] )
-		     && isset( $wp_settings['caption_line_height'] )
-		     && isset( $wp_settings['caption_size'] )
-		     && isset( $wp_settings['caption_tracking'] )
-		) {
+		if ( $this->_all_keys_exist( $wp_settings, array(
+			'caption_color',
+			'caption_font',
+			'caption_line_height',
+			'caption_size',
+			'caption_tracking',
+		) ) ) {
 			return $wp_settings;
 		}
 
-		// Migrate settings, as necessary.
-		$settings = array( 'color', 'font', 'line_height', 'size', 'tracking' );
-		foreach ( $settings as $setting ) {
-			$body_setting = 'body_' . $setting;
-			$caption_setting = 'caption_' . $setting;
-			if ( ! isset( $wp_settings[ $caption_setting ] )
-			     && isset( $wp_settings[ $body_setting ] )
-			) {
-				$wp_settings[ $caption_setting ] = $wp_settings[ $body_setting ];
-
-				// Adjust font size down by 2 to match legacy handling.
-				if ( 'size' === $setting ) {
-					$wp_settings[ $caption_setting ] -= 2;
-				}
-			}
+		// Clone and modify font size, if necessary.
+		if ( ! isset( $wp_settings['caption_size'] )
+		     && isset( $wp_settings['body_size'] )
+		) {
+			$wp_settings['caption_size'] = $wp_settings['body_size'] - 2;
 		}
+
+		// Clone settings, as necessary.
+		$wp_settings = $this->_clone_settings(
+			$wp_settings,
+			array(
+				'caption_color' => 'body_color',
+				'caption_font' => 'body_font',
+				'caption_line_height' => 'body_line_height',
+				'caption_tracking' => 'body_tracking',
+			)
+		);
 
 		// Store the updated option to save the new setting names.
 		update_option( self::$option_name, $wp_settings, 'no' );
@@ -211,38 +291,32 @@ class Apple_News {
 			return $wp_settings;
 		}
 
-		// Check for presence of legacy font setting.
-		if ( ! empty( $wp_settings['header_font'] ) ) {
-			$wp_settings['header1_font'] = $wp_settings['header_font'];
-			$wp_settings['header2_font'] = $wp_settings['header_font'];
-			$wp_settings['header3_font'] = $wp_settings['header_font'];
-			$wp_settings['header4_font'] = $wp_settings['header_font'];
-			$wp_settings['header5_font'] = $wp_settings['header_font'];
-			$wp_settings['header6_font'] = $wp_settings['header_font'];
-			unset( $wp_settings['header_font'] );
-		}
+		// Clone settings, as necessary.
+		$wp_settings = $this->_clone_settings( $wp_settings, array(
+			'header1_color' => 'header_color',
+			'header2_color' => 'header_color',
+			'header3_color' => 'header_color',
+			'header4_color' => 'header_color',
+			'header5_color' => 'header_color',
+			'header6_color' => 'header_color',
+			'header1_font' => 'header_font',
+			'header2_font' => 'header_font',
+			'header3_font' => 'header_font',
+			'header4_font' => 'header_font',
+			'header5_font' => 'header_font',
+			'header6_font' => 'header_font',
+			'header1_line_height' => 'header_line_height',
+			'header2_line_height' => 'header_line_height',
+			'header3_line_height' => 'header_line_height',
+			'header4_line_height' => 'header_line_height',
+			'header5_line_height' => 'header_line_height',
+			'header6_line_height' => 'header_line_height',
+		) );
 
-		// Check for presence of legacy color setting.
-		if ( ! empty( $wp_settings['header_color'] ) ) {
-			$wp_settings['header1_color'] = $wp_settings['header_color'];
-			$wp_settings['header2_color'] = $wp_settings['header_color'];
-			$wp_settings['header3_color'] = $wp_settings['header_color'];
-			$wp_settings['header4_color'] = $wp_settings['header_color'];
-			$wp_settings['header5_color'] = $wp_settings['header_color'];
-			$wp_settings['header6_color'] = $wp_settings['header_color'];
-			unset( $wp_settings['header_color'] );
-		}
-
-		// Check for presence of legacy line height setting.
-		if ( ! empty( $wp_settings['header_line_height'] ) ) {
-			$wp_settings['header1_line_height'] = $wp_settings['header_line_height'];
-			$wp_settings['header2_line_height'] = $wp_settings['header_line_height'];
-			$wp_settings['header3_line_height'] = $wp_settings['header_line_height'];
-			$wp_settings['header4_line_height'] = $wp_settings['header_line_height'];
-			$wp_settings['header5_line_height'] = $wp_settings['header_line_height'];
-			$wp_settings['header6_line_height'] = $wp_settings['header_line_height'];
-			unset( $wp_settings['header_line_height'] );
-		}
+		// Remove legacy settings.
+		unset( $wp_settings['header_color'] );
+		unset( $wp_settings['header_font'] );
+		unset( $wp_settings['header_line_height'] );
 
 		// Store the updated option to remove the legacy setting names.
 		update_option( self::$option_name, $wp_settings, 'no' );
@@ -315,6 +389,49 @@ class Apple_News {
 
 		// Ensure caption settings are set properly.
 		$wp_settings = $this->migrate_caption_settings( $wp_settings );
+
+		return $wp_settings;
+	}
+
+	/**
+	 * Verifies that the list of keys provided all exist in the settings array.
+	 *
+	 * @param array $compare The array to compare against the list of keys.
+	 * @param array $keys The keys to check.
+	 *
+	 * @access private
+	 * @return bool True if all keys exist in the array, false if not.
+	 */
+	private function _all_keys_exist( $compare, $keys ) {
+		return ( count( $keys ) === count(
+			array_intersect_key( $compare, array_combine( $keys, $keys ) ) )
+		);
+	}
+
+	/**
+	 * A generic function to assist with splitting settings for new functionality.
+	 *
+	 * Accepts an array of settings and a settings map to clone settings from one
+	 * key to another.
+	 *
+	 * @param array $wp_settings An array of settings to modify.
+	 * @param array $settings_map A settings map in the format $to => $from.
+	 *   Example:
+	 *   $settings_map = array(
+	 *       'blockquote_color' => 'pullquote_color',
+	 *   );
+	 *
+	 * @access private
+	 * @return array The modified settings array.
+	 */
+	private function _clone_settings( $wp_settings, $settings_map ) {
+
+		// Loop over each setting in the map and clone if conditions are favorable.
+		foreach ( $settings_map as $to => $from ) {
+			if ( ! isset( $wp_settings[ $to ] ) && isset( $wp_settings[ $from ] ) ) {
+				$wp_settings[ $to ] = $wp_settings[ $from ];
+			}
+		}
 
 		return $wp_settings;
 	}

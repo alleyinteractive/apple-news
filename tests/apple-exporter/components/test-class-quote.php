@@ -69,13 +69,13 @@ class Quote_Test extends Component_TestCase {
 	 *
 	 * @access public
 	 */
-	public function testSettings() {
+	public function testSettingsPullquote() {
 
 		// Setup.
 		$content = new Exporter_Content(
 			3,
 			'Title',
-			'<blockquote><p>my quote</p></blockquote>'
+			'<blockquote class="apple-news-pullquote"><p>my quote</p></blockquote>'
 		);
 
 		// Set quote settings.
@@ -122,11 +122,11 @@ class Quote_Test extends Component_TestCase {
 	 *
 	 * @access public
 	 */
-	public function testTransform() {
+	public function testTransformPullquote() {
 
 		// Setup.
 		$component = new Quote(
-			'<blockquote><p>my quote</p></blockquote>',
+			'<blockquote class="apple-news-pullquote"><p>my quote</p></blockquote>',
 			null,
 			$this->settings,
 			$this->styles,
@@ -141,6 +141,6 @@ class Quote_Test extends Component_TestCase {
 		$this->assertEquals( "my quote\n\n", $result['text'] );
 		$this->assertEquals( 'markdown', $result['format'] );
 		$this->assertEquals( 'default-pullquote', $result['textStyle'] );
-		$this->assertEquals( 'quote-layout', $result['layout'] );
+		$this->assertEquals( 'pullquote-layout', $result['layout'] );
 	}
 }
