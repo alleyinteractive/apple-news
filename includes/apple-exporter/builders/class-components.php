@@ -110,7 +110,7 @@ class Components extends Builder {
 		// Build a new component and set the anchor position to AUTO.
 		$component = $this->_get_component_from_shortname(
 			'blockquote',
-			'<blockquote>' . $pullquote . '</blockquote>'
+			'<blockquote class="pullquote">' . $pullquote . '</blockquote>'
 		);
 		$component->set_anchor_position( Component::ANCHOR_AUTO );
 
