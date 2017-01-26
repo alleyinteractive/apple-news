@@ -190,6 +190,33 @@ class Quote_Test extends Component_TestCase {
 	 *
 	 * @access public
 	 */
+	public function testTransformBlockquote() {
+
+		// Setup.
+		$component = new Quote(
+			'<blockquote><p>my quote</p></blockquote>',
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$result_wrapper = $component->to_array();
+		$result = $result_wrapper['components'][0];
+
+		// Test.
+		$this->assertEquals( 'container', $result_wrapper['role'] );
+		$this->assertEquals( 'quote', $result['role'] );
+		$this->assertEquals( "my quote\n\n", $result['text'] );
+		$this->assertEquals( 'markdown', $result['format'] );
+		$this->assertEquals( 'default-blockquote', $result['textStyle'] );
+		$this->assertEquals( 'blockquote-layout', $result['layout'] );
+	}
+
+	/**
+	 * Tests the transformation process from a pullquote to a Quote component.
+	 *
+	 * @access public
+	 */
 	public function testTransformPullquote() {
 
 		// Setup.
