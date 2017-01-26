@@ -46,13 +46,11 @@ class Quote extends Component {
 		$text = $matches[1];
 
 		// Split for pullquote vs. blockquote.
-		if ( 0 === strpos( $html, '<blockquote class="pullquote">' ) ) {
+		if ( 0 === strpos( $html, '<blockquote class="apple-news-pullquote">' ) ) {
 			$this->_build_pullquote( $text );
 		} else {
 			$this->_build_blockquote( $text );
 		}
-
-
 	}
 
 	/**
@@ -68,16 +66,24 @@ class Quote extends Component {
 		$this->json = array(
 			'role' => 'container',
 			'layout' => array(
-				'columnStart' => 3,
-				'columnSpan' => 4
+				'columnStart' => $this->get_setting( 'body_offset' ),
+				'columnSpan' => $this->get_setting( 'body_column_span' ),
+				'margin' => array(
+					'bottom' => $this->get_setting( 'layout_gutter' ),
+					'top' => $this->get_setting( 'layout_gutter' ),
+				),
 			),
 			'style' => array(
+				'backgroundColor' => $this->get_setting( 'blockquote_background_color' ),
 				'border' => array (
-					'left' => array (
+					'all' => array (
 						'width' => $this->get_setting( 'blockquote_border_width' ),
 						'style' => $this->get_setting( 'blockquote_border_style' ),
 						'color' => $this->get_setting( 'blockquote_border_color' ),
 					),
+					'bottom' => false,
+					'right' => false,
+					'top' => false,
 				),
 			),
 			'components' => array(
@@ -85,16 +91,15 @@ class Quote extends Component {
 					'role' => 'quote',
 					'text' => $this->parser->parse( $text ),
 					'format' => $this->parser->format,
-					'layout' => 'quote-layout',
+					'layout' => 'blockquote-layout',
 					'textStyle' => 'default-blockquote',
 				)
 			),
 		);
 
 		// Set component attributes.
+		$this->_set_blockquote_layout();
 		$this->_set_blockquote_style();
-		$this->_set_layout();
-		$this->_set_blockquote_anchor();
 	}
 
 	/**
@@ -129,31 +134,34 @@ class Quote extends Component {
 					'role' => 'quote',
 					'text' => $this->parser->parse( $text ),
 					'format' => $this->parser->format,
-					'layout' => 'quote-layout',
+					'layout' => 'pullquote-layout',
 					'textStyle' => 'default-pullquote',
 				)
 			),
 		);
 
 		// Set component attributes.
-		$this->_set_pullquote_style();
-		$this->_set_layout();
 		$this->_set_pullquote_anchor();
+		$this->_set_pullquote_layout();
+		$this->_set_pullquote_style();
 	}
 
 	/**
-	 * Sets the anchor settings for a blockquote.
+	 * Set the layout for a blockquote.
 	 *
 	 * @access private
 	 */
-	private function _set_blockquote_anchor() {
-		$this->set_anchor_position( Component::ANCHOR_AUTO );
-		$this->json['anchor'] = array(
-			'targetComponentIdentifier' => 'blockquoteAnchor',
-			'originAnchorPosition' => 'top',
-			'targetAnchorPosition' => 'top',
-			'rangeStart' => 0,
-			'rangeLength' => 10,
+	private function _set_blockquote_layout() {
+		$this->register_layout(
+			'blockquote-layout',
+			array(
+				'contentInset' => array(
+					'bottom' => true,
+					'left' => true,
+					'right' => true,
+					'top' => true,
+				),
+			)
 		);
 	}
 
@@ -178,23 +186,6 @@ class Quote extends Component {
 	}
 
 	/**
-	 * Set the layout for the component.
-	 *
-	 * @access private
-	 */
-	private function _set_layout() {
-		$this->register_layout(
-			'quote-layout',
-			array(
-				'margin' => array(
-					'top' => 12,
-					'bottom' => 12,
-				),
-			)
-		);
-	}
-
-	/**
 	 * Sets the anchor settings for a pullquote.
 	 *
 	 * @access private
@@ -207,6 +198,23 @@ class Quote extends Component {
 			'targetAnchorPosition' => 'top',
 			'rangeStart' => 0,
 			'rangeLength' => 10,
+		);
+	}
+
+	/**
+	 * Set the layout for a pullquote.
+	 *
+	 * @access private
+	 */
+	private function _set_pullquote_layout() {
+		$this->register_layout(
+			'pullquote-layout',
+			array(
+				'margin' => array(
+					'top' => 12,
+					'bottom' => 12,
+				),
+			)
 		);
 	}
 
