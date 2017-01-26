@@ -39,7 +39,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Ensures that the migrate_api_settings function properly migrates settings.
+	 * Ensures that the migrate_api_settings function migrates settings.
 	 *
 	 * @see Apple_News::migrate_api_settings()
 	 *
@@ -48,16 +48,17 @@ class Apple_News_Test extends WP_UnitTestCase {
 	public function testMigrateApiSettings() {
 
 		// Setup.
-		$default_settings = $this->settings->all();
-		$expected_settings = $default_settings;
-		$expected_settings['api_autosync_update'] = 'no';
+		$legacy_settings = $this->settings->all();
+		$legacy_settings['api_autosync_update'] = 'no';
+		unset( $legacy_settings['api_autosync_delete'] );
 		$apple_news = new Apple_News();
-		update_option( $apple_news::$option_name, $expected_settings );
-		$apple_news->migrate_api_settings( $default_settings );
+		update_option( $apple_news::$option_name, $legacy_settings );
+		$apple_news->migrate_api_settings( $legacy_settings );
 
 		// Ensure the defaults did not overwrite the migrated legacy data.
+		$expected_settings = $legacy_settings;
+		$expected_settings['api_autosync_delete'] = 'no';
 		$migrated_settings = get_option( $apple_news::$option_name );
-		$this->assertNotEquals( $default_settings, $migrated_settings );
 		$this->assertEquals( $expected_settings, $migrated_settings );
 	}
 
