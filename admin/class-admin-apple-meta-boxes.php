@@ -289,7 +289,12 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			return '';
 		}
 
+		// TODO: Get meta field for section overrides IF setting exists for taxonomy-section mappings
+
+		// TODO: Echo checkbox for section overrides IF setting exists for taxonomy-section mappings
+
 		// Get current sections and determine if the article was previously published
+        // TODO: Fork here to build sections from taxonomy if specified and override not specified.
 		$apple_news_sections = get_post_meta( $post_id, 'apple_news_sections', true );
 
 		// Iterate over the list of sections.
