@@ -166,6 +166,7 @@ class Push extends API_Action {
 			);
 
 			// Get sections
+			// TODO: Fork here to pull from taxonomy if requested and override not set.
 			$sections = get_post_meta( $this->id, 'apple_news_sections', true );
 			if ( is_array( $sections ) ) {
 				$meta['data']['links'] = array( 'sections' => $sections );
