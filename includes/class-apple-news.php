@@ -252,6 +252,7 @@ class Apple_News {
 		// Clone and modify font size, if necessary.
 		if ( ! isset( $wp_settings['caption_size'] )
 		     && isset( $wp_settings['body_size'] )
+		     && is_numeric( $wp_settings['body_size'] )
 		) {
 			$wp_settings['caption_size'] = $wp_settings['body_size'] - 2;
 		}
