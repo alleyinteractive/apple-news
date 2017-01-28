@@ -64,6 +64,15 @@ class Admin_Apple_Index_Page extends Apple_News {
 			array( $this, 'admin_page' ),
 			'dashicons-format-aside'
 		);
+
+		add_submenu_page(
+			$this->plugin_slug . '_index',
+			__( 'Articles', 'apple-news' ),
+			__( 'Articles', 'apple-news' ),
+			apply_filters( 'apple_news_list_capability', 'manage_options' ),
+			$this->plugin_slug . '_index',
+			array( $this, 'admin_page' )
+		);
 	}
 
 	/**

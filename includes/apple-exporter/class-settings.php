@@ -147,6 +147,10 @@ class Settings {
 
 		// Default component order
 		'meta_component_order' => array( 'cover', 'title', 'byline' ),
+
+		// Developer tools
+		'apple_news_enable_debugging' => 'no',
+		'apple_news_admin_email' => '',
 	);
 
 	/**

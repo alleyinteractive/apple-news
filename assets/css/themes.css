@@ -1,0 +1,24 @@
+#apple_news_new_theme_options,
+#apple_news_import_theme {
+	display: none;
+}
+
+.apple-news-theme-form {
+	margin-top: 10px;
+}
+
+.apple-news-row-action {
+	margin-right: 10px;
+}
+
+#apple_news_import_theme {
+	margin-bottom: 10px;
+}
+
+.wp-list-table {
+	margin-top: 10px;
+}
+
+h1#apple_news_themes_title {
+	margin-bottom: 20px;
+}
