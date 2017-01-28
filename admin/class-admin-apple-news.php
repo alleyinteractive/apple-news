@@ -13,6 +13,7 @@ require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-bulk-export-page.p
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-notice.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-meta-boxes.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-async.php';
+require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-sections.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-themes.php';
 
 /**
@@ -57,6 +58,9 @@ class Admin_Apple_News extends Apple_News {
 
 		// Set up asynchronous publishing features
 		new Admin_Apple_Async( self::$settings );
+
+		// Add section support
+		new Admin_Apple_Sections( self::$settings );
 
 		// Add theme support
 		new Admin_Apple_Themes( self::$settings );
