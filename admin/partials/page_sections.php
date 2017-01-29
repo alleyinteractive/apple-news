@@ -2,6 +2,7 @@
 	<h1 id="apple_news_sections_title"><?php esc_html_e( 'Manage Sections', 'apple-news' ) ?></h1>
     <form method="post" action="" id="apple-news-themes-form" enctype="multipart/form-data">
 	    <?php wp_nonce_field( 'apple_news_sections', 'apple_news_sections' ); ?>
+        <input name="action" type="hidden" value="apple_news_set_section_taxonomy_mappings" />
         <div id="apple-news-section-taxonomy-mapping-template">
             <label class="screen-reader-text"><?php echo esc_html( $taxonomy->labels->singular_name ); ?></label>
             <input type="text" class="apple-news-section-taxonomy-autocomplete" />

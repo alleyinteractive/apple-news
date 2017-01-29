@@ -35,6 +35,14 @@ class Admin_Apple_Sections extends Apple_News {
 	private $settings;
 
 	/**
+	 * Valid actions handled by this class and their callback functions.
+	 *
+	 * @var array
+	 * @access private
+	 */
+	private $valid_actions;
+
+	/**
 	 * Returns a taxonomy object representing the taxonomy to be mapped to sections.
 	 *
 	 * @access public
@@ -64,13 +72,39 @@ class Admin_Apple_Sections extends Apple_News {
 		$admin_settings = new Admin_Apple_Settings;
 		$this->settings = $admin_settings->fetch_settings();
 
+		// Set up admin action callbacks for form submissions.
+		$this->valid_actions = array(
+			'apple_news_set_section_taxonomy_mappings' => array( $this, 'set_section_taxonomy_mappings' ),
+		);
+
 		// Set up action hooks.
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
+		add_action( 'admin_init', array( $this, 'action_router' ) );
 		add_action( 'admin_menu', array( $this, 'setup_section_page' ), 99 );
 		add_action(
 			'wp_ajax_apple_news_section_taxonomy_autocomplete',
 			array( $this, 'ajax_apple_news_section_taxonomy_autocomplete' )
 		);
+	}
+
+	/**
+	 * Route all possible section actions to the right place.
+	 *
+	 * @access public
+	 */
+	public function action_router() {
+
+		// Check for a valid action.
+		$action	= isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : null;
+		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
+			return;
+		}
+
+		// Check the nonce.
+		check_admin_referer( 'apple_news_sections', 'apple_news_sections' );
+
+		// Call the callback for the action for further processing.
+		call_user_func( $this->valid_actions[ $action ] );
 	}
 
 	/**
@@ -201,5 +235,14 @@ class Admin_Apple_Sections extends Apple_News {
 			plugin_dir_url( __FILE__ ) . '../assets/js/sections.js',
 			array( 'jquery', 'jquery-ui-autocomplete' )
 		);
+	}
+
+	/**
+	 * A callback for form save on the section-taxonomy mappings form.
+	 *
+	 * @access private
+	 */
+	private function set_section_taxonomy_mappings() {
+		// TODO: Parse apart $_POST['taxonomy-mapping-X'] where X is section ID; array of term names
 	}
 }

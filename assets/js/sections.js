@@ -28,12 +28,13 @@
 						// Copy the HTML from the template.
 						$item.html( $template.html() );
 
-						// Set a unique ID on the input field that we just created.
+						// Create a unique ID on the input and map it to the label.
 						$input = $item.find( 'input' );
 						$input.uniqueId();
-
-						// Wire up the label using the unique ID.
 						$item.find( 'label' ).attr( 'for', $input.attr( 'id' ) );
+
+						// Set the correct name on the field.
+						$input.attr( 'name', 'taxonomy-mapping-' + $( this ).attr( 'data-section-id' ) + '[]' );
 
 						// Add the item to the list.
 						$( this ).siblings( '.apple-news-section-taxonomy-mapping-list' ).append( $item );
