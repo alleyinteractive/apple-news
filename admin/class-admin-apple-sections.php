@@ -154,12 +154,7 @@ class Admin_Apple_Sections extends Apple_News {
 		$section_api = new Section( $this->settings );
 		$sections_raw = $section_api->get_sections();
 		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
-			// TODO: REMOVE AFTER TESTING
-			$section = new stdClass;
-			$section->id = 'test-section-id';
-			$section->name = 'Main';
-			$sections = [ $section ];
-			//wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
+			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
 		}
 
 		// Convert sections returned from the API into a key/value pair of id/name.
