@@ -11,10 +11,16 @@
             </thead>
             <tbody id="sections-list">
             <?php foreach ( $sections as $section_id => $section_name ): ?>
-                <tr>
+                <tr id="apple-news-section-<?php echo esc_attr( $section_id ); ?>">
                     <td><?php echo esc_html( $section_name ); ?></td>
                     <td>
-                        <?php // TODO: Wire up autocomplete fields here. ?>
+                        <ul class="apple-news-section-taxonomy-mapping-list">
+	                        <?php // TODO: Wire up autocomplete fields here. ?>
+                            <li>
+                                <label for="apple-news-section-taxonomy-mapping-1" class="screen-reader-text"><?php echo esc_html( $section_name ); ?> Mapping 1</label>
+                                <input id="apple-news-section-taxonomy-mapping-1" type="text" class="apple-news-section-taxonomy-autocomplete" />
+                            </li>
+                        </ul>
                         <button type="button" class="apple-news-add-section-taxonomy-mapping" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php esc_html_e( 'Add Mapping', 'apple-news' ); ?></button>
                     </td>
                 </tr>

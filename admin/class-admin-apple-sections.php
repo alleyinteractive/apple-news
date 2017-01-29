@@ -35,20 +35,6 @@ class Admin_Apple_Sections extends Apple_News {
 	private $settings;
 
 	/**
-	 * Constructor.
-	 */
-	function __construct() {
-
-		// Initialize class variables.
-		$this->page_name = $this->plugin_domain . '-sections';
-		$admin_settings = new Admin_Apple_Settings;
-		$this->settings = $admin_settings->fetch_settings();
-
-		// Set up action hooks.
-		add_action( 'admin_menu', array( $this, 'setup_section_page' ), 99 );
-	}
-
-	/**
 	 * Returns a taxonomy object representing the taxonomy to be mapped to sections.
 	 *
 	 * @access public
@@ -66,6 +52,68 @@ class Admin_Apple_Sections extends Apple_News {
 		$taxonomy = apply_filters( 'apple_news_section_taxonomy', 'category' );
 
 		return get_taxonomy( $taxonomy );
+	}
+
+	/**
+	 * Constructor.
+	 */
+	function __construct() {
+
+		// Initialize class variables.
+		$this->page_name = $this->plugin_domain . '-sections';
+		$admin_settings = new Admin_Apple_Settings;
+		$this->settings = $admin_settings->fetch_settings();
+
+		// Set up action hooks.
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
+		add_action( 'admin_menu', array( $this, 'setup_section_page' ), 99 );
+		add_action(
+			'wp_ajax_apple_news_section_taxonomy_autocomplete',
+			array( $this, 'ajax_apple_news_section_taxonomy_autocomplete' )
+		);
+	}
+
+	/**
+	 * AJAX endpoint for section/taxonomy mapping autocomplete fields.
+	 *
+	 * @access public
+	 * @return array An array of values matching the query.
+	 */
+	public function ajax_apple_news_section_taxonomy_autocomplete() {
+
+		// Determine if we have anything to search for.
+		if ( empty( $_GET['term'] ) ) {
+			echo json_encode( array() );
+			exit;
+		}
+
+		// Try to get the taxonomy in use.
+		$taxonomy = self::get_mapping_taxonomy();
+		if ( empty( $taxonomy->name ) ) {
+			echo json_encode( array() );
+			exit;
+		}
+
+		// Try to get terms matching the criteria.
+		$terms = get_terms(
+			array(
+				'fields' => 'names',
+				'hide_empty' => false,
+				'number' => 10,
+				'search' => $_GET['term'],
+				'taxonomy' => $taxonomy->name,
+			)
+		);
+
+		// See if we got anything.
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			echo json_encode( array() );
+			exit;
+		}
+
+		// Encode results and bail.
+		echo json_encode( $terms );
+		exit();
 	}
 
 	/**
@@ -128,19 +176,30 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
-		if ( 'apple-news_page_apple-news-sections' != $hook ) {
+
+		// Only fire for the hook represented by this class.
+		if ( 'apple-news_page_apple-news-sections' !== $hook ) {
 			return;
 		}
 
-		wp_enqueue_style( 'apple-news-sections-css', plugin_dir_url( __FILE__ ) .
-			'../assets/css/sections.css', array() );
+		global $wp_scripts;
 
-		wp_enqueue_script( 'apple-news-sections-js', plugin_dir_url( __FILE__ ) .
-			'../assets/js/sections.js', array( 'jquery' )
+		// Enqueue styles for this page.
+		$jquery_ui = $wp_scripts->query('jquery-ui-core');
+		wp_enqueue_style(
+			'apple-news-jquery-ui-autocomplete',
+			'//ajax.googleapis.com/ajax/libs/jqueryui/' . $jquery_ui->ver . '/themes/smoothness/jquery-ui.min.css'
+		);
+		wp_enqueue_style(
+			'apple-news-sections-css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/sections.css'
 		);
 
-		wp_localize_script( 'apple-news-sections-js', 'appleNewsSections', array(
-			'key1' => __( 'Message 1', 'apple-news' ),
-		) );
+		// Enqueue scripts for this page.
+		wp_enqueue_script(
+			'apple-news-sections-js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/sections.js',
+			array( 'jquery', 'jquery-ui-autocomplete' )
+		);
 	}
 }
