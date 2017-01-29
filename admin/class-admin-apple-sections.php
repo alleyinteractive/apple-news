@@ -19,6 +19,11 @@ use \Apple_Exporter\Settings;
 class Admin_Apple_Sections extends Apple_News {
 
 	/**
+	 * The option name for section/taxonomy mappings.
+	 */
+	const TAXONOMY_MAPPING_KEY = 'apple_news_installed_themes';
+
+	/**
 	 * Section management page name.
 	 *
 	 * @var string
@@ -243,6 +248,37 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @access private
 	 */
 	private function set_section_taxonomy_mappings() {
-		// TODO: Parse apart $_POST['taxonomy-mapping-X'] where X is section ID; array of term names
+
+		// Ensure we got POST data.
+		if ( empty( $_POST ) || ! is_array( $_POST ) ) {
+			return;
+		}
+
+		// Loop through POST data and extract taxonomy mappings.
+		$mappings = [];
+		$taxonomy = self::get_mapping_taxonomy();
+		foreach ( $_POST as $key => $values ) {
+
+			// Ensure the key is in the right format.
+			if ( 0 !== strpos( $key, 'taxonomy-mapping-' ) ) {
+				continue;
+			}
+
+			// Extract the section ID.
+			$section_id = substr( $key, strlen( 'taxonomy-mapping-' ) );
+
+			// Loop over terms and convert to term IDs for save.
+			foreach ( $values as $value ) {
+
+				// Try to get term.
+				$term = get_term_by( 'name', $value, $taxonomy->name );
+				if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
+					$mappings[ $section_id ][] = $term->term_id;
+				}
+			}
+		}
+
+		// Save the new mappings.
+		update_option( self::TAXONOMY_MAPPING_KEY, $mappings );
 	}
 }
