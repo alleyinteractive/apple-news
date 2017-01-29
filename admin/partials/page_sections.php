@@ -21,8 +21,6 @@
                     <td>
                         <ul class="apple-news-section-taxonomy-mapping-list">
 	                        <?php // TODO: Wire up autocomplete fields here. ?>
-                            <li>
-                            </li>
                         </ul>
                         <button type="button" class="apple-news-add-section-taxonomy-mapping" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php esc_html_e( 'Add Mapping', 'apple-news' ); ?></button>
                     </td>

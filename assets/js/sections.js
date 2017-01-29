@@ -47,7 +47,9 @@
 				 * A function to set up listeners for mapping deletions.
 				 */
 				listen_for_deletions: function () {
-
+					$( '#apple-news-sections-list' ).on( 'click', '.apple-news-section-taxonomy-remove', function () {
+						$( this ).parent().remove();
+					} );
 				},
 
 				/**
