@@ -44,11 +44,19 @@
 				},
 
 				/**
+				 * A function to set up listeners for mapping deletions.
+				 */
+				listen_for_deletions: function () {
+
+				},
+
+				/**
 				 * A function that initializes functionality on the Settings admin screen.
 				 */
 				init: function () {
 					this.enable_autocomplete();
 					this.listen_for_additions();
+					this.listen_for_deletions();
 				}
 			};
 

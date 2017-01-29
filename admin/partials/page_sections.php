@@ -5,6 +5,7 @@
         <div id="apple-news-section-taxonomy-mapping-template">
             <label class="screen-reader-text"><?php echo esc_html( $taxonomy->labels->singular_name ); ?></label>
             <input type="text" class="apple-news-section-taxonomy-autocomplete" />
+            <button type="button" class="apple-news-section-taxonomy-remove"><span class="apple-news-section-taxonomy-remove-icon" aria-hidden="true"></span><span class="screen-reader-text"><?php esc_html_e( 'Remove mapping', 'apple-news' ); ?></span></button>
         </div>
         <table class="wp-list-table widefat fixed striped">
             <thead>
