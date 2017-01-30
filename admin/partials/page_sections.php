@@ -6,7 +6,7 @@
         <?php esc_html_e( 'that you would like to be associated with each section.', 'apple-news' ); ?>
     </p>
     <form method="post" action="" id="apple-news-themes-form" enctype="multipart/form-data">
-	    <?php wp_nonce_field( 'apple_news_sections', 'apple_news_sections' ); ?>
+	    <?php wp_nonce_field( 'apple_news_sections' ); ?>
         <input name="action" type="hidden" value="apple_news_set_section_taxonomy_mappings" />
         <div id="apple-news-section-taxonomy-mapping-template">
             <label class="screen-reader-text"><?php echo esc_html( $taxonomy->labels->singular_name ); ?></label>

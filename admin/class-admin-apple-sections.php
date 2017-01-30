@@ -167,7 +167,7 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Check the nonce.
-		check_admin_referer( 'apple_news_sections', 'apple_news_sections' );
+		check_admin_referer( 'apple_news_sections' );
 
 		// Call the callback for the action for further processing.
 		call_user_func( $this->valid_actions[ $action ] );
