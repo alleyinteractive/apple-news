@@ -17,7 +17,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 
 		// Force creation of a default theme
 		$themes = new \Admin_Apple_Themes();
-		$themes->setup_theme_page();
+		$themes->setup_theme_pages();
 	}
 
 	public function createNewTheme( $name ) {
