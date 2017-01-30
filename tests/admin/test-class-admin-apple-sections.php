@@ -64,16 +64,8 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 				)
 			)
 		);
-	}
 
-	/**
-	 * Ensures that automatic section/category mappings function properly.
-	 *
-	 * @access public
-	 */
-	public function testAutomaticCategoryMapping() {
-
-		// Set up mappings.
+		// Set up post data for creating taxonomy mappings.
 		$_POST = array(
 			'action' => 'apple_news_set_section_taxonomy_mappings',
 			'page' => 'apple_news_sections',
@@ -89,8 +81,18 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 			'_wp_http_referer' => '/wp-admin/admin.php?page=apple-news-sections',
 			'_wpnonce' => wp_create_nonce( 'apple_news_sections' ),
 		);
+
+		// Run the request to set up taxonomy mappings.
 		$sections = new Admin_Apple_Sections();
 		$sections->action_router();
+	}
+
+	/**
+	 * Ensures that automatic section/category mappings function properly.
+	 *
+	 * @access public
+	 */
+	public function testAutomaticCategoryMapping() {
 
 		// Create a post with Category 2 to trigger second section membership.
 		$category2 = get_term_by( 'name', 'Category 2', 'category' );
@@ -128,6 +130,37 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensures that the category mapping override is respected.
+	 *
+	 * @access public
+	 */
+	public function testOverrideCategoryMapping() {
+
+		// Create a post with Category 2 to trigger second section membership.
+		$category2 = get_term_by( 'name', 'Category 2', 'category' );
+		$post_id = $this->factory->post->create();
+		wp_set_post_categories( $post_id, $category2->term_id );
+
+		// Set the override bit for the post and manually set the first section.
+		update_post_meta( $post_id, 'apple_news_section_override', true );
+		update_post_meta(
+			$post_id,
+			'apple_news_sections',
+			array(
+				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
+			)
+		);
+
+		// Validate manual section assignment.
+		$this->assertEquals(
+			array(
+				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
+			),
+			Admin_Apple_Sections::get_sections_for_post( $post_id )
+		);
+	}
+
+	/**
 	 * Ensures that the category mapping form saves properly.
 	 *
 	 * @access public
@@ -138,27 +171,6 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 		$category1 = get_term_by( 'name', 'Category 1', 'category' );
 		$category2 = get_term_by( 'name', 'Category 2', 'category' );
 		$category3 = get_term_by( 'name', 'Category 3', 'category' );
-
-		// Set up post data.
-		$_POST = array(
-			'action' => 'apple_news_set_section_taxonomy_mappings',
-			'page' => 'apple_news_sections',
-			'taxonomy-mapping-abcdef01-2345-6789-abcd-ef012356789a' => array(
-				'Category 1',
-			),
-			'taxonomy-mapping-abcdef01-2345-6789-abcd-ef012356789b' => array(
-				'Category 2',
-				'Category 3',
-			),
-		);
-		$_REQUEST = array(
-			'_wp_http_referer' => '/wp-admin/admin.php?page=apple-news-sections',
-			'_wpnonce' => wp_create_nonce( 'apple_news_sections' ),
-		);
-
-		// Run the request.
-		$sections = new Admin_Apple_Sections();
-		$sections->action_router();
 
 		// Validate the response.
 		$this->assertEquals(
@@ -174,7 +186,4 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 			get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY )
 		);
 	}
-
-	// TODO: Test create post with categories in category mappings and ensure sections are properly set
-	// TODO: Test override functionality for manual settings selection
 }
