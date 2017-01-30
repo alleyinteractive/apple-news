@@ -197,10 +197,24 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Convert sections returned from the API into a key/value pair of id/name.
-		$sections = [];
+		$sections = array();
 		foreach ( $sections_raw as $section ) {
 			if ( ! empty( $section->id ) && ! empty( $section->name ) ) {
 				$sections[ $section->id ] = $section->name;
+			}
+		}
+
+		// Get mappings from settings.
+		$mappings = array();
+		$settings = get_option( self::TAXONOMY_MAPPING_KEY );
+		if ( ! empty( $settings ) && is_array( $settings ) ) {
+			foreach ( $settings as $section_id => $term_ids ) {
+				foreach ( $term_ids as $term_id ) {
+					$term = get_term( $term_id, $taxonomy->name );
+					if ( ! empty( $term->name ) ) {
+						$mappings[ $section_id ][] = $term->name;
+					}
+				}
 			}
 		}
 
@@ -255,7 +269,7 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Loop through POST data and extract taxonomy mappings.
-		$mappings = [];
+		$mappings = array();
 		$taxonomy = self::get_mapping_taxonomy();
 		foreach ( $_POST as $key => $values ) {
 
@@ -274,11 +288,12 @@ class Admin_Apple_Sections extends Apple_News {
 				$term = get_term_by( 'name', $value, $taxonomy->name );
 				if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
 					$mappings[ $section_id ][] = $term->term_id;
+					$mappings[ $section_id ] = array_unique( $mappings[ $section_id ] );
 				}
 			}
 		}
 
 		// Save the new mappings.
-		update_option( self::TAXONOMY_MAPPING_KEY, $mappings );
+		update_option( self::TAXONOMY_MAPPING_KEY, $mappings, false );
 	}
 }
