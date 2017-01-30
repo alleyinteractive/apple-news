@@ -5,8 +5,9 @@ namespace Apple_Actions\Index;
 require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-export.php';
 
-use Admin_Apple_Notice;
-use Apple_Actions\API_Action;
+use \Admin_Apple_Notice;
+use \Admin_Apple_Sections;
+use \Apple_Actions\API_Action;
 
 class Push extends API_Action {
 
@@ -165,9 +166,14 @@ class Push extends API_Action {
 				'data' => array(),
 			);
 
-			// Get sections
-			// TODO: Fork here to pull from taxonomy if requested and override not set.
-			$sections = get_post_meta( $this->id, 'apple_news_sections', true );
+			// Get sections.
+			$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+			$override = get_post_meta( $this->id, 'apple_news_section_override', true );
+			if ( ! empty( $mappings ) && empty( $override ) ) {
+				$sections = Admin_Apple_Sections::get_sections_for_post( $this->id, 'url' );
+			} else {
+				$sections = get_post_meta( $this->id, 'apple_news_sections', true );
+			}
 			if ( is_array( $sections ) ) {
 				$meta['data']['links'] = array( 'sections' => $sections );
 			}

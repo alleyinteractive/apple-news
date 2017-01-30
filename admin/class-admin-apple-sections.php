@@ -68,6 +68,21 @@ class Admin_Apple_Sections extends Apple_News {
 	}
 
 	/**
+	 * Given a post ID, returns an array of sections based on applied taxonomy.
+	 *
+	 * @param int $post_id The ID of the post to query.
+	 * @param string $field The section field to return. Can be 'id' or 'url'.
+	 *
+	 * @access public
+	 * @return array An array of section identifiers for the post.
+	 */
+	public static function get_sections_for_post( $post_id, $field = 'id' ) {
+
+		// TODO: WIRE THIS UP
+		return array();
+	}
+
+	/**
 	 * Constructor.
 	 */
 	function __construct() {

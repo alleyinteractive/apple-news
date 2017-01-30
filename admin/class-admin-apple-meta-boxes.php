@@ -107,13 +107,25 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @static
 	 */
 	public static function save_post_meta( $post_id ) {
-		// Save fields from the meta box
-		if ( ! empty( $_POST['apple_news_sections'] ) ) {
-			$sections = array_map( 'sanitize_text_field', $_POST['apple_news_sections'] );
+
+	    // Determine how to save sections.
+		$sections = array();
+		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+		if ( empty( $mappings ) || empty( $_POST['apple_news_sections_by_taxonomy'] ) ) {
+			if ( ! empty( $_POST['apple_news_sections'] ) ) {
+				$sections = $_POST['apple_news_sections'];
+			}
 		} else {
-			$sections = array();
-		}
-		update_post_meta( $post_id, 'apple_news_sections', $sections );
+            $sections = Admin_Apple_Sections::get_sections_for_post( $post_id, 'url' );
+        }
+		update_post_meta( $post_id, 'apple_news_sections', array_map( 'sanitize_text_field', $sections ) );
+
+		// Save section override setting.
+		if ( ! empty( $mappings ) && empty( $_POST['apple_news_sections_by_taxonomy'] ) ) {
+		    update_post_meta( $post_id, 'apple_news_section_override', true );
+		} else {
+			delete_post_meta( $post_id, 'apple_news_section_override' );
+        }
 
 		if ( ! empty( $_POST['apple_news_is_preview'] ) && 1 === intval( $_POST['apple_news_is_preview'] ) ) {
 			$is_preview = true;
@@ -188,22 +200,25 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		?>
 		<div id="apple-news-publish">
 		<?php wp_nonce_field( $this->publish_action, 'apple_news_nonce' ); ?>
-		<?php
-			$section = new Apple_Actions\Index\Section( $this->settings );
-			try {
-				$sections = $section->get_sections();
-			} catch ( Apple_Actions\Action_Exception $e ) {
-				Admin_Apple_Notice::error( $e->getMessage() );
-			}
+        <?php self::build_sections_override( $post->ID ); ?>
+        <div class="apple-news-sections">
+            <?php
+                $section = new Apple_Actions\Index\Section( $this->settings );
+                try {
+                    $sections = $section->get_sections();
+                } catch ( Apple_Actions\Action_Exception $e ) {
+                    Admin_Apple_Notice::error( $e->getMessage() );
+                }
 
-			if ( ! empty( $sections ) ) :
-				?>
-				<h3><?php esc_html_e( 'Sections', 'apple-news' ) ?></h3>
-				<?php
-				self::build_sections_field( $sections, $post->ID );
-			endif;
-		?>
-		<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. Uncheck them all for a standalone article.' , 'apple-news' ) ?></p>
+                if ( ! empty( $sections ) ) :
+                    ?>
+                    <h3><?php esc_html_e( 'Sections', 'apple-news' ) ?></h3>
+                    <?php
+                    self::build_sections_field( $sections, $post->ID );
+                endif;
+            ?>
+    		<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. Uncheck them all for a standalone article.' , 'apple-news' ) ?></p>
+        </div>
 		<h3><?php esc_html_e( 'Preview?', 'apple-news' ) ?></h3>
 		<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ) ?>>
 		<p class="description"><?php esc_html_e( 'Check this to publish the article as a draft.' , 'apple-news' ) ?></p>
@@ -289,24 +304,53 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			return '';
 		}
 
-		// TODO: Get meta field for section overrides IF setting exists for taxonomy-section mappings
-
-		// TODO: Echo checkbox for section overrides IF setting exists for taxonomy-section mappings
-
-		// Get current sections and determine if the article was previously published
-        // TODO: Fork here to build sections from taxonomy if specified and override not specified.
-		$apple_news_sections = get_post_meta( $post_id, 'apple_news_sections', true );
+		// Get current sections and determine if the article was previously published.
+		$override = get_post_meta( $post_id, 'apple_news_section_override', true );
+        if ( ! empty( $mappings ) && empty( $override ) ) {
+            $apple_news_sections = Admin_Apple_Sections::get_sections_for_post( $post_id, 'url' );
+        } else {
+	        $apple_news_sections = get_post_meta( $post_id, 'apple_news_sections', true );
+        }
 
 		// Iterate over the list of sections.
-		foreach ( $sections as $section ) :
-			?>
-			<div class="section">
-				<input id="apple-news-section-<?php echo esc_attr( $section->id ) ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ) ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ) ?>>
-				<label for="apple-news-section-<?php echo esc_attr( $section->id ) ?>"><?php echo esc_html( $section->name ) ?></label>
-			</div>
-			<?php
-		endforeach;
+        foreach ( $sections as $section ) {
+		    ?>
+            <div class="section">
+                <input id="apple-news-section-<?php echo esc_attr( $section->id ) ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ) ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ) ?>>
+                <label for="apple-news-section-<?php echo esc_attr( $section->id ) ?>"><?php echo esc_html( $section->name ) ?></label>
+            </div>
+            <?php
+        }
 	}
+
+	/**
+     * Builds the sections override checkbox, if necessary.
+     *
+	 * @param int $post_id The ID of the post to build the checkbox field for.
+     *
+     * @access public
+	 */
+	public static function build_sections_override( $post_id ) {
+
+        // Determine if there are section/taxonomy mappings set.
+        $mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+        if ( empty( $mappings ) ) {
+	        return;
+        }
+
+        // Add checkbox to allow override of automatic section assignment.
+        $mapping_taxonomy = Admin_Apple_Sections::get_mapping_taxonomy();
+        $override = get_post_meta( $post_id, 'apple_news_section_override', true );
+        ?>
+        <div class="section-override">
+            <label for="apple-news-sections-by-taxonomy">
+                <input id="apple-news-sections-by-taxonomy" name="apple_news_sections_by_taxonomy" type="checkbox" <?php checked( empty( $override ) ); ?> />
+                <?php esc_html_e( 'Assign sections by', 'apple-news' ); ?>
+                <?php echo esc_html( strtolower( $mapping_taxonomy->labels->singular_name ) ); ?>
+            </label>
+        </div>
+        <?php
+    }
 
 	/**
 	 * Determine if a section is checked
