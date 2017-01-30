@@ -108,6 +108,7 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 			),
 			'taxonomy-mapping-abcdef01-2345-6789-abcd-ef012356789b' => array(
 				'Category 2',
+				'Category 3',
 			),
 		);
 		$_REQUEST = array(
@@ -126,7 +127,8 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 					$category1->term_id
 				),
 				'abcdef01-2345-6789-abcd-ef012356789b' => array(
-					$category2->term_id
+					$category2->term_id,
+					$category3->term_id,
 				),
 			),
 			get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY )
