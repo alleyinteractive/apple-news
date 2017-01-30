@@ -68,18 +68,64 @@ class Admin_Apple_Sections extends Apple_News {
 	}
 
 	/**
-	 * Given a post ID, returns an array of sections based on applied taxonomy.
+	 * Given a post ID, returns an array of section URLs based on applied taxonomy.
 	 *
 	 * @param int $post_id The ID of the post to query.
-	 * @param string $field The section field to return. Can be 'id' or 'url'.
 	 *
 	 * @access public
-	 * @return array An array of section identifiers for the post.
+	 * @return array An array of section URLs for the post.
 	 */
-	public static function get_sections_for_post( $post_id, $field = 'id' ) {
+	public static function get_sections_for_post( $post_id ) {
 
-		// TODO: WIRE THIS UP
-		return array();
+		// Try to get sections.
+		$admin_settings = new Admin_Apple_Settings;
+		$section_api = new Section( $admin_settings->fetch_settings() );
+		$sections_raw = $section_api->get_sections();
+		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
+			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
+		}
+
+		// Convert sections returned from the API into a key/value pair of id/URL.
+		$sections = array();
+		foreach ( $sections_raw as $section ) {
+			if ( ! empty( $section->id ) && ! empty( $section->links->self ) ) {
+				$sections[ $section->id ] = $section->links->self;
+			}
+		}
+
+		// Try to get section mappings.
+		$mappings = get_option( self::TAXONOMY_MAPPING_KEY );
+		if ( empty( $mappings ) ) {
+			wp_die( __( 'Unable to get section mappings.', 'apple-news' ) );
+		}
+
+		// Try to get configured taxonomy.
+		$taxonomy = self::get_mapping_taxonomy();
+		if ( empty( $taxonomy ) || is_wp_error( $taxonomy ) ) {
+			wp_die( __( 'Unable to get a valid mapping taxonomy.', 'apple-news' ) );
+		}
+
+		// Try to get terms for the post.
+		$terms = get_the_terms( $post_id, $taxonomy->name );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return array();
+		}
+
+		// Loop through the mappings to determine sections.
+		$post_sections = array();
+		$term_ids = wp_list_pluck( $terms, 'term_id' );
+		foreach ( $mappings as $section_id => $section_term_ids ) {
+			foreach ( $section_term_ids as $section_term_id ) {
+				if ( in_array( $section_term_id, $term_ids, true ) ) {
+					$post_sections[] = $sections[ $section_id ];
+				}
+			}
+		}
+
+		// Eliminate duplicates.
+		$post_sections = array_unique( $post_sections );
+
+		return $post_sections;
 	}
 
 	/**

@@ -116,7 +116,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 				$sections = $_POST['apple_news_sections'];
 			}
 		} else {
-            $sections = Admin_Apple_Sections::get_sections_for_post( $post_id, 'url' );
+            $sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
         }
 		update_post_meta( $post_id, 'apple_news_sections', array_map( 'sanitize_text_field', $sections ) );
 
@@ -307,7 +307,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Get current sections and determine if the article was previously published.
 		$override = get_post_meta( $post_id, 'apple_news_section_override', true );
         if ( ! empty( $mappings ) && empty( $override ) ) {
-            $apple_news_sections = Admin_Apple_Sections::get_sections_for_post( $post_id, 'url' );
+            $apple_news_sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
         } else {
 	        $apple_news_sections = get_post_meta( $post_id, 'apple_news_sections', true );
         }

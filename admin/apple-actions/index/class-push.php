@@ -170,7 +170,7 @@ class Push extends API_Action {
 			$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
 			$override = get_post_meta( $this->id, 'apple_news_section_override', true );
 			if ( ! empty( $mappings ) && empty( $override ) ) {
-				$sections = Admin_Apple_Sections::get_sections_for_post( $this->id, 'url' );
+				$sections = Admin_Apple_Sections::get_sections_for_post( $this->id );
 			} else {
 				$sections = get_post_meta( $this->id, 'apple_news_sections', true );
 			}
