@@ -404,6 +404,10 @@ class Apple_News {
 	 * @return bool True if all keys exist in the array, false if not.
 	 */
 	private function _all_keys_exist( $compare, $keys ) {
+		if ( ! is_array( $compare ) || ! is_array( $keys ) ) {
+			return false;
+		}
+
 		return ( count( $keys ) === count(
 			array_intersect_key( $compare, array_combine( $keys, $keys ) ) )
 		);

@@ -8,9 +8,17 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Theme management page name.
 	 *
 	 * @var string
-	 * @access private
+	 * @access public
 	 */
-	private $page_name;
+	public $theme_page_name;
+
+	/**
+	 * Theme preview page name.
+	 *
+	 * @var string
+	 * @access public
+	 */
+	public $theme_preview_page_name;
 
 	/**
 	 * Key for the theme index.
@@ -48,7 +56,8 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Constructor.
 	 */
 	function __construct() {
-		$this->page_name = $this->plugin_domain . '-themes';
+		$this->theme_page_name = $this->plugin_domain . '-themes';
+		$this->theme_preview_page_name = $this->plugin_domain . '-theme-preview';
 
 		$this->valid_actions = array(
 			'apple_news_create_theme' => array( $this, 'create_theme' ),
@@ -58,7 +67,7 @@ class Admin_Apple_Themes extends Apple_News {
 			'apple_news_set_theme' => array( $this, 'set_theme' ),
 		);
 
-		add_action( 'admin_menu', array( $this, 'setup_theme_page' ), 99 );
+		add_action( 'admin_menu', array( $this, 'setup_theme_pages' ), 99 );
 		add_action( 'admin_init', array( $this, 'action_router' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 	}
@@ -69,7 +78,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function validate_themes() {
-		$themes = self::list_themes();
+		$themes = $this->list_themes();
 		if ( empty( $themes ) ) {
 			$this->create_theme( __( 'Default', 'apple-news' ) );
 		}
@@ -80,7 +89,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 *
 	 * @access public
 	 */
-	public function setup_theme_page() {
+	public function setup_theme_pages() {
 		$this->validate_themes();
 
 		add_submenu_page(
@@ -88,13 +97,22 @@ class Admin_Apple_Themes extends Apple_News {
 			__( 'Apple News Themes', 'apple-news' ),
 			__( 'Themes', 'apple-news' ),
 			apply_filters( 'apple_news_settings_capability', 'manage_options' ),
-			$this->page_name,
+			$this->theme_page_name,
 			array( $this, 'page_themes_render' )
+		);
+
+		add_submenu_page(
+			null,
+			__( 'Apple News Theme Preview', 'apple-news' ),
+			__( 'Theme Preview', 'apple-news' ),
+			apply_filters( 'apple_news_settings_capability', 'manage_options' ),
+			$this->theme_preview_page_name,
+			array( $this, 'page_theme_preview_render' )
 		);
 	}
 
 	/**
-	 * Options page render.
+	 * Themes page render.
 	 *
 	 * @access public
 	 */
@@ -107,18 +125,55 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Theme preview page render.
+	 *
+	 * @access public
+	 */
+	public function page_theme_preview_render() {
+		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
+			wp_die( __( 'You do not have permissions to access this page.', 'apple-news' ) );
+		}
+
+		$error = '';
+		// Check for a valid theme
+		if ( ! isset( $_GET['theme'] ) ) {
+			$error = __( 'No theme was specified to preview', 'apple-news' );
+		} else {
+			$theme_name = sanitize_text_field( $_GET['theme'] );
+
+			// Load the theme
+			$theme = get_option( $this->theme_key_from_name( $theme_name ) );
+			if ( empty( $theme ) || ! is_array( $theme ) ) {
+				$error = sprintf(
+					__( 'The theme %s does not exist', 'apple-news' ),
+					$theme_name
+				);
+			}
+		}
+
+		// Set the URL for the back button
+		$theme_admin_url = $this->theme_admin_url();
+
+		// Load the preview page
+		include plugin_dir_path( __FILE__ ) . 'partials/page_theme_preview.php';
+	}
+
+	/**
 	 * Register assets for the options page.
 	 *
 	 * @param string $hook
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
-		if ( 'apple-news_page_apple-news-themes' != $hook ) {
+		if ( ! in_array( $hook, array(
+			'apple-news_page_apple-news-themes',
+			'apple-news_page_apple-news-theme-preview',
+		), true ) ) {
 			return;
 		}
 
 		wp_enqueue_style( 'apple-news-themes-css', plugin_dir_url( __FILE__ ) .
-			'../assets/css/themes.css', array() );
+		'../assets/css/themes.css', array() );
 
 		wp_enqueue_script( 'apple-news-themes-js', plugin_dir_url( __FILE__ ) .
 			'../assets/js/themes.js', array( 'jquery' )
@@ -135,30 +190,31 @@ class Admin_Apple_Themes extends Apple_News {
 	 * List all available themes
 	 *
 	 * @access public
-	 * @static
+	 * @return array
 	 */
-	public static function list_themes() {
+	public function list_themes() {
 		return get_option( self::theme_index_key, array() );
 	}
 
 	/**
-	 * List all available themes
+	 * Get the active theme
 	 *
 	 * @access public
-	 * @static
+	 * @return string
 	 */
-	public static function get_active_theme() {
+	public function get_active_theme() {
 		return get_option( self::theme_active_key );
 	}
 
 	/**
 	 * Get a specific theme
 	 *
+	 * @param string $name
 	 * @access public
-	 * @static
+	 * @return array
 	 */
-	public static function get_theme( $key ) {
-		return get_option( $key, array() );
+	public function get_theme( $name ) {
+		return get_option( $this->theme_key_from_name( $name ), array() );
 	}
 
 	/**
@@ -211,7 +267,7 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Check the nonce
-		check_admin_referer( 'apple_news_themes', 'apple_news_themes' );
+		check_admin_referer( 'apple_news_themes' );
 
 		// Call the callback for the action for further processing
 		call_user_func( $this->valid_actions[ $action ] );
@@ -314,7 +370,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$key = $this->theme_key_from_name( $name );
 
 		// Make sure it exists
-		$themes = self::list_themes();
+		$themes = $this->list_themes();
 		$index = array_search( $name, $themes );
 		if ( false === $index ) {
 			\Admin_Apple_Notice::error( sprintf(
@@ -616,9 +672,38 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Generates a key for the theme from the provided name
 	 *
 	 * @param string $name
-	 * @access private
+	 * @return string
+	 * @access public
 	 */
-	private function theme_key_from_name( $name ) {
+	public function theme_key_from_name( $name ) {
 		return self::theme_key_prefix . sanitize_key( $name );
+	}
+
+	/**
+	 * Generates the preview URL for a theme
+	 *
+	 * @param string $name
+	 * @return string
+	 * @access public
+	 */
+	public function theme_preview_url( $name ) {
+		return add_query_arg(
+			array(
+				'page' => $this->theme_preview_page_name,
+				'theme' => $name,
+			),
+			admin_url( 'admin.php' )
+		);
+	}
+
+	/**
+	 * Returns the URL of the themes admin page
+	 *
+	 * @param string $name
+	 * @return string
+	 * @access public
+	 */
+	public function theme_admin_url() {
+		return add_query_arg( 'page', $this->theme_page_name, admin_url( 'admin.php' ) );
 	}
 }
