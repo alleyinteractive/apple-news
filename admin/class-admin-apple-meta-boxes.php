@@ -123,8 +123,8 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 				$sections = $_POST['apple_news_sections'];
 			}
 		} else {
-            $sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
-        }
+			$sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
+		}
 		update_post_meta( $post_id, 'apple_news_sections', array_map( 'sanitize_text_field', $sections ) );
 
 		if ( ! empty( $_POST['apple_news_is_preview'] ) && 1 === intval( $_POST['apple_news_is_preview'] ) ) {
@@ -200,25 +200,25 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		?>
 		<div id="apple-news-publish">
 		<?php wp_nonce_field( $this->publish_action, 'apple_news_nonce' ); ?>
-        <?php self::build_sections_override( $post->ID ); ?>
-        <div class="apple-news-sections">
-            <?php
-                $section = new Apple_Actions\Index\Section( $this->settings );
-                try {
-                    $sections = $section->get_sections();
-                } catch ( Apple_Actions\Action_Exception $e ) {
-                    Admin_Apple_Notice::error( $e->getMessage() );
-                }
+		<?php self::build_sections_override( $post->ID ); ?>
+		<div class="apple-news-sections">
+			<?php
+				$section = new Apple_Actions\Index\Section( $this->settings );
+				try {
+					$sections = $section->get_sections();
+				} catch ( Apple_Actions\Action_Exception $e ) {
+					Admin_Apple_Notice::error( $e->getMessage() );
+				}
 
-                if ( ! empty( $sections ) ) :
-                    ?>
-                    <h3><?php esc_html_e( 'Sections', 'apple-news' ) ?></h3>
-                    <?php
-                    self::build_sections_field( $sections, $post->ID );
-                endif;
-            ?>
-    		<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. Uncheck them all for a standalone article.' , 'apple-news' ) ?></p>
-        </div>
+				if ( ! empty( $sections ) ) :
+					?>
+					<h3><?php esc_html_e( 'Sections', 'apple-news' ) ?></h3>
+					<?php
+					self::build_sections_field( $sections, $post->ID );
+				endif;
+			?>
+			<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. Uncheck them all for a standalone article.' , 'apple-news' ) ?></p>
+		</div>
 		<h3><?php esc_html_e( 'Preview?', 'apple-news' ) ?></h3>
 		<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ) ?>>
 		<p class="description"><?php esc_html_e( 'Check this to publish the article as a draft.' , 'apple-news' ) ?></p>
@@ -307,44 +307,44 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Iterate over the list of sections and print each.
 		$apple_news_sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
-        foreach ( $sections as $section ) {
-		    ?>
-            <div class="section">
-                <input id="apple-news-section-<?php echo esc_attr( $section->id ) ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ) ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ) ?>>
-                <label for="apple-news-section-<?php echo esc_attr( $section->id ) ?>"><?php echo esc_html( $section->name ) ?></label>
-            </div>
-            <?php
-        }
+		foreach ( $sections as $section ) {
+			?>
+			<div class="section">
+				<input id="apple-news-section-<?php echo esc_attr( $section->id ) ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ) ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ) ?>>
+				<label for="apple-news-section-<?php echo esc_attr( $section->id ) ?>"><?php echo esc_html( $section->name ) ?></label>
+			</div>
+			<?php
+		}
 	}
 
 	/**
-     * Builds the sections override checkbox, if necessary.
-     *
+	 * Builds the sections override checkbox, if necessary.
+	 *
 	 * @param int $post_id The ID of the post to build the checkbox field for.
-     *
-     * @access public
+	 *
+	 * @access public
 	 */
 	public static function build_sections_override( $post_id ) {
 
-        // Determine if there are section/taxonomy mappings set.
-        $mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
-        if ( empty( $mappings ) ) {
-	        return;
-        }
+		// Determine if there are section/taxonomy mappings set.
+		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+		if ( empty( $mappings ) ) {
+			return;
+		}
 
-        // Add checkbox to allow override of automatic section assignment.
-        $mapping_taxonomy = Admin_Apple_Sections::get_mapping_taxonomy();
-        $override = get_post_meta( $post_id, 'apple_news_section_override', true );
-        ?>
-        <div class="section-override">
-            <label for="apple-news-sections-by-taxonomy">
-                <input id="apple-news-sections-by-taxonomy" name="apple_news_sections_by_taxonomy" type="checkbox" <?php checked( empty( $override ) ); ?> />
-                <?php esc_html_e( 'Assign sections by', 'apple-news' ); ?>
-                <?php echo esc_html( strtolower( $mapping_taxonomy->labels->singular_name ) ); ?>
-            </label>
-        </div>
-        <?php
-    }
+		// Add checkbox to allow override of automatic section assignment.
+		$mapping_taxonomy = Admin_Apple_Sections::get_mapping_taxonomy();
+		$override = get_post_meta( $post_id, 'apple_news_section_override', true );
+		?>
+		<div class="section-override">
+			<label for="apple-news-sections-by-taxonomy">
+			<input id="apple-news-sections-by-taxonomy" name="apple_news_sections_by_taxonomy" type="checkbox" <?php checked( empty( $override ) ); ?> />
+				<?php esc_html_e( 'Assign sections by', 'apple-news' ); ?>
+				<?php echo esc_html( strtolower( $mapping_taxonomy->labels->singular_name ) ); ?>
+			</label>
+		</div>
+		<?php
+	}
 
 	/**
 	 * Determine if a section is checked
