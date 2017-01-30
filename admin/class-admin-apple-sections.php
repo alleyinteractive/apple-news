@@ -70,12 +70,22 @@ class Admin_Apple_Sections extends Apple_News {
 	/**
 	 * Given a post ID, returns an array of section URLs based on applied taxonomy.
 	 *
+	 * Supports overrides for manual section selection and fallback to postmeta
+	 * when no mappings are set.
+	 *
 	 * @param int $post_id The ID of the post to query.
 	 *
 	 * @access public
 	 * @return array An array of section URLs for the post.
 	 */
 	public static function get_sections_for_post( $post_id ) {
+
+		// Determine if sections should be loaded from postmeta.
+		$mappings = get_option( self::TAXONOMY_MAPPING_KEY );
+		$override = get_post_meta( $post_id, 'apple_news_section_override', true );
+		if ( empty( $mappings ) || ! empty( $override ) ) {
+			return get_post_meta( $post_id, 'apple_news_sections', true );
+		}
 
 		// Try to get sections.
 		$admin_settings = new Admin_Apple_Settings;
@@ -91,12 +101,6 @@ class Admin_Apple_Sections extends Apple_News {
 			if ( ! empty( $section->id ) && ! empty( $section->links->self ) ) {
 				$sections[ $section->id ] = $section->links->self;
 			}
-		}
-
-		// Try to get section mappings.
-		$mappings = get_option( self::TAXONOMY_MAPPING_KEY );
-		if ( empty( $mappings ) ) {
-			wp_die( __( 'Unable to get section mappings.', 'apple-news' ) );
 		}
 
 		// Try to get configured taxonomy.

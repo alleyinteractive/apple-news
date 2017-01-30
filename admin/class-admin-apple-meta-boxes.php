@@ -108,9 +108,16 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 */
 	public static function save_post_meta( $post_id ) {
 
-	    // Determine how to save sections.
-		$sections = array();
+		// Save section override setting.
 		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+		if ( ! empty( $mappings ) && empty( $_POST['apple_news_sections_by_taxonomy'] ) ) {
+			update_post_meta( $post_id, 'apple_news_section_override', true );
+		} else {
+			delete_post_meta( $post_id, 'apple_news_section_override' );
+		}
+
+		// Determine how to save sections.
+		$sections = array();
 		if ( empty( $mappings ) || empty( $_POST['apple_news_sections_by_taxonomy'] ) ) {
 			if ( ! empty( $_POST['apple_news_sections'] ) ) {
 				$sections = $_POST['apple_news_sections'];
@@ -119,13 +126,6 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
             $sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
         }
 		update_post_meta( $post_id, 'apple_news_sections', array_map( 'sanitize_text_field', $sections ) );
-
-		// Save section override setting.
-		if ( ! empty( $mappings ) && empty( $_POST['apple_news_sections_by_taxonomy'] ) ) {
-		    update_post_meta( $post_id, 'apple_news_section_override', true );
-		} else {
-			delete_post_meta( $post_id, 'apple_news_section_override' );
-        }
 
 		if ( ! empty( $_POST['apple_news_is_preview'] ) && 1 === intval( $_POST['apple_news_is_preview'] ) ) {
 			$is_preview = true;
@@ -299,20 +299,14 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @static
 	 */
 	public static function build_sections_field( $sections, $post_id ) {
-		// Make sure we have sections
+
+		// Make sure we have sections.
 		if ( empty( $sections ) ) {
 			return '';
 		}
 
-		// Get current sections and determine if the article was previously published.
-		$override = get_post_meta( $post_id, 'apple_news_section_override', true );
-        if ( ! empty( $mappings ) && empty( $override ) ) {
-            $apple_news_sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
-        } else {
-	        $apple_news_sections = get_post_meta( $post_id, 'apple_news_sections', true );
-        }
-
-		// Iterate over the list of sections.
+		// Iterate over the list of sections and print each.
+		$apple_news_sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
         foreach ( $sections as $section ) {
 		    ?>
             <div class="section">

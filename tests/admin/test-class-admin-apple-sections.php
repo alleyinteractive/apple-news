@@ -67,6 +67,46 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensures that automatic section/category mappings function properly.
+	 *
+	 * @access public
+	 */
+	public function testAutomaticCategoryMapping() {
+
+		// Set up mappings.
+		$_POST = array(
+			'action' => 'apple_news_set_section_taxonomy_mappings',
+			'page' => 'apple_news_sections',
+			'taxonomy-mapping-abcdef01-2345-6789-abcd-ef012356789a' => array(
+				'Category 1',
+			),
+			'taxonomy-mapping-abcdef01-2345-6789-abcd-ef012356789b' => array(
+				'Category 2',
+				'Category 3',
+			),
+		);
+		$_REQUEST = array(
+			'_wp_http_referer' => '/wp-admin/admin.php?page=apple-news-sections',
+			'_wpnonce' => wp_create_nonce( 'apple_news_sections' ),
+		);
+		$sections = new Admin_Apple_Sections();
+		$sections->action_router();
+
+		// Create a post with Category 2 to trigger second section membership.
+		$category2 = get_term_by( 'name', 'Category 2', 'category' );
+		$post_id = $this->factory->post->create();
+		wp_set_post_categories( $post_id, $category2->term_id );
+
+		// Validate automatic section assignment.
+		$this->assertEquals(
+			array(
+				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
+			),
+			Admin_Apple_Sections::get_sections_for_post( $post_id )
+		);
+	}
+
+	/**
 	 * Ensures that the apple_news_section_taxonomy filter is working properly.
 	 *
 	 * @access public
