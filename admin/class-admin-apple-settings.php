@@ -16,6 +16,14 @@ use Apple_Exporter\Settings as Settings;
 class Admin_Apple_Settings extends Apple_News {
 
 	/**
+	 * Keeps track of whether functionality has been initialized or not.
+	 *
+	 * @access private
+	 * @var bool
+	 */
+	private static $initialized = false;
+
+	/**
 	 * Associative array of fields and types. If not present, defaults to string.
 	 * Possible types are: integer, color, boolean, string and options.
 	 * If options, use an array instead of a string.
@@ -68,9 +76,12 @@ class Admin_Apple_Settings extends Apple_News {
 		$this->sections = array();
 		$this->page_name = $this->plugin_domain . '-options';
 
-		add_action( 'admin_init', array( $this, 'register_sections' ), 5 );
-		add_action( 'admin_menu', array( $this, 'setup_options_page' ), 99 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
+		if ( ! self::$initialized ) {
+			add_action( 'admin_init', array( $this, 'register_sections' ), 5 );
+			add_action( 'admin_menu', array( $this, 'setup_options_page' ), 99 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
+			self::$initialized = true;
+		}
 	}
 
 	/**
