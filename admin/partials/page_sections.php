@@ -1,9 +1,10 @@
 <div class="wrap apple-news-sections">
 	<h1 id="apple_news_sections_title"><?php esc_html_e( 'Manage Sections', 'apple-news' ) ?></h1>
 	<h2><?php esc_html_e( 'Section', 'apple-news' ) ?>/<?php echo esc_html( $taxonomy->labels->singular_name ); ?> <?php esc_html_e( 'Mappings', 'apple-news' ) ?></h2>
-	<p><?php esc_html_e( 'To enable automatic section assignment, choose the', 'apple-news' ); ?>
-		<?php echo esc_html( strtolower( $taxonomy->label ) ); ?>
-		<?php esc_html_e( 'that you would like to be associated with each section.', 'apple-news' ); ?>
+	<p><?php echo esc_html( sprintf(
+			__( 'To enable automatic section assignment, choose the %s that you would like to be associated with each section.', 'apple-news' ),
+			strtolower( $taxonomy->label )
+		) ); ?>
 	</p>
 	<form method="post" action="" id="apple-news-themes-form" enctype="multipart/form-data">
 		<?php wp_nonce_field( 'apple_news_sections' ); ?>
