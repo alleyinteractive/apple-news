@@ -71,14 +71,14 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$this->createDefaultTheme();
 
 		// Ensure the default theme was created
-		$this->assertEquals( __( 'Default', 'apple-news' ), get_option( $themes::theme_active_key ) );
+		$this->assertEquals( __( 'Default', 'apple-news' ), get_option( $themes::THEME_ACTIVE_KEY ) );
 		$this->assertEquals(
 			$this->getFormattingSettings( $this->settings->all() ),
 			get_option( $themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) )
 		);
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ) ),
-			get_option( $themes::theme_index_key )
+			get_option( $themes::THEME_INDEX_KEY )
 		);
 	}
 
@@ -109,7 +109,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$themes->action_router();
 
 		// Check that the theme got set
-		$this->assertEquals( $name, get_option( $themes::theme_active_key ) );
+		$this->assertEquals( $name, get_option( $themes::THEME_ACTIVE_KEY ) );
 
 		$current_settings = $settings_obj->fetch_settings();
 		$this->assertEquals( 50, $current_settings['layout_margin'] );
@@ -128,7 +128,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Ensure both themes exist
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ), $name ),
-			get_option( $themes::theme_index_key )
+			get_option( $themes::THEME_INDEX_KEY )
 		);
 		$this->assertNotEmpty( get_option( $themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) ) );
 		$this->assertNotEmpty( get_option( $themes->theme_key_from_name( $name ) ) );
@@ -146,7 +146,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Ensure both themes exist
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ) ),
-			get_option( $themes::theme_index_key )
+			get_option( $themes::THEME_INDEX_KEY )
 		);
 		$this->assertEmpty( get_option( $themes->theme_key_from_name( $name ) ) );
 	}

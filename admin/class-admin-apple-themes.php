@@ -26,7 +26,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @var string
 	 * @const
 	 */
-	const theme_index_key = 'apple_news_installed_themes';
+	const THEME_INDEX_KEY = 'apple_news_installed_themes';
 
 	/**
 	 * Key for the active theme.
@@ -34,7 +34,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @var string
 	 * @const
 	 */
-	const theme_active_key = 'apple_news_active_theme';
+	const THEME_ACTIVE_KEY = 'apple_news_active_theme';
 
 	/**
 	 * Prefix for individual theme keys.
@@ -42,7 +42,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @var string
 	 * @const
 	 */
-	const theme_key_prefix = 'apple_news_theme_';
+	const THEME_KEY_PREFIX = 'apple_news_theme_';
 
 	/**
 	 * Valid actions handled by this class and their callback functions.
@@ -193,7 +193,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @return array
 	 */
 	public function list_themes() {
-		return get_option( self::theme_index_key, array() );
+		return get_option( self::THEME_INDEX_KEY, array() );
 	}
 
 	/**
@@ -203,7 +203,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @return string
 	 */
 	public function get_active_theme() {
-		return get_option( self::theme_active_key );
+		return get_option( self::THEME_ACTIVE_KEY );
 	}
 
 	/**
@@ -244,7 +244,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$index = array_unique( $index );
 
 		// Save the theme index
-		update_option( self::theme_index_key, $index, false );
+		update_option( self::THEME_INDEX_KEY, $index, false );
 
 		// Indicate success
 		\Admin_Apple_Notice::success( sprintf(
@@ -338,7 +338,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$settings->save_settings( $new_settings );
 
 		// Set the theme active
-		update_option( self::theme_active_key, $name, false );
+		update_option( self::THEME_ACTIVE_KEY, $name, false );
 
 		// Indicate success
 		\Admin_Apple_Notice::success( sprintf(
@@ -382,7 +382,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Remove from the index and delete settings
 		unset( $themes[ $index ] );
-		update_option( self::theme_index_key, $themes, false );
+		update_option( self::THEME_INDEX_KEY, $themes, false );
 		delete_option( $key );
 
 		// Indicate success
@@ -676,7 +676,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access public
 	 */
 	public function theme_key_from_name( $name ) {
-		return self::theme_key_prefix . sanitize_key( $name );
+		return self::THEME_KEY_PREFIX . sanitize_key( $name );
 	}
 
 	/**
