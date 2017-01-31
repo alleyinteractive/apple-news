@@ -215,7 +215,7 @@ class Admin_Apple_Sections extends Apple_News {
 				'fields' => 'names',
 				'hide_empty' => false,
 				'number' => 10,
-				'search' => $_GET['term'],
+				'search' => sanitize_text_field( $_GET['term'] ),
 				'taxonomy' => $taxonomy->name,
 			)
 		);
@@ -344,20 +344,28 @@ class Admin_Apple_Sections extends Apple_News {
 			return;
 		}
 
-		// Loop through POST data and extract taxonomy mappings.
+		// Try to get sections.
+		$admin_settings = new Admin_Apple_Settings;
+		$section_api = new Section( $admin_settings->fetch_settings() );
+		$sections_raw = $section_api->get_sections();
+		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
+			return;
+		}
+
+		// Loop through sections and look for mappings in POST data.
 		$mappings = array();
 		$taxonomy = self::get_mapping_taxonomy();
-		foreach ( $_POST as $key => $values ) {
+		$section_ids = wp_list_pluck( $sections_raw, 'id' );
+		foreach ( $section_ids as $section_id ) {
 
-			// Ensure the key is in the right format.
-			if ( 0 !== strpos( $key, 'taxonomy-mapping-' ) ) {
+			// Determine if there is data for this section.
+			$key = 'taxonomy-mapping-' . $section_id;
+			if ( empty( $_POST[ $key ] ) || ! is_array( $_POST[ $key ] ) ) {
 				continue;
 			}
 
-			// Extract the section ID.
-			$section_id = substr( $key, strlen( 'taxonomy-mapping-' ) );
-
 			// Loop over terms and convert to term IDs for save.
+			$values = array_map( 'sanitize_text_field', $_POST[ $key ] );
 			foreach ( $values as $value ) {
 
 				// Try to get term.
