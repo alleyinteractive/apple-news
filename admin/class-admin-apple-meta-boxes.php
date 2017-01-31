@@ -109,15 +109,17 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	public static function save_post_meta( $post_id ) {
 
 		// Determine whether to save sections.
-		if ( empty( $_POST['apple_news_sections_by_taxonomy'] )
-			&& isset( $_POST['apple_news_sections'] )
-			&& is_array( $_POST['apple_news_sections'] )
-		) {
-			update_post_meta(
-				$post_id,
-				'apple_news_sections',
-				array_map( 'sanitize_text_field', $_POST['apple_news_sections'] )
-			);
+		if ( empty( $_POST['apple_news_sections_by_taxonomy'] ) ) {
+			$sections = array();
+			if ( ! empty( $_POST['apple_news_sections'] )
+				&& is_array( $_POST['apple_news_sections'] )
+			) {
+				$sections = array_map(
+					'sanitize_text_field',
+					$_POST['apple_news_sections']
+				);
+			}
+			update_post_meta( $post_id, 'apple_news_sections', $sections );
 		} else {
 			delete_post_meta( $post_id, 'apple_news_sections' );
 		}
