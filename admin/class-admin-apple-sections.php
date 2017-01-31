@@ -84,7 +84,9 @@ class Admin_Apple_Sections extends Apple_News {
 		$mappings = get_option( self::TAXONOMY_MAPPING_KEY );
 		$override = get_post_meta( $post_id, 'apple_news_section_override', true );
 		if ( empty( $mappings ) || ! empty( $override ) ) {
-			return get_post_meta( $post_id, 'apple_news_sections', true );
+			$sections = get_post_meta( $post_id, 'apple_news_sections', true );
+
+			return ( is_array( $sections ) ) ? $sections : array();
 		}
 
 		// Try to get sections.

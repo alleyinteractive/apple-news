@@ -119,7 +119,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Determine how to save sections.
 		$sections = array();
 		if ( empty( $mappings ) || empty( $_POST['apple_news_sections_by_taxonomy'] ) ) {
-			if ( ! empty( $_POST['apple_news_sections'] ) ) {
+			if ( ! empty( $_POST['apple_news_sections'] )
+                && is_array( $_POST['apple_news_sections'] )
+            ) {
 				$sections = $_POST['apple_news_sections'];
 			}
 		} else {
