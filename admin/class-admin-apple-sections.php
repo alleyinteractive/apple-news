@@ -21,7 +21,7 @@ class Admin_Apple_Sections extends Apple_News {
 	/**
 	 * The option name for section/taxonomy mappings.
 	 */
-	const TAXONOMY_MAPPING_KEY = 'apple_news_installed_themes';
+	const TAXONOMY_MAPPING_KEY = 'apple_news_section_taxonomy_mappings';
 
 	/**
 	 * Section management page name.
