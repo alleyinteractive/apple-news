@@ -80,16 +80,16 @@ class Admin_Apple_Sections extends Apple_News {
 	 */
 	public static function get_sections_for_post( $post_id ) {
 
+		// Try to load sections from postmeta.
+		$meta_value = get_post_meta( $post_id, 'apple_news_sections', true );
+		if ( is_array( $meta_value ) ) {
+			return $meta_value;
+		}
+
 		// Determine if there are taxonomy mappings configured.
 		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
 		if ( empty( $mappings ) ) {
-			return self::get_sections_from_meta( $post_id );
-		}
-
-		// Load section overrides from postmeta if the meta key is set.
-		$post_meta = get_post_meta( $post_id );
-		if ( isset( $post_meta['apple_news_sections'] ) ) {
-			return self::get_sections_from_meta( $post_id );
+			return array();
 		}
 
 		// Try to get sections.
@@ -330,20 +330,6 @@ class Admin_Apple_Sections extends Apple_News {
 			plugin_dir_url( __FILE__ ) . '../assets/js/sections.js',
 			array( 'jquery', 'jquery-ui-autocomplete' )
 		);
-	}
-
-	/**
-	 * Retrieves an array of sections from postmeta for a given post ID.
-	 *
-	 * @param int $post_id The post ID to look up.
-	 *
-	 * @access private
-	 * @return array An array of sections for the specified post.
-	 */
-	private static function get_sections_from_meta( $post_id ) {
-		$meta_value = get_post_meta( $post_id, 'apple_news_sections', true );
-
-		return ( is_array( $meta_value ) ) ? $meta_value : array();
 	}
 
 	/**

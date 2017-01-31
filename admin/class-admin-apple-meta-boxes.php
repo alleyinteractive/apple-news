@@ -110,7 +110,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Determine whether to save sections.
 		if ( empty( $_POST['apple_news_sections_by_taxonomy'] )
-			&& ! empty( $_POST['apple_news_sections'] )
+			&& isset( $_POST['apple_news_sections'] )
 			&& is_array( $_POST['apple_news_sections'] )
 		) {
 			update_post_meta(
@@ -301,7 +301,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 
 		// Iterate over the list of sections and print each.
-		$apple_news_sections = Admin_Apple_Sections::get_sections_for_post( $post_id );
+		$apple_news_sections = get_post_meta( $post_id, 'apple_news_sections', true );
 		foreach ( $sections as $section ) {
 			?>
 			<div class="section">
