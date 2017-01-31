@@ -141,8 +141,7 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		wp_set_post_categories( $post_id, $category2->term_id );
 
-		// Set the override bit for the post and manually set the first section.
-		update_post_meta( $post_id, 'apple_news_section_override', true );
+		// Manually set the first section to override automatic mapping.
 		update_post_meta(
 			$post_id,
 			'apple_news_sections',

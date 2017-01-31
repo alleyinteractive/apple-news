@@ -81,12 +81,17 @@ class Admin_Apple_Sections extends Apple_News {
 	public static function get_sections_for_post( $post_id ) {
 
 		// Determine if sections should be loaded from postmeta.
-		$mappings = get_option( self::TAXONOMY_MAPPING_KEY );
-		$override = get_post_meta( $post_id, 'apple_news_section_override', true );
-		if ( empty( $mappings ) || ! empty( $override ) ) {
-			$sections = get_post_meta( $post_id, 'apple_news_sections', true );
+		$post_meta = get_post_meta( $post_id );
+		if ( isset( $post_meta['apple_news_sections'] ) ) {
+			$meta_value = get_post_meta( $post_id, 'apple_news_sections', true );
 
-			return ( is_array( $sections ) ) ? $sections : array();
+			return ( is_array( $meta_value ) ) ? $meta_value : array();
+		}
+
+		// Determine if there are taxonomy mappings configured.
+		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+		if ( empty( $mappings ) ) {
+			return array();
 		}
 
 		// Try to get sections.
@@ -120,6 +125,7 @@ class Admin_Apple_Sections extends Apple_News {
 		// Loop through the mappings to determine sections.
 		$post_sections = array();
 		$term_ids = wp_list_pluck( $terms, 'term_id' );
+		$mappings = get_option( self::TAXONOMY_MAPPING_KEY );
 		foreach ( $mappings as $section_id => $section_term_ids ) {
 			foreach ( $section_term_ids as $section_term_id ) {
 				if ( in_array( $section_term_id, $term_ids, true ) ) {
@@ -130,6 +136,11 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Eliminate duplicates.
 		$post_sections = array_unique( $post_sections );
+
+		// If we get here and no sections are specified, fall back to Main.
+		if ( empty( $post_sections ) ) {
+			$post_sections[] = reset( $sections );
+		}
 
 		return $post_sections;
 	}
