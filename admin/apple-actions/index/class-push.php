@@ -168,7 +168,7 @@ class Push extends API_Action {
 
 			// Get sections.
 			$sections = Admin_Apple_Sections::get_sections_for_post( $this->id );
-			if ( is_array( $sections ) ) {
+			if ( ! empty( $sections ) ) {
 				$meta['data']['links'] = array( 'sections' => $sections );
 			}
 
