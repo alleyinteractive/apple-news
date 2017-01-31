@@ -154,8 +154,8 @@ class Admin_Apple_Preview extends Apple_News {
 			<p>Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque ipsum mi, sagittis eget sodales et, volutpat at felis.</p>
 			<pre>
 .code-sample {
-font-family: monospace;
-white-space: pre;
+  font-family: monospace;
+  white-space: pre;
 }
 			</pre>
 			</div>
