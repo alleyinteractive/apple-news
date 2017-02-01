@@ -20,13 +20,24 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$themes->setup_theme_pages();
 	}
 
-	public function createNewTheme( $name ) {
-		$nonce = wp_create_nonce( 'apple_news_themes' );
+	public function createNewTheme( $name, $settings = array() ) {
+		$nonce = wp_create_nonce( 'apple_news_save_edit_theme' );
 		$_POST['apple_news_theme_name'] = $name;
-		$_POST['action'] = 'apple_news_create_theme';
+		$_POST['action'] = 'apple_news_save_edit_theme';
 		$_POST['page'] = 'apple-news-themes';
-		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-themes';
+		$_POST['redirect'] = false;
+		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-theme-edit';
 		$_REQUEST['_wpnonce'] = $nonce;
+
+		// Merge any provided settings with default settings
+		$current_settings = $this->settings->all();
+		$defaults = $this->getFormattingSettings( $current_settings );
+		$settings = wp_parse_args( $settings, $defaults );
+
+		// Add all of these to the $_POST object
+		foreach ( $settings as $key => $value ) {
+			$_POST[ $key ] = $value;
+		}
 
 		$themes = new \Admin_Apple_Themes();
 		$themes->action_router();
@@ -71,14 +82,14 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$this->createDefaultTheme();
 
 		// Ensure the default theme was created
-		$this->assertEquals( __( 'Default', 'apple-news' ), get_option( $themes::theme_active_key ) );
+		$this->assertEquals( __( 'Default', 'apple-news' ), get_option( $themes::THEME_ACTIVE_KEY ) );
 		$this->assertEquals(
 			$this->getFormattingSettings( $this->settings->all() ),
 			get_option( $themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) )
 		);
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ) ),
-			get_option( $themes::theme_index_key )
+			get_option( $themes::THEME_INDEX_KEY )
 		);
 	}
 
@@ -100,7 +111,6 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 
 		// Simulate the form submission to set the theme
 		$nonce = wp_create_nonce( 'apple_news_themes' );
-		$_POST['apple_news_theme_name'] = $name;
 		$_POST['action'] = 'apple_news_set_theme';
 		$_POST['apple_news_active_theme'] = $name;
 		$_POST['page'] = 'apple-news-themes';
@@ -109,7 +119,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$themes->action_router();
 
 		// Check that the theme got set
-		$this->assertEquals( $name, get_option( $themes::theme_active_key ) );
+		$this->assertEquals( $name, get_option( $themes::THEME_ACTIVE_KEY ) );
 
 		$current_settings = $settings_obj->fetch_settings();
 		$this->assertEquals( 50, $current_settings['layout_margin'] );
@@ -128,7 +138,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Ensure both themes exist
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ), $name ),
-			get_option( $themes::theme_index_key )
+			get_option( $themes::THEME_INDEX_KEY )
 		);
 		$this->assertNotEmpty( get_option( $themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) ) );
 		$this->assertNotEmpty( get_option( $themes->theme_key_from_name( $name ) ) );
@@ -146,7 +156,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Ensure both themes exist
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ) ),
-			get_option( $themes::theme_index_key )
+			get_option( $themes::THEME_INDEX_KEY )
 		);
 		$this->assertEmpty( get_option( $themes->theme_key_from_name( $name ) ) );
 	}

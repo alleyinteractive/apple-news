@@ -17,10 +17,7 @@ class Admin_Apple_Preview extends Apple_News {
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
-		if ( ! in_array( $hook, array(
-			'apple-news_page_apple-news-options',
-			'admin_page_apple-news-theme-preview',
-		), true ) ) {
+		if ( 'admin_page_apple-news-theme-edit' !== $hook ) {
 			return;
 		}
 
@@ -30,15 +27,6 @@ class Admin_Apple_Preview extends Apple_News {
 		wp_enqueue_script( 'apple-news-preview-js', plugin_dir_url( __FILE__ ) .
 			'../assets/js/preview.js', array( 'jquery' )
 		);
-
-		if ( 'admin_page_apple-news-theme-preview' === $hook ) {
-			wp_enqueue_style( 'apple-news-theme-preview-css', plugin_dir_url( __FILE__ ) .
-			'../assets/css/theme-preview.css', array() );
-
-			wp_enqueue_script( 'apple-news-theme-preview-js', plugin_dir_url( __FILE__ ) .
-				'../assets/js/theme-preview.js', array( 'jquery' )
-			);
-		}
 	}
 
 	/**
@@ -104,7 +92,7 @@ class Admin_Apple_Preview extends Apple_News {
 		}
 
 		?>
-		<div class="apple-news-settings-preview">
+		<div class="apple-news-preview">
 			<?php
 				// Build sample content
 				$title = sprintf(
@@ -154,8 +142,8 @@ class Admin_Apple_Preview extends Apple_News {
 			<p>Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque ipsum mi, sagittis eget sodales et, volutpat at felis.</p>
 			<pre>
 .code-sample {
-font-family: monospace;
-white-space: pre;
+  font-family: monospace;
+  white-space: pre;
 }
 			</pre>
 			</div>

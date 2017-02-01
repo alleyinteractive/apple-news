@@ -13,12 +13,12 @@ class Admin_Apple_Themes extends Apple_News {
 	public $theme_page_name;
 
 	/**
-	 * Theme preview page name.
+	 * Theme edit page name.
 	 *
 	 * @var string
 	 * @access public
 	 */
-	public $theme_preview_page_name;
+	public $theme_edit_page_name;
 
 	/**
 	 * Key for the theme index.
@@ -26,7 +26,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @var string
 	 * @const
 	 */
-	const theme_index_key = 'apple_news_installed_themes';
+	const THEME_INDEX_KEY = 'apple_news_installed_themes';
 
 	/**
 	 * Key for the active theme.
@@ -34,7 +34,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @var string
 	 * @const
 	 */
-	const theme_active_key = 'apple_news_active_theme';
+	const THEME_ACTIVE_KEY = 'apple_news_active_theme';
 
 	/**
 	 * Prefix for individual theme keys.
@@ -42,7 +42,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @var string
 	 * @const
 	 */
-	const theme_key_prefix = 'apple_news_theme_';
+	const THEME_KEY_PREFIX = 'apple_news_theme_';
 
 	/**
 	 * Valid actions handled by this class and their callback functions.
@@ -57,19 +57,52 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	function __construct() {
 		$this->theme_page_name = $this->plugin_domain . '-themes';
-		$this->theme_preview_page_name = $this->plugin_domain . '-theme-preview';
+		$this->theme_edit_page_name = $this->plugin_domain . '-theme-edit';
 
 		$this->valid_actions = array(
-			'apple_news_create_theme' => array( $this, 'create_theme' ),
-			'apple_news_upload_theme' => array( $this, 'upload_theme' ),
-			'apple_news_export_theme' => array( $this, 'export_theme' ),
-			'apple_news_delete_theme' => array( $this, 'delete_theme' ),
-			'apple_news_set_theme' => array( $this, 'set_theme' ),
+			'apple_news_upload_theme' => array(
+				'callback' => array( $this, 'upload_theme' ),
+				'nonce' => 'apple_news_themes',
+			),
+			'apple_news_export_theme' => array(
+				'callback' =>  array( $this, 'export_theme' ),
+				'nonce' => 'apple_news_themes',
+			),
+			'apple_news_delete_theme' => array(
+				'callback' =>  array( $this, 'delete_theme' ),
+				'nonce' => 'apple_news_themes',
+			),
+			'apple_news_save_edit_theme' => array(
+				'callback' =>  array( $this, 'save_edit_theme' ),
+				'nonce' => 'apple_news_save_edit_theme',
+			),
+			'apple_news_set_theme' => array(
+				'callback' =>  array( $this, 'set_theme' ),
+				'nonce' => 'apple_news_themes',
+			),
 		);
 
 		add_action( 'admin_menu', array( $this, 'setup_theme_pages' ), 99 );
 		add_action( 'admin_init', array( $this, 'action_router' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
+		add_filter( 'admin_title', array( $this, 'set_title' ), 10, 2 );
+	}
+
+	/**
+	 * Fix the title since WordPress doesn't set one.
+	 *
+	 * @param string $admin_title
+	 * @param string $title
+	 * @return strign
+	 * @access public
+	 */
+	public function set_title( $admin_title, $title ) {
+		$screen = get_current_screen();
+		if ( 'admin_page_' . $this->theme_edit_page_name === $screen->base ) {
+			$admin_title = __( 'Edit Theme' ) . $admin_title;
+		}
+
+		return $admin_title;
 	}
 
 	/**
@@ -80,7 +113,9 @@ class Admin_Apple_Themes extends Apple_News {
 	private function validate_themes() {
 		$themes = $this->list_themes();
 		if ( empty( $themes ) ) {
-			$this->create_theme( __( 'Default', 'apple-news' ) );
+			$name = __( 'Default', 'apple-news' );
+			$this->save_theme( $name, $this->get_formatting_settings() );
+			$this->set_theme( $name, true );
 		}
 	}
 
@@ -103,11 +138,11 @@ class Admin_Apple_Themes extends Apple_News {
 
 		add_submenu_page(
 			null,
-			__( 'Apple News Theme Preview', 'apple-news' ),
-			__( 'Theme Preview', 'apple-news' ),
+			__( 'Apple News Edit Theme', 'apple-news' ),
+			__( 'Edit Theme', 'apple-news' ),
 			apply_filters( 'apple_news_settings_capability', 'manage_options' ),
-			$this->theme_preview_page_name,
-			array( $this, 'page_theme_preview_render' )
+			$this->theme_edit_page_name,
+			array( $this, 'page_theme_edit_render' )
 		);
 	}
 
@@ -125,25 +160,26 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
-	 * Theme preview page render.
+	 * Theme edit page render.
 	 *
 	 * @access public
 	 */
-	public function page_theme_preview_render() {
+	public function page_theme_edit_render() {
 		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
 			wp_die( __( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
-		$error = '';
+		$error = $theme_name = '';
 		// Check for a valid theme
 		if ( ! isset( $_GET['theme'] ) ) {
-			$error = __( 'No theme was specified to preview', 'apple-news' );
+			// Load current live settings as a basis for the new theme
+			$section = $this->get_formatting_object();
 		} else {
 			$theme_name = sanitize_text_field( $_GET['theme'] );
 
 			// Load the theme
-			$theme = get_option( $this->theme_key_from_name( $theme_name ) );
-			if ( empty( $theme ) || ! is_array( $theme ) ) {
+			$section = $this->get_formatting_object( $theme_name );
+			if ( empty( $section ) || ! is_object( $section ) ) {
 				$error = sprintf(
 					__( 'The theme %s does not exist', 'apple-news' ),
 					$theme_name
@@ -151,11 +187,11 @@ class Admin_Apple_Themes extends Apple_News {
 			}
 		}
 
-		// Set the URL for the back button
+		// Set the URL for the back button and form action
 		$theme_admin_url = $this->theme_admin_url();
 
-		// Load the preview page
-		include plugin_dir_path( __FILE__ ) . 'partials/page_theme_preview.php';
+		// Load the edit page
+		include plugin_dir_path( __FILE__ ) . 'partials/page_theme_edit.php';
 	}
 
 	/**
@@ -167,7 +203,7 @@ class Admin_Apple_Themes extends Apple_News {
 	public function register_assets( $hook ) {
 		if ( ! in_array( $hook, array(
 			'apple-news_page_apple-news-themes',
-			'apple-news_page_apple-news-theme-preview',
+			'admin_page_apple-news-theme-edit',
 		), true ) ) {
 			return;
 		}
@@ -184,6 +220,31 @@ class Admin_Apple_Themes extends Apple_News {
 			'noNameError' => __( 'Please enter a name for the new theme.', 'apple-news' ),
 			'tooLongError' => __( 'Theme names must be 45 characters or less.', 'apple-news' ),
 		) );
+
+		if ( 'admin_page_apple-news-theme-edit' === $hook ) {
+			wp_enqueue_style( 'apple-news-select2-css', plugin_dir_url( __FILE__ ) .
+				'../vendor/select2/select2.min.css', array() );
+			wp_enqueue_style( 'apple-news-theme-edit-css', plugin_dir_url( __FILE__ ) .
+				'../assets/css/theme-edit.css', array() );
+
+			wp_enqueue_script( 'iris' );
+			wp_enqueue_script( 'apple-news-select2-js', plugin_dir_url( __FILE__ ) .
+				'../vendor/select2/select2.full.min.js', array( 'jquery' ) );
+			wp_enqueue_script( 'apple-news-theme-edit-js', plugin_dir_url( __FILE__ ) .
+				'../assets/js/theme-edit.js', array(
+					'jquery',
+					'jquery-ui-draggable',
+					'jquery-ui-sortable',
+					'apple-news-select2-js',
+					'iris',
+					'apple-news-preview-js'
+				)
+			);
+
+			wp_localize_script( 'apple-news-theme-edit-js', 'appleNewsThemeEdit', array(
+				'fontNotice' => __( 'Font preview is only available on macOS', 'apple-news' ),
+			) );
+		}
 	}
 
 	/**
@@ -193,7 +254,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @return array
 	 */
 	public function list_themes() {
-		return get_option( self::theme_index_key, array() );
+		return get_option( self::THEME_INDEX_KEY, array() );
 	}
 
 	/**
@@ -203,7 +264,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @return string
 	 */
 	public function get_active_theme() {
-		return get_option( self::theme_active_key );
+		return get_option( self::THEME_ACTIVE_KEY );
 	}
 
 	/**
@@ -222,9 +283,32 @@ class Admin_Apple_Themes extends Apple_News {
 	 *
 	 * @param string $name
 	 * @param array $settings
+	 * @param boolean $silent We don't always want this to display a message if it's behind the scenes
 	 * @access private
 	 */
-	private function save_theme( $name, $settings ) {
+	private function save_theme( $name, $settings, $silent = false ) {
+		// Save the theme settings
+		update_option( $this->theme_key_from_name( $name ), $settings, false );
+
+		// Update the index
+		$this->index_theme( $name );
+
+		// Indicate success
+		if ( true !== $silent ) {
+			\Admin_Apple_Notice::success( sprintf(
+				__( 'The theme %s was saved successfully', 'apple-news' ),
+				$name
+			) );
+		}
+	}
+
+	/**
+	 * Saves the theme to the theme index.
+	 *
+	 * @param string $name
+	 * @access private
+	 */
+	private function index_theme( $name ) {
 		// Get the index
 		$index = self::list_themes();
 		if ( ! is_array( $index ) ) {
@@ -232,9 +316,6 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		$key = $this->theme_key_from_name( $name );
-
-		// Save the theme settings
-		update_option( $key, $settings, false );
 
 		// Add the key to the index
 		$index[] = $name;
@@ -244,13 +325,32 @@ class Admin_Apple_Themes extends Apple_News {
 		$index = array_unique( $index );
 
 		// Save the theme index
-		update_option( self::theme_index_key, $index, false );
+		update_option( self::THEME_INDEX_KEY, $index, false );
+	}
 
-		// Indicate success
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'The theme %s was saved successfully', 'apple-news' ),
-			$name
-		) );
+	/**
+	 * Saves the theme to the theme index.
+	 *
+	 * @param string $name
+	 * @access private
+	 */
+	private function unindex_theme( $name ) {
+		$themes = $this->list_themes();
+		$index = array_search( $name, $themes );
+		if ( false === $index ) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'The theme %s to be deleted does not exist', 'apple-news' ),
+				$name
+			) );
+			return;
+		}
+
+		// Remove from the index and delete settings
+		unset( $themes[ $index ] );
+		update_option( self::THEME_INDEX_KEY, $themes, false );
+		delete_option( $this->theme_key_from_name( $name ) );
+		//print_r( $this->theme_key_from_name( $name ) );
+		//die();
 	}
 
 	/**
@@ -267,45 +367,20 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Check the nonce
-		check_admin_referer( 'apple_news_themes' );
+		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
 
 		// Call the callback for the action for further processing
-		call_user_func( $this->valid_actions[ $action ] );
-	}
-
-	/**
-	 * Handles creating a new theme from current formatting settings.
-	 *
-	 * @param string $name
-	 * @access private
-	 */
-	private function create_theme( $name = null ) {
-		// If no name was provided, attempt to get it from POST data
-		if ( empty( $name ) && ! empty( $_POST['apple_news_theme_name'] ) ) {
-			$name = sanitize_text_field( $_POST['apple_news_theme_name'] );
-		}
-
-		if ( empty( $name ) ) {
-			\Admin_Apple_Notice::error(
-				__( 'Unable to create the theme because no name was provided', 'apple-news' )
-			);
-			return;
-		}
-
-		// Get all the current formatting settings for the site and save them as a new theme
-		$this->save_theme( $name, $this->get_formatting_settings() );
-
-		// If you're creating a theme from the current settings, it's technically already active.
-		$this->set_theme( $name );
+		call_user_func( $this->valid_actions[ $action ]['callback'] );
 	}
 
 	/**
 	 * Handles setting the active theme.
 	 *
 	 * @param string $name
+	 * @param boolean $silent We don't always want this to display a message if it's behind the scenes
 	 * @access private
 	 */
-	private function set_theme( $name = null ) {
+	private function set_theme( $name = null, $silent = false ) {
 		// If no name was provided, attempt to get it from POST data
 		if ( empty( $name ) && ! empty( $_POST['apple_news_active_theme'] ) ) {
 			$name = sanitize_text_field( $_POST['apple_news_active_theme'] );
@@ -318,33 +393,26 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
-		// Attempt to load the theme settings
-		$key = $this->theme_key_from_name( $name );
-		$new_settings = get_option( $key );
-		if ( empty( $new_settings ) ) {
+		// Update global formatting settings with the theme settings
+		$result = $this->update_global_settings( $name );
+		if ( false === $result ) {
 			\Admin_Apple_Notice::error( sprintf(
-				__( 'There was an error loading settings for the theme %s', 'apple-news' ),
-				$key
+				__( 'There was an error updating global settings with the theme %s', 'apple-news' ),
+				$name
 			) );
 			return;
 		}
 
-		// Preserve API settings since these are not part of the theme
-		$settings = new \Admin_Apple_Settings();
-		$current_settings = $settings->fetch_settings()->all();
-		$new_settings = wp_parse_args( $new_settings, $current_settings );
-
-		// Load the settings from the theme
-		$settings->save_settings( $new_settings );
-
 		// Set the theme active
-		update_option( self::theme_active_key, $name, false );
+		update_option( self::THEME_ACTIVE_KEY, $name, false );
 
 		// Indicate success
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'Successfully switched to theme %s', 'apple-news' ),
-			$name
-		) );
+		if ( true !== $silent ) {
+			\Admin_Apple_Notice::success( sprintf(
+				__( 'Successfully switched to theme %s', 'apple-news' ),
+				$name
+			) );
+		}
 	}
 
 	/**
@@ -369,20 +437,10 @@ class Admin_Apple_Themes extends Apple_News {
 		// Get the key
 		$key = $this->theme_key_from_name( $name );
 
-		// Make sure it exists
-		$themes = $this->list_themes();
-		$index = array_search( $name, $themes );
-		if ( false === $index ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The theme %s to be deleted does not exist', 'apple-news' ),
-				$name
-			) );
-			return;
-		}
+		// Unindex the theme
+		$this->unindex_theme( $name );
 
-		// Remove from the index and delete settings
-		unset( $themes[ $index ] );
-		update_option( self::theme_index_key, $themes, false );
+		// Delete the theme
 		delete_option( $key );
 
 		// Indicate success
@@ -449,7 +507,7 @@ class Admin_Apple_Themes extends Apple_News {
 			// Get the name from the data and unset it since it doesn't need to be stored
 			$name = $result['theme_name'];
 			unset( $result['theme_name'] );
-			$this->save_theme( $name, $result );
+			$this->save_theme( $name, $result, true );
 		}
 
 		// Indicate success
@@ -506,35 +564,104 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Handle saving theme settings from the edit form.
+	 *
+	 * @param string $name
+	 * @access private
+	 */
+	private function save_edit_theme() {
+		// Get the theme name
+		if ( ! isset( $_POST['apple_news_theme_name'] ) ) {
+			\Admin_Apple_Notice::error(
+				__( 'No theme name was set', 'apple-news' )
+			);
+		}
+
+		$name = sanitize_text_field( $_POST['apple_news_theme_name'] );
+		if ( empty( $name ) ) {
+			\Admin_Apple_Notice::error(
+				__( 'The theme name was empty', 'apple-news' )
+			);
+		}
+
+		// Create a formatting object from the name.
+		// It will automatically save settings.
+		$formatting = $this->get_formatting_object( $name );
+
+		// Index the theme and check if it changed names
+		$this->index_theme( $name );
+		$previous_name = ( isset( $_POST['apple_news_theme_name_previous'] ) ) ? sanitize_text_field( $_POST['apple_news_theme_name_previous'] ) : '';
+		if ( $name != $previous_name && ! empty( $previous_name ) ) {
+			$this->unindex_theme( $previous_name );
+		}
+
+		// If this is the active theme, update global settings
+		if ( $name === $this->get_active_theme()
+			|| $previous_name === $this->get_active_theme() ) {
+			$this->set_theme( $name, true );
+		}
+
+		// Indicate success
+		\Admin_Apple_Notice::success( sprintf(
+			__( 'The theme %s was saved successfully', 'apple-news' ),
+			$name
+		) );
+	}
+
+	/**
 	 * Filter the current settings down to only formatting settings.
 	 *
 	 * @return array
 	 * @access private
 	 */
-	private function get_formatting_settings() {
-		$theme_settings = array();
+	private function get_formatting_settings( $name = null ) {
+		// Determine what to do based on if the name is set
+		if ( ! empty( $name ) ) {
+			return $this->get_formatting_object( $name )->get_loaded_settings();
+		} else {
+			// Get the keys of all formatting settings
+			$formatting = $this->get_formatting_object();
+			$formatting_settings = $formatting->get_settings();
+			if ( empty( $formatting_settings ) ) {
+				return $theme_settings;
+			}
 
-		// Get the keys of all formatting settings
-		$formatting = new Admin_Apple_Settings_Section_Formatting( '' );
-		$formatting_settings = $formatting->get_settings();
-		if ( empty( $formatting_settings ) ) {
+			$formatting_settings_keys = array_keys( $formatting_settings );
+
+			// Get all current settings
+			$settings = new Admin_Apple_Settings();
+			$all_settings = $settings->fetch_settings()->all();
+
+			// Retrieve values only for formatting settings
+			$theme_settings = array();
+			foreach ( $formatting_settings_keys as $key ) {
+				if ( isset( $all_settings[ $key ] ) ) {
+					$theme_settings[ $key ] = $all_settings[ $key ];
+				}
+			}
+
 			return $theme_settings;
 		}
+	}
 
-		$formatting_settings_keys = array_keys( $formatting_settings );
-
-		// Get all current settings
-		$settings = new Admin_Apple_Settings();
-		$all_settings = $settings->fetch_settings()->all();
-
-		// Retrieve values only for formatting settings
-		foreach ( $formatting_settings_keys as $key ) {
-			if ( isset( $all_settings[ $key ] ) ) {
-				$theme_settings[ $key ] = $all_settings[ $key ];
-			}
+	/**
+	 * Get a formatting object for the given theme.
+	 * If no theme is provided, get current global formatting settings.
+	 *
+	 * @return array
+	 * @access private
+	 */
+	private function get_formatting_object( $name = null ) {
+		if ( empty( $name ) ) {
+			return new Admin_Apple_Settings_Section_Formatting( '' );
+		} else {
+			return new Admin_Apple_Settings_Section_Formatting(
+				$this->theme_edit_page_name,
+				false,
+				'apple_news_save_edit_theme',
+				$this->theme_key_from_name( $name )
+			);
 		}
-
-		return $theme_settings;
 	}
 
 	/**
@@ -557,7 +684,7 @@ class Admin_Apple_Themes extends Apple_News {
 		unset( $data['theme_name'] );
 
 		// Get the formatting settings that are allowed to be included in a theme
-		$formatting = new Admin_Apple_Settings_Section_Formatting( '' );
+		$formatting = $this->get_formatting_object();
 		$formatting_settings = $formatting->get_settings();
 		if ( empty( $formatting_settings ) || ! is_array( $formatting_settings ) ) {
 			return __( 'There was an error retrieving formatting settings', 'apple-news' );
@@ -565,8 +692,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$valid_settings = array_keys( $formatting_settings );
 
 		// Get all available fonts in the system
-		$section = new Admin_Apple_Settings_Section( '' );
-		$fonts = $section->list_fonts();
+		$fonts = $formatting->list_fonts();
 
 		// Iterate through the valid settings and handle
 		// the appropriate validation and sanitization for each
@@ -669,6 +795,36 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Updates global settings with the active theme settings.
+	 *
+	 * @param string $name
+	 * @return boolean
+	 * @access private
+	 */
+	private function update_global_settings( $name ) {
+		// Attempt to load the theme settings
+		$key = $this->theme_key_from_name( $name );
+		$new_settings = get_option( $key );
+		if ( empty( $new_settings ) ) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'There was an error loading settings for the theme %s', 'apple-news' ),
+				$key
+			) );
+			return false;
+		}
+
+		// Preserve API settings since these are not part of the theme
+		$settings = new \Admin_Apple_Settings();
+		$current_settings = $settings->fetch_settings()->all();
+		$new_settings = wp_parse_args( $new_settings, $current_settings );
+
+		// Load the settings from the theme
+		$settings->save_settings( $new_settings );
+
+		return true;
+	}
+
+	/**
 	 * Generates a key for the theme from the provided name
 	 *
 	 * @param string $name
@@ -676,24 +832,24 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access public
 	 */
 	public function theme_key_from_name( $name ) {
-		return self::theme_key_prefix . sanitize_key( $name );
+		return self::THEME_KEY_PREFIX . md5( $name );
 	}
 
 	/**
-	 * Generates the preview URL for a theme
+	 * Generates the edit URL for a theme
 	 *
 	 * @param string $name
 	 * @return string
 	 * @access public
 	 */
-	public function theme_preview_url( $name ) {
-		return add_query_arg(
-			array(
-				'page' => $this->theme_preview_page_name,
-				'theme' => $name,
-			),
-			admin_url( 'admin.php' )
-		);
+	public function theme_edit_url( $name = null ) {
+		$url = add_query_arg( 'page', $this->theme_edit_page_name, admin_url( 'admin.php' ) );
+
+		if ( ! empty( $name ) ) {
+			$url = add_query_arg( 'theme', $name, $url );
+		}
+
+		return $url;
 	}
 
 	/**

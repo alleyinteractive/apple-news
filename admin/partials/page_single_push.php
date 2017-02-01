@@ -16,8 +16,11 @@
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Sections', 'apple-news' ) ?></th>
 				<td>
-					<?php \Admin_Apple_Meta_Boxes::build_sections_field( $sections, $post->ID ); ?>
-					<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. Uncheck them all for a standalone article.' , 'apple-news' ) ?></p>
+					<?php \Admin_Apple_Meta_Boxes::build_sections_override( $post->ID ); ?>
+					<div class="apple-news-sections">
+						<?php \Admin_Apple_Meta_Boxes::build_sections_field( $sections, $post->ID ); ?>
+						<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. Uncheck them all for a standalone article.' , 'apple-news' ) ?></p>
+					</div>
 				</td>
 			</tr>
 			<?php endif; ?>

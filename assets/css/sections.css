@@ -1,0 +1,35 @@
+#apple-news-section-taxonomy-mapping-template {
+	display: none;
+	visibility: hidden;
+}
+
+.apple-news-section-taxonomy-remove {
+	background: none;
+	border: none;
+	cursor: pointer;
+	height: 24px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	text-indent: 0;
+	width: 24px;
+}
+
+.apple-news-section-taxonomy-remove:hover .apple-news-section-taxonomy-remove-icon:before {
+	color: #c00;
+}
+
+.apple-news-section-taxonomy-remove-icon:before {
+	background: none;
+	border-radius: 50%;
+	color: #0073aa;
+	content: "\f153";
+	display: block;
+	font: 400 16px/20px dashicons;
+	height: 20px;
+	line-height: 1.28;
+	margin-left: 2px;
+	speak: none;
+	text-align: center;
+	width: 20px;
+}

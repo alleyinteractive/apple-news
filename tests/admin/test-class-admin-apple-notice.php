@@ -18,7 +18,7 @@ class Admin_Apple_Notice_Test extends WP_UnitTestCase {
 		$notice = ob_get_contents();
 		ob_end_clean();
 
-		$expected = preg_replace( '/\s+/', '', '<div class="notice updated is-dismissible"><p><strong>This is an info message</strong></p></div>' );
+		$expected = preg_replace( '/\s+/', '', '<div class="notice notice-warning is-dismissible"><p><strong>This is an info message</strong></p></div>' );
 		$notice = preg_replace( '/\s+/', '', $notice );
 
 		$this->assertEquals( $expected, $notice );
@@ -32,7 +32,7 @@ class Admin_Apple_Notice_Test extends WP_UnitTestCase {
 		$notice = ob_get_contents();
 		ob_end_clean();
 
-		$expected = preg_replace( '/\s+/', '', '<div class="notice updated is-dismissible"><p><strong>This is a success message</strong></p></div>' );
+		$expected = preg_replace( '/\s+/', '', '<div class="notice notice-success is-dismissible"><p><strong>This is a success message</strong></p></div>' );
 		$notice = preg_replace( '/\s+/', '', $notice );
 
 		$this->assertEquals( $expected, $notice );
@@ -46,7 +46,7 @@ class Admin_Apple_Notice_Test extends WP_UnitTestCase {
 		$notice = ob_get_contents();
 		ob_end_clean();
 
-		$expected = preg_replace( '/\s+/', '', '<div class="notice error is-dismissible"><p><strong>This is an error message' . Apple_News::get_support_info() . '</strong></p></div>' );
+		$expected = preg_replace( '/\s+/', '', '<div class="notice notice-error is-dismissible"><p><strong>This is an error message' . Apple_News::get_support_info() . '</strong></p></div>' );
 		$notice = preg_replace( '/\s+/', '', $notice );
 
 		$this->assertEquals( $expected, $notice );
@@ -60,7 +60,7 @@ class Admin_Apple_Notice_Test extends WP_UnitTestCase {
 		$notice = ob_get_contents();
 		ob_end_clean();
 
-		$expected = preg_replace( '/\s+/', '', '<div class="notice updated is-dismissible"><p><strong>One error occurred: error 1</strong></p></div>' );
+		$expected = preg_replace( '/\s+/', '', '<div class="notice notice-warning is-dismissible"><p><strong>One error occurred: error 1</strong></p></div>' );
 		$notice = preg_replace( '/\s+/', '', $notice );
 
 		$this->assertEquals( $expected, $notice );
@@ -74,7 +74,7 @@ class Admin_Apple_Notice_Test extends WP_UnitTestCase {
 		$notice = ob_get_contents();
 		ob_end_clean();
 
-		$expected = preg_replace( '/\s+/', '', '<div class="notice updated is-dismissible"><p><strong>A number of errors occurred:<br />error 1<br />error 2<br />error 3</strong></p></div>' );
+		$expected = preg_replace( '/\s+/', '', '<div class="notice notice-warning is-dismissible"><p><strong>A number of errors occurred:<br />error 1<br />error 2<br />error 3</strong></p></div>' );
 		$notice = preg_replace( '/\s+/', '', $notice );
 
 		$this->assertEquals( $expected, $notice );
@@ -88,7 +88,7 @@ class Admin_Apple_Notice_Test extends WP_UnitTestCase {
 		$notice = ob_get_contents();
 		ob_end_clean();
 
-		$expected = preg_replace( '/\s+/', '', '<div class="notice updated is-dismissible"><p><strong>One message<br />Another message</strong></p></div>' );
+		$expected = preg_replace( '/\s+/', '', '<div class="notice notice-warning is-dismissible"><p><strong>One message<br />Another message</strong></p></div>' );
 		$notice = preg_replace( '/\s+/', '', $notice );
 
 		$this->assertEquals( $expected, $notice );

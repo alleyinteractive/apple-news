@@ -330,6 +330,31 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	protected $page;
 
 	/**
+	 * Allow for a settings section to be hidden.
+	 *
+	 * @var boolean
+	 * @access protected
+	 */
+	protected $hidden = false;
+
+	/**
+	 * Option name used for the section.
+	 *
+	 * @var string
+	 * @access protected
+	 * @static
+	 */
+	protected static $section_option_name;
+
+	/**
+	 * Action used for saving the section.
+	 *
+	 * @var string
+	 * @access protected
+	 */
+	protected $save_action;
+
+	/**
 	 * Base settings.
 	 *
 	 * @var Settings
@@ -337,6 +362,15 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * @static
 	 */
 	protected static $base_settings;
+
+	/**
+	 * Loaded settings.
+	 *
+	 * @var Settings
+	 * @access protected
+	 * @static
+	 */
+	protected static $loaded_settings;
 
 	/**
 	 * Settings for the section.
@@ -418,14 +452,21 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * Constructor.
 	 *
 	 * @param string $page
+	 * @param boolean $hidden
+	 * @param string $save_action
+	 * @param string $section_option_name
 	 */
-	function __construct( $page ) {
-		$this->page             = $page;
-		$base_settings          = new \Apple_Exporter\Settings;
-		self::$base_settings    = $base_settings->all();
-		$this->settings         = apply_filters( 'apple_news_section_settings', $this->settings, $page );
-		$this->groups           = apply_filters( 'apple_news_section_groups', $this->groups, $page );
-		self::$fonts            = apply_filters( 'apple_news_fonts_list', self::$fonts );
+	function __construct( $page, $hidden = false, $save_action = 'apple_news_options', $section_option_name = null ) {
+		$this->page									= $page;
+		self::$section_option_name	= ( ! empty( $section_option_name ) ) ? $section_option_name : self::$option_name;
+		$this->save_action					= $save_action;
+		$base_settings							= new \Apple_Exporter\Settings;
+		self::$base_settings				= $base_settings->all();
+		self::$loaded_settings			= get_option( self::$section_option_name );
+		$this->settings							= apply_filters( 'apple_news_section_settings', $this->settings, $page );
+		$this->groups								= apply_filters( 'apple_news_section_groups', $this->groups, $page );
+		self::$fonts								= apply_filters( 'apple_news_fonts_list', self::$fonts );
+		$this->hidden								= $hidden;
 
 		// Save settings if necessary
 		$this->save_settings();
@@ -487,15 +528,15 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	public function render_field( $args ) {
 		list( $name, $default_value, $callback ) = $args;
 
+		$type  = $this->get_type_for( $name );
+
 		// If the field has it's own render callback, use that here.
 		// This is because the options page doesn't actually use do_settings_section.
 		if ( ! empty( $callback ) ) {
-			return call_user_func( $callback );
+			return call_user_func( $callback, $type );
 		}
 
-		$type  = $this->get_type_for( $name );
-		$settings = get_option( self::$option_name );
-		$value = self::get_value( $name, $settings );
+		$value = self::get_value( $name, self::$loaded_settings );
 		$field = null;
 
 		// Get the field size
@@ -569,14 +610,16 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			$field = '<input type="text" id="%s" name="%s" value="%s" class="apple-news-color-picker" %s>';
 		} else if ( 'password' == $type ) {
 			$field = '<input type="password" id="%s" name="%s" value="%s" size="%s" %s>';
-		} else {
+		} else if ( 'hidden' == $type ) {
+			$field = '<input type="hidden" id="%s" name="%s" value="%s">';
+		}  else {
 			// If nothing else matches, it's a string.
 			$field = '<input type="text" id="%s" name="%s" value="%s" size="%s" %s>';
 		}
 
 		// Add a description, if set.
 		$description = $this->get_description_for( $name );
-		if ( ! empty( $description ) ) {
+		if ( ! empty( $description ) && 'hidden' !== $type ) {
 			$field .= apply_filters( 'apple_news_field_description_output_html', '<br/><i>' . $description . '</i>', $name );
 		}
 
@@ -586,6 +629,13 @@ class Admin_Apple_Settings_Section extends Apple_News {
 				$field,
 				esc_attr( $name ),
 				esc_attr( $name )
+			);
+		} elseif ( 'hidden' === $type ) {
+			return sprintf(
+				$field,
+				esc_attr( $name ),
+				esc_attr( $name ),
+				esc_attr( $value )
 			);
 		} else {
 			return sprintf(
@@ -608,7 +658,11 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * @access protected
 	 */
 	protected function get_type_for( $name ) {
-		return empty( $this->settings[ $name ]['type'] ) ? 'string' : $this->settings[ $name ]['type'];
+		if ( $this->hidden ) {
+			return 'hidden';
+		} else {
+			return empty( $this->settings[ $name ]['type'] ) ? 'string' : $this->settings[ $name ]['type'];
+		}
 	}
 
 	/**
@@ -709,6 +763,26 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	}
 
 	/**
+	 * Get loaded settings.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public function get_loaded_settings() {
+		return $this->loaded_settings;
+	}
+
+	/**
+	 * Check if the section is hidden on the settings page.
+	 *
+	 * @return boolean
+	 * @access public
+	 */
+	public function is_hidden() {
+		return $this->hidden;
+	}
+
+	/**
 	 * Sanitizes a single dimension array with text values.
 	 *
 	 * @param array $value
@@ -728,7 +802,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 */
 	public static function get_value( $key, $saved_settings = null ) {
 		if ( empty( $saved_settings ) ) {
-			$saved_settings = get_option( self::$option_name );
+			$saved_settings = get_option( self::$section_option_name );
 		}
 		return ( isset( $saved_settings[ $key ] ) ) ? $saved_settings[ $key ] : self::get_default_for( $key );
 	}
@@ -740,16 +814,16 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	public function save_settings() {
 		// Check if we're saving options and that there are settings to save
 		if ( empty( $_POST['action'] )
-			|| 'apple_news_options' !== $_POST['action']
+			|| $this->save_action !== $_POST['action']
 			|| empty( $this->settings ) ) {
 			return;
 		}
 
 		// Form nonce check
-		check_admin_referer( 'apple_news_options', 'apple_news_options' );
+		check_admin_referer( $this->save_action );
 
 		// Get the current Apple News settings
-		$settings = get_option( self::$option_name, array() );
+		$settings = get_option( self::$section_option_name, array() );
 
 		// Iterate over the settings and save each value.
 		// Settings can't be empty unless allowed, so if no value is found
@@ -773,7 +847,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		delete_transient( 'apple_news_sections' );
 
 		// Save to options
-		update_option( self::$option_name, $settings, 'no' );
+		update_option( self::$section_option_name, $settings, 'no' );
 	}
 
 	/**

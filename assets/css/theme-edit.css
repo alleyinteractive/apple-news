@@ -1,0 +1,48 @@
+ul#meta-component-order-sort {
+	margin-top: 0px;
+}
+
+ul#meta-component-order-sort li {
+	padding: 5px 5px 7px;
+	margin: 0;
+	background-color: #fafafa;
+	max-width: 100px;
+	border: solid 1px #dfdfdf;
+	box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+ul#meta-component-order-sort li:hover {
+	cursor: move;
+	color: #777;
+	background-color: #EAF2FA;
+}
+
+.font-notice {
+	font-size: 10px;
+}
+
+.apple-news-settings-left {
+	max-width: 600px;
+	float: left;
+}
+
+@media only screen and (min-width: 1172px) {
+	.apple-news-preview {
+		margin: 50px 0px 0px 50px;
+	}
+}
+
+@media only screen and (max-width: 1172px) {
+	.apple-news-preview {
+		margin: 10px 0px;
+	}
+}
+
+.apple-news-theme-edit-buttons {
+	clear: both;
+}
+
+#apple_news_theme_name_label {
+	font-size: 1.3em;
+	font-weight: 600;
+}

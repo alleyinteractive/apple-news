@@ -49,7 +49,7 @@ class Admin_Apple_Notice {
 		}
 
 		self::add_user_meta( $user_id, self::KEY, array(
-			'message' => sanitize_text_field( $message ),
+			'message' => wp_kses( $message, array( 'a' => array( 'href' => array(), ), ) ),
 			'type' => sanitize_text_field( $type )
 		) );
 	}
@@ -63,7 +63,7 @@ class Admin_Apple_Notice {
 	 * @access public
 	 */
 	public static function info( $message, $user_id = null ) {
-		self::message( $message, 'updated', $user_id );
+		self::message( $message, 'warning', $user_id );
 	}
 
 	/**
@@ -75,7 +75,7 @@ class Admin_Apple_Notice {
 	 * @access public
 	 */
 	public static function success( $message, $user_id = null ) {
-		self::message( $message, 'updated', $user_id );
+		self::message( $message, 'success', $user_id );
 	}
 
 	/**
@@ -160,7 +160,7 @@ class Admin_Apple_Notice {
 			$message .= Apple_News::get_support_info();
 		}
 		?>
-		<div class="notice <?php echo esc_attr( $type ) ?> is-dismissible">
+		<div class="notice notice-<?php echo esc_attr( $type ) ?> is-dismissible">
 			<p><strong><?php echo wp_kses_post( apply_filters( 'apple_news_notice_message', $message, $type ) ) ?></strong></p>
 		</div>
 		<?php

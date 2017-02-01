@@ -85,6 +85,6 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 	 * @access public
 	 */
 	public function get_section_info() {
-		return __( 'Delete values to restore defaults.', 'apple-news' );
+		return __( 'Advanced publishing settings for Apple News.', 'apple-news' );
 	}
 }
