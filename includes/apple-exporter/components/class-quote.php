@@ -75,16 +75,6 @@ class Quote extends Component {
 			),
 			'style' => array(
 				'backgroundColor' => $this->get_setting( 'blockquote_background_color' ),
-				'border' => array (
-					'all' => array (
-						'width' => $this->get_setting( 'blockquote_border_width' ),
-						'style' => $this->get_setting( 'blockquote_border_style' ),
-						'color' => $this->get_setting( 'blockquote_border_color' ),
-					),
-					'bottom' => false,
-					'right' => false,
-					'top' => false,
-				),
 			),
 			'components' => array(
 				array(
@@ -98,6 +88,7 @@ class Quote extends Component {
 		);
 
 		// Set component attributes.
+		$this->_set_blockquote_border();
 		$this->_set_blockquote_layout();
 		$this->_set_blockquote_style();
 	}
@@ -118,17 +109,6 @@ class Quote extends Component {
 				'columnStart' => 3,
 				'columnSpan' => 4
 			),
-			'style' => array(
-				'border' => array (
-					'all' => array (
-						'width' => $this->get_setting( 'pullquote_border_width' ),
-						'style' => $this->get_setting( 'pullquote_border_style' ),
-						'color' => $this->get_setting( 'pullquote_border_color' ),
-					),
-					'left' => false,
-					'right' => false,
-				),
-			),
 			'components' => array(
 				array(
 					'role' => 'quote',
@@ -142,8 +122,34 @@ class Quote extends Component {
 
 		// Set component attributes.
 		$this->_set_pullquote_anchor();
+		$this->_set_pullquote_border();
 		$this->_set_pullquote_layout();
 		$this->_set_pullquote_style();
+	}
+
+	/**
+	 * Set the border for a blockquote.
+	 *
+	 * @access private
+	 */
+	private function _set_blockquote_border() {
+
+		// Determine if there is a border specified.
+		if ( 'none' === $this->get_setting( 'blockquote_border_style' ) ) {
+			return;
+		}
+
+		// Set the border.
+		$this->json['style']['border'] = array (
+			'all' => array (
+				'width' => $this->get_setting( 'blockquote_border_width' ),
+				'style' => $this->get_setting( 'blockquote_border_style' ),
+				'color' => $this->get_setting( 'blockquote_border_color' ),
+			),
+			'bottom' => false,
+			'right' => false,
+			'top' => false,
+		);
 	}
 
 	/**
@@ -198,6 +204,30 @@ class Quote extends Component {
 			'targetAnchorPosition' => 'top',
 			'rangeStart' => 0,
 			'rangeLength' => 10,
+		);
+	}
+
+	/**
+	 * Set the border for a pullquote.
+	 *
+	 * @access private
+	 */
+	private function _set_pullquote_border() {
+
+		// Determine if there is a border specified.
+		if ( 'none' === $this->get_setting( 'pullquote_border_style' ) ) {
+			return;
+		}
+
+		// Set the border.
+		$this->json['style']['border'] = array (
+			'all' => array (
+				'width' => $this->get_setting( 'pullquote_border_width' ),
+				'style' => $this->get_setting( 'pullquote_border_style' ),
+				'color' => $this->get_setting( 'pullquote_border_color' ),
+			),
+			'left' => false,
+			'right' => false,
 		);
 	}
 

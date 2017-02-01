@@ -3,6 +3,7 @@
 	$(document).ready(function () {
 		appleNewsSelectInit();
 		appleNewsSettingsSortInit( '#meta-component-order-sort', 'meta_component_order' );
+		appleNewsSettingsBorderInit();
 		appleNewsColorPickerInit();
 		$( 'body' ).trigger( 'apple-news-settings-loaded' );
 	});
@@ -31,6 +32,24 @@
 					.text( appleNewsSettings.fontNotice )
 			)
 		}
+	}
+
+	function appleNewsSettingsBorderInit() {
+		$( '#blockquote_border_style' ).on( 'change', function () {
+			if ( 'none' === $( this ).val() ) {
+				$( '#blockquote_border_color, #blockquote_border_width' ).parent().hide().next( 'br' ).hide();
+			} else {
+				$( '#blockquote_border_color, #blockquote_border_width' ).parent().show().next( 'br' ).show();
+			}
+		} ).change();
+
+		$( '#pullquote_border_style' ).on( 'change', function () {
+			if ( 'none' === $( this ).val() ) {
+				$( '#pullquote_border_color, #pullquote_border_width' ).parent().hide().next( 'br' ).hide();
+			} else {
+				$( '#pullquote_border_color, #pullquote_border_width' ).parent().show().next( 'br' ).show();
+			}
+		} ).change();
 	}
 
 	function appleNewsSettingsSortInit( selector, key ) {

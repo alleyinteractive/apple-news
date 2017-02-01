@@ -291,7 +291,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			),
 			'pullquote_border_style' => array(
 				'label' => __( 'Pull quote border style', 'apple-news' ),
-				'type' => array( 'solid', 'dashed', 'dotted' ),
+				'type' => array( 'solid', 'dashed', 'dotted', 'none' ),
 			),
 			'pullquote_border_width' => array(
 				'label' => __( 'Pull quote border width', 'apple-news' ),
@@ -329,7 +329,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			),
 			'blockquote_border_style' => array(
 				'label' => __( 'Blockquote border style', 'apple-news' ),
-				'type' => array( 'solid', 'dashed', 'dotted' ),
+				'type' => array( 'solid', 'dashed', 'dotted', 'none' ),
 			),
 			'blockquote_border_width' => array(
 				'label' => __( 'Blockquote border width', 'apple-news' ),
@@ -521,8 +521,8 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 					'pullquote_line_height',
 					'pullquote_tracking',
 					'pullquote_color',
-					'pullquote_border_color',
 					'pullquote_border_style',
+					'pullquote_border_color',
 					'pullquote_border_width',
 					'pullquote_transform'
 				),
@@ -535,8 +535,8 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 					'blockquote_line_height',
 					'blockquote_tracking',
 					'blockquote_color',
-					'blockquote_border_color',
 					'blockquote_border_style',
+					'blockquote_border_color',
 					'blockquote_border_width',
 					'blockquote_background_color',
 				),
