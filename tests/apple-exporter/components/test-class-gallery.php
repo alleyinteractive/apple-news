@@ -27,9 +27,11 @@ class Gallery_Test extends Component_TestCase {
 				'items' => array(
 					array(
 						'URL' => 'bundle://filename-1.jpg',
+						'accessibilityCaption' => 'Example',
 					),
 					array(
 						'URL' => 'bundle://another-filename-2.jpg',
+						'accessibilityCaption' => 'Example',
 					),
 				),
 				'layout' => 'gallery-layout',
@@ -59,9 +61,11 @@ class Gallery_Test extends Component_TestCase {
 				'items' => array(
 					array(
 						'URL' => 'http://someurl.com/filename-1.jpg',
+						'accessibilityCaption' => 'Example',
 					),
 					array(
 						'URL' => 'http://someurl.com/another-filename-2.jpg',
+						'accessibilityCaption' => 'Example',
 					),
 				),
 				'layout' => 'gallery-layout',
@@ -96,9 +100,11 @@ class Gallery_Test extends Component_TestCase {
 				'items' => array(
 					array(
 						'URL' => 'bundle://filename-1.jpg',
+						'accessibilityCaption' => 'Example',
 					),
 					array(
 						'URL' => 'bundle://another-filename-2.jpg',
+						'accessibilityCaption' => 'Example',
 					),
 				),
 				'layout' => 'fancy-layout',
