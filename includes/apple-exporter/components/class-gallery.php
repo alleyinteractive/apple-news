@@ -120,7 +120,7 @@ class Gallery extends Component {
 				'margin' => array(
 					'bottom' => 25,
 					'top' => 25,
-				)
+				),
 			)
 		);
 	}
