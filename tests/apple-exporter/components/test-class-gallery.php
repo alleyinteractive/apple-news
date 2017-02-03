@@ -18,6 +18,20 @@ use \Apple_Exporter\Components\Gallery;
 class Gallery_Test extends Component_TestCase {
 
 	/**
+	 * A filter function to modify the layout in the generated JSON.
+	 *
+	 * @param array $json The JSON array to modify.
+	 *
+	 * @access public
+	 * @return array The modified JSON.
+	 */
+	public function filter_apple_news_gallery_json( $json ) {
+		$json['layout'] = 'fancy-layout';
+
+		return $json;
+	}
+
+	/**
 	 * Test the apple_news_gallery_json filter.
 	 *
 	 * @access public
@@ -25,6 +39,12 @@ class Gallery_Test extends Component_TestCase {
 	public function testFilter() {
 
 		// Setup.
+		$html = <<<HTML
+<div class="gallery">
+	<img src="http://someurl.com/filename-1.jpg" alt="Example" />
+	<img src="http://someurl.com/another-filename-2.jpg" alt="Example" />
+</div>
+HTML;
 		$this->settings->set( 'use_remote_images', 'no' );
 		$workspace = $this->prophet->prophesize( '\Apple_Exporter\Workspace' );
 		$workspace->bundle_source(
@@ -36,9 +56,7 @@ class Gallery_Test extends Component_TestCase {
 			'http://someurl.com/another-filename-2.jpg'
 		)->shouldBeCalled();
 		$component = new Gallery(
-			'<div class="gallery"><img
-			src="http://someurl.com/filename-1.jpg" alt="Example" /><img
-			src="http://someurl.com/another-filename-2.jpg" alt="Example" /></div>',
+			$html,
 			$workspace->reveal(),
 			$this->settings,
 			$this->styles,
@@ -46,10 +64,10 @@ class Gallery_Test extends Component_TestCase {
 		);
 
 		// Add the filter and set a custom layout.
-		add_filter( 'apple_news_gallery_json', function( $json ) {
-			$json['layout'] = 'fancy-layout';
-			return $json;
-		} );
+		add_filter(
+			'apple_news_gallery_json',
+			array( $this, 'filter_apple_news_gallery_json' )
+		);
 
 		// Ensure the filter properly modified the layout.
 		$this->assertEquals(
@@ -69,6 +87,12 @@ class Gallery_Test extends Component_TestCase {
 			),
 			$component->to_array()
 		);
+
+		// Teardown.
+		remove_filter(
+			'apple_news_gallery_json',
+			array( $this, 'filter_apple_news_gallery_json' )
+		);
 	}
 
 	/**
@@ -79,6 +103,12 @@ class Gallery_Test extends Component_TestCase {
 	public function testGeneratedJSON() {
 
 		// Setup.
+		$html = <<<HTML
+<div class="gallery">
+	<img src="http://someurl.com/filename-1.jpg" alt="Example" />
+	<img src="http://someurl.com/another-filename-2.jpg" alt="Example" />
+</div>
+HTML;
 		$this->settings->set( 'use_remote_images', 'no' );
 		$workspace = $this->prophet->prophesize( '\Apple_Exporter\Workspace' );
 		$workspace->bundle_source(
@@ -90,9 +120,7 @@ class Gallery_Test extends Component_TestCase {
 			'http://someurl.com/another-filename-2.jpg'
 		)->shouldBeCalled();
 		$component = new Gallery(
-			'<div class="gallery"><img
-			src="http://someurl.com/filename-1.jpg" alt="Example" /><img
-			src="http://someurl.com/another-filename-2.jpg" alt="Example" /></div>',
+			$html,
 			$workspace->reveal(),
 			$this->settings,
 			$this->styles,
@@ -120,6 +148,74 @@ class Gallery_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Ensures that the component generates the proper JSON for a complex gallery.
+	 *
+	 * @access public
+	 */
+	public function testGeneratedJSONComplex() {
+
+		// Setup.
+		$html = <<<HTML
+<div id="gallery-1" class="gallery galleryid-0 gallery-columns-3 gallery-size-full">
+	<figure class="gallery-item">
+		<div class="gallery-icon landscape">
+			<img width="721" height="643" src="http://someurl.com/filename-1.jpg" class="attachment-full size-full" alt="Alt Text 1" aria-describedby="gallery-1-52" srcset="http://someurl.com/filename-1.jpg 721w, http://someurl.com/filename-1-300x268.jpg 300w" sizes="100vw"/>
+		</div>
+		<figcaption class="wp-caption-text gallery-caption" id="gallery-1-52">Caption 1</figcaption>
+	</figure>
+	<figure class="gallery-item">
+		<div class="gallery-icon portrait">
+			<img width="700" height="766" src="http://someurl.com/another-filename-2.jpg" class="attachment-full size-full" alt="Alt Text 2" aria-describedby="gallery-1-53" srcset="http://someurl.com/another-filename-2.jpg 700w, http://someurl.com/another-filename-2-274x300.jpg 274w" sizes="100vw"/>
+		</div>
+		<figcaption class="wp-caption-text gallery-caption" id="gallery-1-53">Caption 2</figcaption>
+	</figure>
+</div>
+HTML;
+		$this->settings->set( 'use_remote_images', 'no' );
+		$workspace = $this->prophet->prophesize( '\Apple_Exporter\Workspace' );
+		$workspace->bundle_source(
+			'filename-1.jpg',
+			'http://someurl.com/filename-1.jpg'
+		)->shouldBeCalled();
+		$workspace->bundle_source(
+			'another-filename-2.jpg',
+			'http://someurl.com/another-filename-2.jpg'
+		)->shouldBeCalled();
+		$component = new Gallery(
+			$html,
+			$workspace->reveal(),
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test for valid JSON.
+		$this->assertEquals(
+			array(
+				'role' => 'gallery',
+				'items' => array(
+					array(
+						'URL' => 'bundle://filename-1.jpg',
+						'accessibilityCaption' => 'Alt Text 1',
+						'caption' => array(
+							'text' => 'Caption 1',
+						),
+					),
+					array(
+						'URL' => 'bundle://another-filename-2.jpg',
+						'accessibilityCaption' => 'Alt Text 2',
+						'caption' => array(
+							'text' => 'Caption 2',
+						),
+					),
+				),
+				'layout' => 'gallery-layout',
+			),
+			$component->to_array()
+		);
+	}
+
+	/**
 	 * Tests the functionality of the `use_remote_images` setting.
 	 *
 	 * @access public
@@ -127,6 +223,12 @@ class Gallery_Test extends Component_TestCase {
 	public function testGeneratedJSONRemoteImages() {
 
 		// Setup.
+		$html = <<<HTML
+<div class="gallery">
+	<img src="http://someurl.com/filename-1.jpg" alt="Example" />
+	<img src="http://someurl.com/another-filename-2.jpg" alt="Example" />
+</div>
+HTML;
 		$this->settings->set( 'use_remote_images', 'yes' );
 		$workspace = $this->prophet->prophesize( '\Apple_Exporter\Workspace' );
 		$workspace->bundle_source(
@@ -138,9 +240,7 @@ class Gallery_Test extends Component_TestCase {
 			'http://someurl.com/another-filename-2.jpg'
 		)->shouldNotBeCalled();
 		$component = new Gallery(
-			'<div class="gallery"><img
-			src="http://someurl.com/filename-1.jpg" alt="Example" /><img
-			src="http://someurl.com/another-filename-2.jpg" alt="Example" /></div>',
+			$html,
 			$workspace->reveal(),
 			$this->settings,
 			$this->styles,
