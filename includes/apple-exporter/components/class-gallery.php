@@ -55,13 +55,13 @@ class Gallery extends Component {
 		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes;
 
 		// Determine if we have items.
-		if ( empty( $nodes[0]->childNodes ) ) {
+		if ( ! $nodes || ! $nodes->item( 0 )->childNodes ) {
 			return;
 		}
 
 		// Loop through items and construct slides.
 		$items = array();
-		foreach ( $nodes[0]->childNodes as $item ) {
+		foreach ( $nodes->item( 0 )->childNodes as $item ) {
 
 			// Convert item into HTML for regex matching.
 			$itemHTML = $item->ownerDocument->saveXML( $item );
@@ -78,7 +78,7 @@ class Gallery extends Component {
 
 			// Try to add the caption.
 			$caption = $item->getElementsByTagName( 'figcaption' );
-			if ( $caption ) {
+			if ( $caption && $caption->length ) {
 				$content['caption'] = array(
 					'text' => sanitize_text_field(
 						trim( $caption->item(0)->nodeValue )
