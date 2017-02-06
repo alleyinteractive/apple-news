@@ -35,6 +35,7 @@ class Admin_Apple_News extends Apple_News {
 	function __construct() {
 		// Register hooks
 		add_action( 'admin_print_styles-toplevel_page_apple_news_index', array( $this, 'plugin_styles' ) );
+		add_action( 'init', array( $this, 'action_init' ) );
 
 		// Admin_Settings builds the settings page for the plugin. Besides setting
 		// it up, let's get the settings getter and setter object and save it into
@@ -71,7 +72,25 @@ class Admin_Apple_News extends Apple_News {
 	}
 
 	/**
+	 * Actions to be run on the `init` action hook.
+	 *
+	 * @access public
+	 */
+	public function action_init() {
+
+		// Register custom image crops.
+		add_image_size( 'apple_news_ca_landscape_iphone', 1044, 783, true );
+		add_image_size( 'apple_news_ca_landscape_ipad', 1832, 1374, true );
+		add_image_size( 'apple_news_ca_portrait_iphone', 687, 916, true );
+		add_image_size( 'apple_news_ca_portrait_ipad', 1122, 1496, true );
+		add_image_size( 'apple_news_ca_square_iphone', 912, 912, true );
+		add_image_size( 'apple_news_ca_square_ipad', 1472, 1472, true );
+	}
+
+	/**
 	 * Implements certain plugin styles inline.
+	 *
+	 * @access public
 	 */
 	public function plugin_styles() {
 		// Styles are tiny, for now just embed them.
