@@ -23,6 +23,39 @@ require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-preview.php';
 class Admin_Apple_News extends Apple_News {
 
 	/**
+	 * Contains information about custom image sizes used by the plugin.
+	 *
+	 * @access public
+	 * @var array Information about images, with names as keys and data as values.
+	 */
+	public static $image_sizes = array(
+		'apple_news_ca_landscape_ipad' => array(
+			'height' => 1374,
+			'width' => 1832,
+		),
+		'apple_news_ca_landscape_iphone' => array(
+			'height' => 783,
+			'width' => 1044,
+		),
+		'apple_news_ca_portrait_ipad' => array(
+			'height' => 1496,
+			'width' => 1122,
+		),
+		'apple_news_ca_portrait_iphone' => array(
+			'height' => 916,
+			'width' => 687,
+		),
+		'apple_news_ca_square_ipad' => array(
+			'height' => 1472,
+			'width' => 1472,
+		),
+		'apple_news_ca_square_iphone' => array(
+			'height' => 912,
+			'width' => 912,
+		),
+	);
+
+	/**
 	 * Current settings.
 	 *
 	 * @var Settings
@@ -79,12 +112,9 @@ class Admin_Apple_News extends Apple_News {
 	public function action_init() {
 
 		// Register custom image crops.
-		add_image_size( 'apple_news_ca_landscape_iphone', 1044, 783, true );
-		add_image_size( 'apple_news_ca_landscape_ipad', 1832, 1374, true );
-		add_image_size( 'apple_news_ca_portrait_iphone', 687, 916, true );
-		add_image_size( 'apple_news_ca_portrait_ipad', 1122, 1496, true );
-		add_image_size( 'apple_news_ca_square_iphone', 912, 912, true );
-		add_image_size( 'apple_news_ca_square_ipad', 1472, 1472, true );
+		foreach ( self::$image_sizes as $name => $data ) {
+			add_image_size( $name, $data['width'], $data['height'], true );
+		}
 	}
 
 	/**
