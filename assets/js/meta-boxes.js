@@ -3,6 +3,7 @@
 
 	var $assign_by_taxonomy = $( '#apple-news-sections-by-taxonomy' );
 
+	// Listen for clicks on the submit button.
 	$( '#apple-news-publish-submit' ).click(function ( e ) {
 		$( '#apple-news-publish-action' ).val( apple_news_meta_boxes.publish_action );
 		$( '#post' ).submit();

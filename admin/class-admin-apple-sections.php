@@ -74,11 +74,12 @@ class Admin_Apple_Sections extends Apple_News {
 	 * when no mappings are set.
 	 *
 	 * @param int $post_id The ID of the post to query.
+	 * @param string $format The return format to use. Can be 'url' or 'raw'.
 	 *
 	 * @access public
 	 * @return array An array of section URLs for the post.
 	 */
-	public static function get_sections_for_post( $post_id ) {
+	public static function get_sections_for_post( $post_id, $format = 'url' ) {
 
 		// Try to load sections from postmeta.
 		$meta_value = get_post_meta( $post_id, 'apple_news_sections', true );
@@ -100,11 +101,25 @@ class Admin_Apple_Sections extends Apple_News {
 			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
 		}
 
-		// Convert sections returned from the API into a key/value pair of id/URL.
+		// Convert sections returned from the API into the requested format.
 		$sections = array();
 		foreach ( $sections_raw as $section ) {
-			if ( ! empty( $section->id ) && ! empty( $section->links->self ) ) {
-				$sections[ $section->id ] = $section->links->self;
+
+			// Ensure we have an ID to key off of.
+			if ( empty( $section->id ) ) {
+				continue;
+			}
+
+			// Fork for format.
+			switch ( $format ) {
+				case 'raw':
+					$sections[ $section->id ] = $section;
+					break;
+				case 'url':
+					if ( ! empty( $section->links->self ) ) {
+						$sections[ $section->id ] = $section->links->self;
+					}
+					break;
 			}
 		}
 

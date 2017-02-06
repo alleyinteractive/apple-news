@@ -180,6 +180,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @access public
 	 */
 	public function publish_meta_box( $post ) {
+
 		// Only show the publish feature if the user is authorized and auto sync is not enabled.
 		// Also check if the post has been previously published and/or deleted.
 		$api_id = get_post_meta( $post->ID, 'apple_news_api_id', true );
@@ -190,116 +191,37 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$pullquote = get_post_meta( $post->ID, 'apple_news_pullquote', true );
 		$pullquote_position = get_post_meta( $post->ID, 'apple_news_pullquote_position', true );
 
-		// Set the default value
+		// Set default values.
 		if ( empty( $pullquote_position ) ) {
 			$pullquote_position = 'middle';
 		}
-		?>
-		<div id="apple-news-publish">
-		<?php wp_nonce_field( $this->publish_action, 'apple_news_nonce' ); ?>
-		<?php self::build_sections_override( $post->ID ); ?>
-		<div class="apple-news-sections">
-			<?php
-				$section = new Apple_Actions\Index\Section( $this->settings );
-				try {
-					$sections = $section->get_sections();
-				} catch ( Apple_Actions\Action_Exception $e ) {
-					Admin_Apple_Notice::error( $e->getMessage() );
-				}
 
-				if ( ! empty( $sections ) ) :
-					?>
-					<h3><?php esc_html_e( 'Sections', 'apple-news' ) ?></h3>
-					<?php
-					self::build_sections_field( $sections, $post->ID );
-				endif;
-			?>
-			<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. Uncheck them all for a standalone article.' , 'apple-news' ) ?></p>
-		</div>
-		<h3><?php esc_html_e( 'Preview?', 'apple-news' ) ?></h3>
-		<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ) ?>>
-		<p class="description"><?php esc_html_e( 'Check this to publish the article as a draft.' , 'apple-news' ) ?></p>
-		<h3><?php esc_html_e( 'Sponsored?', 'apple-news' ) ?></h3>
-		<input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $is_sponsored ) ?>>
-		<p class="description"><?php esc_html_e( 'Check this to indicate this article is sponsored content.' , 'apple-news' ) ?></p>
-		<h3><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></h3>
-		<textarea name="apple_news_pullquote" placeholder="<?php esc_attr_e( 'A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic.', 'apple-news' ) ?>" rows="6" class="large-text"><?php echo esc_textarea( $pullquote ) ?></textarea>
-		<p class="description"><?php esc_html_e( 'This is optional and can be left blank.', 'apple-news' ) ?></p>
-		<h3><?php esc_html_e( 'Pull quote position', 'apple-news' ) ?></h3>
-		<select name="apple_news_pullquote_position">
-			<option <?php selected( $pullquote_position, 'top' ) ?> value="top"><?php esc_html_e( 'top', 'apple-news' ) ?></option>
-			<option <?php selected( $pullquote_position, 'middle' ) ?> value="middle"><?php esc_html_e( 'middle', 'apple-news' ) ?></option>
-			<option <?php selected( $pullquote_position, 'bottom' ) ?> value="bottom"><?php esc_html_e( 'bottom', 'apple-news' ) ?></option>
-		</select>
-		<p class="description"><?php esc_html_e( 'The position in the article where the pull quote will appear.', 'apple-news' ) ?></p>
-		<?php
-		if ( 'yes' != $this->settings->get( 'api_autosync' )
-			&& current_user_can( apply_filters( 'apple_news_publish_capability', 'manage_options' ) )
-			&& 'publish' === $post->post_status
-			&& empty( $api_id )
-			&& empty( $deleted )
-			&& empty( $pending ) ):
-		?>
-		<input type="hidden" id="apple-news-publish-action" name="apple_news_publish_action" value="">
-		<input type="button" id="apple-news-publish-submit" name="apple_news_publish_submit" value="<?php esc_attr_e( 'Publish to Apple News', 'apple-news' ) ?>" class="button-primary" />
-		<?php
-		elseif ( 'yes' == $this->settings->get( 'api_autosync' )
-			&& empty( $api_id )
-			&& empty( $deleted )
-			&& empty( $pending ) ):
-		?>
-		<p><?php esc_html_e( 'This post will be automatically sent to Apple News on publish.', 'apple-news' ); ?></p>
-		<?php
-		elseif ( 'yes' == $this->settings->get( 'api_async' )
-			&& ! empty( $pending ) ):
-		?>
-		<p><?php esc_html_e( 'This post is currently pending publishing to Apple News.', 'apple-news' ); ?></p>
-		<?php
-		endif;
+		// Create local copies of values to pass into the partial.
+        $publish_action = $this->publish_action;
 
-		// Add data about the article if it exists
-		if ( ! empty( $deleted ) ) :
-			?>
-			<p><b><?php esc_html_e( 'This post has been deleted from Apple News', 'apple-news' ) ?></b></p>
-			<?php
-		endif;
-
-		if ( ! empty( $api_id ) ) :
-			$state = \Admin_Apple_News::get_post_status( $post->ID );
-
-			$share_url = get_post_meta( $post->ID, 'apple_news_api_share_url', true );
-			$created_at = get_post_meta( $post->ID, 'apple_news_api_created_at', true );
-			$created_at = empty( $created_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $created_at ) ), 'F j, h:i a' );
-			$modified_at = get_post_meta( $post->ID, 'apple_news_api_modified_at', true );
-			$modified_at = empty( $modified_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $modified_at ) ), 'F j, h:i a' );
-			?>
-			<p><b><?php esc_html_e( 'Apple News Publish Information', 'apple-news' ) ?></b>
-			<br/><?php esc_html_e( 'ID', 'apple-news' ) ?>: <?php echo esc_html( $api_id ) ?>
-			<br/><?php esc_html_e( 'Created at', 'apple-news' ) ?>: <?php echo esc_html( $created_at ) ?>
-			<br/><?php esc_html_e( 'Modified at', 'apple-news' ) ?>: <?php echo esc_html( $modified_at ) ?>
-			<br/><?php esc_html_e( 'Share URL', 'apple-news' ) ?>: <a href="<?php echo esc_url( $share_url ) ?>" target="_blank"><?php echo esc_html( $share_url ) ?></a>
-			<br/><?php esc_html_e( 'Revision', 'apple-news' ) ?>: <?php echo esc_html( get_post_meta( $post->ID, 'apple_news_api_revision', true ) ) ?>
-			<br/><?php esc_html_e( 'State', 'apple-news' ) ?>: <?php echo esc_html( $state ) ?>
-			<?php
-		endif;
-		?>
-		</div>
-		<?php
+		include plugin_dir_path( __FILE__ ) . 'partials/metabox_publish.php';
 	}
 
 	/**
-	 * Builds the sections dropdown
+	 * Builds the sections checkboxes.
 	 *
-	 * @param array $sections
-	 * @param int $post_id
+	 * @param int $post_id The post ID to query sections for.
+     *
 	 * @access public
-	 * @static
 	 */
-	public static function build_sections_field( $sections, $post_id ) {
+	public static function build_sections_field( $post_id ) {
 
-		// Make sure we have sections.
-		if ( empty( $sections ) ) {
-			return '';
+	    // Ensure we have sections before trying to build the field.
+	    $sections = Admin_Apple_Sections::get_sections_for_post( $post_id, 'raw' );
+	    if ( empty( $sections ) ) {
+		    return;
+	    }
+
+	    // Determine whether to print the subheading for manual selection.
+		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+		if ( ! empty( $mappings ) ) {
+			echo '<h4>' . esc_html__( 'Manual Section Selection', 'apple-news' )
+			    . '</h4>';
 		}
 
 		// Iterate over the list of sections and print each.
