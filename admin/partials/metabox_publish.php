@@ -1,7 +1,7 @@
 <div id="apple-news-publish">
 	<?php wp_nonce_field( $publish_action, 'apple_news_nonce' ); ?>
 	<div id="apple-news-metabox-sections" class="apple-news-metabox-section">
-		<h3><?php esc_html_e( 'Sections', 'apple-news' ) ?></h3>
+        <h3><?php esc_html_e( 'Sections', 'apple-news' ) ?></h3>
 		<?php Admin_Apple_Meta_Boxes::build_sections_override( $post->ID ); ?>
 		<div class="apple-news-sections">
 			<?php Admin_Apple_Meta_Boxes::build_sections_field( $post->ID ); ?>
@@ -9,21 +9,21 @@
 		</div>
 	</div>
 	<div id="apple-news-metabox-is-preview" class="apple-news-metabox-section">
-		<h3><?php esc_html_e( 'Preview?', 'apple-news' ); ?></h3>
+        <h3><?php esc_html_e( 'Preview?', 'apple-news' ); ?></h3>
 		<label for="apple-news-is-preview">
 			<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ) ?>>
 			<?php esc_html_e( 'Check this to publish the article as a draft.', 'apple-news' ); ?>
 		</label>
 	</div>
 	<div id="apple-news-metabox-is-sponsored" class="apple-news-metabox-section">
-		<h3><?php esc_html_e( 'Sponsored?', 'apple-news' ) ?></h3>
+        <h3><?php esc_html_e( 'Sponsored?', 'apple-news' ) ?></h3>
 		<label for="apple-news-is-sponsored">
 			<input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $is_sponsored ) ?>>
 			<?php esc_html_e( 'Check this to indicate this article is sponsored content.', 'apple-news' ); ?>
 		</label>
 	</div>
-	<div id="apple-news-metabox-pullquote" class="apple-news-metabox-section">
-		<h3><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></h3>
+	<div id="apple-news-metabox-pullquote" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
+        <h3><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></h3>
 		<label for="apple-news-pullquote" class="screen-reader-text"><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></label>
 		<textarea id="apple-news-pullquote" name="apple_news_pullquote" placeholder="<?php esc_attr_e( 'A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic.', 'apple-news' ) ?>" rows="6" class="large-text"><?php echo esc_textarea( $pullquote ) ?></textarea>
 		<p class="description"><?php esc_html_e( 'This is optional and can be left blank.', 'apple-news' ) ?></p>
@@ -68,14 +68,16 @@
 	$modified_at = get_post_meta( $post->ID, 'apple_news_api_modified_at', true );
 	$modified_at = empty( $modified_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $modified_at ) ), 'F j, h:i a' );
 	?>
-	<div id="apple-news-metabox-pullquote" class="apple-news-metabox-section">
-		<h3><?php esc_html_e( 'Apple News Publish Information', 'apple-news' ); ?></h3>
-		<div><strong><?php esc_html_e( 'ID', 'apple-news' ); ?>:</strong> <?php echo esc_html( $api_id ); ?></div>
-		<div><strong><?php esc_html_e( 'Created at', 'apple-news' ); ?>:</strong> <?php echo esc_html( $created_at ); ?></div>
-		<div><strong><?php esc_html_e( 'Modified at', 'apple-news' ); ?>:</strong> <?php echo esc_html( $modified_at ); ?></div>
-		<div><strong><?php esc_html_e( 'Share URL', 'apple-news' ); ?>:</strong> <a href="<?php echo esc_url( $share_url ); ?>" target="_blank"><?php echo esc_html( $share_url ); ?></a></div>
-		<div><strong><?php esc_html_e( 'Revision', 'apple-news' ); ?>:</strong> <?php echo esc_html( get_post_meta( $post->ID, 'apple_news_api_revision', true ) ); ?></div>
-		<div><strong><?php esc_html_e( 'State', 'apple-news' ); ?>:</strong> <?php echo esc_html( $state ); ?></div>
+	<div id="apple-news-metabox-pullquote" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
+        <h3><?php esc_html_e( 'Apple News Publish Information', 'apple-news' ); ?></h3>
+        <ul>
+            <li><strong><?php esc_html_e( 'ID', 'apple-news' ); ?>:</strong> <?php echo esc_html( $api_id ); ?></li>
+            <li><strong><?php esc_html_e( 'Created at', 'apple-news' ); ?>:</strong> <?php echo esc_html( $created_at ); ?></li>
+            <li><strong><?php esc_html_e( 'Modified at', 'apple-news' ); ?>:</strong> <?php echo esc_html( $modified_at ); ?></li>
+            <li><strong><?php esc_html_e( 'Share URL', 'apple-news' ); ?>:</strong> <a href="<?php echo esc_url( $share_url ); ?>" target="_blank"><?php echo esc_html( $share_url ); ?></a></li>
+            <li><strong><?php esc_html_e( 'Revision', 'apple-news' ); ?>:</strong> <?php echo esc_html( get_post_meta( $post->ID, 'apple_news_api_revision', true ) ); ?></li>
+            <li><strong><?php esc_html_e( 'State', 'apple-news' ); ?>:</strong> <?php echo esc_html( $state ); ?></li>
+        </ul>
 	</div>
 	<?php endif; ?>
 </div>

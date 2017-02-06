@@ -1,9 +1,20 @@
+#apple-news-publish .apple-news-metabox-section-close:before,
+#apple-news-publish .apple-news-metabox-section-control:after {
+    display: block;
+    font-family: "dashicons";
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+}
+
 #apple-news-publish h3 {
+    display: block;
+    font-size: 1.1em;
 	font-weight: bold;
     line-height: 1em;
-    font-size: 1.1em;
     margin: 10px 0 5px;
-    display: block;
+    position: relative;
 }
 
 #apple-news-publish h4 {
@@ -15,10 +26,70 @@
 	word-wrap: break-word;
 }
 
+#apple-news-publish .apple-news-metabox-section-collapsable.apple-news-metabox-section-visible {
+    background: white;
+    bottom: .5em;
+    left: .5em;
+    overflow-y: scroll;
+    position: absolute;
+    right: .5em;
+    top: 0;
+    z-index: 10;
+}
+
+#apple-news-publish .apple-news-metabox-section-collapsable.apple-news-metabox-section-collapsed {
+    display: none;
+    visibility: hidden;
+}
+
+#apple-news-publish .apple-news-metabox-section-control {
+    border-top: 1px solid #ccc;
+    padding-top: .75em;
+}
+
+#apple-news-publish .apple-news-metabox-section-control:last-of-type {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: .75em;
+}
+
+#apple-news-publish .apple-news-metabox-section-control:after {
+    content: "\f345";
+    opacity: 0.5;
+    position: absolute;
+    right: 0;
+    top: .5em;
+}
+
+#apple-news-publish .apple-news-metabox-section-control:hover {
+    cursor: pointer;
+}
+
+#apple-news-publish .apple-news-metabox-section-close {
+    display: block;
+    height: 20px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 20px;
+    z-index: 100;
+}
+
+#apple-news-publish .apple-news-metabox-section-close:before {
+    content: "\f153";
+}
+
+#apple-news-publish .apple-news-metabox-section-close:hover {
+    cursor: pointer;
+}
+
+#apple-news-publish .apple-news-metabox-section-close:hover:before {
+    color: #0073aa;
+}
+
 #apple-news-publish .section {
-	display: block;
+    display: block;
 }
 
 #apple-news-publish-submit {
-	margin-top: 10px;
+    margin-top: 10px;
 }
