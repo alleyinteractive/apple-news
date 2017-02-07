@@ -119,7 +119,7 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Convert sections returned from the API into the requested format.
 		$sections = array();
-		$sections_raw = Section::get_sections_list();
+		$sections_raw = self::get_sections();
 		foreach ( $sections_raw as $section ) {
 
 			// Ensure we have an ID to key off of.
