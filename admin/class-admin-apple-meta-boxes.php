@@ -151,6 +151,11 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			$pullquote_position = 'middle';
 		}
 		update_post_meta( $post_id, 'apple_news_pullquote_position', $pullquote_position );
+
+		// Save each cover art image.
+        self::_save_coverart_meta( $post_id, 'apple_news_coverart_horizontal' );
+        self::_save_coverart_meta( $post_id, 'apple_news_coverart_square' );
+        self::_save_coverart_meta( $post_id, 'apple_news_coverart_vertical' );
 	}
 
 	/**
@@ -324,5 +329,28 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			'media_modal_button' => __( 'Select image', 'apple-news' ),
 			'media_modal_title' => __( 'Choose an image', 'apple-news' ),
 		) );
+	}
+
+	/**
+	 * Saves a cover art image to meta, given a post ID and a field name.
+	 *
+	 * @param int $post_id The post ID to update meta for.
+	 * @param string $field_name The field name to use in POST and meta_key.
+	 *
+	 * @access private
+	 */
+	private static function _save_coverart_meta( $post_id, $field_name ) {
+
+		// Determine if there is postdata for this key.
+		if ( empty( $_POST[ $field_name ] )
+			|| ! is_numeric( $_POST[ $field_name ] )
+		) {
+			delete_post_meta( $post_id, $field_name );
+
+			return;
+		}
+
+		// Save post meta for this key.
+		update_post_meta( $post_id, $field_name, absint( $_POST[ $field_name ] ) );
 	}
 }

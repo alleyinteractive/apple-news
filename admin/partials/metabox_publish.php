@@ -48,21 +48,21 @@
         <div id="apple-news-metabox-coverart-horizontal" class="apple-news-metabox-coverart-image">
             <h4>Horizontal Image</h4>
             <div class="apple-news-metabox-coverart-image"></div>
-            <input name="apple_news_coverart_horizontal" class="apple-news-metabox-coverart-id" type="hidden" />
+            <input name="apple_news_coverart_horizontal" class="apple-news-metabox-coverart-id" type="hidden" value="<?php echo absint( get_post_meta( $post->ID, 'apple_news_coverart_horizontal', true ) ); ?>" />
             <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
             <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
         </div>
         <div id="apple-news-metabox-coverart-vertical" class="apple-news-metabox-coverart-image">
             <h4>Vertical Image</h4>
             <div class="apple-news-metabox-coverart-image"></div>
-            <input name="apple_news_coverart_vertical" class="apple-news-metabox-coverart-id" type="hidden" />
+            <input name="apple_news_coverart_vertical" class="apple-news-metabox-coverart-id" type="hidden" value="<?php echo absint( get_post_meta( $post->ID, 'apple_news_coverart_vertical', true ) ); ?>" />
             <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
             <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
         </div>
         <div id="apple-news-metabox-coverart-square" class="apple-news-metabox-coverart-image">
             <h4>Square Image</h4>
             <div class="apple-news-metabox-coverart-image"></div>
-            <input name="apple_news_coverart_square" class="apple-news-metabox-coverart-id" type="hidden" />
+            <input name="apple_news_coverart_square" class="apple-news-metabox-coverart-id" type="hidden" value="<?php echo absint( get_post_meta( $post->ID, 'apple_news_coverart_square', true ) ); ?>" />
             <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
             <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
         </div>
