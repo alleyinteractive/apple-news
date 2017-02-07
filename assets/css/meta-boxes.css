@@ -26,13 +26,22 @@
 	word-wrap: break-word;
 }
 
+#apple-news-publish .apple-news-metabox-coverart-image img {
+    max-width: 75%;
+}
+
+#apple-news-publish .apple-news-metabox-coverart-image .hidden {
+    display: none;
+    visibility: hidden;
+}
+
 #apple-news-publish .apple-news-metabox-section-collapsable.apple-news-metabox-section-visible {
     background: white;
-    bottom: .5em;
-    left: .5em;
+    bottom: 10px;
+    left: 10px;
     overflow-y: scroll;
     position: absolute;
-    right: .5em;
+    right: 10px;
     top: 0;
     z-index: 10;
 }
