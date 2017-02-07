@@ -1,8 +1,7 @@
 (function ( $, window, undefined ) {
 	'use strict';
 
-	var $assign_by_taxonomy = $( '#apple-news-sections-by-taxonomy' ),
-		frame;
+	var $assign_by_taxonomy = $( '#apple-news-sections-by-taxonomy' );
 
 	// Listen for clicks on the submit button.
 	$( '#apple-news-publish-submit' ).click(function ( e ) {
@@ -59,7 +58,8 @@
 			$addImgButton = $this.find( '.apple-news-metabox-coverart-add' ),
 			$delImgButton = $this.find( '.apple-news-metabox-coverart-remove' ),
 			$imgContainer = $this.find( '.apple-news-metabox-coverart-image' ),
-			$imgIdInput = $this.find( '.apple-news-metabox-coverart-id' );
+			$imgIdInput = $this.find( '.apple-news-metabox-coverart-id' ),
+			frame;
 
 		// Set up handler for remove image functionality.
 		$delImgButton.on( 'click', function() {
