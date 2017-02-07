@@ -49,37 +49,52 @@
             <?php $horizontal_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_horizontal', true ) ); ?>
             <h4>Horizontal Image</h4>
             <div class="apple-news-metabox-coverart-image">
-                <?php if ( ! empty( $horizontal_image_id ) ): ?>
-                    <?php echo wp_get_attachment_image( $horizontal_image_id, 'medium' ); ?>
-                <?php endif; ?>
+                <?php if ( ! empty( $horizontal_image_id ) ) {
+	                echo wp_get_attachment_image( $horizontal_image_id, 'medium' );
+	                $add_hidden = 'hidden';
+	                $remove_hidden = '';
+                } else {
+	                $add_hidden = '';
+	                $remove_hidden = 'hidden';
+                } ?>
             </div>
             <input name="apple_news_coverart_horizontal" class="apple-news-metabox-coverart-id" type="hidden" value="<?php echo $horizontal_image_id; ?>" />
-            <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
-            <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-add <?php echo $add_hidden; ?>" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-remove <?php echo $remove_hidden; ?>" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
         </div>
         <div id="apple-news-metabox-coverart-vertical" class="apple-news-metabox-coverart-image">
 	        <?php $vertical_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_vertical', true ) ); ?>
             <h4>Vertical Image</h4>
             <div class="apple-news-metabox-coverart-image">
-		        <?php if ( ! empty( $vertical_image_id ) ): ?>
-			        <?php echo wp_get_attachment_image( $vertical_image_id, 'medium' ); ?>
-		        <?php endif; ?>
+	            <?php if ( ! empty( $vertical_image_id ) ) {
+		            echo wp_get_attachment_image( $vertical_image_id, 'medium' );
+		            $add_hidden = 'hidden';
+		            $remove_hidden = '';
+	            } else {
+		            $add_hidden = '';
+		            $remove_hidden = 'hidden';
+	            } ?>
             </div>
             <input name="apple_news_coverart_vertical" class="apple-news-metabox-coverart-id" type="hidden" value="<?php echo $vertical_image_id; ?>" />
-            <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
-            <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-add <?php echo $add_hidden; ?>" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-remove <?php echo $remove_hidden; ?>" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
         </div>
         <div id="apple-news-metabox-coverart-square" class="apple-news-metabox-coverart-image">
 	        <?php $square_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_square', true ) ); ?>
             <h4>Square Image</h4>
             <div class="apple-news-metabox-coverart-image">
-		        <?php if ( ! empty( $square_image_id ) ): ?>
-			        <?php echo wp_get_attachment_image( $square_image_id, 'medium' ); ?>
-		        <?php endif; ?>
+	            <?php if ( ! empty( $square_image_id ) ) {
+		            echo wp_get_attachment_image( $square_image_id, 'medium' );
+		            $add_hidden = 'hidden';
+		            $remove_hidden = '';
+	            } else {
+		            $add_hidden = '';
+		            $remove_hidden = 'hidden';
+	            } ?>
             </div>
             <input name="apple_news_coverart_square" class="apple-news-metabox-coverart-id" type="hidden" value="<?php echo $square_image_id; ?>" />
-            <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
-            <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-add <?php echo $add_hidden; ?>" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-remove <?php echo $remove_hidden; ?>" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
         </div>
     </div>
 	<?php if ( 'yes' !== $this->settings->get( 'api_autosync' )
