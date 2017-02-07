@@ -35,6 +35,38 @@
 		</select>
 		<p class="description"><?php esc_html_e( 'The position in the article where the pull quote will appear.', 'apple-news' ) ?></p>
 	</div>
+    <div id="apple-news-metabox-coverart" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
+        <h3><?php esc_html_e( 'Cover art', 'apple-news' ) ?></h3>
+        <p class="description">
+            <?php printf(
+                wp_kses(
+                    __( 'You can set one or more <a href="%s">cover art</a> images below.', 'apple-news' ),
+                    array( 'a' => array( 'href' => array() ) )
+                ),
+                esc_url( __( 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html', 'apple-news' ) )
+            ); ?></p>
+        <div id="apple-news-metabox-coverart-horizontal" class="apple-news-metabox-coverart-image">
+            <h4>Horizontal Image</h4>
+            <div class="apple-news-metabox-coverart-image"></div>
+            <input name="apple_news_coverart_horizontal" class="apple-news-metabox-coverart-id" type="hidden" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
+        </div>
+        <div id="apple-news-metabox-coverart-vertical" class="apple-news-metabox-coverart-image">
+            <h4>Vertical Image</h4>
+            <div class="apple-news-metabox-coverart-image"></div>
+            <input name="apple_news_coverart_vertical" class="apple-news-metabox-coverart-id" type="hidden" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
+        </div>
+        <div id="apple-news-metabox-coverart-square" class="apple-news-metabox-coverart-image">
+            <h4>Square Image</h4>
+            <div class="apple-news-metabox-coverart-image"></div>
+            <input name="apple_news_coverart_square" class="apple-news-metabox-coverart-id" type="hidden" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-add" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
+            <input type="button" class="button-primary apple-news-metabox-coverart-remove hidden" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
+        </div>
+    </div>
 	<?php if ( 'yes' !== $this->settings->get( 'api_autosync' )
 	     && current_user_can( apply_filters( 'apple_news_publish_capability', 'manage_options' ) )
 	     && 'publish' === $post->post_status

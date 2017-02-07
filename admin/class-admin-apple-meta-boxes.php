@@ -197,7 +197,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 
 		// Create local copies of values to pass into the partial.
-        $publish_action = $this->publish_action;
+		$publish_action = $this->publish_action;
 
 		include plugin_dir_path( __FILE__ ) . 'partials/metabox_publish.php';
 	}
@@ -206,22 +206,22 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * Builds the sections checkboxes.
 	 *
 	 * @param int $post_id The post ID to query sections for.
-     *
+	 *
 	 * @access public
 	 */
 	public static function build_sections_field( $post_id ) {
 
-	    // Ensure we have sections before trying to build the field.
-	    $sections = Admin_Apple_Sections::get_sections_for_post( $post_id, 'raw' );
-	    if ( empty( $sections ) ) {
-		    return;
-	    }
+		// Ensure we have sections before trying to build the field.
+		$sections = Admin_Apple_Sections::get_sections_for_post( $post_id, 'raw' );
+		if ( empty( $sections ) ) {
+			return;
+		}
 
-	    // Determine whether to print the subheading for manual selection.
+		// Determine whether to print the subheading for manual selection.
 		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
 		if ( ! empty( $mappings ) ) {
 			echo '<h4>' . esc_html__( 'Manual Section Selection', 'apple-news' )
-			    . '</h4>';
+				. '</h4>';
 		}
 
 		// Iterate over the list of sections and print each.
@@ -289,26 +289,40 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	/**
 	 * Registers assets used by meta boxes.
 	 *
-	 * @param string $hook
+	 * @param string $hook The initiator of the action hook.
+	 *
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
+
+		// Only fire on post and new post views.
 		if ( 'post.php' !== $hook && 'post-new.php' !== $hook ) {
 			return;
 		}
 
-		wp_enqueue_style( $this->plugin_slug . '_meta_boxes_css', plugin_dir_url(
-			__FILE__ ) .  '../assets/css/meta-boxes.css' );
+		// Ensure media modal assets are enqueued.
+		wp_enqueue_media();
 
-		wp_enqueue_script( $this->plugin_slug . '_meta_boxes_js', plugin_dir_url(
-			__FILE__ ) .  '../assets/js/meta-boxes.js', array( 'jquery' ),
-			self::$version, true );
+		// Enqueue metabox stylesheet.
+		wp_enqueue_style(
+			$this->plugin_slug . '_meta_boxes_css',
+			plugin_dir_url( __FILE__ ) .  '../assets/css/meta-boxes.css'
+		);
+
+		// Enqueue metabox script.
+		wp_enqueue_script(
+			$this->plugin_slug . '_meta_boxes_js',
+			plugin_dir_url( __FILE__ ) .  '../assets/js/meta-boxes.js',
+			array( 'jquery' ),
+			self::$version,
+			true
+		);
 
 		// Localize the JS file for handling frontend actions.
 		wp_localize_script( $this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(
 			'publish_action' => $this->publish_action,
+			'media_modal_button' => __( 'Select image', 'apple-news' ),
+			'media_modal_title' => __( 'Choose an image', 'apple-news' ),
 		) );
-
 	}
-
 }
