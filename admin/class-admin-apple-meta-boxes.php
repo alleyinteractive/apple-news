@@ -217,7 +217,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	public static function build_sections_field( $post_id ) {
 
 		// Ensure we have sections before trying to build the field.
-		$sections = Admin_Apple_Sections::get_sections_for_post( $post_id, 'raw' );
+		$sections = Admin_Apple_Sections::get_sections();
 		if ( empty( $sections ) ) {
 			return;
 		}

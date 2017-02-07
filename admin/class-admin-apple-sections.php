@@ -68,6 +68,30 @@ class Admin_Apple_Sections extends Apple_News {
 	}
 
 	/**
+	 * Returns an array of section data without requiring an instance of the object.
+	 *
+	 * @access public
+	 * @return array An array of section data.
+	 */
+	public static function get_sections() {
+
+		// Try to load from cache.
+		if ( false !== ( $sections = get_transient( 'apple_news_sections' ) ) ) {
+			return $sections;
+		}
+
+		// Try to get sections. The get_sections call sets the transient.
+		$admin_settings = new Admin_Apple_Settings;
+		$section_api = new Section( $admin_settings->fetch_settings() );
+		$sections = $section_api->get_sections();
+		if ( empty( $sections ) || ! is_array( $sections ) ) {
+			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
+		}
+
+		return $sections;
+	}
+
+	/**
 	 * Given a post ID, returns an array of section URLs based on applied taxonomy.
 	 *
 	 * Supports overrides for manual section selection and fallback to postmeta
@@ -77,7 +101,7 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @param string $format The return format to use. Can be 'url' or 'raw'.
 	 *
 	 * @access public
-	 * @return array An array of section URLs for the post.
+	 * @return array An array of section data according to the requested format.
 	 */
 	public static function get_sections_for_post( $post_id, $format = 'url' ) {
 
@@ -93,16 +117,9 @@ class Admin_Apple_Sections extends Apple_News {
 			return array();
 		}
 
-		// Try to get sections.
-		$admin_settings = new Admin_Apple_Settings;
-		$section_api = new Section( $admin_settings->fetch_settings() );
-		$sections_raw = $section_api->get_sections();
-		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
-			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
-		}
-
 		// Convert sections returned from the API into the requested format.
 		$sections = array();
+		$sections_raw = Section::get_sections_list();
 		foreach ( $sections_raw as $section ) {
 
 			// Ensure we have an ID to key off of.
