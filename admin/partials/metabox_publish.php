@@ -51,10 +51,10 @@
             <p class="description">
                 <?php printf(
                     esc_html__( 'The image must be a minimum of %1$dx%2$d, but should be at least %3$dx%4$d for large screens.', 'apple-news' ),
-                    1044,
-                    783,
-                    1832,
-                    1374
+                    Admin_Apple_News::$image_sizes['apple_news_ca_landscape_iphone']['width'],
+	                Admin_Apple_News::$image_sizes['apple_news_ca_landscape_iphone']['height'],
+	                Admin_Apple_News::$image_sizes['apple_news_ca_landscape_ipad']['width'],
+	                Admin_Apple_News::$image_sizes['apple_news_ca_landscape_ipad']['height']
                 ); ?>
             </p>
             <div class="apple-news-metabox-coverart-image">
@@ -77,10 +77,10 @@
             <p class="description">
 		        <?php printf(
 			        esc_html__( 'The image must be a minimum of %1$dx%2$d, but should be at least %3$dx%4$d for large screens.', 'apple-news' ),
-			        687,
-			        916,
-			        1122,
-			        1496
+			        Admin_Apple_News::$image_sizes['apple_news_ca_portrait_iphone']['width'],
+			        Admin_Apple_News::$image_sizes['apple_news_ca_portrait_iphone']['height'],
+			        Admin_Apple_News::$image_sizes['apple_news_ca_portrait_ipad']['width'],
+			        Admin_Apple_News::$image_sizes['apple_news_ca_portrait_ipad']['height']
 		        ); ?>
             </p>
             <div class="apple-news-metabox-coverart-image">
@@ -103,10 +103,10 @@
             <p class="description">
 		        <?php printf(
 			        esc_html__( 'The image must be a minimum of %1$dx%2$d, but should be at least %3$dx%4$d for large screens.', 'apple-news' ),
-			        912,
-			        912,
-			        1472,
-			        1472
+			        Admin_Apple_News::$image_sizes['apple_news_ca_square_iphone']['width'],
+			        Admin_Apple_News::$image_sizes['apple_news_ca_square_iphone']['height'],
+			        Admin_Apple_News::$image_sizes['apple_news_ca_square_ipad']['width'],
+			        Admin_Apple_News::$image_sizes['apple_news_ca_square_ipad']['height']
 		        ); ?>
             </p>
             <div class="apple-news-metabox-coverart-image">
