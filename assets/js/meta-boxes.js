@@ -89,8 +89,12 @@
 
 			// Set up handler for image selection.
 			frame.on( 'select', function () {
-				var attachment = frame.state().get( 'selection' ).first().toJSON();
-				$imgContainer.append( '<img src="' + attachment.url + '" alt="" />' );
+				var attachment = frame.state().get( 'selection' ).first().toJSON(),
+					imgUrl = attachment.url;
+				if ( attachment.sizes.medium && attachment.sizes.medium.url ) {
+					imgUrl = attachment.sizes.medium.url;
+				}
+				$imgContainer.append( '<img src="' + imgUrl + '" alt="" />' );
 				$imgIdInput.val( attachment.id );
 				$addImgButton.addClass( 'hidden' );
 				$delImgButton.removeClass( 'hidden' );
