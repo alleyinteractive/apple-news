@@ -48,6 +48,15 @@
         <div id="apple-news-metabox-coverart-horizontal" class="apple-news-metabox-coverart-image">
             <?php $horizontal_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_horizontal', true ) ); ?>
             <h4>Horizontal Image</h4>
+            <p class="description">
+                <?php printf(
+                    esc_html__( 'The image must be a minimum of %1$dx%2$d, but should be at least %3$dx%4$d for large screens.', 'apple-news' ),
+                    1044,
+                    783,
+                    1832,
+                    1374
+                ); ?>
+            </p>
             <div class="apple-news-metabox-coverart-image">
                 <?php if ( ! empty( $horizontal_image_id ) ) {
 	                echo wp_get_attachment_image( $horizontal_image_id, 'medium' );
@@ -65,6 +74,15 @@
         <div id="apple-news-metabox-coverart-vertical" class="apple-news-metabox-coverart-image">
 	        <?php $vertical_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_vertical', true ) ); ?>
             <h4>Vertical Image</h4>
+            <p class="description">
+		        <?php printf(
+			        esc_html__( 'The image must be a minimum of %1$dx%2$d, but should be at least %3$dx%4$d for large screens.', 'apple-news' ),
+			        687,
+			        916,
+			        1122,
+			        1496
+		        ); ?>
+            </p>
             <div class="apple-news-metabox-coverart-image">
 	            <?php if ( ! empty( $vertical_image_id ) ) {
 		            echo wp_get_attachment_image( $vertical_image_id, 'medium' );
@@ -82,6 +100,15 @@
         <div id="apple-news-metabox-coverart-square" class="apple-news-metabox-coverart-image">
 	        <?php $square_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_square', true ) ); ?>
             <h4>Square Image</h4>
+            <p class="description">
+		        <?php printf(
+			        esc_html__( 'The image must be a minimum of %1$dx%2$d, but should be at least %3$dx%4$d for large screens.', 'apple-news' ),
+			        912,
+			        912,
+			        1472,
+			        1472
+		        ); ?>
+            </p>
             <div class="apple-news-metabox-coverart-image">
 	            <?php if ( ! empty( $square_image_id ) ) {
 		            echo wp_get_attachment_image( $square_image_id, 'medium' );
