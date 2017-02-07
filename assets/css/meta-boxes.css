@@ -96,6 +96,27 @@
     color: #0073aa;
 }
 
+#apple-news-publish .apple-news-notice {
+    border-left-style: solid;
+    border-left-width: 3px;
+    margin: 1em 0;
+    padding: .5em .75em;
+}
+
+#apple-news-publish .apple-news-notice p {
+    margin: 0;
+}
+
+#apple-news-publish .apple-news-notice-error {
+    background: #fcc;
+    border-color: #dc3232;
+}
+
+#apple-news-publish .apple-news-notice-warning {
+    background: #fec;
+    border-color: #ffb900;
+}
+
 #apple-news-publish .section {
     display: block;
 }
