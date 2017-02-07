@@ -27,6 +27,7 @@
 }
 
 #apple-news-publish .apple-news-metabox-coverart-image img {
+    height: auto;
     max-width: 75%;
 }
 
