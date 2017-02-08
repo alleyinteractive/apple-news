@@ -50,11 +50,11 @@
 
 				// Get target minimum sizes based on orientation.
 				switch ( $imgIdInput.attr( 'name' ) ) {
-					case 'apple_news_coverart_horizontal':
+					case 'apple_news_coverart_landscape':
 						minX = apple_news_cover_art.image_sizes.apple_news_ca_landscape_ipad_pro.width;
 						minY = apple_news_cover_art.image_sizes.apple_news_ca_landscape_ipad_pro.height;
 						break;
-					case 'apple_news_coverart_vertical':
+					case 'apple_news_coverart_portrait':
 						minX = apple_news_cover_art.image_sizes.apple_news_ca_portrait_ipad_pro.width;
 						minY = apple_news_cover_art.image_sizes.apple_news_ca_portrait_ipad_pro.height;
 						break;
