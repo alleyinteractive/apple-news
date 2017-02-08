@@ -4,6 +4,7 @@ namespace Apple_Exporter\Builders;
 require_once plugin_dir_path( __FILE__ ) . '../../../admin/class-admin-apple-news.php';
 
 use \Admin_Apple_News;
+use \Apple_Exporter\Workspace;
 
 /**
  * @since 0.4.0
@@ -116,13 +117,29 @@ class Metadata extends Builder {
 				continue;
 			}
 
-			// TODO: Handle bundling source.
+			// Bundle source, if necessary.
+			$url = wp_get_attachment_image_url( $id, $name );
+			if ( 'yes' !== $this->get_setting( 'use_remote_images' ) ) {
+				$filename = \Apple_News::get_filename( $url );
+				$bundle_url = apply_filters(
+					'apple_news_bundle_source',
+					$url,
+					$filename,
+					$this->content_id()
+				);
+				add_post_meta(
+					$this->content_id(),
+					Workspace::BUNDLE_META_KEY,
+					esc_url_raw( $bundle_url )
+				);
+				$url = 'bundle://' . $filename;
+			}
 
 			// Add this crop to the coverArt array.
 			$meta['coverArt'][] = array(
 				'accessibilityCaption' => $alt,
 				'type' => 'image',
-				'URL' => wp_get_attachment_image_url( $id, $name ),
+				'URL' => $url,
 			);
 		}
 	}
