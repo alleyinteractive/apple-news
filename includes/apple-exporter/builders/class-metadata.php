@@ -95,7 +95,7 @@ class Metadata extends Builder {
 
 		// Get information about the image.
 		$image = wp_get_attachment_metadata( $id );
-		$alt = get_post_meta( $id, '_wp_attachment_image_alt', true);
+		$alt = get_post_meta( $id, '_wp_attachment_image_alt', true );
 		if ( empty( $image['sizes'] ) ) {
 			return;
 		}
