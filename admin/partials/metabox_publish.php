@@ -22,6 +22,18 @@
 			<?php esc_html_e( 'Check this to indicate this article is sponsored content.', 'apple-news' ); ?>
 		</label>
 	</div>
+    <div id="apple-news-metabox-maturity-rating" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
+        <h3><?php esc_html_e( 'Maturity Rating', 'apple-news' ) ?></h3>
+        <label for="apple-news-maturity-rating">
+            <select id="apple-news-maturity-rating" name="apple_news_maturity_rating">
+                <option value=""></option>
+		        <?php foreach ( self::$maturity_ratings as $rating ) : ?>
+                    <option value="<?php echo esc_attr( $rating ) ?>" <?php selected( $maturity_rating, $rating ) ?>><?php echo esc_html( ucwords( strtolower( $rating ) ) ) ?></option>
+		        <?php endforeach; ?>
+            </select>
+	        <p class="description"><?php esc_html_e( 'Select the optional maturity rating for this post.', 'apple-news' ); ?></p>
+        </label>
+    </div>
 	<div id="apple-news-metabox-pullquote" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
         <h3><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></h3>
 		<label for="apple-news-pullquote" class="screen-reader-text"><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></label>
