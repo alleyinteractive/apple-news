@@ -26,16 +26,6 @@
 	word-wrap: break-word;
 }
 
-#apple-news-publish .apple-news-metabox-coverart-image img {
-    height: auto;
-    max-width: 75%;
-}
-
-#apple-news-publish .apple-news-metabox-coverart-image .hidden {
-    display: none;
-    visibility: hidden;
-}
-
 #apple-news-publish .apple-news-metabox-section-collapsable.apple-news-metabox-section-visible {
     background: white;
     bottom: 10px;
