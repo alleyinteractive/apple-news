@@ -44,32 +44,24 @@
 				var attachment = frame.state().get( 'selection' ).first().toJSON(),
 					imgUrl = attachment.url,
 					minX,
-					minY,
-					recX,
-					recY;
+					minY;
 				if ( attachment.sizes.medium && attachment.sizes.medium.url ) {
 					imgUrl = attachment.sizes.medium.url;
 				}
 
-				// Get target minimum and recommended sizes based on orientation.
+				// Get target minimum sizes based on orientation.
 				switch ( $imgIdInput.attr( 'name' ) ) {
 					case 'apple_news_coverart_horizontal':
-						minX = apple_news_cover_art.image_sizes.apple_news_ca_landscape_iphone.width;
-						minY = apple_news_cover_art.image_sizes.apple_news_ca_landscape_iphone.height;
-						recX = apple_news_cover_art.image_sizes.apple_news_ca_landscape_ipad.width;
-						recY = apple_news_cover_art.image_sizes.apple_news_ca_landscape_ipad.height;
+						minX = apple_news_cover_art.image_sizes.apple_news_ca_landscape_ipad_pro.width;
+						minY = apple_news_cover_art.image_sizes.apple_news_ca_landscape_ipad_pro.height;
 						break;
 					case 'apple_news_coverart_vertical':
-						minX = apple_news_cover_art.image_sizes.apple_news_ca_portrait_iphone.width;
-						minY = apple_news_cover_art.image_sizes.apple_news_ca_portrait_iphone.height;
-						recX = apple_news_cover_art.image_sizes.apple_news_ca_portrait_ipad.width;
-						recY = apple_news_cover_art.image_sizes.apple_news_ca_portrait_ipad.height;
+						minX = apple_news_cover_art.image_sizes.apple_news_ca_portrait_ipad_pro.width;
+						minY = apple_news_cover_art.image_sizes.apple_news_ca_portrait_ipad_pro.height;
 						break;
 					case 'apple_news_coverart_square':
-						minX = apple_news_cover_art.image_sizes.apple_news_ca_square_iphone.width;
-						minY = apple_news_cover_art.image_sizes.apple_news_ca_square_iphone.height;
-						recX = apple_news_cover_art.image_sizes.apple_news_ca_square_ipad.width;
-						recY = apple_news_cover_art.image_sizes.apple_news_ca_square_ipad.height;
+						minX = apple_news_cover_art.image_sizes.apple_news_ca_square_ipad_pro.width;
+						minY = apple_news_cover_art.image_sizes.apple_news_ca_square_ipad_pro.height;
 						break;
 					default:
 						return;
@@ -88,15 +80,6 @@
 					);
 
 					return;
-				}
-
-				// Check attachment size against recommended.
-				if ( attachment.width < recX || attachment.height < recY ) {
-					$imgContainer.append(
-						'<div class="apple-news-notice apple-news-notice-warning"><p>'
-						+ apple_news_cover_art.image_small
-						+ '</p></div>'
-					);
 				}
 
 				// Add the image and ID, swap visibility of add and remove buttons.

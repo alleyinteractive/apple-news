@@ -346,8 +346,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Localize the JS file for cover art.
 		wp_localize_script( $this->plugin_slug . '_cover_art_js', 'apple_news_cover_art', array(
 			'image_sizes' => Admin_Apple_News::$image_sizes,
-			'image_small' => esc_html__( 'Warning: Your image is smaller than the recommended size specified above.', 'apple-news' ),
-			'image_too_small' => esc_html__( 'ERROR: You must select an image that is at least the minimum height and width specified above.', 'apple-news' ),
+			'image_too_small' => esc_html__( 'You must select an image that is at least the minimum height and width specified above.', 'apple-news' ),
 			'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
 			'media_modal_title' => esc_html__( 'Choose an image', 'apple-news' ),
 		) );
