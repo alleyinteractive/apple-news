@@ -272,6 +272,9 @@ class Admin_Apple_Index_Page extends Apple_News {
 			return;
 		}
 
+		// Ensure media modal assets are enqueued.
+		wp_enqueue_media();
+
 		// Enable jQuery datepicker for the export table date filter
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
@@ -284,11 +287,20 @@ class Admin_Apple_Index_Page extends Apple_News {
 			__FILE__ ) .  '../assets/js/export-table.js', array( 'jquery', 'jquery-ui-datepicker' ), self::$version, true );
 		wp_enqueue_script( $this->plugin_slug . '_single_push_js', plugin_dir_url(
 			__FILE__ ) .  '../assets/js/single-push.js', array( 'jquery' ), self::$version, true );
+		wp_enqueue_script( $this->plugin_slug . '_cover_art_js', plugin_dir_url(
+			__FILE__ ) .  '../assets/js/cover-art.js', array( 'jquery' ), self::$version, true );
 
 		// Localize strings
 		wp_localize_script( $this->plugin_slug . '_export_table_js', 'apple_news_export_table', array(
 			'reset_confirmation' => __( "Are you sure you want to reset status? Please only proceed if you're certain the post is stuck or this could reset in duplicate posts in Apple News.", 'apple-news' ),
 			'delete_confirmation' => __( 'Are you sure you want to delete this post from Apple News?', 'apple-news' ),
+		) );
+		wp_localize_script( $this->plugin_slug . '_cover_art_js', 'apple_news_cover_art', array(
+			'image_sizes' => Admin_Apple_News::$image_sizes,
+			'image_small' => esc_html__( 'Warning: Your image is smaller than the recommended size specified above.', 'apple-news' ),
+			'image_too_small' => esc_html__( 'ERROR: You must select an image that is at least the minimum height and width specified above.', 'apple-news' ),
+			'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
+			'media_modal_title' => esc_html__( 'Choose an image', 'apple-news' ),
 		) );
 	}
 

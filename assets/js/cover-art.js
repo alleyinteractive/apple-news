@@ -2,12 +2,13 @@
 	'use strict';
 
 	// Set up add and remove image functionality.
-	$( '.apple-news-metabox-coverart-image' ).each( function () {
+	$( '.apple-news-coverart-image' ).each( function () {
+		console.log( 'thingy' );
 		var $this = $( this ),
-			$addImgButton = $this.find( '.apple-news-metabox-coverart-add' ),
-			$delImgButton = $this.find( '.apple-news-metabox-coverart-remove' ),
-			$imgContainer = $this.find( '.apple-news-metabox-coverart-image' ),
-			$imgIdInput = $this.find( '.apple-news-metabox-coverart-id' ),
+			$addImgButton = $this.find( '.apple-news-coverart-add' ),
+			$delImgButton = $this.find( '.apple-news-coverart-remove' ),
+			$imgContainer = $this.find( '.apple-news-coverart-image' ),
+			$imgIdInput = $this.find( '.apple-news-coverart-id' ),
 			frame;
 
 		// Set up handler for remove image functionality.
