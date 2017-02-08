@@ -81,9 +81,6 @@
 					return;
 				}
 
-				// Ensure the full size crop exists.
-				console.log( attachment );
-
 				// Add the image and ID, swap visibility of add and remove buttons.
 				$imgContainer.append( '<img src="' + imgUrl + '" alt="" />' );
 				$imgIdInput.val( attachment.id );
