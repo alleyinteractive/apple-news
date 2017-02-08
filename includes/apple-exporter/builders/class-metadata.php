@@ -1,6 +1,10 @@
 <?php
 namespace Apple_Exporter\Builders;
 
+require_once plugin_dir_path( __FILE__ ) . '../../../admin/class-admin-apple-news.php';
+
+use \Admin_Apple_News;
+
 /**
  * @since 0.4.0
  */
@@ -88,27 +92,38 @@ class Metadata extends Builder {
 			return;
 		}
 
-		// Get info about the image.
+		// Get information about the image.
+		$image = wp_get_attachment_metadata( $id );
 		$alt = get_post_meta( $id, '_wp_attachment_image_alt', true);
-		$crops = array(
-			wp_get_attachment_image_src( $id, 'apple_news_ca_' . $orientation . '_ipad_pro' ),
-			wp_get_attachment_image_src( $id, 'apple_news_ca_' . $orientation . '_ipad' ),
-			wp_get_attachment_image_src( $id, 'apple_news_ca_' . $orientation . '_iphone_55' ),
-			wp_get_attachment_image_src( $id, 'apple_news_ca_' . $orientation . '_iphone_47' ),
-			wp_get_attachment_image_src( $id, 'apple_news_ca_' . $orientation . '_iphone_40' ),
-		);
-
-		// TODO: Handle bundling source.
+		if ( empty( $image['sizes'] ) ) {
+			return;
+		}
 
 		// Loop over crops and add each.
-		foreach ( $crops as $crop ) {
-			if ( ! empty( $crop[0] ) ) {
-				$meta['coverArt'][] = array(
-					'accessibilityCaption' => $alt,
-					'type' => 'image',
-					'URL' => $crop[0]
-				);
+		foreach ( Admin_Apple_News::$image_sizes as $name => $dimensions ) {
+
+			// Determine if the named image size matches this orientation.
+			if ( false === strpos( $name, $orientation ) ) {
+				continue;
 			}
+
+			// Ensure the specified image dimensions match those of the crop.
+			if ( empty( $image['sizes'][ $name ]['width'] )
+				|| empty( $image['sizes'][ $name ]['height'] )
+				|| $dimensions['width'] !== $image['sizes'][ $name ]['width']
+				|| $dimensions['height'] !== $image['sizes'][ $name ]['height']
+			) {
+				continue;
+			}
+
+			// TODO: Handle bundling source.
+
+			// Add this crop to the coverArt array.
+			$meta['coverArt'][] = array(
+				'accessibilityCaption' => $alt,
+				'type' => 'image',
+				'URL' => wp_get_attachment_image_url( $id, $name ),
+			);
 		}
 	}
 }
