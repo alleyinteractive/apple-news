@@ -3,7 +3,6 @@
 
 	// Set up add and remove image functionality.
 	$( '.apple-news-coverart-image' ).each( function () {
-		console.log( 'thingy' );
 		var $this = $( this ),
 			$addImgButton = $this.find( '.apple-news-coverart-add' ),
 			$delImgButton = $this.find( '.apple-news-coverart-remove' ),
@@ -81,6 +80,9 @@
 
 					return;
 				}
+
+				// Ensure the full size crop exists.
+				console.log( attachment );
 
 				// Add the image and ID, swap visibility of add and remove buttons.
 				$imgContainer.append( '<img src="' + imgUrl + '" alt="" />' );
