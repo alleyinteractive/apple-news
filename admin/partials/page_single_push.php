@@ -27,19 +27,19 @@
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Preview?', 'apple-news' ) ?></th>
 				<td>
-                    <label for="apple-news-is-preview">
-                        <input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $post_meta['apple_news_is_preview'][0] ) ?>>
-                        <?php esc_html_e( 'Check this to publish the article as a draft.' , 'apple-news' ) ?>
-                    </label>
+					<label for="apple-news-is-preview">
+						<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $post_meta['apple_news_is_preview'][0] ) ?>>
+						<?php esc_html_e( 'Check this to publish the article as a draft.' , 'apple-news' ) ?>
+					</label>
 				</td>
 			</tr>
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Sponsored?', 'apple-news' ) ?></th>
 				<td>
-                    <label for="apple-news-is-sponsored">
-                        <input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $post_meta['apple_news_is_sponsored'][0] ) ?>>
-                        <?php esc_html_e( 'Check this to indicate this article is sponsored content.' , 'apple-news' ) ?>
-                    </label>
+					<label for="apple-news-is-sponsored">
+						<input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $post_meta['apple_news_is_sponsored'][0] ) ?>>
+						<?php esc_html_e( 'Check this to indicate this article is sponsored content.' , 'apple-news' ) ?>
+					</label>
 				</td>
 			</tr>
 			<tr>
@@ -73,12 +73,12 @@
 					<p class="description"><?php esc_html_e( 'The position in the article where the pull quote will appear.', 'apple-news' ) ?></p>
 				</td>
 			</tr>
-            <tr>
-                <th scope="row"><?php esc_html_e( 'Cover art', 'apple-news' ) ?></th>
-                <td>
-                    <?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
-                </td>
-            </tr>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Cover art', 'apple-news' ) ?></th>
+				<td>
+					<?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
+				</td>
+			</tr>
 		</table>
 		<?php do_action( 'apple_news_after_single_settings' ); ?>
 

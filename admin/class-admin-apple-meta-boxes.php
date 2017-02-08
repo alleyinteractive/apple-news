@@ -163,9 +163,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		update_post_meta( $post_id, 'apple_news_pullquote_position', $pullquote_position );
 
 		// Save each cover art image.
-        self::_save_coverart_meta( $post_id, 'apple_news_coverart_landscape' );
+		self::_save_coverart_meta( $post_id, 'apple_news_coverart_landscape' );
 		self::_save_coverart_meta( $post_id, 'apple_news_coverart_portrait' );
-        self::_save_coverart_meta( $post_id, 'apple_news_coverart_square' );
+		self::_save_coverart_meta( $post_id, 'apple_news_coverart_square' );
 	}
 
 	/**

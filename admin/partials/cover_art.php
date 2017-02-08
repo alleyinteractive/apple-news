@@ -5,7 +5,8 @@
 			array( 'a' => array( 'href' => array() ) )
 		),
 		esc_url( __( 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html', 'apple-news' ) )
-	); ?></p>
+	); ?>
+</p>
 <div id="apple-news-coverart-landscape" class="apple-news-coverart-image">
 	<?php $landscape_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_landscape', true ) ); ?>
 	<h4><?php esc_html_e( 'Landscape Image', 'apple-news' ); ?></h4>
@@ -32,7 +33,7 @@
 </div>
 <div id="apple-news-coverart-portrait" class="apple-news-coverart-image">
 	<?php $portrait_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_portrait', true ) ); ?>
-    <h4><?php esc_html_e( 'Portrait Image', 'apple-news' ); ?></h4>
+	<h4><?php esc_html_e( 'Portrait Image', 'apple-news' ); ?></h4>
 	<p class="description">
 		<?php printf(
 			esc_html__( 'Minimum dimensions: %1$dx%2$d', 'apple-news' ),
@@ -56,7 +57,7 @@
 </div>
 <div id="apple-news-coverart-square" class="apple-news-coverart-image">
 	<?php $square_image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_square', true ) ); ?>
-    <h4><?php esc_html_e( 'Square Image', 'apple-news' ); ?></h4>
+	<h4><?php esc_html_e( 'Square Image', 'apple-news' ); ?></h4>
 	<p class="description">
 		<?php printf(
 			esc_html__( 'Minimum dimensions: %1$dx%2$d', 'apple-news' ),
