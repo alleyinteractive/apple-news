@@ -66,6 +66,15 @@ class Apple_News {
 	protected $plugin_slug = 'apple_news';
 
 	/**
+	 * Maturity ratings.
+	 *
+	 * @var string
+	 * @access public
+	 * @static
+	 */
+	public static $maturity_ratings = array( 'KIDS', 'MATURE', 'GENERAL' );
+
+	/**
 	 * Extracts the filename for bundling an asset.
 	 *
 	 * This functionality is used in a number of classes that do not have a common

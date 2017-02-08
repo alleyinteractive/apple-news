@@ -43,6 +43,18 @@
 				</td>
 			</tr>
 			<tr>
+				<th scope="row"><?php esc_html_e( 'Maturity Rating', 'apple-news' ) ?></th>
+				<td>
+					<select id="apple-news-maturity-rating" name="apple_news_maturity_rating">
+						<option value=""></option>
+						<?php foreach ( \Apple_News::$maturity_ratings as $rating ) : ?>
+							<option value="<?php echo esc_attr( $rating ) ?>" <?php selected( $post_meta['apple_news_maturity_rating'][0], $rating ) ?>><?php echo esc_html( ucwords( strtolower( $rating ) ) ) ?></option>
+						<?php endforeach; ?>
+					</select>
+					<p class="description"><?php esc_html_e( 'Select the optional maturity rating for this post.' , 'apple-news' ) ?></p>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></th>
 				<td>
 					<textarea name="apple_news_pullquote" placeholder="<?php esc_attr_e( 'A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic.', 'apple-news' ) ?>" rows="10" class="large-text"><?php if ( ! empty( $post_meta[ 'apple_news_pullquote' ][0] ) ) { echo esc_textarea( $post_meta[ 'apple_news_pullquote' ][0] ); } ?></textarea>

@@ -184,6 +184,12 @@ class Push extends API_Action {
 				$meta['data']['isSponsored'] = $is_sponsored;
 			}
 
+			// Get the maturity rating setting
+			$maturity_rating = get_post_meta( $this->id, 'apple_news_maturity_rating', true );
+			if ( ! empty( $maturity_rating ) ) {
+				$meta['data']['maturityRating'] = $maturity_rating;
+			}
+
 			if ( $remote_id ) {
 				// Update the current article from the API in case the revision changed
 				$this->get();

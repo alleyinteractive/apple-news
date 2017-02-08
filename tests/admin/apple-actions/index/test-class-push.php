@@ -178,6 +178,41 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 		$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_deleted', true ) );
 	}
 
+	public function testCreateMaturityRating() {
+		// Create post
+		$post_id = $this->factory->post->create();
+		update_post_meta( $post_id, 'apple_news_maturity_rating', 'MATURE' );
+
+		// Prophesize the action
+		$response = $this->dummy_response();
+		$api = $this->prophet->prophesize( '\Apple_Push_API\API' );
+		$api->post_article_to_channel(
+			Argument::Any(),
+			Argument::Any(),
+			Argument::Any(),
+			array(
+				'data' => array(
+					'maturityRating' => 'MATURE'
+				)
+			),
+			$post_id
+		)
+			->willReturn( $response )
+			->shouldBeCalled();
+
+		// Perform the action
+		$action = new Push( $this->settings, $post_id );
+		$action->set_api( $api->reveal() );
+		$action->perform();
+
+		// Check the response
+		$this->assertEquals( $response->data->id, get_post_meta( $post_id, 'apple_news_api_id', true ) );
+		$this->assertEquals( $response->data->createdAt, get_post_meta( $post_id, 'apple_news_api_created_at', true ) );
+		$this->assertEquals( $response->data->modifiedAt, get_post_meta( $post_id, 'apple_news_api_modified_at', true ) );
+		$this->assertEquals( $response->data->shareUrl, get_post_meta( $post_id, 'apple_news_api_share_url', true ) );
+		$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_deleted', true ) );
+	}
+
 	public function testUpdate() {
 		// Create post, simulate that the post has been synced
 		$post_id = $this->factory->post->create();

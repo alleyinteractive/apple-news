@@ -138,6 +138,16 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 		update_post_meta( $post_id, 'apple_news_is_sponsored', $is_sponsored );
 
+		if ( ! empty( $_POST['apple_news_maturity_rating'] ) ) {
+			$maturity_rating = sanitize_text_field( $_POST['apple_news_maturity_rating'] );
+			if ( ! in_array( $maturity_rating, self::$maturity_ratings ) ) {
+				$maturity_rating = '';
+			}
+		}
+		if ( ! empty( $maturity_rating ) ) {
+			update_post_meta( $post_id, 'apple_news_maturity_rating', $maturity_rating );
+		}
+
 		if ( ! empty( $_POST['apple_news_pullquote'] ) ) {
 			$pullquote = sanitize_text_field( $_POST['apple_news_pullquote'] );
 		} else {
@@ -192,6 +202,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$deleted = get_post_meta( $post->ID, 'apple_news_api_deleted', true );
 		$pending = get_post_meta( $post->ID, 'apple_news_api_pending', true );
 		$is_preview = get_post_meta( $post->ID, 'apple_news_is_preview', true );
+		$maturity_rating = get_post_meta( $post->ID, 'apple_news_maturity_rating', true );
 		$is_sponsored = get_post_meta( $post->ID, 'apple_news_is_sponsored', true );
 		$pullquote = get_post_meta( $post->ID, 'apple_news_pullquote', true );
 		$pullquote_position = get_post_meta( $post->ID, 'apple_news_pullquote_position', true );

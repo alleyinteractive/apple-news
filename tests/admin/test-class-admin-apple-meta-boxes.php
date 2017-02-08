@@ -22,6 +22,8 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 		$_POST['post_ID'] = $post_id;
 		$_POST['apple_news_sections'] = array( 'https://u48r14.digitalhub.com/sections/1234567890' );
 		$_POST['apple_news_is_preview'] = 0;
+		$_POST['apple_news_is_sponsored'] = 0;
+		$_POST['apple_news_maturity_rating'] = 'MATURE';
 		$_POST['apple_news_pullquote'] = 'test pullquote';
 		$_POST['apple_news_pullquote_position'] = 'middle';
 		$_POST['apple_news_nonce'] = wp_create_nonce( 'apple_news_publish' );
@@ -36,6 +38,8 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 		// Check the meta values
 		$this->assertEquals( array( 'https://u48r14.digitalhub.com/sections/1234567890' ), get_post_meta( $post_id, 'apple_news_sections', true ) );
 		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_is_preview', true ) );
+		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_is_sponsored', true ) );
+		$this->assertEquals( 'MATURE', get_post_meta( $post_id, 'apple_news_maturity_rating', true ) );
 		$this->assertEquals( 'test pullquote', get_post_meta( $post_id, 'apple_news_pullquote', true ) );
 		$this->assertEquals( 'middle', get_post_meta( $post_id, 'apple_news_pullquote_position', true ) );
 	}
@@ -52,6 +56,8 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 		$_POST['post_ID'] = $post_id;
 		$_POST['apple_news_sections'] = array( 'https://u48r14.digitalhub.com/sections/1234567890' );
 		$_POST['apple_news_is_preview'] = 0;
+		$_POST['apple_news_is_sponsored'] = 0;
+		$_POST['apple_news_maturity_rating'] = 'MATURE';
 		$_POST['apple_news_pullquote'] = 'test pullquote';
 		$_POST['apple_news_pullquote_position'] = 'middle';
 		$_POST['apple_news_nonce'] = wp_create_nonce( 'apple_news_publish' );
@@ -66,6 +72,8 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 		// Check the meta values
 		$this->assertEquals( array( 'https://u48r14.digitalhub.com/sections/1234567890' ), get_post_meta( $post_id, 'apple_news_sections', true ) );
 		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_is_preview', true ) );
+		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_is_sponsored', true ) );
+		$this->assertEquals( 'MATURE', get_post_meta( $post_id, 'apple_news_maturity_rating', true ) );
 		$this->assertEquals( 'test pullquote', get_post_meta( $post_id, 'apple_news_pullquote', true ) );
 		$this->assertEquals( 'middle', get_post_meta( $post_id, 'apple_news_pullquote_position', true ) );
 	}
