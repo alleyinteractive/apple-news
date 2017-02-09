@@ -71,23 +71,24 @@ class Component_Factory {
 		self::$layouts   = $layouts;
 
 		// Order is important. Components are checked in the order they are added.
-		self::register_component( 'gallery'      ,   '\\Apple_Exporter\\Components\\Gallery'         );
-		self::register_component( 'tweet'        ,   '\\Apple_Exporter\\Components\\Tweet'           );
-		self::register_component( 'instagram'    ,   '\\Apple_Exporter\\Components\\Instagram'       );
-		self::register_component( 'img'          ,   '\\Apple_Exporter\\Components\\Image'           );
-		self::register_component( 'iframe'       ,   '\\Apple_Exporter\\Components\\Embed_Web_Video' );
-		self::register_component( 'video'        ,   '\\Apple_Exporter\\Components\\Video'           );
-		self::register_component( 'audio'        ,   '\\Apple_Exporter\\Components\\Audio'           );
-		self::register_component( 'heading'      ,   '\\Apple_Exporter\\Components\\Heading'         );
-		self::register_component( 'blockquote'   ,   '\\Apple_Exporter\\Components\\Quote'           );
-		self::register_component( 'p'            ,   '\\Apple_Exporter\\Components\\Body'            );
-		self::register_component( 'hr'           ,   '\\Apple_Exporter\\Components\\Divider'         );
+		self::register_component( 'gallery', '\\Apple_Exporter\\Components\\Gallery' );
+		self::register_component( 'tweet', '\\Apple_Exporter\\Components\\Tweet' );
+		self::register_component( 'facebook', '\\Apple_Exporter\\Components\\Facebook' );
+		self::register_component( 'instagram', '\\Apple_Exporter\\Components\\Instagram' );
+		self::register_component( 'img', '\\Apple_Exporter\\Components\\Image' );
+		self::register_component( 'iframe', '\\Apple_Exporter\\Components\\Embed_Web_Video' );
+		self::register_component( 'video', '\\Apple_Exporter\\Components\\Video' );
+		self::register_component( 'audio', '\\Apple_Exporter\\Components\\Audio' );
+		self::register_component( 'heading', '\\Apple_Exporter\\Components\\Heading' );
+		self::register_component( 'blockquote', '\\Apple_Exporter\\Components\\Quote' );
+		self::register_component( 'p', '\\Apple_Exporter\\Components\\Body' );
+		self::register_component( 'hr', '\\Apple_Exporter\\Components\\Divider' );
 		// Non HTML-based components
-		self::register_component( 'intro'        ,   '\\Apple_Exporter\\Components\\Intro'           );
-		self::register_component( 'cover'        ,   '\\Apple_Exporter\\Components\\Cover'           );
-		self::register_component( 'title'        ,   '\\Apple_Exporter\\Components\\Title'           );
-		self::register_component( 'byline'       ,   '\\Apple_Exporter\\Components\\Byline'          );
-		self::register_component( 'advertisement',   '\\Apple_Exporter\\Components\\Advertisement'   );
+		self::register_component( 'intro', '\\Apple_Exporter\\Components\\Intro' );
+		self::register_component( 'cover', '\\Apple_Exporter\\Components\\Cover' );
+		self::register_component( 'title', '\\Apple_Exporter\\Components\\Title' );
+		self::register_component( 'byline', '\\Apple_Exporter\\Components\\Byline' );
+		self::register_component( 'advertisement', '\\Apple_Exporter\\Components\\Advertisement' );
 
 		// Allow built-in components and order to be overridden
 		self::$components = apply_filters( 'apple_news_initialize_components', self::$components );
