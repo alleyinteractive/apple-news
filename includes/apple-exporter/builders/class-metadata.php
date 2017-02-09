@@ -57,6 +57,12 @@ class Metadata extends Builder {
 		$meta['generatorName'] = $plugin_data['Name'];
 		$meta['generatorVersion'] = $plugin_data['Version'];
 
+		// Try to extract video from first video element.
+		if ( preg_match( '/<video[^>]+poster="([^"]+)".+?<source type="video\/mp4" src="([^"]+)"/s', $this->content_text(), $matches ) ) {
+			$meta['thumbnailURL'] = $matches[1];
+			$meta['videoURL'] = $matches[2];
+		}
+
 		return apply_filters( 'apple_news_metadata', $meta, $this->content_id() );
 	}
 
