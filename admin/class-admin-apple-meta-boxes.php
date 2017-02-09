@@ -29,6 +29,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * Constructor.
 	 */
 	function __construct( $settings = null ) {
+	    parent::__construct();
 		$this->settings = $settings;
 
 		// Register hooks if enabled
@@ -236,8 +237,10 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Determine whether to print the subheading for manual selection.
 		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
 		if ( ! empty( $mappings ) ) {
-			echo '<h4>' . esc_html__( 'Manual Section Selection', 'apple-news' )
-				. '</h4>';
+			printf(
+				'<h4>%s</h4>',
+				esc_html__( 'Manual Section Selection', 'apple-news' )
+			);
 		}
 
 		// Iterate over the list of sections and print each.
@@ -316,19 +319,10 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			return;
 		}
 
-		// Ensure media modal assets are enqueued.
-		wp_enqueue_media();
-
 		// Enqueue metabox stylesheet.
 		wp_enqueue_style(
 			$this->plugin_slug . '_meta_boxes_css',
 			plugin_dir_url( __FILE__ ) .  '../assets/css/meta-boxes.css'
-		);
-
-		// Enqueue cover art stylesheet.
-		wp_enqueue_style(
-			$this->plugin_slug . '_cover_art_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/cover-art.css'
 		);
 
 		// Enqueue metabox script.
@@ -340,26 +334,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			true
 		);
 
-		// Enqueue cover art script.
-		wp_enqueue_script(
-			$this->plugin_slug . '_cover_art_js',
-			plugin_dir_url( __FILE__ ) .  '../assets/js/cover-art.js',
-			array( 'jquery' ),
-			self::$version,
-			true
-		);
-
 		// Localize the JS file for meta boxes.
 		wp_localize_script( $this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(
 			'publish_action' => $this->publish_action,
-		) );
-
-		// Localize the JS file for cover art.
-		wp_localize_script( $this->plugin_slug . '_cover_art_js', 'apple_news_cover_art', array(
-			'image_sizes' => Admin_Apple_News::$image_sizes,
-			'image_too_small' => esc_html__( 'You must select an image that is at least the minimum height and width specified above.', 'apple-news' ),
-			'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
-			'media_modal_title' => esc_html__( 'Choose an image', 'apple-news' ),
 		) );
 	}
 

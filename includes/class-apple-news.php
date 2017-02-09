@@ -66,6 +66,18 @@ class Apple_News {
 	protected $plugin_slug = 'apple_news';
 
 	/**
+	 * An array of contexts where assets should be enqueued.
+	 *
+	 * @var array
+	 * @access private
+	 */
+	private $_contexts = array(
+		'post.php',
+		'post-new.php',
+		'toplevel_page_apple_news_index',
+	);
+
+	/**
 	 * Maturity ratings.
 	 *
 	 * @var string
@@ -135,6 +147,59 @@ class Apple_News {
 		}
 
 		return $support_info;
+	}
+
+	/**
+	 * Constructor. Registers action hooks.
+	 *
+	 * @access public
+	 */
+	public function __construct() {
+		add_action(
+			'admin_enqueue_scripts',
+			array( $this, 'action_admin_enqueue_scripts' )
+		);
+	}
+
+	/**
+	 * Enqueues scripts and styles for the admin interface.
+	 *
+	 * @param string $hook The initiator of the action hook.
+	 *
+	 * @access public
+	 */
+	public function action_admin_enqueue_scripts( $hook ) {
+
+		// Ensure we are in an appropriate context.
+		if ( ! in_array( $hook, $this->_contexts, true ) ) {
+			return;
+		}
+
+		// Ensure media modal assets are enqueued.
+		wp_enqueue_media();
+
+		// Enqueue styles.
+		wp_enqueue_style(
+			$this->plugin_slug . '_cover_art_css',
+			plugin_dir_url( __FILE__ ) .  '../assets/css/cover-art.css'
+		);
+
+		// Enqueue scripts.
+		wp_enqueue_script(
+			$this->plugin_slug . '_cover_art_js',
+			plugin_dir_url( __FILE__ ) .  '../assets/js/cover-art.js',
+			array( 'jquery' ),
+			self::$version,
+			true
+		);
+
+		// Localize scripts.
+		wp_localize_script( $this->plugin_slug . '_cover_art_js', 'apple_news_cover_art', array(
+			'image_sizes' => Admin_Apple_News::$image_sizes,
+			'image_too_small' => esc_html__( 'You must select an image that is at least the minimum height and width specified above.', 'apple-news' ),
+			'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
+			'media_modal_title' => esc_html__( 'Choose an image', 'apple-news' ),
+		) );
 	}
 
 	/**
