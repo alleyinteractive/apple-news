@@ -52,7 +52,7 @@ class Metadata_Test extends WP_UnitTestCase {
 		);
 		$this->assertEquals(
 			'bundle://somefile.jpg',
-			$result[ 'thumbnailURL' ]
+			$result['thumbnailURL']
 		);
 	}
 
@@ -89,7 +89,7 @@ class Metadata_Test extends WP_UnitTestCase {
 		// Run the exporter to get the JSON from the metadata.
 		$content = new Exporter_Content( $post_id, $title, $content );
 		$builder = new Metadata( $content, $this->settings );
-		$result  = $builder->to_array();
+		$result = $builder->to_array();
 
 		// Ensure primary cover art properties were set properly for each orientation.
 		$this->assertEquals(
@@ -134,6 +134,7 @@ class Metadata_Test extends WP_UnitTestCase {
 		$this->assertNotFalse( strpos( $result['coverArt'][13]['URL'], '550x550.jpg' ) );
 		$this->assertNotFalse( strpos( $result['coverArt'][14]['URL'], '470x470.jpg' ) );
 	}
+
 	/**
 	 * Ensures that a remote cover image is properly set in metadata.
 	 *
@@ -160,7 +161,7 @@ class Metadata_Test extends WP_UnitTestCase {
 		);
 		$this->assertEquals(
 			'http://someurl.com/somefile.jpg',
-			$result[ 'thumbnailURL' ]
+			$result['thumbnailURL']
 		);
 	}
 
@@ -196,15 +197,15 @@ class Metadata_Test extends WP_UnitTestCase {
 		);
 		$this->assertEquals(
 			'2016-04-01T00:00:00+00:00',
-			$result[ 'dateCreated' ]
+			$result['dateCreated']
 		);
 		$this->assertEquals(
 			'2016-04-01T00:00:00+00:00',
-			$result[ 'dateModified' ]
+			$result['dateModified']
 		);
 		$this->assertEquals(
 			'2016-04-01T00:00:00+00:00',
-			$result[ 'datePublished' ]
+			$result['datePublished']
 		);
 	}
 
@@ -232,7 +233,7 @@ class Metadata_Test extends WP_UnitTestCase {
 		);
 		$this->assertEquals(
 			'This is an intro.',
-			$result[ 'excerpt' ]
+			$result['excerpt']
 		);
 	}
 
@@ -262,11 +263,11 @@ class Metadata_Test extends WP_UnitTestCase {
 		);
 		$this->assertEquals(
 			'This is an intro.',
-			$result[ 'excerpt' ]
+			$result['excerpt']
 		);
 		$this->assertEquals(
 			'bundle://somefile.jpg',
-			$result[ 'thumbnailURL' ]
+			$result['thumbnailURL']
 		);
 	}
 
@@ -296,11 +297,11 @@ class Metadata_Test extends WP_UnitTestCase {
 		);
 		$this->assertEquals(
 			'This is an intro.',
-			$result[ 'excerpt' ]
+			$result['excerpt']
 		);
 		$this->assertEquals(
 			'http://someurl.com/somefile.jpg',
-			$result[ 'thumbnailURL' ]
+			$result['thumbnailURL']
 		);
 	}
 
@@ -314,12 +315,41 @@ class Metadata_Test extends WP_UnitTestCase {
 		// Setup.
 		$content = new Exporter_Content( 1, 'My Title', '<p>Hello, World!</p>' );
 		$builder = new Metadata( $content, $this->settings );
-		$result  = $builder->to_array();
+		$result = $builder->to_array();
 
 		// Test.
 		$this->assertEquals(
 			4,
 			count( $result )
+		);
+	}
+
+	/**
+	 * Ensures video metadata is properly added.
+	 *
+	 * @access public
+	 */
+	public function testVideo() {
+
+		// Setup.
+		$html = <<<HTML
+<video class="wp-video-shortcode" id="video-71-1" width="525" height="295" poster="https://example.com/wp-content/uploads/2017/02/ExamplePoster.jpg" preload="metadata" controls="controls">
+	<source type="video/mp4" src="https://example.com/wp-content/uploads/2017/02/example-video.mp4?_=1" />
+	<a href="https://example.com/wp-content/uploads/2017/02/example-video.mp4">https://example.com/wp-content/uploads/2017/02/example-video.mp4</a>
+</video>
+HTML;
+		$content = new Exporter_Content( 1, 'My Title', $html );
+		$builder = new Metadata( $content, $this->settings );
+		$result = $builder->to_array();
+
+		// Test.
+		$this->assertEquals(
+			'https://example.com/wp-content/uploads/2017/02/ExamplePoster.jpg',
+			$result['thumbnailURL']
+		);
+		$this->assertEquals(
+			'https://example.com/wp-content/uploads/2017/02/example-video.mp4',
+			$result['videoURL']
 		);
 	}
 }
