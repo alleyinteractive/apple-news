@@ -1,6 +1,11 @@
 <?php
 namespace Apple_Exporter\Builders;
 
+require_once plugin_dir_path( __FILE__ ) . '../../../admin/class-admin-apple-news.php';
+
+use \Admin_Apple_News;
+use \Apple_Exporter\Workspace;
+
 /**
  * @since 0.4.0
  */
@@ -57,6 +62,11 @@ class Metadata extends Builder {
 		$meta['generatorName'] = $plugin_data['Name'];
 		$meta['generatorVersion'] = $plugin_data['Version'];
 
+		// Add cover art.
+		$this->_add_cover_art( $meta, 'apple_news_coverart_landscape' );
+		$this->_add_cover_art( $meta, 'apple_news_coverart_portrait' );
+		$this->_add_cover_art( $meta, 'apple_news_coverart_square' );
+
 		// Extract all video elements that include a poster element.
 		if ( preg_match_all( '/<video[^>]+poster="([^"]+)".*?>(.+?)<\/video>/s', $this->content_text(), $matches ) ) {
 
@@ -74,5 +84,79 @@ class Metadata extends Builder {
 		}
 
 		return apply_filters( 'apple_news_metadata', $meta, $this->content_id() );
+	}
+
+	/**
+	 * Adds metadata for cover art.
+	 *
+	 * @param array &$meta The metadata array to augment.
+	 * @param string $size The size key to look up in postmeta.
+	 *
+	 * @access private
+	 */
+	private function _add_cover_art( &$meta, $size ) {
+
+		// Try to get cover art image ID.
+		$id = get_post_meta( $this->content_id(), $size, true );
+		if ( empty( $id ) ) {
+			return;
+		}
+
+		// Try to get orientation from size.
+		$segments = explode( '_', $size );
+		$orientation = end( $segments );
+		if ( empty( $orientation ) ) {
+			return;
+		}
+
+		// Get information about the image.
+		$image = wp_get_attachment_metadata( $id );
+		$alt = get_post_meta( $id, '_wp_attachment_image_alt', true );
+		if ( empty( $image['sizes'] ) ) {
+			return;
+		}
+
+		// Loop over crops and add each.
+		foreach ( Admin_Apple_News::$image_sizes as $name => $dimensions ) {
+
+			// Determine if the named image size matches this orientation.
+			if ( false === strpos( $name, $orientation ) ) {
+				continue;
+			}
+
+			// Ensure the specified image dimensions match those of the crop.
+			if ( empty( $image['sizes'][ $name ]['width'] )
+				|| empty( $image['sizes'][ $name ]['height'] )
+				|| $dimensions['width'] !== $image['sizes'][ $name ]['width']
+				|| $dimensions['height'] !== $image['sizes'][ $name ]['height']
+			) {
+				continue;
+			}
+
+			// Bundle source, if necessary.
+			$url = wp_get_attachment_image_url( $id, $name );
+			if ( 'yes' !== $this->get_setting( 'use_remote_images' ) ) {
+				$filename = \Apple_News::get_filename( $url );
+				$bundle_url = apply_filters(
+					'apple_news_bundle_source',
+					$url,
+					$filename,
+					$this->content_id()
+				);
+				add_post_meta(
+					$this->content_id(),
+					Workspace::BUNDLE_META_KEY,
+					esc_url_raw( $bundle_url )
+				);
+				$url = 'bundle://' . $filename;
+			}
+
+			// Add this crop to the coverArt array.
+			$meta['coverArt'][] = array(
+				'accessibilityCaption' => $alt,
+				'type' => 'image',
+				'URL' => $url,
+			);
+		}
 	}
 }

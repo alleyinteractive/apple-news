@@ -20,6 +20,14 @@ class Push extends API_Action {
 	private $id;
 
 	/**
+	 * Sections for the content being exported.
+	 *
+	 * @var array
+	 * @access private
+	 */
+	private $sections;
+
+	/**
 	 * Current instance of the Exporter.
 	 *
 	 * @var Exporter
@@ -136,6 +144,11 @@ class Push extends API_Action {
 		// generate_article uses Exporter->generate, so we MUST clean the workspace
 		// before and after its usage.
 		$this->clean_workspace();
+
+		// Get sections
+		$this->sections = Admin_Apple_Sections::get_sections_for_post( $this->id );
+
+		// Generate the JSON for the article
 		list( $json, $bundles, $errors ) = $this->generate_article();
 
 		// Process errors
@@ -166,10 +179,9 @@ class Push extends API_Action {
 				'data' => array(),
 			);
 
-			// Get sections.
-			$sections = Admin_Apple_Sections::get_sections_for_post( $this->id );
-			if ( ! empty( $sections ) ) {
-				$meta['data']['links'] = array( 'sections' => $sections );
+			// Set sections.
+			if ( ! empty( $this->sections ) ) {
+				$meta['data']['links'] = array( 'sections' => $this->sections );
 			}
 
 			// Get the isPreview setting
@@ -368,7 +380,7 @@ class Push extends API_Action {
 	 */
 	private function generate_article() {
 
-		$export_action = new Export( $this->settings, $this->id );
+		$export_action = new Export( $this->settings, $this->id, $this->sections );
 		$this->exporter = $export_action->fetch_exporter();
 		$this->exporter->generate();
 

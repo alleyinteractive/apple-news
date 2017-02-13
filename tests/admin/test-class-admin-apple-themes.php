@@ -7,6 +7,10 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	public function setup() {
 		parent::setup();
 
+		$themes = new \Admin_Apple_Themes();
+		delete_option( $themes->theme_key_from_name( 'Default' ) );
+		delete_option( $themes->theme_key_from_name( 'Test Theme' ) );
+
 		$this->settings = new Settings();
 	}
 

@@ -23,6 +23,75 @@ require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-preview.php';
 class Admin_Apple_News extends Apple_News {
 
 	/**
+	 * Contains information about custom image sizes used by the plugin.
+	 *
+	 * @access public
+	 * @var array Information about images, with names as keys and data as values.
+	 */
+	public static $image_sizes = array(
+		'apple_news_ca_landscape_ipad_pro' => array(
+			'height' => 1374,
+			'width' => 1832,
+		),
+		'apple_news_ca_landscape_ipad' => array(
+			'height' => 1032,
+			'width' => 1376,
+		),
+		'apple_news_ca_landscape_iphone_55' => array(
+			'height' => 783,
+			'width' => 1044,
+		),
+		'apple_news_ca_landscape_iphone_47' => array(
+			'height' => 474,
+			'width' => 632,
+		),
+		'apple_news_ca_landscape_iphone_40' => array(
+			'height' => 402,
+			'width' => 536,
+		),
+		'apple_news_ca_portrait_ipad_pro' => array(
+			'height' => 1496,
+			'width' => 1122,
+		),
+		'apple_news_ca_portrait_ipad' => array(
+			'height' => 1120,
+			'width' => 840,
+		),
+		'apple_news_ca_portrait_iphone_55' => array(
+			'height' => 916,
+			'width' => 687,
+		),
+		'apple_news_ca_portrait_iphone_47' => array(
+			'height' => 552,
+			'width' => 414,
+		),
+		'apple_news_ca_portrait_iphone_40' => array(
+			'height' => 472,
+			'width' => 354,
+		),
+		'apple_news_ca_square_ipad_pro' => array(
+			'height' => 1472,
+			'width' => 1472,
+		),
+		'apple_news_ca_square_ipad' => array(
+			'height' => 1104,
+			'width' => 1104,
+		),
+		'apple_news_ca_square_iphone_55' => array(
+			'height' => 912,
+			'width' => 912,
+		),
+		'apple_news_ca_square_iphone_47' => array(
+			'height' => 550,
+			'width' => 550,
+		),
+		'apple_news_ca_square_iphone_40' => array(
+			'height' => 470,
+			'width' => 470,
+		),
+	);
+
+	/**
 	 * Current settings.
 	 *
 	 * @var Settings
@@ -35,6 +104,7 @@ class Admin_Apple_News extends Apple_News {
 	function __construct() {
 		// Register hooks
 		add_action( 'admin_print_styles-toplevel_page_apple_news_index', array( $this, 'plugin_styles' ) );
+		add_action( 'init', array( $this, 'action_init' ) );
 
 		// Admin_Settings builds the settings page for the plugin. Besides setting
 		// it up, let's get the settings getter and setter object and save it into
@@ -71,7 +141,22 @@ class Admin_Apple_News extends Apple_News {
 	}
 
 	/**
+	 * Actions to be run on the `init` action hook.
+	 *
+	 * @access public
+	 */
+	public function action_init() {
+
+		// Register custom image crops.
+		foreach ( self::$image_sizes as $name => $data ) {
+			add_image_size( $name, $data['width'], $data['height'], true );
+		}
+	}
+
+	/**
 	 * Implements certain plugin styles inline.
+	 *
+	 * @access public
 	 */
 	public function plugin_styles() {
 		// Styles are tiny, for now just embed them.

@@ -65,9 +65,12 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 			)
 		);
 
-		// Set up post data for creating taxonomy mappings.
+		// Create some themes
+		$this->createThemes();
+
+		// Set up post data for creating taxonomy and theme mappings.
 		$_POST = array(
-			'action' => 'apple_news_set_section_taxonomy_mappings',
+			'action' => 'apple_news_set_section_mappings',
 			'page' => 'apple_news_sections',
 			'taxonomy-mapping-abcdef01-2345-6789-abcd-ef012356789a' => array(
 				'Category 1',
@@ -76,7 +79,10 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 				'Category 2',
 				'Category 3',
 			),
+			'theme-mapping-abcdef01-2345-6789-abcd-ef012356789a' => 'Default',
+			'theme-mapping-abcdef01-2345-6789-abcd-ef012356789b' => 'Test Theme',
 		);
+
 		$_REQUEST = array(
 			'_wp_http_referer' => '/wp-admin/admin.php?page=apple-news-sections',
 			'_wpnonce' => wp_create_nonce( 'apple_news_sections' ),
@@ -85,6 +91,40 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 		// Run the request to set up taxonomy mappings.
 		$sections = new Admin_Apple_Sections();
 		$sections->action_router();
+	}
+
+	/**
+	 * Create some themes for testing
+	 *
+	 * @access private
+	 */
+	private function createThemes() {
+		$themes = new \Admin_Apple_Themes();
+		$defaults = $this->getFormattingSettings( $this->settings->all() );
+		update_option( $themes->theme_key_from_name( 'Default' ), $defaults );
+		update_option( $themes->theme_key_from_name( 'Test Theme' ), $defaults );
+	}
+
+	/**
+	 * Gets formatting settings for themes.
+	 *
+	 * @access private
+	 */
+	private function getFormattingSettings( $all_settings ) {
+		// Get only formatting settings
+		$formatting = new Admin_Apple_Settings_Section_Formatting( '' );
+		$formatting_settings = $formatting->get_settings();
+
+		$formatting_settings_keys = array_keys( $formatting_settings );
+		$filtered_settings = array();
+
+		foreach ( $formatting_settings_keys as $key ) {
+			if ( isset( $all_settings[ $key ] ) ) {
+				$filtered_settings[ $key ] = $all_settings[ $key ];
+			}
+		}
+
+		return $filtered_settings;
 	}
 
 	/**
@@ -160,7 +200,7 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Ensures that the category mapping form saves properly.
+	 * Ensures that the category mapping fields save properly.
 	 *
 	 * @access public
 	 */
@@ -183,6 +223,22 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 				),
 			),
 			get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY )
+		);
+	}
+
+	/**
+	 * Ensures that the theme mapping fields save properly.
+	 *
+	 * @access public
+	 */
+	public function testSaveThemeMapping() {
+		// Validate the response.
+		$this->assertEquals(
+			array(
+				'abcdef01-2345-6789-abcd-ef012356789a' => 'Default',
+				'abcdef01-2345-6789-abcd-ef012356789b' => 'Test Theme',
+			),
+			get_option( Admin_Apple_Sections::THEME_MAPPING_KEY )
 		);
 	}
 }

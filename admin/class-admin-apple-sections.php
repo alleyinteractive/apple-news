@@ -24,6 +24,11 @@ class Admin_Apple_Sections extends Apple_News {
 	const TAXONOMY_MAPPING_KEY = 'apple_news_section_taxonomy_mappings';
 
 	/**
+	 * The option name for section/theme mappings.
+	 */
+	const THEME_MAPPING_KEY = 'apple_news_section_theme_mappings';
+
+	/**
 	 * Section management page name.
 	 *
 	 * @var string
@@ -68,17 +73,42 @@ class Admin_Apple_Sections extends Apple_News {
 	}
 
 	/**
+	 * Returns an array of section data without requiring an instance of the object.
+	 *
+	 * @access public
+	 * @return array An array of section data.
+	 */
+	public static function get_sections() {
+
+		// Try to load from cache.
+		if ( false !== ( $sections = get_transient( 'apple_news_sections' ) ) ) {
+			return $sections;
+		}
+
+		// Try to get sections. The get_sections call sets the transient.
+		$admin_settings = new Admin_Apple_Settings;
+		$section_api = new Section( $admin_settings->fetch_settings() );
+		$sections = $section_api->get_sections();
+		if ( empty( $sections ) || ! is_array( $sections ) ) {
+			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
+		}
+
+		return $sections;
+	}
+
+	/**
 	 * Given a post ID, returns an array of section URLs based on applied taxonomy.
 	 *
 	 * Supports overrides for manual section selection and fallback to postmeta
 	 * when no mappings are set.
 	 *
 	 * @param int $post_id The ID of the post to query.
+	 * @param string $format The return format to use. Can be 'url' or 'raw'.
 	 *
 	 * @access public
-	 * @return array An array of section URLs for the post.
+	 * @return array An array of section data according to the requested format.
 	 */
-	public static function get_sections_for_post( $post_id ) {
+	public static function get_sections_for_post( $post_id, $format = 'url' ) {
 
 		// Try to load sections from postmeta.
 		$meta_value = get_post_meta( $post_id, 'apple_news_sections', true );
@@ -92,19 +122,26 @@ class Admin_Apple_Sections extends Apple_News {
 			return array();
 		}
 
-		// Try to get sections.
-		$admin_settings = new Admin_Apple_Settings;
-		$section_api = new Section( $admin_settings->fetch_settings() );
-		$sections_raw = $section_api->get_sections();
-		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
-			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
-		}
-
-		// Convert sections returned from the API into a key/value pair of id/URL.
+		// Convert sections returned from the API into the requested format.
 		$sections = array();
+		$sections_raw = self::get_sections();
 		foreach ( $sections_raw as $section ) {
-			if ( ! empty( $section->id ) && ! empty( $section->links->self ) ) {
-				$sections[ $section->id ] = $section->links->self;
+
+			// Ensure we have an ID to key off of.
+			if ( empty( $section->id ) ) {
+				continue;
+			}
+
+			// Fork for format.
+			switch ( $format ) {
+				case 'raw':
+					$sections[ $section->id ] = $section;
+					break;
+				case 'url':
+					if ( ! empty( $section->links->self ) ) {
+						$sections[ $section->id ] = $section->links->self;
+					}
+					break;
 			}
 		}
 
@@ -144,6 +181,25 @@ class Admin_Apple_Sections extends Apple_News {
 	}
 
 	/**
+	 * Given a section ID, check for a custom theme mapping.
+	 *
+	 * @param string $section_id The Apple News section ID
+	 *
+	 * @access public
+	 * @return array The theme settings, if set
+	 */
+	public static function get_theme_for_section( $section_id ) {
+		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
+		if ( ! isset( $theme_mappings[ $section_id ] ) ) {
+			return null;
+		}
+
+		$theme = $theme_mappings[ $section_id ];
+		$theme_obj = new Admin_Apple_Themes();
+		return $theme_obj->get_theme( $theme_mappings[ $section_id ] );
+	}
+
+	/**
 	 * Constructor.
 	 */
 	function __construct() {
@@ -155,7 +211,7 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Set up admin action callbacks for form submissions.
 		$this->valid_actions = array(
-			'apple_news_set_section_taxonomy_mappings' => array( $this, 'set_section_taxonomy_mappings' ),
+			'apple_news_set_section_mappings' => array( $this, 'set_section_mappings' ),
 		);
 
 		// Set up action hooks.
@@ -281,18 +337,22 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Get mappings from settings.
-		$mappings = array();
-		$settings = get_option( self::TAXONOMY_MAPPING_KEY );
-		if ( ! empty( $settings ) && is_array( $settings ) ) {
-			foreach ( $settings as $section_id => $term_ids ) {
+		$taxonomy_mappings = array();
+		$taxonomy_settings = get_option( self::TAXONOMY_MAPPING_KEY );
+		if ( ! empty( $taxonomy_settings ) && is_array( $taxonomy_settings ) ) {
+			foreach ( $taxonomy_settings as $section_id => $term_ids ) {
 				foreach ( $term_ids as $term_id ) {
 					$term = get_term( $term_id, $taxonomy->name );
 					if ( ! empty( $term->name ) ) {
-						$mappings[ $section_id ][] = $term->name;
+						$taxonomy_mappings[ $section_id ][] = $term->name;
 					}
 				}
 			}
 		}
+
+		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
+		$theme_obj = new Admin_Apple_Themes();
+		$themes = $theme_obj->list_themes();
 
 		// Load the partial with the form.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_sections.php';
@@ -337,7 +397,7 @@ class Admin_Apple_Sections extends Apple_News {
 	 *
 	 * @access private
 	 */
-	private function set_section_taxonomy_mappings() {
+	private function set_section_mappings() {
 
 		// Ensure we got POST data.
 		if ( empty( $_POST ) || ! is_array( $_POST ) ) {
@@ -353,33 +413,38 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Loop through sections and look for mappings in POST data.
-		$mappings = array();
+		$taxonomy_mappings = $theme_mappings = array();
 		$taxonomy = self::get_mapping_taxonomy();
 		$section_ids = wp_list_pluck( $sections_raw, 'id' );
 		foreach ( $section_ids as $section_id ) {
 
-			// Determine if there is data for this section.
-			$key = 'taxonomy-mapping-' . $section_id;
-			if ( empty( $_POST[ $key ] ) || ! is_array( $_POST[ $key ] ) ) {
-				continue;
+			// Determine if there is taxonomy data for this section.
+			$taxonomy_key = 'taxonomy-mapping-' . $section_id;
+			if ( ! empty( $_POST[ $taxonomy_key ] ) && is_array( $_POST[ $taxonomy_key ] ) ) {
+				// Loop over terms and convert to term IDs for save.
+				$values = array_map( 'sanitize_text_field', $_POST[ $taxonomy_key ] );
+				foreach ( $values as $value ) {
+					if ( function_exists( 'wpcom_vip_get_term_by' ) ) {
+						$term = wpcom_vip_get_term_by( 'name', $value, $taxonomy->name );
+					} else {
+						$term = get_term_by( 'name', $value, $taxonomy->name );
+					}
+					if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
+						$taxonomy_mappings[ $section_id ][] = $term->term_id;
+						$taxonomy_mappings[ $section_id ] = array_unique( $taxonomy_mappings[ $section_id ] );
+					}
+				}
 			}
 
-			// Loop over terms and convert to term IDs for save.
-			$values = array_map( 'sanitize_text_field', $_POST[ $key ] );
-			foreach ( $values as $value ) {
-				if ( function_exists( 'wpcom_vip_get_term_by' ) ) {
-					$term = wpcom_vip_get_term_by( 'name', $value, $taxonomy->name );
-				} else {
-					$term = get_term_by( 'name', $value, $taxonomy->name );
-				}
-				if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
-					$mappings[ $section_id ][] = $term->term_id;
-					$mappings[ $section_id ] = array_unique( $mappings[ $section_id ] );
-				}
+			// Determine if there is theme data for this section
+			$theme_key = 'theme-mapping-' . $section_id;
+			if ( ! empty( $_POST[ $theme_key ] ) ) {
+				$theme_mappings[ $section_id ] = sanitize_text_field( $_POST[ $theme_key ] );
 			}
 		}
 
 		// Save the new mappings.
-		update_option( self::TAXONOMY_MAPPING_KEY, $mappings, false );
+		update_option( self::TAXONOMY_MAPPING_KEY, $taxonomy_mappings, false );
+		update_option( self::THEME_MAPPING_KEY, $theme_mappings, false );
 	}
 }

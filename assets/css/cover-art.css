@@ -1,0 +1,30 @@
+.apple-news-coverart-image img {
+	height: auto;
+	max-width: 75%;
+}
+
+.apple-news-coverart-image .hidden {
+	display: none;
+	visibility: hidden;
+}
+
+.apple-news-notice {
+	border-left-style: solid;
+	border-left-width: 3px;
+	margin: 1em 0;
+	padding: .5em .75em;
+}
+
+.apple-news-notice p {
+	margin: 0 !important;
+}
+
+.apple-news-notice-error {
+	background: #fcc;
+	border-color: #dc3232;
+}
+
+.apple-news-notice-warning {
+	background: #fec;
+	border-color: #ffb900;
+}
