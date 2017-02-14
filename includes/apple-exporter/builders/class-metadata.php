@@ -69,7 +69,7 @@ class Metadata extends Builder {
 			for ( $i = 0; $i < count( $matches[2] ); $i ++ ) {
 
 				// Try to match an MP4 source URL.
-				if ( preg_match( '/src="([^\?"]+\.mp4)/', $matches[2][ $i ], $src ) ) {
+				if ( preg_match( '/src="([^\?"]+\.mp4[^"]*)"/', $matches[2][ $i ], $src ) ) {
 					$meta['thumbnailURL'] = $this->maybe_bundle_source(
 						$matches[1][ $i ]
 					);

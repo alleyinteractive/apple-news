@@ -349,7 +349,7 @@ HTML;
 			$result['thumbnailURL']
 		);
 		$this->assertEquals(
-			'https://example.com/wp-content/uploads/2017/02/example-video.mp4',
+			'https://example.com/wp-content/uploads/2017/02/example-video.mp4?_=1',
 			$result['videoURL']
 		);
 	}
