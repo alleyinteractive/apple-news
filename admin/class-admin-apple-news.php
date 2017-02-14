@@ -29,65 +29,17 @@ class Admin_Apple_News extends Apple_News {
 	 * @var array Information about images, with names as keys and data as values.
 	 */
 	public static $image_sizes = array(
-		'apple_news_ca_landscape_ipad_pro' => array(
+		'apple_news_ca_landscape' => array(
 			'height' => 1374,
 			'width' => 1832,
 		),
-		'apple_news_ca_landscape_ipad' => array(
-			'height' => 1032,
-			'width' => 1376,
-		),
-		'apple_news_ca_landscape_iphone_55' => array(
-			'height' => 783,
-			'width' => 1044,
-		),
-		'apple_news_ca_landscape_iphone_47' => array(
-			'height' => 474,
-			'width' => 632,
-		),
-		'apple_news_ca_landscape_iphone_40' => array(
-			'height' => 402,
-			'width' => 536,
-		),
-		'apple_news_ca_portrait_ipad_pro' => array(
+		'apple_news_ca_portrait' => array(
 			'height' => 1496,
 			'width' => 1122,
 		),
-		'apple_news_ca_portrait_ipad' => array(
-			'height' => 1120,
-			'width' => 840,
-		),
-		'apple_news_ca_portrait_iphone_55' => array(
-			'height' => 916,
-			'width' => 687,
-		),
-		'apple_news_ca_portrait_iphone_47' => array(
-			'height' => 552,
-			'width' => 414,
-		),
-		'apple_news_ca_portrait_iphone_40' => array(
-			'height' => 472,
-			'width' => 354,
-		),
-		'apple_news_ca_square_ipad_pro' => array(
+		'apple_news_ca_square' => array(
 			'height' => 1472,
 			'width' => 1472,
-		),
-		'apple_news_ca_square_ipad' => array(
-			'height' => 1104,
-			'width' => 1104,
-		),
-		'apple_news_ca_square_iphone_55' => array(
-			'height' => 912,
-			'width' => 912,
-		),
-		'apple_news_ca_square_iphone_47' => array(
-			'height' => 550,
-			'width' => 550,
-		),
-		'apple_news_ca_square_iphone_40' => array(
-			'height' => 470,
-			'width' => 470,
 		),
 	);
 

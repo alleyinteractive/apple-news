@@ -21,8 +21,8 @@ $orientations = array(
         <p class="description">
 			<?php printf(
 				esc_html__( 'Minimum dimensions: %1$dx%2$d', 'apple-news' ),
-				absint( Admin_Apple_News::$image_sizes[ 'apple_news_ca_' . $key . '_ipad_pro' ]['width'] ),
-				absint( Admin_Apple_News::$image_sizes[ 'apple_news_ca_' . $key . '_ipad_pro' ]['height'] )
+				absint( Admin_Apple_News::$image_sizes[ 'apple_news_ca_' . $key ]['width'] ),
+				absint( Admin_Apple_News::$image_sizes[ 'apple_news_ca_' . $key ]['height'] )
 			); ?>
         </p>
         <div class="apple-news-coverart-image">
