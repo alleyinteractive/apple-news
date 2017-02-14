@@ -332,6 +332,7 @@ class Metadata_Test extends WP_UnitTestCase {
 	public function testVideo() {
 
 		// Setup.
+		$this->settings->set( 'use_remote_images', 'yes' );
 		$html = <<<HTML
 <video class="wp-video-shortcode" id="video-71-1" width="525" height="295" poster="https://example.com/wp-content/uploads/2017/02/ExamplePoster.jpg" preload="metadata" controls="controls">
 	<source type="video/mp4" src="https://example.com/wp-content/uploads/2017/02/example-video.mp4?_=1" />

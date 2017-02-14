@@ -28,14 +28,9 @@ class Metadata extends Builder {
 
 		// If the content has a cover, use it as thumb.
 		if ( $this->content_cover() ) {
-			if ( 'yes' === $this->get_setting( 'use_remote_images' ) ) {
-				$thumb_url = $this->content_cover();
-			} else {
-				$filename = \Apple_News::get_filename( $this->content_cover() );
-				$thumb_url = 'bundle://' . $filename;
-			}
-
-			$meta['thumbnailURL'] = $thumb_url;
+			$meta['thumbnailURL'] = $this->maybe_bundle_source(
+				$this->content_cover()
+			);
 		}
 
 		// Add date fields.
@@ -75,7 +70,9 @@ class Metadata extends Builder {
 
 				// Try to match an MP4 source URL.
 				if ( preg_match( '/src="([^\?"]+\.mp4)/', $matches[2][ $i ], $src ) ) {
-					$meta['thumbnailURL'] = $matches[1][ $i ];
+					$meta['thumbnailURL'] = $this->maybe_bundle_source(
+						$matches[1][ $i ]
+					);
 					$meta['videoURL'] = $src[1];
 
 					break;
@@ -135,21 +132,7 @@ class Metadata extends Builder {
 
 			// Bundle source, if necessary.
 			$url = wp_get_attachment_image_url( $id, $name );
-			if ( 'yes' !== $this->get_setting( 'use_remote_images' ) ) {
-				$filename = \Apple_News::get_filename( $url );
-				$bundle_url = apply_filters(
-					'apple_news_bundle_source',
-					$url,
-					$filename,
-					$this->content_id()
-				);
-				add_post_meta(
-					$this->content_id(),
-					Workspace::BUNDLE_META_KEY,
-					esc_url_raw( $bundle_url )
-				);
-				$url = 'bundle://' . $filename;
-			}
+			$url = $this->maybe_bundle_source( $url );
 
 			// Add this crop to the coverArt array.
 			$meta['coverArt'][] = array(

@@ -13,6 +13,7 @@ namespace Apple_Exporter\Builders;
 
 use Apple_Exporter\Exporter_Content;
 use Apple_Exporter\Exporter_Content_Settings;
+use Apple_Exporter\Workspace;
 
 /**
  * A base abstract builder from which all other builders inherit.
@@ -166,6 +167,53 @@ abstract class Builder {
 	 */
 	protected function get_setting( $name ) {
 		return $this->settings->$name;
+	}
+
+	/**
+	 * Bundles the source URL, if necessary, and returns the new URL.
+	 *
+	 * @param string $source The URL of the resource to be processed.
+	 * @param string $filename The name of the file to be created.
+	 *
+	 * @access protected
+	 * @return string The URL to use for this asset in JSON.
+	 */
+	protected function maybe_bundle_source( $source, $filename = '' ) {
+
+		// If we're using remote images, do nothing.
+		if ( 'yes' === $this->get_setting( 'use_remote_images' ) ) {
+			return $source;
+		}
+
+		// Compute filename, if necessary.
+		if ( empty( $filename ) ) {
+			$filename = \Apple_News::get_filename( $source );
+		}
+
+		/**
+		 * Allows for modification of bundle URLs before processing.
+		 *
+		 * @since 0.2.0
+		 *
+		 * @param string $source The source URL to be filtered.
+		 * @param string $filename The filename being used by the bundler.
+		 * @param int $post_id The post ID for the post being processed.
+		 */
+		$bundle_url = apply_filters(
+			'apple_news_bundle_source',
+			$source,
+			$filename,
+			$this->content_id()
+		);
+
+		// Add the bundle URL as postmeta for processing and inclusion later.
+		add_post_meta(
+			$this->content_id(),
+			Workspace::BUNDLE_META_KEY,
+			esc_url_raw( $bundle_url )
+		);
+
+		return 'bundle://' . $filename;
 	}
 
 	/**
