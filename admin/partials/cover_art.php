@@ -8,7 +8,7 @@ $orientations = array(
 <p class="description">
 	<?php printf(
 		wp_kses(
-			__( 'You can set one or more <a href="%s">cover art</a> images below.', 'apple-news' ),
+			__( 'You can set one or more <a href="%s">cover art</a> images below. Only one image is required in order to enable cover art functionality.', 'apple-news' ),
 			array( 'a' => array( 'href' => array() ) )
 		),
 		'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html'
