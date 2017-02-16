@@ -628,40 +628,71 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 	 * Renders the component order field.
 	 *
 	 * @param string $type
+	 *
 	 * @access public
 	 * @static
 	 */
 	public static function render_meta_component_order( $type ) {
-		// Get the current order
+
+		// Get the current order.
 		$component_order = self::get_value( 'meta_component_order' );
-		if ( empty( $component_order ) || ! is_array( $component_order ) ) {
+		if ( empty( $component_order ) ) {
+			$component_order = array();
+		}
+
+		// Get inactive components.
+		$inactive_components = self::get_value( 'meta_component_inactive' );
+		if ( empty( $inactive_components ) ) {
+			$inactive_components = array();
+		}
+
+		// Ensure both component order and inactive components are arrays.
+		if ( ! is_array( $component_order ) || ! is_array( $inactive_components ) ) {
 			return;
 		}
 
-		// Use the correct output format
-		if ( 'hidden' === $type ) :
+		// Use the correct output format.
+		if ( 'hidden' === $type ) {
 			foreach ( $component_order as $component_name ) {
 				echo sprintf(
 					'<input type="hidden" name="meta_component_order[]" value="%s">',
 					esc_attr( $component_name )
 				);
 			}
-		else :
+			foreach ( $inactive_components as $component_name ) {
+				echo sprintf(
+					'<input type="hidden" name="meta_component_inactive[]" value="%s">',
+					esc_attr( $component_name )
+				);
+			}
+		} else {
 			?>
-			<ul id="meta-component-order-sort" class="component-order ui-sortable">
-				<?php
-					foreach ( $component_order as $component_name ) {
-						echo sprintf(
-							'<li id="%s" class="ui-sortable-handle">%s</li>',
-							esc_attr( $component_name ),
-							esc_html( ucwords( $component_name ) )
-						);
-					}
-				?>
-			</ul>
-			<p class="description"><?php esc_html_e( 'Drag to set the order of the meta components at the top of the article. These include the title, the cover (i.e. featured image) and byline which also includes the date.', 'apple-news' ) ?></p>
+            <div class="apple-news-sortable-list">
+                <h4><?php esc_html_e( 'Active', 'apple-news' ); ?></h4>
+                <ul id="meta-component-order-sort" class="component-order ui-sortable">
+                    <?php foreach ( $component_order as $component_name ) : ?>
+                        <?php echo sprintf(
+                            '<li id="%s" class="ui-sortable-handle">%s</li>',
+                            esc_attr( $component_name ),
+                            esc_html( ucwords( $component_name ) )
+                        ); ?>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <div class="apple-news-sortable-list">
+                <h4><?php esc_html_e( 'Inactive', 'apple-news' ); ?></h4>
+                <ul id="meta-component-inactive" class="component-order ui-sortable">
+                    <?php foreach ( $inactive_components as $component_name ) : ?>
+                        <?php echo sprintf(
+                            '<li id="%s" class="ui-sortable-handle">%s</li>',
+                            esc_attr( $component_name ),
+                            esc_html( ucwords( $component_name ) )
+                        ); ?>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <p class="description"><?php esc_html_e( 'Drag to set the order of the meta components at the top of the article. These include the title, the cover (i.e. featured image) and byline which also includes the date. Drag elements into the "Inactive" column to prevent them from being included in your articles.', 'apple-news' ) ?></p>
 			<?php
-		endif;
+		}
 	}
-
 }
