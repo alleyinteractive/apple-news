@@ -204,7 +204,7 @@ class Exporter {
 		$json = array(
 			'version'    => '1.1',
 			'identifier' => 'post-' . $this->content_id(),
-			'language'   => 'en',
+			'language'   => get_bloginfo( 'language' ),
 			'title'      => $this->content_title(),
 		);
 
