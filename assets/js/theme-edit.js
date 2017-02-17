@@ -6,6 +6,7 @@
 			'#meta-component-order-sort',
 			'meta_component_order',
 			'#meta-component-inactive',
+			'meta_component_inactive',
 			'.apple-news-sortable-list ul.component-order'
 		);
 		appleNewsThemeEditBorderInit();
@@ -57,14 +58,16 @@
 		} ).change();
 	}
 
-	function appleNewsThemeEditSortInit( activeSelector, key, inactiveSelector, connectWith ) {
+	function appleNewsThemeEditSortInit( activeSelector, activeKey, inactiveSelector, inactiveKey, connectWith ) {
 		$( activeSelector + ', ' + inactiveSelector ).sortable( {
 			'connectWith': connectWith,
 			'stop': function ( event, ui ) {
-				appleNewsThemeEditSortUpdate( $( activeSelector ), key );
+				appleNewsThemeEditSortUpdate( $( activeSelector ), activeKey );
+				appleNewsThemeEditSortUpdate( $( inactiveSelector ), inactiveKey );
 			},
 		} ).disableSelection();
-		appleNewsThemeEditSortUpdate( $( activeSelector ), key );
+		appleNewsThemeEditSortUpdate( $( activeSelector ), activeKey );
+		appleNewsThemeEditSortUpdate( $( inactiveSelector ), inactiveKey );
 	}
 
 	function appleNewsThemeEditSortUpdate( $sortableElement, keyPrefix ) {
