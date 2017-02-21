@@ -41,6 +41,21 @@ class Component_Tests extends WP_UnitTestCase {
 				array( 'byline', 'header', 'container' ),
 				array( 'title' ),
 			),
+			array(
+				array( 'title', 'byline' ),
+				array( 'title', 'byline' ),
+				array(),
+			),
+			array(
+				array( 'cover', 'byline' ),
+				array( 'header', 'container' ),
+				array( 'byline' ),
+			),
+			array(
+				array( 'cover', 'title' ),
+				array( 'header', 'container' ),
+				array( 'title' ),
+			),
 		);
 	}
 
