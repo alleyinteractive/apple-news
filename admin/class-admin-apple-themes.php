@@ -761,8 +761,7 @@ class Admin_Apple_Themes extends Apple_News {
 				}
 			} else if ( 'meta_component_order' === $setting ) {
 				// This needs to be handled specially
-				if ( ! is_array( $data[ $setting ] )
-					|| 3 !== count( $data[ $setting ] ) ) {
+				if ( ! is_array( $data[ $setting ] ) ) {
 					return __( 'Invalid value for meta component order', 'apple-news' );
 				}
 
