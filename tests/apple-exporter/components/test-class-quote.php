@@ -20,6 +20,23 @@ use Apple_Exporter\Exporter_Content;
 class Quote_Test extends Component_TestCase {
 
 	/**
+	 * A data provider for the testTransformPullquote function.
+	 *
+	 * @see self::testTransformPullquote()
+	 *
+	 * @access public
+	 * @return array Parameters to use when calling testTransformPullquote.
+	 */
+	public function dataTransformPullquote() {
+		return array(
+			array( 'my text', 'my text' . "\n\n", 'no' ),
+			array( 'my text', '“my text”' . "\n\n", 'yes' ),
+			array( '"my text"', '“my text”' . "\n\n", 'yes' ),
+			array( '“my text”', '“my text”' . "\n\n", 'yes' ),
+		);
+	}
+
+	/**
 	 * A filter function to modify the hanging punctuation text.
 	 *
 	 * @param string $modified_text The modified text to be filtered.
@@ -200,6 +217,7 @@ class Quote_Test extends Component_TestCase {
 		$this->settings->pullquote_font = 'TestFontName';
 		$this->settings->pullquote_size = 20;
 		$this->settings->pullquote_color = '#abcdef';
+		$this->settings->pullquote_hanging_punctuation = 'yes';
 		$this->settings->pullquote_line_height = 28;
 		$this->settings->pullquote_tracking = 50;
 		$this->settings->pullquote_transform = 'uppercase';
@@ -216,6 +234,9 @@ class Quote_Test extends Component_TestCase {
 		$this->assertEquals(
 			20,
 			$json['componentTextStyles']['default-pullquote']['fontSize']
+		);
+		$this->assertTrue(
+			$json['componentTextStyles']['default-pullquote']['hangingPunctuation']
 		);
 		$this->assertEquals(
 			'#abcdef',
@@ -265,13 +286,20 @@ class Quote_Test extends Component_TestCase {
 	/**
 	 * Tests the transformation process from a pullquote to a Quote component.
 	 *
+	 * @dataProvider dataTransformPullquote
+	 *
+	 * @param string $text The text to use in the blockquote element.
+	 * @param string $expected The expected text node value after compilation.
+	 * @param string $hanging_punctuation The setting value for hanging punctuation.
+	 *
 	 * @access public
 	 */
-	public function testTransformPullquote() {
+	public function testTransformPullquote( $text, $expected, $hanging_punctuation ) {
 
 		// Setup.
+		$this->settings->pullquote_hanging_punctuation = $hanging_punctuation;
 		$component = new Quote(
-			'<blockquote class="apple-news-pullquote"><p>my quote</p></blockquote>',
+			'<blockquote class="apple-news-pullquote"><p>' . $text . '</p></blockquote>',
 			null,
 			$this->settings,
 			$this->styles,
@@ -283,7 +311,7 @@ class Quote_Test extends Component_TestCase {
 		// Test.
 		$this->assertEquals( 'container', $result_wrapper['role'] );
 		$this->assertEquals( 'quote', $result['role'] );
-		$this->assertEquals( "my quote\n\n", $result['text'] );
+		$this->assertEquals( $expected, $result['text'] );
 		$this->assertEquals( 'markdown', $result['format'] );
 		$this->assertEquals( 'default-pullquote', $result['textStyle'] );
 		$this->assertEquals( 'pullquote-layout', $result['layout'] );
