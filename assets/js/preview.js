@@ -132,6 +132,11 @@
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-pull-quote', 'pullquote_border_style', 'border-bottom-style', null, null );
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-pull-quote', 'pullquote_border_width', 'border-bottom-width', 'px', null );
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-pull-quote', 'pullquote_line_height', 'line-height', 'px', .75 );
+		if ( 'yes' === $( '#pullquote_hanging_punctuation' ).val() ) {
+			$( '.apple-news-preview div.apple-news-pull-quote' ).addClass( 'hanging-punctuation' );
+		} else {
+			$( '.apple-news-preview div.apple-news-pull-quote' ).removeClass( 'hanging-punctuation' );
+		}
 
 		// Blockquote
 		appleNewsSetCSS( '.apple-news-preview blockquote', 'blockquote_font', 'font-family', null, null );

@@ -66,6 +66,17 @@
 	padding: 10px 0px;
 }
 
+.apple-news-preview div.apple-news-pull-quote.hanging-punctuation:after {
+	content: "”";
+}
+
+.apple-news-preview div.apple-news-pull-quote.hanging-punctuation:before {
+	content: "“";
+	display: block;
+	margin-left: -.5em;
+	position: absolute;
+}
+
 .apple-news-title.title-cover-byline,
 .apple-news-title.byline-title-cover,
 .apple-news-cover.title-byline-cover,
