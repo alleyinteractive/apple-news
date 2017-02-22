@@ -63,14 +63,14 @@ class Quote extends Component {
 	 */
 	private function _apply_hanging_punctuation( $text ) {
 
-		// Strip any quotes already present.
-		$modified_text = trim( $text, '"“”' . "\n" );
+		// Trim the fat before beginning.
+		$text = trim( $text );
+
+		// Strip any double quotes already present.
+		$modified_text = trim( $text, '"“”' );
 
 		// Add smart quotes around the text.
 		$modified_text = '“' . $modified_text . '”';
-
-		// Re-add the line breaks.
-		$modified_text .= "\n\n";
 
 		/**
 		 * Allows for modification of a quote with hanging punctuation enabled.
@@ -85,6 +85,9 @@ class Quote extends Component {
 			$modified_text,
 			$text
 		);
+
+		// Re-add the line breaks.
+		$modified_text .= "\n\n";
 
 		return $modified_text;
 	}
