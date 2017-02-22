@@ -21,11 +21,18 @@ class Admin_Apple_Preview extends Apple_News {
 			return;
 		}
 
-		wp_enqueue_style( 'apple-news-preview-css', plugin_dir_url( __FILE__ ) .
-		'../assets/css/preview.css', array() );
+		wp_enqueue_style(
+			'apple-news-preview-css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/preview.css',
+			array(),
+			self::$version
+		);
 
-		wp_enqueue_script( 'apple-news-preview-js', plugin_dir_url( __FILE__ ) .
-			'../assets/js/preview.js', array( 'jquery' )
+		wp_enqueue_script(
+			'apple-news-preview-js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/preview.js',
+			array( 'jquery' ),
+			self::$version
 		);
 	}
 

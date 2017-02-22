@@ -277,12 +277,26 @@ class Admin_Apple_Index_Page extends Apple_News {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
 		// Add the export table script and style
-		wp_enqueue_style( $this->plugin_slug . '_export_table_css', plugin_dir_url(
-			__FILE__ ) .  '../assets/css/export-table.css' );
-		wp_enqueue_script( $this->plugin_slug . '_export_table_js', plugin_dir_url(
-			__FILE__ ) .  '../assets/js/export-table.js', array( 'jquery', 'jquery-ui-datepicker' ), self::$version, true );
-		wp_enqueue_script( $this->plugin_slug . '_single_push_js', plugin_dir_url(
-			__FILE__ ) .  '../assets/js/single-push.js', array( 'jquery' ), self::$version, true );
+		wp_enqueue_style(
+			$this->plugin_slug . '_export_table_css',
+			plugin_dir_url( __FILE__ ) .  '../assets/css/export-table.css',
+			array(),
+			self::$version
+		);
+		wp_enqueue_script(
+			$this->plugin_slug . '_export_table_js',
+			plugin_dir_url( __FILE__ ) .  '../assets/js/export-table.js',
+			array( 'jquery', 'jquery-ui-datepicker' ),
+			self::$version,
+			true
+		);
+		wp_enqueue_script(
+			$this->plugin_slug . '_single_push_js',
+			plugin_dir_url( __FILE__ ) .  '../assets/js/single-push.js',
+			array( 'jquery' ),
+			self::$version,
+			true
+		);
 
 		// Localize strings
 		wp_localize_script( $this->plugin_slug . '_export_table_js', 'apple_news_export_table', array(

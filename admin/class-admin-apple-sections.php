@@ -382,14 +382,17 @@ class Admin_Apple_Sections extends Apple_News {
 		);
 		wp_enqueue_style(
 			'apple-news-sections-css',
-			plugin_dir_url( __FILE__ ) . '../assets/css/sections.css'
+			plugin_dir_url( __FILE__ ) . '../assets/css/sections.css',
+			array(),
+			self::$version
 		);
 
 		// Enqueue scripts for this page.
 		wp_enqueue_script(
 			'apple-news-sections-js',
 			plugin_dir_url( __FILE__ ) . '../assets/js/sections.js',
-			array( 'jquery', 'jquery-ui-autocomplete' )
+			array( 'jquery', 'jquery-ui-autocomplete' ),
+			self::$version
 		);
 	}
 

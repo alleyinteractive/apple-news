@@ -170,10 +170,18 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			return;
 		}
 
-		wp_enqueue_style( $this->plugin_slug . '_bulk_export_css', plugin_dir_url(
-			__FILE__ ) .  '../assets/css/bulk-export.css' );
-		wp_enqueue_script( $this->plugin_slug . '_bulk_export_js', plugin_dir_url(
-			__FILE__ ) .  '../assets/js/bulk-export.js', array( 'jquery' ),
-			self::$version, true );
+		wp_enqueue_style(
+			$this->plugin_slug . '_bulk_export_css',
+			plugin_dir_url( __FILE__ ) .  '../assets/css/bulk-export.css',
+			array(),
+			self::$version
+		);
+		wp_enqueue_script(
+			$this->plugin_slug . '_bulk_export_js',
+			plugin_dir_url( __FILE__ ) .  '../assets/js/bulk-export.js',
+			array( 'jquery' ),
+			self::$version,
+			true
+		);
 	}
 }

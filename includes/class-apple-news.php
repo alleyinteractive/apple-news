@@ -181,7 +181,9 @@ class Apple_News {
 		// Enqueue styles.
 		wp_enqueue_style(
 			$this->plugin_slug . '_cover_art_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/cover-art.css'
+			plugin_dir_url( __FILE__ ) .  '../assets/css/cover-art.css',
+			array(),
+			self::$version
 		);
 
 		// Enqueue scripts.

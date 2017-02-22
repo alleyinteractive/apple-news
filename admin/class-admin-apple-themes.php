@@ -208,11 +208,18 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
-		wp_enqueue_style( 'apple-news-themes-css', plugin_dir_url( __FILE__ ) .
-		'../assets/css/themes.css', array() );
+		wp_enqueue_style(
+			'apple-news-themes-css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/themes.css',
+			array(),
+			self::$version
+		);
 
-		wp_enqueue_script( 'apple-news-themes-js', plugin_dir_url( __FILE__ ) .
-			'../assets/js/themes.js', array( 'jquery' )
+		wp_enqueue_script(
+			'apple-news-themes-js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/themes.js',
+			array( 'jquery' ),
+			self::$version
 		);
 
 		wp_localize_script( 'apple-news-themes-js', 'appleNewsThemes', array(
@@ -222,23 +229,38 @@ class Admin_Apple_Themes extends Apple_News {
 		) );
 
 		if ( 'admin_page_apple-news-theme-edit' === $hook ) {
-			wp_enqueue_style( 'apple-news-select2-css', plugin_dir_url( __FILE__ ) .
-				'../vendor/select2/select2.min.css', array() );
-			wp_enqueue_style( 'apple-news-theme-edit-css', plugin_dir_url( __FILE__ ) .
-				'../assets/css/theme-edit.css', array() );
+			wp_enqueue_style(
+				'apple-news-select2-css',
+				plugin_dir_url( __FILE__ ) . '../vendor/select2/select2.min.css',
+				array(),
+				self::$version
+			);
+			wp_enqueue_style(
+				'apple-news-theme-edit-css',
+				plugin_dir_url( __FILE__ ) . '../assets/css/theme-edit.css',
+				array(),
+				self::$version
+			);
 
 			wp_enqueue_script( 'iris' );
-			wp_enqueue_script( 'apple-news-select2-js', plugin_dir_url( __FILE__ ) .
-				'../vendor/select2/select2.full.min.js', array( 'jquery' ) );
-			wp_enqueue_script( 'apple-news-theme-edit-js', plugin_dir_url( __FILE__ ) .
-				'../assets/js/theme-edit.js', array(
+			wp_enqueue_script(
+				'apple-news-select2-js',
+				plugin_dir_url( __FILE__ ) . '../vendor/select2/select2.full.min.js',
+				array( 'jquery' ),
+				self::$version
+			);
+			wp_enqueue_script(
+				'apple-news-theme-edit-js',
+				plugin_dir_url( __FILE__ ) . '../assets/js/theme-edit.js',
+				array(
 					'jquery',
 					'jquery-ui-draggable',
 					'jquery-ui-sortable',
 					'apple-news-select2-js',
 					'iris',
 					'apple-news-preview-js'
-				)
+				),
+				self::$version
 			);
 
 			wp_localize_script( 'apple-news-theme-edit-js', 'appleNewsThemeEdit', array(

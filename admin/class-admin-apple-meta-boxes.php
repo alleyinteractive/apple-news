@@ -322,7 +322,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Enqueue metabox stylesheet.
 		wp_enqueue_style(
 			$this->plugin_slug . '_meta_boxes_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/meta-boxes.css'
+			plugin_dir_url( __FILE__ ) .  '../assets/css/meta-boxes.css',
+			array(),
+			self::$version
 		);
 
 		// Enqueue metabox script.
