@@ -118,7 +118,6 @@ class Settings {
 		'blockquote_font' => 'AvenirNext-Regular',
 		'blockquote_size' => 18,
 		'blockquote_color' => '#4f4f4f',
-		'blockquote_hanging_punctuation' => 'no',
 		'blockquote_border_color' => '#4f4f4f',
 		'blockquote_border_style' => 'solid',
 		'blockquote_border_width' => '3',

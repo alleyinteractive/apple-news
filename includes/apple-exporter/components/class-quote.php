@@ -54,6 +54,42 @@ class Quote extends Component {
 	}
 
 	/**
+	 * Processes given text to apply smart quotes on either end of provided text.
+	 *
+	 * @param string $text The text to process.
+	 *
+	 * @access private
+	 * @return string The modified text.
+	 */
+	private function _apply_hanging_punctuation( $text ) {
+
+		// Strip any quotes already present.
+		$modified_text = trim( $text, '"“”' . "\n" );
+
+		// Add smart quotes around the text.
+		$modified_text = '“' . $modified_text . '”';
+
+		// Re-add the line breaks.
+		$modified_text .= "\n\n";
+
+		/**
+		 * Allows for modification of a quote with hanging punctuation enabled.
+		 *
+		 * @since 1.2.4
+		 *
+		 * @param string $modified_text The modified text to be filtered.
+		 * @param string $text The original text for the quote.
+		 */
+		$modified_text = apply_filters(
+			'apple_news_apply_hanging_punctuation',
+			$modified_text,
+			$text
+		);
+
+		return $modified_text;
+	}
+
+	/**
 	 * Runs the build operation for a blockquote.
 	 *
 	 * @param string $text The text to use when building the blockquote.
@@ -102,6 +138,12 @@ class Quote extends Component {
 	 */
 	private function _build_pullquote( $text ) {
 
+		// Apply additional formatting to the text if hanging punctuation is set.
+		$text = $this->parser->parse( $text );
+		if ( 'yes' === $this->get_setting( 'pullquote_hanging_punctuation' ) ) {
+			$text = $this->_apply_hanging_punctuation( $text );
+		}
+
 		// Set JSON for this element.
 		$this->json = array(
 			'role' => 'container',
@@ -112,7 +154,7 @@ class Quote extends Component {
 			'components' => array(
 				array(
 					'role' => 'quote',
-					'text' => $this->parser->parse( $text ),
+					'text' => $text,
 					'format' => $this->parser->format,
 					'layout' => 'pullquote-layout',
 					'textStyle' => 'default-pullquote',
@@ -260,6 +302,7 @@ class Quote extends Component {
 			array(
 				'fontName' => $this->get_setting( 'pullquote_font' ),
 				'fontSize' => intval( $this->get_setting( 'pullquote_size' ) ),
+				'hangingPunctuation' => ( 'yes' === $this->get_setting( 'pullquote_hanging_punctuation' ) ),
 				'textColor' => $this->get_setting( 'pullquote_color' ),
 				'textTransform' => $this->get_setting( 'pullquote_transform' ),
 				'lineHeight' => intval( $this->get_setting( 'pullquote_line_height' ) ),

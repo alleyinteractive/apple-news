@@ -361,11 +361,6 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label' => __( 'Blockquote background color', 'apple-news' ),
 				'type' => 'color',
 			),
-			'blockquote_hanging_punctuation' => array(
-				'label' => __( 'Blockquote hanging punctuation', 'apple-news' ),
-				'type' => array( 'no', 'yes' ),
-				'description' => __( 'If set to "yes," adds smart quotes (if not already present) and sets the hanging punctuation option to true.', 'apple-news' ),
-			),
 			'monospaced_font' => array(
 				'label' => __( 'Monospaced font face', 'apple-news' ),
 				'type' => 'font',
@@ -553,7 +548,6 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 					'blockquote_line_height',
 					'blockquote_tracking',
 					'blockquote_color',
-					'blockquote_hanging_punctuation',
 					'blockquote_border_style',
 					'blockquote_border_color',
 					'blockquote_border_width',
