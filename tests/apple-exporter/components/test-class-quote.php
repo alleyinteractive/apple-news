@@ -20,6 +20,19 @@ use Apple_Exporter\Exporter_Content;
 class Quote_Test extends Component_TestCase {
 
 	/**
+	 * A filter function to modify the hanging punctuation text.
+	 *
+	 * @param string $modified_text The modified text to be filtered.
+	 * @param string $text The original text for the quote.
+	 *
+	 * @access public
+	 * @return string The modified text.
+	 */
+	public function filter_apple_news_apply_hanging_punctuation( $modified_text, $text ) {
+		return '«' . trim( $modified_text, '“”' ) . '»';
+	}
+
+	/**
 	 * A filter function to modify the text style in the generated JSON.
 	 *
 	 * @param array $json The JSON array to modify.
@@ -34,11 +47,48 @@ class Quote_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Test the `apple_news_apply_hanging_punctuation` filter.
+	 *
+	 * @access public
+	 */
+	public function testFilterHangingPunctuation() {
+
+		// Setup.
+		$this->settings->pullquote_hanging_punctuation = 'yes';
+		add_filter(
+			'apple_news_apply_hanging_punctuation',
+			array( $this, 'filter_apple_news_apply_hanging_punctuation' ),
+			10,
+			2
+		);
+		$component = new Quote(
+			'<blockquote class="apple-news-pullquote"><p>my quote</p></blockquote>',
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$result = $component->to_array();
+		$this->assertEquals(
+			'«my quote»' . "\n\n",
+			$result['components'][0]['text']
+		);
+
+		// Teardown.
+		remove_filter(
+			'apple_news_apply_hanging_punctuation',
+			array( $this, 'filter_apple_news_apply_hanging_punctuation' )
+		);
+	}
+
+	/**
 	 * Test the `apple_news_quote_json` filter.
 	 *
 	 * @access public
 	 */
-	public function testFilter() {
+	public function testFilterJSON() {
 
 		// Setup.
 		$component = new Quote(
