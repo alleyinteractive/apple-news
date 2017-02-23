@@ -102,13 +102,19 @@
 		$( '.apple-news-color-picker' ).iris({
 			palettes: true,
 			width: 320,
-			change: appleNewsThemeEditUpdated
+			change: appleNewsColorPickerChange,
+			clear: appleNewsColorPickerChange
 		});
 
 		$( '.apple-news-color-picker' ).on( 'click', function() {
 			$( '.apple-news-color-picker' ).iris( 'hide' );
 			$( this ).iris( 'show' );
 		});
+	}
+
+	function appleNewsColorPickerChange( event, ui ) {
+		$( event.target ).val( ui.color.toString() );
+		appleNewsThemeEditUpdated();
 	}
 
 }( jQuery ) );
