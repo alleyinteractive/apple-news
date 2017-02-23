@@ -54,22 +54,35 @@
 		appleNewsSetCSS( '.apple-news-image', 'body_line_height', 'margin-bottom', 'px', null );
 
 		// Dropcap
-		appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_color', 'color', null, null );
-		appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_font', 'font-family', null, null );
-		var bodySize = $( '#body_size' ).val();
-		var bodyLineHeight = $( '#body_line_height' ).val();
-		var dropcapSize = bodySize;
-		var dropcapLineHeight = bodyLineHeight;
+		var bodySize = $( '#body_size' ).val(),
+			bodyLineHeight = $( '#body_line_height' ).val(),
+			dropcapCharacters = $( '#dropcap_number_of_characters' ).val(),
+			dropcapSize = bodySize,
+			dropcapLineHeight = bodyLineHeight,
+			dropcapParagraph = $( '.apple-news-component p' ).first();
 
+		// Remove existing dropcap.
+		dropcapParagraph.html(
+			dropcapParagraph.html().replace( /<span[^>]*>([^<]+)<\/span>/, '$1' )
+		);
+
+		// If enabled, add it back.
 		if ( 'yes' === $( '#initial_dropcap' ).val() ) {
+			dropcapParagraph.html(
+				'<span class="apple-news-dropcap">' +
+		        dropcapParagraph.html().substr( 0, dropcapCharacters ) +
+				'</span>' +
+			    dropcapParagraph.html().substr( dropcapCharacters )
+			);
 			dropcapSize = bodySize * 5;
 			dropcapLineHeight = bodySize * 3.5;
-			$( '.apple-news-preview .apple-news-dropcap' ).addClass( 'apple-news-dropcap-enabled' );
-		} else {
-			$( '.apple-news-preview .apple-news-dropcap' ).removeClass( 'apple-news-dropcap-enabled' );
+			$( '.apple-news-preview .apple-news-dropcap' )
+				.css( 'font-size', dropcapSize + 'px' )
+				.css( 'line-height', dropcapLineHeight + 'px' );
+			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_background_color', 'background', null, null );
+			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_color', 'color', null, null );
+			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_font', 'font-family', null, null );
 		}
-		$( '.apple-news-preview .apple-news-dropcap' ).css( 'font-size', dropcapSize + 'px' );
-		$( '.apple-news-preview .apple-news-dropcap' ).css( 'line-height', dropcapLineHeight + 'px' );
 
 		// Byline
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-byline', 'byline_font', 'font-family', null, null );

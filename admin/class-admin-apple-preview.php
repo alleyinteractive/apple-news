@@ -128,8 +128,8 @@ class Admin_Apple_Preview extends Apple_News {
 				}
 			?>
 			<div class="apple-news-component">
-			<p><span class="apple-news-dropcap">L</span>orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sagittis, <a href="#">augue vitae iaculis euismod</a>, libero nulla pellentesque quam, non venenatis massa odio id dolor.</p>
-			<p>Praesent eget odio vel sapien scelerisque euismod. Phasellus eros sapien, rutrum ac nibh nec, tristique commodo neque.</p>
+			<p><span class="apple-news-dropcap">L</span>orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sagittis, libero nulla pellentesque quam, non venenatis massa odio id dolor.</p>
+			<p>Praesent eget odio vel sapien scelerisque euismod. Phasellus eros sapien, <a href="#">augue vitae iaculis euismod</a>, rutrum ac nibh nec, tristique commodo neque.</p>
 			<?php printf(
 					'<div class="apple-news-image">%s</div>',
 					esc_html__( 'Image', 'apple-news' )
