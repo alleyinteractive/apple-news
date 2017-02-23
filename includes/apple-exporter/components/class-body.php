@@ -196,22 +196,32 @@ class Body extends Component {
 	 * @access private
 	 */
 	private function set_initial_dropcap_style() {
+
+		// Start building the custom dropcap body style.
+		$dropcap_style = array(
+			'fontName' => $this->get_setting( 'dropcap_font' ),
+			'numberOfCharacters' => absint( $this->get_setting( 'dropcap_number_of_characters' ) ),
+			'numberOfLines' => absint( $this->get_setting( 'dropcap_number_of_lines' ) ),
+			'numberOfRaisedLines' => absint( $this->get_setting( 'dropcap_number_of_raised_lines' ) ),
+			'padding' => absint( $this->get_setting( 'dropcap_padding' ) ),
+			'textColor' => $this->get_setting( 'dropcap_color' ),
+		);
+
+		// Add the background color, if defined.
+		$background_color = $this->get_setting( 'dropcap_background_color' );
+		if ( ! empty( $background_color ) ) {
+			$dropcap_style['backgroundColor'] = $background_color;
+		}
+
+		// Set the text style.
 		$this->json['textStyle'] = 'dropcapBodyStyle';
+
+		// Apply the dropcap body style.
 		$this->register_style(
 			'dropcapBodyStyle',
 			array_merge(
 				$this->get_default_style(),
-				array(
-					'dropCapStyle' => array(
-						'backgroundColor' => $this->get_setting( 'dropcap_background_color' ),
-						'fontName' => $this->get_setting( 'dropcap_font' ),
-						'numberOfCharacters' => $this->get_setting( 'dropcap_number_of_characters' ),
-						'numberOfLines' => $this->get_setting( 'dropcap_number_of_lines' ),
-						'numberOfRaisedLines' => $this->get_setting( 'dropcap_number_of_raised_lines' ),
-						'padding' => $this->get_setting( 'dropcap_padding' ),
-						'textColor' => $this->get_setting( 'dropcap_color' ),
-					),
-				)
+				array( 'dropCapStyle' => $dropcap_style )
 			)
 		);
 	}
