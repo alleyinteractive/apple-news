@@ -108,6 +108,7 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			'dropcap_number_of_lines' => array(
 				'label' => __( 'Drop cap number of lines', 'apple-news' ),
 				'type' => 'integer',
+				'description' => __( 'Must be an integer between 2 and 10. Actual number of lines occupied will vary based on device size.', 'apple-news' ),
 			),
 			'dropcap_number_of_raised_lines' => array(
 				'label' => __( 'Drop cap number of raised lines', 'apple-news' ),

@@ -57,8 +57,7 @@
 		var bodySize = $( '#body_size' ).val(),
 			bodyLineHeight = $( '#body_line_height' ).val(),
 			dropcapCharacters = $( '#dropcap_number_of_characters' ).val(),
-			dropcapSize = bodySize,
-			dropcapLineHeight = bodyLineHeight,
+			dropcapNumberOfLines = $( '#dropcap_number_of_lines' ).val(),
 			dropcapParagraph = $( '.apple-news-component p' ).first();
 
 		// Remove existing dropcap.
@@ -68,17 +67,33 @@
 
 		// If enabled, add it back.
 		if ( 'yes' === $( '#initial_dropcap' ).val() ) {
+
+			// Create the dropcap span with the specified number of characters.
 			dropcapParagraph.html(
 				'<span class="apple-news-dropcap">' +
 		        dropcapParagraph.html().substr( 0, dropcapCharacters ) +
 				'</span>' +
 			    dropcapParagraph.html().substr( dropcapCharacters )
 			);
-			dropcapSize = bodySize * 5;
-			dropcapLineHeight = bodySize * 3.5;
+
+			// Set the size based on the specified number of lines.
+			// There is not an actual 1:1 relationship between this setting and
+			// what renders in Apple News, so we need to adjust this by a coefficient
+			// to roughly match the actual behavior.
+			var targetLines = Math.ceil( dropcapNumberOfLines * 0.56 );
+			console.log( targetLines );
+			dropcapSize = bodyLineHeight * targetLines;
+			dropcapLineHeight = dropcapSize;
+
+			// TODO: Calculate padding
+			// TODO: Calculate raised lines
+
+			// Apply computed styles.
 			$( '.apple-news-preview .apple-news-dropcap' )
 				.css( 'font-size', dropcapSize + 'px' )
 				.css( 'line-height', dropcapLineHeight + 'px' );
+
+			// Apply direct styles.
 			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_background_color', 'background', null, null );
 			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_color', 'color', null, null );
 			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_font', 'font-family', null, null );

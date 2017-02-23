@@ -197,11 +197,19 @@ class Body extends Component {
 	 */
 	private function set_initial_dropcap_style() {
 
+		// Negotiate the number of lines.
+		$number_of_lines = absint( $this->get_setting( 'dropcap_number_of_lines' ) );
+		if ( $number_of_lines < 2 ) {
+			$number_of_lines = 2;
+		} elseif ( $number_of_lines > 10 ) {
+			$number_of_lines = 10;
+		}
+
 		// Start building the custom dropcap body style.
 		$dropcap_style = array(
 			'fontName' => $this->get_setting( 'dropcap_font' ),
 			'numberOfCharacters' => absint( $this->get_setting( 'dropcap_number_of_characters' ) ),
-			'numberOfLines' => absint( $this->get_setting( 'dropcap_number_of_lines' ) ),
+			'numberOfLines' => $number_of_lines,
 			'numberOfRaisedLines' => absint( $this->get_setting( 'dropcap_number_of_raised_lines' ) ),
 			'padding' => absint( $this->get_setting( 'dropcap_padding' ) ),
 			'textColor' => $this->get_setting( 'dropcap_color' ),
