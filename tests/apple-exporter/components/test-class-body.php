@@ -123,6 +123,13 @@ HTML;
 		$this->settings->body_link_color = '#fedcba';
 		$this->settings->body_line_height = 28;
 		$this->settings->body_tracking = 50;
+		$this->settings->dropcap_background_color = '#abcabc';
+		$this->settings->dropcap_color = '#defdef';
+		$this->settings->dropcap_font = 'TestFontName2';
+		$this->settings->dropcap_number_of_characters = 15;
+		$this->settings->dropcap_number_of_lines = 10;
+		$this->settings->dropcap_number_of_raised_lines = 5;
+		$this->settings->dropcap_padding = 20;
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -152,6 +159,34 @@ HTML;
 		$this->assertEquals(
 			0.5,
 			$json['componentTextStyles']['default-body']['tracking']
+		);
+		$this->assertEquals(
+			'#abcabc',
+			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['backgroundColor']
+		);
+		$this->assertEquals(
+			'#defdef',
+			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['textColor']
+		);
+		$this->assertEquals(
+			'TestFontName2',
+			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['fontName']
+		);
+		$this->assertEquals(
+			15,
+			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['numberOfCharacters']
+		);
+		$this->assertEquals(
+			10,
+			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['numberOfLines']
+		);
+		$this->assertEquals(
+			5,
+			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['numberOfRaisedLines']
+		);
+		$this->assertEquals(
+			20,
+			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['padding']
 		);
 	}
 

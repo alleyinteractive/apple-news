@@ -89,13 +89,33 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 				'label' => __( 'Use initial drop cap', 'apple-news' ),
 				'type' => array( 'yes', 'no' ),
 			),
-			'dropcap_font' => array(
-				'label' => __( 'Dropcap font face', 'apple-news' ),
-				'type' => 'font',
+			'dropcap_background_color' => array(
+				'label' => __( 'Drop cap background color', 'apple-news' ),
+				'type' => 'color',
 			),
 			'dropcap_color' => array(
 				'label' => __( 'Drop cap font color', 'apple-news' ),
 				'type' => 'color',
+			),
+			'dropcap_font' => array(
+				'label' => __( 'Dropcap font face', 'apple-news' ),
+				'type' => 'font',
+			),
+			'dropcap_number_of_characters' => array(
+				'label' => __( 'Drop cap number of characters', 'apple-news' ),
+				'type' => 'integer',
+			),
+			'dropcap_number_of_lines' => array(
+				'label' => __( 'Drop cap number of lines', 'apple-news' ),
+				'type' => 'integer',
+			),
+			'dropcap_number_of_raised_lines' => array(
+				'label' => __( 'Drop cap number of raised lines', 'apple-news' ),
+				'type' => 'integer',
+			),
+			'dropcap_padding' => array(
+				'label' => __( 'Drop cap padding', 'apple-news' ),
+				'type' => 'integer',
 			),
 			'byline_font' => array(
 				'label' => __( 'Byline font face', 'apple-news' ),
@@ -433,9 +453,14 @@ class Admin_Apple_Settings_Section_Formatting extends Admin_Apple_Settings_Secti
 			'dropcap' => array(
 				'label' => __( 'Drop Cap', 'apple-news' ),
 				'settings' => array(
-					'dropcap_font',
 					'initial_dropcap',
-					'dropcap_color'
+					'dropcap_background_color',
+					'dropcap_color',
+					'dropcap_font',
+					'dropcap_number_of_characters',
+					'dropcap_number_of_lines',
+					'dropcap_number_of_raised_lines',
+					'dropcap_padding',
 				),
 			),
 			'byline' => array(

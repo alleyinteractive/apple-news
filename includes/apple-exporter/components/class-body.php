@@ -196,19 +196,24 @@ class Body extends Component {
 	 * @access private
 	 */
 	private function set_initial_dropcap_style() {
-		$this->json[ 'textStyle' ] = 'dropcapBodyStyle';
-		$this->register_style( 'dropcapBodyStyle', array_merge(
-			$this->get_default_style(),
-		 	array(
-				'dropCapStyle' => array (
-					'numberOfLines' 		=> 4,
-					'numberOfCharacters' 	=> 1,
-					'padding' 				=> 5,
-					'fontName' 				=> $this->get_setting( 'dropcap_font' ),
-					'textColor'				=> $this->get_setting( 'dropcap_color' ),
-				),
+		$this->json['textStyle'] = 'dropcapBodyStyle';
+		$this->register_style(
+			'dropcapBodyStyle',
+			array_merge(
+				$this->get_default_style(),
+				array(
+					'dropCapStyle' => array(
+						'backgroundColor' => $this->get_setting( 'dropcap_background_color' ),
+						'fontName' => $this->get_setting( 'dropcap_font' ),
+						'numberOfCharacters' => $this->get_setting( 'dropcap_number_of_characters' ),
+						'numberOfLines' => $this->get_setting( 'dropcap_number_of_lines' ),
+						'numberOfRaisedLines' => $this->get_setting( 'dropcap_number_of_raised_lines' ),
+						'padding' => $this->get_setting( 'dropcap_padding' ),
+						'textColor' => $this->get_setting( 'dropcap_color' ),
+					),
+				)
 			)
-	 	) );
+		);
 	}
 
 	/**

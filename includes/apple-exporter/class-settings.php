@@ -57,8 +57,13 @@ class Settings {
 		'body_tracking' => 0,
 
 		'initial_dropcap' => 'yes',
-		'dropcap_font' => 'AvenirNext-Bold',
+		'dropcap_background_color' => '',
 		'dropcap_color' => '#4f4f4f',
+		'dropcap_font' => 'AvenirNext-Bold',
+		'dropcap_number_of_characters' => 1,
+		'dropcap_number_of_lines' => 4,
+		'dropcap_number_of_raised_lines' => 0,
+		'dropcap_padding' => 5,
 
 		'byline_font' => 'AvenirNext-Medium',
 		'byline_size' => 13,
