@@ -48,6 +48,9 @@
 
 .apple-news-dropcap {
 	float: left;
+	margin-bottom: -30px;
+	margin-top: -2px;
+	position: relative;
 }
 
 .wrap .apple-news-title {
