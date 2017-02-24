@@ -830,13 +830,17 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		// use the default value to be safe.
 		$default_settings = new Settings();
 		foreach ( $this->settings as $key => $attributes ) {
-			if ( ! empty( $_POST[ $key ] ) ) {
+			if ( ! empty( $_POST[ $key ] )
+				|| ( isset( $_POST[ $key ] )
+					&& in_array( $_POST[ $key ], array( 0, '0' ), true )
+				)
+			) {
 				// Sanitize the value
 				$sanitize = ( empty( $attributes['sanitize'] ) || ! is_callable( $attributes['sanitize'] ) ) ? 'sanitize_text_field' : $attributes['sanitize'];
 				$value = call_user_func( $sanitize, $_POST[ $key ] );
 			} else {
 				// Use the default value
-				$value = $default_settings->get( $key );
+				$value = $default_settings->$key;
 			}
 
 			// Add to the array
