@@ -1,7 +1,7 @@
 <?php
 namespace Apple_Exporter\Components;
 
-use \Apple_Exporter\Exporter as Exporter;
+use \DOMElement;
 
 /**
  * A paragraph component.
@@ -30,10 +30,10 @@ class Body extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
-	 * @static
+	 * @param DOMElement $node The node to examine for matches.
+	 *
 	 * @access public
+	 * @return array|null An array of matching HTML on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		// We are only interested in p, pre, ul and ol
@@ -46,54 +46,89 @@ class Body extends Component {
 			return null;
 		}
 
-		// There are several components which cannot be translated to markdown,
-		// namely images, videos, audios and EWV. If these components are inside a
-		// paragraph, split the paragraph.
-		if ( 'p' == $node->nodeName ) {
-			$html = $node->ownerDocument->saveXML( $node );
-			return self::split_non_markdownable( $html );
+		// Negotiate open and close values.
+		$open = '<' . $node->nodeName . '>';
+		$close = '</' . $node->nodeName . '>';
+		if ( 'ol' === $node->nodeName || 'ul' === $node->nodeName ) {
+			$open .= '<li>';
+			$close = '</li>' . $close;
 		}
 
-		return $node;
+		return self::split_unsupported_elements(
+			$node->ownerDocument->saveXML( $node ),
+			$node->nodeName,
+			$open,
+			$close
+		);
 	}
 
 	/**
 	 * Split the non markdownable content for processing.
 	 *
-	 * @param string $html
-	 * @return array
-	 * @static
+	 * @param string $html The HTML to split.
+	 * @param string $tag The tag in which to enclose primary content.
+	 * @param string $open The opening HTML tag(s) for use in balancing a split.
+	 * @param string $close The closing HTML tag(s) for use in balancing a split.
+	 *
 	 * @access private
+	 * @return array An array of HTML components.
 	 */
-	private static function split_non_markdownable( $html ) {
+	private static function split_unsupported_elements( $html, $tag, $open, $close ) {
+
+		// Don't bother processing if there is nothing to operate on.
 		if ( empty( $html ) ) {
 			return array();
 		}
 
+		// Try to get matches of unsupported elements to split.
 		preg_match( '#<(img|video|audio|iframe).*?(?:>(.*?)</\1>|/?>)#si', $html, $matches );
+		if ( empty( $matches ) ) {
 
-		if ( ! $matches ) {
-			return array( array( 'name' => 'p', 'value' => $html ) );
+			// Ensure the resulting HTML is not devoid of actual content.
+			if ( '' === trim( strip_tags( $html ) ) ) {
+				return array();
+			}
+
+			return array(
+				array(
+					'name' => $tag,
+					'value' => $html,
+				),
+			);
 		}
 
+		// Split the HTML by the found element into the left and right parts.
 		list( $whole, $tag_name ) = $matches;
-		list( $left, $right )     = explode( $whole, $html, 3 );
+		list( $left, $right ) = explode( $whole, $html, 3 );
 
-		$para = array( 'name' => 'p', 'value' => self::clean_html( $left . '</p>' ) );
-		// If the paragraph is empty, just return the right-hand-side
-		if ( '<p></p>' == $para['value'] ) {
-			return array_merge(
-				array( array( 'name' => $tag_name, 'value' => $whole ) ),
-				self::split_non_markdownable( self::clean_html( '<p>' . $right ) )
+		// Augment left and right parts with correct opening and closing tags.
+		$left = force_balance_tags( $left . $close );
+		$right = force_balance_tags( $open . $right );
+
+		// Start building the return value.
+		$elements = array(
+			array(
+				'name' => $tag_name,
+				'value' => $whole,
+			),
+		);
+
+		// Check for conditions under which left should be added.
+		if ( '' !== trim( strip_tags( $left ) ) ) {
+			$elements = array_merge(
+				array(
+					array(
+						'name' => $tag,
+						'value' => $left,
+					),
+				),
+				$elements
 			);
 		}
 
 		return array_merge(
-		 	array(
-				$para,
-				array( 'name'  => $tag_name, 'value' => $whole ),
-		 	),
-			self::split_non_markdownable( self::clean_html( '<p>' . $right ) )
+			$elements,
+			self::split_unsupported_elements( $right, $tag, $open, $close )
 		);
 	}
 

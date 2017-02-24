@@ -82,6 +82,9 @@ class Component_Factory {
 		self::register_component( 'heading', '\\Apple_Exporter\\Components\\Heading' );
 		self::register_component( 'blockquote', '\\Apple_Exporter\\Components\\Quote' );
 		self::register_component( 'p', '\\Apple_Exporter\\Components\\Body' );
+		self::register_component( 'ol', '\\Apple_Exporter\\Components\\Body' );
+		self::register_component( 'ul', '\\Apple_Exporter\\Components\\Body' );
+		self::register_component( 'pre', '\\Apple_Exporter\\Components\\Body' );
 		self::register_component( 'hr', '\\Apple_Exporter\\Components\\Divider' );
 		// Non HTML-based components
 		self::register_component( 'intro', '\\Apple_Exporter\\Components\\Intro' );
