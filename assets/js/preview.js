@@ -57,6 +57,7 @@
 		var bodyLineHeight = $( '#body_line_height' ).val(),
 			dropcapCharacters = parseInt( $( '#dropcap_number_of_characters' ).val() ),
 			dropcapNumberOfLines = parseInt( $( '#dropcap_number_of_lines' ).val() ),
+			dropcapNumberOfRaisedLines = parseInt( $( '#dropcap_number_of_raised_lines' ).val() ),
 			dropcapPadding = parseInt( $( '#dropcap_padding' ).val() ),
 			dropcapParagraph = $( '.apple-news-component p' ).first();
 
@@ -67,6 +68,15 @@
 		} else if ( dropcapNumberOfLines > 10 ) {
 			dropcapNumberOfLines = 10;
 			$( '#dropcap_number_of_lines' ).val( 10 )
+		}
+
+		// Adjust number of raised lines to remain within tolerance.
+		if ( dropcapNumberOfRaisedLines < 0 ) {
+			dropcapNumberOfRaisedLines = 0;
+			$( '#dropcap_number_of_raised_lines' ).val( 0 )
+		} else if ( dropcapNumberOfRaisedLines >= dropcapNumberOfLines ) {
+			dropcapNumberOfRaisedLines = dropcapNumberOfLines - 1;
+			$( '#dropcap_number_of_raised_lines' ).val( dropcapNumberOfRaisedLines )
 		}
 
 		// Remove existing dropcap.
@@ -93,12 +103,16 @@
 			dropcapSize = bodyLineHeight * targetLines * 1.2 - dropcapPadding * 2;
 			dropcapLineHeight = dropcapSize;
 
-			// TODO: Calculate raised lines
+			// Compute the adjusted number of target lines based on raised lines.
+			var adjustedLines = Math.round( -0.6 * dropcapNumberOfRaisedLines + targetLines );
+			dropcapParagraph.css( 'margin-top', ( 20 + bodyLineHeight * ( targetLines - adjustedLines ) / 2 ) + 'px' );
 
 			// Apply computed styles.
 			$( '.apple-news-preview .apple-news-dropcap' )
 				.css( 'font-size', dropcapSize + 'px' )
-				.css( 'line-height', dropcapLineHeight + 'px' )
+				.css( 'line-height', ( dropcapLineHeight * .66 ) + 'px' )
+				.css( 'margin-bottom', ( -1 * bodyLineHeight * .33 ) + 'px' )
+				.css( 'margin-top', ( -1 * bodyLineHeight * ( targetLines - adjustedLines ) * .9 + bodyLineHeight * .33 ) + 'px' )
 				.css( 'padding', dropcapPadding + 'px ' + ( dropcapPadding + 5 ) + 'px ' + dropcapPadding + 'px ' + dropcapPadding + 'px' );
 
 			// Apply direct styles.
