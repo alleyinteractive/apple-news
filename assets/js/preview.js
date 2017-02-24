@@ -90,9 +90,9 @@
 			// Create the dropcap span with the specified number of characters.
 			dropcapParagraph.html(
 				'<span class="apple-news-dropcap">' +
-		        dropcapParagraph.html().substr( 0, dropcapCharacters ) +
+				dropcapParagraph.html().substr( 0, dropcapCharacters ) +
 				'</span>' +
-			    dropcapParagraph.html().substr( dropcapCharacters )
+				dropcapParagraph.html().substr( dropcapCharacters )
 			);
 
 			// Set the size based on the specified number of lines.
@@ -104,15 +104,15 @@
 			dropcapLineHeight = dropcapSize;
 
 			// Compute the adjusted number of target lines based on raised lines.
-			var adjustedLines = Math.round( -0.6 * dropcapNumberOfRaisedLines + targetLines );
+			var adjustedLines = Math.round( - 0.6 * dropcapNumberOfRaisedLines + targetLines );
 			dropcapParagraph.css( 'margin-top', ( 20 + bodyLineHeight * ( targetLines - adjustedLines ) / 2 ) + 'px' );
 
 			// Apply computed styles.
 			$( '.apple-news-preview .apple-news-dropcap' )
 				.css( 'font-size', dropcapSize + 'px' )
 				.css( 'line-height', ( dropcapLineHeight * .66 ) + 'px' )
-				.css( 'margin-bottom', ( -1 * bodyLineHeight * .33 ) + 'px' )
-				.css( 'margin-top', ( -1 * bodyLineHeight * ( targetLines - adjustedLines ) * .9 + bodyLineHeight * .33 ) + 'px' )
+				.css( 'margin-bottom', ( - 1 * bodyLineHeight * .33 ) + 'px' )
+				.css( 'margin-top', ( - 1 * bodyLineHeight * ( targetLines - adjustedLines ) * .9 + bodyLineHeight * .33 ) + 'px' )
 				.css( 'padding', dropcapPadding + 'px ' + ( dropcapPadding + 5 ) + 'px ' + dropcapPadding + 'px ' + dropcapPadding + 'px' );
 
 			// Apply direct styles.
