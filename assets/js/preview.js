@@ -113,7 +113,7 @@
 				.css( 'line-height', ( dropcapLineHeight * .66 ) + 'px' )
 				.css( 'margin-bottom', ( - 1 * bodyLineHeight * .33 ) + 'px' )
 				.css( 'margin-top', ( - 1 * bodyLineHeight * ( targetLines - adjustedLines ) * .9 + bodyLineHeight * .33 ) + 'px' )
-				.css( 'padding', dropcapPadding + 'px ' + ( dropcapPadding + 5 ) + 'px ' + dropcapPadding + 'px ' + dropcapPadding + 'px' );
+				.css( 'padding', ( 5 + dropcapPadding ) + 'px ' + ( 10 + dropcapPadding ) + 'px ' + dropcapPadding + 'px ' + ( 5 + dropcapPadding ) + 'px' );
 
 			// Apply direct styles.
 			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_background_color', 'background', null, null );
