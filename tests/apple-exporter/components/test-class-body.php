@@ -103,6 +103,56 @@ HTML;
 	}
 
 	/**
+	 * Tests transformation of lists with nested images.
+	 *
+	 * @access public
+	 */
+	public function testLists() {
+
+		// Setup.
+		$content = <<<HTML
+<ul>
+<li>item 1</li>
+<li><img src="http://someurl.com/filename.jpg"><br />item 2</li>
+<li>item 3</li>
+</ul>
+HTML;
+		$file = dirname( dirname( __DIR__ ) ) . '/data/test-image.jpg';
+		$cover = $this->factory->attachment->create_upload_object( $file );
+		$content = new Exporter_Content( 3, 'Title', $content, null, $cover );
+
+		// Run the export.
+		$exporter = new Exporter( $content, null, $this->settings );
+		$json = json_decode( $exporter->export(), true );
+
+		// Validate list split in generated JSON.
+		$this->assertEquals(
+			'body',
+			$json['components'][1]['components'][1]['role']
+		);
+		$this->assertEquals(
+			'- item 1',
+			$json['components'][1]['components'][1]['text']
+		);
+		$this->assertEquals(
+			'photo',
+			$json['components'][1]['components'][2]['role']
+		);
+		$this->assertEquals(
+			'bundle://filename.jpg',
+			$json['components'][1]['components'][2]['URL']
+		);
+		$this->assertEquals(
+			'body',
+			$json['components'][1]['components'][3]['role']
+		);
+		$this->assertEquals(
+			'- item 2' . "\n" . '- item 3',
+			$json['components'][1]['components'][3]['text']
+		);
+	}
+
+	/**
 	 * Tests body settings.
 	 *
 	 * @access public
