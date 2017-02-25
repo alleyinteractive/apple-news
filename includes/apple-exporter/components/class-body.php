@@ -54,14 +54,12 @@ class Body extends Component {
 			$close = '</li>' . $close;
 		}
 
-		$elements = self::split_unsupported_elements(
+		return self::split_unsupported_elements(
 			$node->ownerDocument->saveXML( $node ),
 			$node->nodeName,
 			$open,
 			$close
 		);
-
-		return $elements;
 	}
 
 	/**
@@ -105,14 +103,10 @@ class Body extends Component {
 
 		// Additional processing for list items.
 		if ( 'ol' === $tag || 'ul' === $tag ) {
-			$left = preg_replace( '/<br\s*\/?\s*>/', "\n\n", $left );
-			$right = preg_replace( '/<br\s*\/?\s*>/', "\n\n", $right );
-			$left = trim( $left );
-			$right = trim( $right );
-			$left = preg_replace( '/\s*<li>$/is', '', $left );
-			$right = preg_replace( '/^<\/li>\s*/is', '', $right );
-			$left = str_replace( "\n\n", '<br />', $left );
-			$right = str_replace( "\n\n", '<br />', $right );
+			$left = preg_replace( '/(<br\s*\/?>)+$/', '', $left );
+			$right = preg_replace( '/^(<br\s*\/?>)+/', '', $right );
+			$left = preg_replace( '/\s*<li>$/is', '', trim( $left ) );
+			$right = preg_replace( '/^<\/li>\s*/is', '', trim( $right ) );
 		}
 
 		// Augment left and right parts with correct opening and closing tags.
