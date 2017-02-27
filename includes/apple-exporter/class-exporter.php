@@ -204,7 +204,7 @@ class Exporter {
 		$json = array(
 			'version'    => '1.1',
 			'identifier' => 'post-' . $this->content_id(),
-			'language'   => get_bloginfo( 'language' ),
+			'language'   => apply_filters( 'apple_news_exporter_language', get_bloginfo( 'language' ), $this->content_id() ),
 			'title'      => $this->content_title(),
 		);
 
