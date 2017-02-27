@@ -1,4 +1,5 @@
 <div class="wrap apple-news-theme-edit">
+	<h1><?php esc_html_e( 'Edit Theme', 'apple-news' ); ?></h1>
 	<form method="post" action="<?php echo esc_url( $theme_admin_url ) ?>" id="apple-news-theme-edit-form">
 		<?php wp_nonce_field( 'apple_news_save_edit_theme' ); ?>
 		<input type="hidden" name="action" value="apple_news_save_edit_theme" />
