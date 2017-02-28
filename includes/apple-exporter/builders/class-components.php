@@ -184,11 +184,16 @@ class Components extends Builder {
 				return;
 			}
 
-			// Use this image as the cover and remove it from the body to avoid
-			// duplication.
+			// Use this image as the cover.
 			$this->set_content_property( 'cover', $original_url );
-			unset( $components[ $i ] );
-			$components = array_values( $components );
+
+			// If the cover is set to be displayed, remove it from the flow.
+			$order = $this->get_setting( 'meta_component_order' );
+			if ( is_array( $order ) && in_array( 'cover', $order ) ) {
+				unset( $components[ $i ] );
+				$components = array_values( $components );
+			}
+
 			break;
 		}
 	}
