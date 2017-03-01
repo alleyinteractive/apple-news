@@ -52,11 +52,11 @@ $orientations = array(
 		/>
 		<input type="button"
 			class="button-primary apple-news-coverart-add <?php echo esc_attr( $add_hidden ); ?>"
-			value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>"
+			value="<?php esc_attr_e( 'Add image', 'apple-news' ); ?>"
 		/>
 		<input type="button"
 			class="button-primary apple-news-coverart-remove <?php echo esc_attr( $remove_hidden ); ?>"
-			value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>"
+			value="<?php esc_attr_e( 'Remove image', 'apple-news' ); ?>"
 		/>
 	</div>
 <?php endforeach; ?>
