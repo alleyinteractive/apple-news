@@ -5,7 +5,6 @@ $orientations = array(
     'portrait' => __( 'Portrait (3:4)', 'apple-news' ),
     'square' => __( 'Square (1:1)', 'apple-news' ),
 );
-$orientation = ( ! empty( $cover_art['orientation'] ) ) ? $cover_art['orientation'] : 'landscape';
 ?>
 <p class="description">
 	<?php printf(
@@ -19,22 +18,17 @@ $orientation = ( ! empty( $cover_art['orientation'] ) ) ? $cover_art['orientatio
 <div>
 	<label for="apple-news-coverart-orientation"><?php esc_html_e( 'Orientation:', 'apple-news' ); ?></label>
 	<select id="apple-news-coverart-orientation" name="apple-news-coverart-orientation">
+		<?php $orientation = ( ! empty( $cover_art['orientation'] ) ) ? $cover_art['orientation'] : 'landscape'; ?>
 		<?php foreach ( $orientations as $key => $label ) : ?>
 			<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $orientation, $key ); ?>><?php echo esc_html( $label ); ?></option>
 		<?php endforeach; ?>
 	</select>
 </div>
-<?php /*
-    <div id="apple-news-coverart-<?php echo esc_attr( $key ); ?>" class="apple-news-coverart-image">
-		<?php $image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_' . $key, true ) ); ?>
-        <h4><?php echo esc_html( $label ); ?></h4>
-        <p class="description">
-			<?php printf(
-				esc_html__( 'Minimum dimensions: %1$dx%2$d', 'apple-news' ),
-				absint( Admin_Apple_News::$image_sizes[ 'apple_news_ca_' . $key ]['width'] ),
-				absint( Admin_Apple_News::$image_sizes[ 'apple_news_ca_' . $key ]['height'] )
-			); ?>
-        </p>
+<?php $image_sizes = Admin_Apple_News::get_image_sizes(); ?>
+<?php foreach ( $image_sizes as $key => $data ) : ?>
+    <div class="apple-news-coverart-image-container apple-news-coverart-image-<?php echo esc_attr( $data['orientation'] ); ?>">
+		<?php $image_id = ( ! empty( $cover_art[ $key ] ) ) ? absint( $cover_art[ $key ] ) : ''; ?>
+        <h4><?php echo esc_html( $data['label'] ); ?></h4>
         <div class="apple-news-coverart-image">
 			<?php if ( ! empty( $image_id ) ) {
 				echo wp_get_attachment_image( $image_id, 'medium' );
@@ -45,8 +39,8 @@ $orientation = ( ! empty( $cover_art['orientation'] ) ) ? $cover_art['orientatio
 				$remove_hidden = 'hidden';
 			} ?>
         </div>
-        <input name="apple_news_coverart_<?php echo esc_attr( $key ); ?>" class="apple-news-coverart-id" type="hidden" value="<?php echo esc_attr( $image_id ); ?>" />
+        <input name="<?php echo esc_attr( $key ); ?>" class="apple-news-coverart-id" type="hidden" value="<?php echo esc_attr( $image_id ); ?>" />
         <input type="button" class="button-primary apple-news-coverart-add <?php echo esc_attr( $add_hidden ); ?>" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
         <input type="button" class="button-primary apple-news-coverart-remove <?php echo esc_attr( $remove_hidden ); ?>" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
     </div>
-*/ ?>
+<?php endforeach; ?>

@@ -23,27 +23,6 @@ require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-preview.php';
 class Admin_Apple_News extends Apple_News {
 
 	/**
-	 * Contains information about custom image sizes used by the plugin.
-	 *
-	 * @access public
-	 * @var array Information about images, with names as keys and data as values.
-	 */
-	public static $image_sizes = array(
-		'apple_news_ca_landscape' => array(
-			'height' => 1374,
-			'width' => 1832,
-		),
-		'apple_news_ca_portrait' => array(
-			'height' => 1496,
-			'width' => 1122,
-		),
-		'apple_news_ca_square' => array(
-			'height' => 1472,
-			'width' => 1472,
-		),
-	);
-
-	/**
 	 * Current settings.
 	 *
 	 * @var Settings
@@ -93,6 +72,107 @@ class Admin_Apple_News extends Apple_News {
 	}
 
 	/**
+	 * Returns an array of custom image sizes, indexed by key, with metadata.
+	 *
+	 * @access public
+	 * @return array The array of custom image sizes.
+	 */
+	public static function get_image_sizes() {
+		return array(
+			'apple_news_ca_landscape_12_9' => array(
+				'height' => 1374,
+				'label' => __( 'iPad Pro (12.9 in): 1832 x 1374 px', 'apple-news' ),
+				'orientation' => 'landscape',
+				'width' => 1832,
+			),
+			'apple_news_ca_landscape_9_7' => array(
+				'height' => 1032,
+				'label' => __( 'iPad (7.9/9.7 in): 1376 x 1032 px', 'apple-news' ),
+				'orientation' => 'landscape',
+				'width' => 1376,
+			),
+			'apple_news_ca_landscape_5_5' => array(
+				'height' => 783,
+				'label' => __( 'iPhone (5.5 in): 1044 x 783 px', 'apple-news' ),
+				'orientation' => 'landscape',
+				'width' => 1044,
+			),
+			'apple_news_ca_landscape_4_7' => array(
+				'height' => 474,
+				'label' => __( 'iPhone (4.7 in): 632 x 474 px', 'apple-news' ),
+				'orientation' => 'landscape',
+				'width' => 632,
+			),
+			'apple_news_ca_landscape_4_0' => array(
+				'height' => 402,
+				'label' => __( 'iPhone (4 in): 536 x 402 px', 'apple-news' ),
+				'orientation' => 'landscape',
+				'width' => 536,
+			),
+			'apple_news_ca_portrait_12_9' => array(
+				'height' => 1496,
+				'label' => __( 'iPad Pro (12.9 in): 1122 x 1496 px', 'apple-news' ),
+				'orientation' => 'portrait',
+				'width' => 1122,
+			),
+			'apple_news_ca_portrait_9_7' => array(
+				'height' => 1120,
+				'label' => __( 'iPad (7.9/9.7 in): 840 x 1120 px', 'apple-news' ),
+				'orientation' => 'portrait',
+				'width' => 840,
+			),
+			'apple_news_ca_portrait_5_5' => array(
+				'height' => 916,
+				'label' => __( 'iPhone (5.5 in): 687 x 916 px', 'apple-news' ),
+				'orientation' => 'portrait',
+				'width' => 687,
+			),
+			'apple_news_ca_portrait_4_7' => array(
+				'height' => 552,
+				'label' => __( 'iPhone (4.7 in): 414 x 552 px', 'apple-news' ),
+				'orientation' => 'portrait',
+				'width' => 414,
+			),
+			'apple_news_ca_portrait_4_0' => array(
+				'height' => 472,
+				'label' => __( 'iPhone (4 in): 354 x 472 px', 'apple-news' ),
+				'orientation' => 'portrait',
+				'width' => 354,
+			),
+			'apple_news_ca_square_12_9' => array(
+				'height' => 1472,
+				'label' => __( 'iPad Pro (12.9 in): 1472 x 1472 px', 'apple-news' ),
+				'orientation' => 'square',
+				'width' => 1472,
+			),
+			'apple_news_ca_square_9_7' => array(
+				'height' => 1104,
+				'label' => __( 'iPad (7.9/9.7 in): 1104 x 1104 px', 'apple-news' ),
+				'orientation' => 'square',
+				'width' => 1104,
+			),
+			'apple_news_ca_square_5_5' => array(
+				'height' => 912,
+				'label' => __( 'iPhone (5.5 in): 912 x 912 px', 'apple-news' ),
+				'orientation' => 'square',
+				'width' => 912,
+			),
+			'apple_news_ca_square_4_7' => array(
+				'height' => 550,
+				'label' => __( 'iPhone (4.7 in): 550 x 550 px', 'apple-news' ),
+				'orientation' => 'square',
+				'width' => 550,
+			),
+			'apple_news_ca_square_4_0' => array(
+				'height' => 470,
+				'label' => __( 'iPhone (4 in): 470 x 470 px', 'apple-news' ),
+				'orientation' => 'square',
+				'width' => 470,
+			),
+		);
+	}
+
+	/**
 	 * Actions to be run on the `init` action hook.
 	 *
 	 * @access public
@@ -100,7 +180,8 @@ class Admin_Apple_News extends Apple_News {
 	public function action_init() {
 
 		// Register custom image crops.
-		foreach ( self::$image_sizes as $name => $data ) {
+		$image_sizes = self::get_image_sizes();
+		foreach ( $image_sizes as $name => $data ) {
 			add_image_size( $name, $data['width'], $data['height'], true );
 		}
 	}
