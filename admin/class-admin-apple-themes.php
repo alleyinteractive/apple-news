@@ -371,8 +371,6 @@ class Admin_Apple_Themes extends Apple_News {
 		unset( $themes[ $index ] );
 		update_option( self::THEME_INDEX_KEY, $themes, false );
 		delete_option( $this->theme_key_from_name( $name ) );
-		//print_r( $this->theme_key_from_name( $name ) );
-		//die();
 	}
 
 	/**
