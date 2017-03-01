@@ -24,6 +24,7 @@ $orientations = array(
 		<?php endforeach; ?>
 	</select>
 </div>
+<p class="description"><?php esc_html_e( 'Note: You must provide the largest size (iPad Pro 12.9 in) in order for your submission to be considered.', 'apple-news' ); ?></p>
 <?php $image_sizes = Admin_Apple_News::get_image_sizes(); ?>
 <?php foreach ( $image_sizes as $key => $data ) : ?>
     <div class="apple-news-coverart-image-container apple-news-coverart-image-<?php echo esc_attr( $data['orientation'] ); ?>">
