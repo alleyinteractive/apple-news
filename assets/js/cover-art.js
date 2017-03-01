@@ -1,6 +1,12 @@
 (function ( $, window, undefined ) {
 	'use strict';
 
+	// Set up orientation change functionality.
+	$( '#apple-news-coverart-orientation' ).on( 'change', function () {
+		$( '.apple-news-coverart-image-container' ).addClass( 'hidden' );
+		$( '.apple-news-coverart-image-' + $( this ).find( ':selected' ).val() ).removeClass( 'hidden' );
+	} ).change();
+
 	// Set up add and remove image functionality.
 	$( '.apple-news-coverart-image-container' ).each( function () {
 		var $this = $( this ),
@@ -41,9 +47,9 @@
 
 				// Get information about the attachment.
 				var attachment = frame.state().get( 'selection' ).first().toJSON(),
-					imgUrl = attachment.url,
-					minX,
-					minY;
+					imgUrl = attachment.url;
+
+				// Set image URL to medium size, if available.
 				if ( attachment.sizes.medium && attachment.sizes.medium.url ) {
 					imgUrl = attachment.sizes.medium.url;
 				}
@@ -53,8 +59,6 @@
 				$imgIdInput.val( '' );
 
 				// Check attachment size against minimum.
-				console.log( parseInt( $imgIdInput.attr( 'data-width' ) ) );
-				console.log( parseInt( $imgIdInput.attr( 'data-height' ) ) );
 				if ( attachment.width < parseInt( $imgIdInput.attr( 'data-width' ) )
 					|| attachment.height < parseInt( $imgIdInput.attr( 'data-height' ) )
 				) {
