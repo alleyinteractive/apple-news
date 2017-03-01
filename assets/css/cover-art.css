@@ -1,9 +1,9 @@
-.apple-news-coverart-image img {
+.apple-news-coverart-image-container img {
 	height: auto;
 	max-width: 75%;
 }
 
-.apple-news-coverart-image .hidden {
+.apple-news-coverart-image-container .hidden {
 	display: none;
 	visibility: hidden;
 }

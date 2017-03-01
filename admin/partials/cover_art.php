@@ -39,8 +39,20 @@ $orientations = array(
 				$remove_hidden = 'hidden';
 			} ?>
         </div>
-        <input name="<?php echo esc_attr( $key ); ?>" class="apple-news-coverart-id" type="hidden" value="<?php echo esc_attr( $image_id ); ?>" />
-        <input type="button" class="button-primary apple-news-coverart-add <?php echo esc_attr( $add_hidden ); ?>" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
-        <input type="button" class="button-primary apple-news-coverart-remove <?php echo esc_attr( $remove_hidden ); ?>" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
+        <input name="<?php echo esc_attr( $key ); ?>"
+               class="apple-news-coverart-id"
+               type="hidden"
+               value="<?php echo esc_attr( $image_id ); ?>"
+               data-height="<?php echo esc_attr( $data['height'] ); ?>"
+               data-width="<?php echo esc_attr( $data['width'] ); ?>"
+        />
+        <input type="button"
+               class="button-primary apple-news-coverart-add <?php echo esc_attr( $add_hidden ); ?>"
+               value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>"
+        />
+        <input type="button"
+               class="button-primary apple-news-coverart-remove <?php echo esc_attr( $remove_hidden ); ?>"
+               value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>"
+        />
     </div>
 <?php endforeach; ?>

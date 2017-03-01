@@ -2,7 +2,7 @@
 	'use strict';
 
 	// Set up add and remove image functionality.
-	$( '.apple-news-coverart-image' ).each( function () {
+	$( '.apple-news-coverart-image-container' ).each( function () {
 		var $this = $( this ),
 			$addImgButton = $this.find( '.apple-news-coverart-add' ),
 			$delImgButton = $this.find( '.apple-news-coverart-remove' ),
@@ -48,30 +48,16 @@
 					imgUrl = attachment.sizes.medium.url;
 				}
 
-				// Get target minimum sizes based on orientation.
-				switch ( $imgIdInput.attr( 'name' ) ) {
-					case 'apple_news_coverart_landscape':
-						minX = apple_news_cover_art.image_sizes.apple_news_ca_landscape.width;
-						minY = apple_news_cover_art.image_sizes.apple_news_ca_landscape.height;
-						break;
-					case 'apple_news_coverart_portrait':
-						minX = apple_news_cover_art.image_sizes.apple_news_ca_portrait.width;
-						minY = apple_news_cover_art.image_sizes.apple_news_ca_portrait.height;
-						break;
-					case 'apple_news_coverart_square':
-						minX = apple_news_cover_art.image_sizes.apple_news_ca_square.width;
-						minY = apple_news_cover_art.image_sizes.apple_news_ca_square.height;
-						break;
-					default:
-						return;
-				}
-
 				// Clear current values.
 				$imgContainer.empty();
 				$imgIdInput.val( '' );
 
 				// Check attachment size against minimum.
-				if ( attachment.width < minX || attachment.height < minY ) {
+				console.log( parseInt( $imgIdInput.attr( 'data-width' ) ) );
+				console.log( parseInt( $imgIdInput.attr( 'data-height' ) ) );
+				if ( attachment.width < parseInt( $imgIdInput.attr( 'data-width' ) )
+					|| attachment.height < parseInt( $imgIdInput.attr( 'data-height' ) )
+				) {
 					$imgContainer.append(
 						'<div class="apple-news-notice apple-news-notice-error"><p>'
 						+ apple_news_cover_art.image_too_small
