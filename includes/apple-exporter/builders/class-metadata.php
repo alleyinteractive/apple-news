@@ -58,9 +58,7 @@ class Metadata extends Builder {
 		$meta['generatorVersion'] = $plugin_data['Version'];
 
 		// Add cover art.
-		$this->_add_cover_art( $meta, 'apple_news_coverart_landscape' );
-		$this->_add_cover_art( $meta, 'apple_news_coverart_portrait' );
-		$this->_add_cover_art( $meta, 'apple_news_coverart_square' );
+		$this->_add_cover_art( $meta );
 
 		// Extract all video elements that include a poster element.
 		if ( preg_match_all( '/<video[^>]+poster="([^"]+)".*?>(.+?)<\/video>/s', $this->content_text(), $matches ) ) {
@@ -87,51 +85,62 @@ class Metadata extends Builder {
 	 * Adds metadata for cover art.
 	 *
 	 * @param array &$meta The metadata array to augment.
-	 * @param string $size The size key to look up in postmeta.
 	 *
 	 * @access private
 	 */
-	private function _add_cover_art( &$meta, $size ) {
+	private function _add_cover_art( &$meta ) {
 
-		// Try to get cover art image ID.
-		$id = get_post_meta( $this->content_id(), $size, true );
-		if ( empty( $id ) ) {
+		// Try to get cover art meta.
+		$ca_meta = get_post_meta( $this->content_id(), 'apple_news_coverart', true );
+
+		// Ensure an orientation was specified.
+		if ( empty( $ca_meta['orientation'] ) ) {
 			return;
 		}
 
-		// Try to get orientation from size.
-		$segments = explode( '_', $size );
-		$orientation = end( $segments );
-		if ( empty( $orientation ) ) {
+		// Ensure the largest size for this orientation has been set.
+		if ( empty( $ca_meta[ 'apple_news_ca_' . $ca_meta['orientation'] . '_12_9' ] ) ) {
 			return;
 		}
 
-		// Get information about the image.
-		$image = wp_get_attachment_metadata( $id );
-		$alt = get_post_meta( $id, '_wp_attachment_image_alt', true );
-		if ( empty( $image['sizes'] ) ) {
-			return;
-		}
+		// Loop through the defined image sizes and check for each.
+		$image_sizes = Admin_Apple_News::get_image_sizes();
+		foreach ( $image_sizes as $key => $data ) {
 
-		// Loop over crops and add each.
-		foreach ( Admin_Apple_News::$image_sizes as $name => $dimensions ) {
-
-			// Determine if the named image size matches this orientation.
-			if ( false === strpos( $name, $orientation ) ) {
+			// Skip any image sizes that aren't related to cover art.
+			if ( 'coverArt' !== $data['type'] ) {
 				continue;
 			}
 
-			// Ensure the specified image dimensions match those of the crop.
-			if ( empty( $image['sizes'][ $name ]['width'] )
-				|| empty( $image['sizes'][ $name ]['height'] )
-				|| $dimensions['width'] !== $image['sizes'][ $name ]['width']
-				|| $dimensions['height'] !== $image['sizes'][ $name ]['height']
+			// Skip any image sizes that don't match the specified orientation.
+			if ( $ca_meta['orientation'] !== $data['orientation'] ) {
+				continue;
+			}
+
+			// Skip any image sizes that aren't saved.
+			if ( empty( $ca_meta[ $key ] ) ) {
+				continue;
+			}
+
+			// Try to get information about the specified image.
+			$image_id = $ca_meta[ $key ];
+			$image = wp_get_attachment_metadata( $image_id );
+			$alt = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
+			if ( empty( $image['sizes'] ) ) {
+				continue;
+			}
+
+			// Skip images that don't meet the minimum size requirements.
+			if ( empty( $image['sizes'][ $key ]['width'] )
+			     || empty( $image['sizes'][ $key ]['height'] )
+			     || $data['width'] !== $image['sizes'][ $key ]['width']
+			     || $data['height'] !== $image['sizes'][ $key ]['height']
 			) {
 				continue;
 			}
 
 			// Bundle source, if necessary.
-			$url = wp_get_attachment_image_url( $id, $name );
+			$url = wp_get_attachment_image_url( $image_id, $key );
 			$url = $this->maybe_bundle_source( $url );
 
 			// Add this crop to the coverArt array.

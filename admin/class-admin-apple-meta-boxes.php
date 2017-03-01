@@ -363,6 +363,11 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$image_sizes = Admin_Apple_News::get_image_sizes();
 		foreach ( $image_sizes as $key => $data ) {
 
+			// Skip any defined image sizes that are not intended for cover art.
+			if ( 'coverArt' !== $data['type'] ) {
+				continue;
+			}
+
 			// Ensure the orientation is a match.
 			if ( $meta_value['orientation'] !== $data['orientation'] ) {
 				continue;
