@@ -1,9 +1,9 @@
 <?php
 $cover_art = get_post_meta( $post->ID, 'apple_news_coverart', true );
 $orientations = array(
-    'landscape' => __( 'Landscape (4:3)', 'apple-news' ),
-    'portrait' => __( 'Portrait (3:4)', 'apple-news' ),
-    'square' => __( 'Square (1:1)', 'apple-news' ),
+	'landscape' => __( 'Landscape (4:3)', 'apple-news' ),
+	'portrait' => __( 'Portrait (3:4)', 'apple-news' ),
+	'square' => __( 'Square (1:1)', 'apple-news' ),
 );
 ?>
 <p class="description">
@@ -30,10 +30,10 @@ $orientations = array(
 	<?php if ( 'coverArt' !== $data['type'] ) {
 		continue;
 	} ?>
-    <div class="apple-news-coverart-image-container apple-news-coverart-image-<?php echo esc_attr( $data['orientation'] ); ?>">
+	<div class="apple-news-coverart-image-container apple-news-coverart-image-<?php echo esc_attr( $data['orientation'] ); ?>">
 		<?php $image_id = ( ! empty( $cover_art[ $key ] ) ) ? absint( $cover_art[ $key ] ) : ''; ?>
-        <h4><?php echo esc_html( $data['label'] ); ?></h4>
-        <div class="apple-news-coverart-image">
+		<h4><?php echo esc_html( $data['label'] ); ?></h4>
+		<div class="apple-news-coverart-image">
 			<?php if ( ! empty( $image_id ) ) {
 				echo wp_get_attachment_image( $image_id, 'medium' );
 				$add_hidden = 'hidden';
@@ -42,21 +42,21 @@ $orientations = array(
 				$add_hidden = '';
 				$remove_hidden = 'hidden';
 			} ?>
-        </div>
-        <input name="<?php echo esc_attr( $key ); ?>"
-               class="apple-news-coverart-id"
-               type="hidden"
-               value="<?php echo esc_attr( $image_id ); ?>"
-               data-height="<?php echo esc_attr( $data['height'] ); ?>"
-               data-width="<?php echo esc_attr( $data['width'] ); ?>"
-        />
-        <input type="button"
-               class="button-primary apple-news-coverart-add <?php echo esc_attr( $add_hidden ); ?>"
-               value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>"
-        />
-        <input type="button"
-               class="button-primary apple-news-coverart-remove <?php echo esc_attr( $remove_hidden ); ?>"
-               value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>"
-        />
-    </div>
+		</div>
+		<input name="<?php echo esc_attr( $key ); ?>"
+			class="apple-news-coverart-id"
+			type="hidden"
+			value="<?php echo esc_attr( $image_id ); ?>"
+			data-height="<?php echo esc_attr( $data['height'] ); ?>"
+			data-width="<?php echo esc_attr( $data['width'] ); ?>"
+		/>
+		<input type="button"
+			class="button-primary apple-news-coverart-add <?php echo esc_attr( $add_hidden ); ?>"
+			value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>"
+		/>
+		<input type="button"
+			class="button-primary apple-news-coverart-remove <?php echo esc_attr( $remove_hidden ); ?>"
+			value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>"
+		/>
+	</div>
 <?php endforeach; ?>

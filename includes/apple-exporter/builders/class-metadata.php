@@ -132,9 +132,9 @@ class Metadata extends Builder {
 
 			// Skip images that don't meet the minimum size requirements.
 			if ( empty( $image['sizes'][ $key ]['width'] )
-			     || empty( $image['sizes'][ $key ]['height'] )
-			     || $data['width'] !== $image['sizes'][ $key ]['width']
-			     || $data['height'] !== $image['sizes'][ $key ]['height']
+				|| empty( $image['sizes'][ $key ]['height'] )
+				|| $data['width'] !== $image['sizes'][ $key ]['width']
+				|| $data['height'] !== $image['sizes'][ $key ]['height']
 			) {
 				continue;
 			}
