@@ -359,6 +359,24 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			'orientation' => sanitize_text_field( $_POST['apple-news-coverart-orientation'] ),
 		);
 
+		// Iterate through image sizes and add each that is set for the orientation.
+		$image_sizes = Admin_Apple_News::get_image_sizes();
+		foreach ( $image_sizes as $key => $data ) {
+
+			// Ensure the orientation is a match.
+			if ( $meta_value['orientation'] !== $data['orientation'] ) {
+				continue;
+			}
+
+			// Determine if there was an image ID provided for this size.
+			if ( empty( $_POST[ $key ] ) ) {
+				continue;
+			}
+
+			// Save this image ID to the cover art postmeta.
+			$meta_value[ $key ] = absint( $_POST[ $key ] );
+		}
+
 		// Save post meta for this key.
 		update_post_meta( $post_id, 'apple_news_coverart', $meta_value );
 	}
