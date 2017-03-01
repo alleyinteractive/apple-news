@@ -1,9 +1,11 @@
 <?php
+$cover_art = get_post_meta( $post->ID, 'apple_news_coverart', true );
 $orientations = array(
-    'landscape' => __( 'Landscape Image', 'apple-news' ),
-    'portrait' => __( 'Portrait Image', 'apple-news' ),
-    'square' => __( 'Square Image', 'apple-news' ),
+    'landscape' => __( 'Landscape (4:3)', 'apple-news' ),
+    'portrait' => __( 'Portrait (3:4)', 'apple-news' ),
+    'square' => __( 'Square (1:1)', 'apple-news' ),
 );
+$orientation = ( ! empty( $cover_art['orientation'] ) ) ? $cover_art['orientation'] : 'landscape';
 ?>
 <p class="description">
 	<?php printf(
@@ -14,7 +16,15 @@ $orientations = array(
 		'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html'
 	); ?>
 </p>
-<?php foreach ( $orientations as $key => $label ) : ?>
+<div>
+	<label for="apple-news-coverart-orientation"><?php esc_html_e( 'Orientation:', 'apple-news' ); ?></label>
+	<select id="apple-news-coverart-orientation" name="apple-news-coverart-orientation">
+		<?php foreach ( $orientations as $key => $label ) : ?>
+			<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $orientation, $key ); ?>><?php echo esc_html( $label ); ?></option>
+		<?php endforeach; ?>
+	</select>
+</div>
+<?php /*
     <div id="apple-news-coverart-<?php echo esc_attr( $key ); ?>" class="apple-news-coverart-image">
 		<?php $image_id = absint( get_post_meta( $post->ID, 'apple_news_coverart_' . $key, true ) ); ?>
         <h4><?php echo esc_html( $label ); ?></h4>
@@ -39,4 +49,4 @@ $orientations = array(
         <input type="button" class="button-primary apple-news-coverart-add <?php echo esc_attr( $add_hidden ); ?>" value="<?php echo esc_attr( __( 'Add image', 'apple-news' ) ); ?>" />
         <input type="button" class="button-primary apple-news-coverart-remove <?php echo esc_attr( $remove_hidden ); ?>" value="<?php echo esc_attr( __( 'Remove image', 'apple-news' ) ); ?>" />
     </div>
-<?php endforeach; ?>
+*/ ?>

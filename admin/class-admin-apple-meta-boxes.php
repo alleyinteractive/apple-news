@@ -163,10 +163,8 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 		update_post_meta( $post_id, 'apple_news_pullquote_position', $pullquote_position );
 
-		// Save each cover art image.
-		self::_save_coverart_meta( $post_id, 'apple_news_coverart_landscape' );
-		self::_save_coverart_meta( $post_id, 'apple_news_coverart_portrait' );
-		self::_save_coverart_meta( $post_id, 'apple_news_coverart_square' );
+		// Save cover art.
+		self::_save_coverart_meta( $post_id );
 	}
 
 	/**
@@ -343,25 +341,25 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	}
 
 	/**
-	 * Saves a cover art image to meta, given a post ID and a field name.
+	 * Saves a cover art image(s) to meta, given a post ID.
 	 *
 	 * @param int $post_id The post ID to update meta for.
-	 * @param string $field_name The field name to use in POST and meta_key.
 	 *
 	 * @access private
 	 */
-	private static function _save_coverart_meta( $post_id, $field_name ) {
+	private static function _save_coverart_meta( $post_id ) {
 
-		// Determine if there is postdata for this key.
-		if ( empty( $_POST[ $field_name ] )
-			|| ! is_numeric( $_POST[ $field_name ] )
-		) {
-			delete_post_meta( $post_id, $field_name );
-
+		// Ensure there is an orientation.
+		if ( empty( $_POST['apple-news-coverart-orientation'] ) ) {
 			return;
 		}
 
+		// Start building cover art meta using the orientation.
+		$meta_value = array(
+			'orientation' => sanitize_text_field( $_POST['apple-news-coverart-orientation'] ),
+		);
+
 		// Save post meta for this key.
-		update_post_meta( $post_id, $field_name, absint( $_POST[ $field_name ] ) );
+		update_post_meta( $post_id, 'apple_news_coverart', $meta_value );
 	}
 }
