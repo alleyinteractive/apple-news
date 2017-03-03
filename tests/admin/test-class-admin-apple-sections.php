@@ -41,8 +41,8 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 					'id' => 'abcdef01-2345-6789-abcd-ef012356789a',
 					'isDefault' => true,
 					'links' => (object) array(
-						'channel' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
-						'self' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
+						'channel' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
+						'self' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
 					),
 					'modifiedAt' => '2017-01-01T00:00:00Z',
 					'name' => 'Main',
@@ -54,8 +54,8 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 					'id' => 'abcdef01-2345-6789-abcd-ef012356789b',
 					'isDefault' => false,
 					'links' => (object) array(
-						'channel' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
-						'self' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
+						'channel' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
+						'self' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
 					),
 					'modifiedAt' => '2017-01-01T00:00:00Z',
 					'name' => 'Secondary Section',
@@ -142,7 +142,7 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 		// Validate automatic section assignment.
 		$this->assertEquals(
 			array(
-				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
+				'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
 			),
 			Admin_Apple_Sections::get_sections_for_post( $post_id )
 		);
@@ -186,14 +186,14 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 			$post_id,
 			'apple_news_sections',
 			array(
-				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
+				'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
 			)
 		);
 
 		// Validate manual section assignment.
 		$this->assertEquals(
 			array(
-				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
+				'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
 			),
 			Admin_Apple_Sections::get_sections_for_post( $post_id )
 		);

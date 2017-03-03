@@ -136,7 +136,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		) );
 
 		// Cache as a transient to bypass the API call
-		$self = 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a';
+		$self = 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a';
 		set_transient(
 			'apple_news_sections',
 			array(
@@ -145,7 +145,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 					'id' => 'abcdef01-2345-6789-abcd-ef012356789a',
 					'isDefault' => true,
 					'links' => (object) array(
-						'channel' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
+						'channel' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
 						'self' => $self,
 					),
 					'modifiedAt' => '2017-01-01T00:00:00Z',
@@ -190,7 +190,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		) );
 
 		// Set it to a fake section
-		$section_id = 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a';
+		$section_id = 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a';
 		update_post_meta( $post_id, 'apple_news_sections', array( $section_id ) );
 
 		// Create a mapping from that section to the test theme

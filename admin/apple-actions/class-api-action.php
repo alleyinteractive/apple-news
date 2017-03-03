@@ -18,7 +18,7 @@ abstract class API_Action extends Action {
 	/**
 	 * The API endpoint for all Apple News requests.
 	 */
-	const API_ENDPOINT = 'https://u48r14.digitalhub.com';
+	const API_ENDPOINT = 'https://news-api.apple.com';
 
 	/**
 	 * Instance of the API class.
