@@ -83,5 +83,13 @@ class Video extends Component {
 			'json',
 			$values
 		);
+		
+		if ( preg_match( '/poster=\"([^\"]+)\"/si', $text, $poster) ) {
+			$posterUrl = $poster[1];
+			$filename = basename( $posterUrl );
+			$this->bundle_source( $filename, $posterUrl );
+			$this->json['stillURL'] = 'bundle://' . $filename; 
+		}
+		
 	}
 }
