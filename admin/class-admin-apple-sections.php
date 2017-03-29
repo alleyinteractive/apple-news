@@ -90,7 +90,10 @@ class Admin_Apple_Sections extends Apple_News {
 		$section_api = new Section( $admin_settings->fetch_settings() );
 		$sections = $section_api->get_sections();
 		if ( empty( $sections ) || ! is_array( $sections ) ) {
-			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
+			$sections = array();
+			Admin_Apple_News::show_error(
+				__( 'Unable to fetch a list of sections.', 'apple-news' )
+			);
 		}
 
 		return $sections;

@@ -192,6 +192,19 @@ class Admin_Apple_News extends Apple_News {
 	}
 
 	/**
+	 * A function to display an error message.
+	 *
+	 * @param string $message The message to display.
+	 *
+	 * @access public
+	 */
+	public static function show_error( $message ) {
+		echo '<div class="apple-news-notice apple-news-notice-error"><p>'
+			. esc_html( $message )
+			. '</p></div>';
+	}
+
+	/**
 	 * Actions to be run on the `init` action hook.
 	 *
 	 * @access public
