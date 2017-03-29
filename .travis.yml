@@ -40,8 +40,15 @@ script:
   - find . -path ./vendor -prune -o -type "f" -iname "*.php" | xargs -L "1" php -l
   - |
     if [[ ! -z "$WP_VERSION" ]] ; then
-      phpunit
-      phpunit -c multisite.xml
+
+      # Since phpunit 6 doesn't currently behave...
+      phpunit_path="/tmp/phpunit-5.7"
+      wget https://phar.phpunit.de/phpunit-5.7.phar -O $phpunit_path
+      chmod +x $phpunit_path
+      eval $phpunit_path --version
+
+      eval $phpunit_path
+      eval $phpunit_path -c multisite.xml
     fi
   - |
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
