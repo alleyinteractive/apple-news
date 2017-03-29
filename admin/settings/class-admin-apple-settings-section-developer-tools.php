@@ -26,13 +26,14 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 	/**
 	 * Constructor.
 	 *
-	 * @param string $page
+	 * @param string $page The name of the submenu page that this section is part of.
 	 */
 	function __construct( $page ) {
-		// Set the name
+
+		// Set the name.
 		$this->name = __( 'Developer Tools', 'apple-news' );
 
-		// Add the settings
+		// Add the settings.
 		$this->settings = array(
 			'apple_news_enable_debugging' => array(
 				'label' => __( 'Enable Debugging', 'apple-news' ),
@@ -45,13 +46,13 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 			),
 		);
 
-		// Add the groups
+		// Add the groups.
 		$this->groups = array(
 			'debugging_settings' => array(
 				'label' => __( 'Debugging Settings', 'apple-news' ),
 				'settings' => array(
 					'apple_news_enable_debugging',
-					'apple_news_admin_email'
+					'apple_news_admin_email',
 				),
 			),
 		);
@@ -66,6 +67,9 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 	 * @access public
 	 */
 	public function get_section_info() {
-		return __( 'If debugging is enabled, emails will be sent to an administrator for every publish, update or delete action with a detailed API response.', 'apple-news' );
+		return __(
+			'If debugging is enabled, emails will be sent to an administrator for every publish, update or delete action with a detailed API response.',
+			'apple-news'
+		);
 	}
 }
