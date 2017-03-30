@@ -72,7 +72,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 	public function testCreateWithSections() {
 		// Create post
 		$post_id = $this->factory->post->create();
-		update_post_meta( $post_id, 'apple_news_sections', array( 'http://news-api.apple.com/sections/123' ) );
+		update_post_meta( $post_id, 'apple_news_sections', array( 'https://news-api.apple.com/sections/123' ) );
 
 		// Prophesize the action
 		$response = $this->dummy_response();
@@ -85,7 +85,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 				'data' => array(
 					'links' => array(
 						'sections' => array(
-							'http://news-api.apple.com/sections/123',
+							'https://news-api.apple.com/sections/123',
 						),
 					),
 				)

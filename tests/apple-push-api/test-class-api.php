@@ -15,7 +15,7 @@ class API_Test extends WP_UnitTestCase {
 
 		$key        = '12345';
 		$secret     = '12345';
-		$endpoint   = 'https://u48r14.digitalhub.com';
+		$endpoint   = 'https://news-api.apple.com';
 		$credentials = new Credentials( $key, $secret );
 	}
 
