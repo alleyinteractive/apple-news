@@ -46,7 +46,6 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 == Changelog ==
 
 = 1.2.5 =
-
 * Bugfix: Fixed version of PHPUnit at 5.7.* for PHP 7.* and 4.8.* for PHP 5.* in the Travis configuration to fix a bug with incompatibility with PHPUnit 6
 * Bugfix: Set the base URL for the Apple News API to https://news-api.apple.com everywhere for better adherence to official guidance in the API docs (props to ffffelix for providing the initial PR)
 * Bugfix: Made the administrator email on the settings screen no longer required if debug mode is set to "no"

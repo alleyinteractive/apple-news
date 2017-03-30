@@ -1,4 +1,4 @@
-#Publish to Apple News
+# Publish to Apple News
 
 The Publish to Apple News plugin enables your WordPress blog content to be published to your Apple News channel.
 
@@ -14,6 +14,6 @@ To enable content from your WordPress blog to be published to your Apple News ch
 
 Please see the [Apple Developer](https://developer.apple.com/) and [Apple News Publisher documentation](https://developer.apple.com/news-publisher/) and terms on Apple's website for complete information.
 
-#Wiki
+# Wiki
 
 Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for detailed [installation instructions](https://github.com/alleyinteractive/apple-news/wiki/Installation) as well as [configuration](https://github.com/alleyinteractive/apple-news/wiki/Configuration) and [usage instructions](https://github.com/alleyinteractive/apple-news/wiki/Usage), [troubleshooting information](https://github.com/alleyinteractive/apple-news/wiki/Usage#troubleshooting) and [details about contributing](https://github.com/alleyinteractive/apple-news/wiki/Contributing).
