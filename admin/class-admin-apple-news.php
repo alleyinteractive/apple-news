@@ -196,6 +196,7 @@ class Admin_Apple_News extends Apple_News {
 	 *
 	 * @param string $message The message to display.
 	 *
+	 * @since 1.2.5
 	 * @access public
 	 */
 	public static function show_error( $message ) {
