@@ -26,6 +26,13 @@ matrix:
   fast_finish: true
 
 before_script:
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - |
+      if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
+        composer global require "phpunit/phpunit=5.7.*"
+      else
+        composer global require "phpunit/phpunit=4.8.*"
+      fi
   - composer install
   - |
     if [[ ! -z "$WP_VERSION" ]] ; then
@@ -40,15 +47,8 @@ script:
   - find . -path ./vendor -prune -o -type "f" -iname "*.php" | xargs -L "1" php -l
   - |
     if [[ ! -z "$WP_VERSION" ]] ; then
-
-      # Since phpunit 6 doesn't currently behave...
-      phpunit_path="/tmp/phpunit-5.7"
-      wget https://phar.phpunit.de/phpunit-5.7.phar -O $phpunit_path
-      chmod +x $phpunit_path
-      eval $phpunit_path --version
-
-      eval $phpunit_path
-      eval $phpunit_path -c multisite.xml
+      phpunit
+      phpunit -c multisite.xml
     fi
   - |
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
