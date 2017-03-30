@@ -26,6 +26,13 @@ matrix:
   fast_finish: true
 
 before_script:
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - |
+      if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
+        composer global require "phpunit/phpunit=5.7.*"
+      else
+        composer global require "phpunit/phpunit=4.8.*"
+      fi
   - composer install
   - |
     if [[ ! -z "$WP_VERSION" ]] ; then
