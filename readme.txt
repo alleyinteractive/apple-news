@@ -3,7 +3,7 @@ Contributors: potatomaster, kevinfodness, alleyinteractive, beezwaxbuzz, gosukiw
 Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 4.0
-Tested up to: 4.7
+Tested up to: 4.7.3
 Stable tag: 1.2.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
