@@ -252,7 +252,7 @@ class Admin_Apple_News extends Apple_News {
 					$state = $e->getMessage();
 				}
 
-				$cache_expiration = ( 'LIVE' == $state || 'TAKEN_DOWN' == $state ) ? 3600 : 60;
+				$cache_expiration = ( 'LIVE' === $state || 'TAKEN_DOWN' === $state ) ? 3600 : 60;
 				set_transient( $key, $state, apply_filters( 'apple_news_post_status_cache_expiration', $cache_expiration, $state ) );
 		}
 

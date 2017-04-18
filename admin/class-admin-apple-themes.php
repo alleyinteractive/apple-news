@@ -611,7 +611,7 @@ class Admin_Apple_Themes extends Apple_News {
 		// Index the theme and check if it changed names
 		$this->index_theme( $name );
 		$previous_name = ( isset( $_POST['apple_news_theme_name_previous'] ) ) ? sanitize_text_field( $_POST['apple_news_theme_name_previous'] ) : '';
-		if ( $name != $previous_name && ! empty( $previous_name ) ) {
+		if ( $name !== $previous_name && ! empty( $previous_name ) ) {
 			$this->unindex_theme( $previous_name );
 		}
 

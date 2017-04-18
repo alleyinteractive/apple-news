@@ -122,7 +122,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		$action2	= isset( $_GET['action2'] ) ? sanitize_text_field( $_GET['action2'] ) : null;
 
 		// Allow for bulk actions from top or bottom
-		if ( ( empty( $action ) || -1 == $action ) && ! empty( $action2 ) ) {
+		if ( ( empty( $action ) || '-1' === $action ) && ! empty( $action2 ) ) {
 			$action = $action2;
 		}
 
@@ -267,7 +267,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access public
 	 */
 	public function setup_assets( $hook ) {
-		if ( 'toplevel_page_apple_news_index' != $hook ) {
+		if ( 'toplevel_page_apple_news_index' !== $hook ) {
 			return;
 		}
 
@@ -343,7 +343,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 */
 	private function push_action( $id ) {
 		// Ensure the post is published
-		if ( 'publish' != get_post_status( $id ) ) {
+		if ( 'publish' !== get_post_status( $id ) ) {
 			$this->notice_error( sprintf(
 				__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
 				$id

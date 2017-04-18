@@ -33,7 +33,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$this->settings = $settings;
 
 		// Register hooks if enabled
-		if ( 'yes' == $settings->get( 'show_metabox' ) ) {
+		if ( 'yes' === $settings->get( 'show_metabox' ) ) {
 			// Handle a publish action and saving fields
 			add_action( 'save_post', array( $this, 'do_publish' ), 10, 2 );
 
@@ -77,10 +77,10 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		self::save_post_meta( $post_id );
 
 		// If this is set to autosync or no action is set, we're done here
-		if ( 'yes' == $this->settings->get( 'api_autosync' )
-			|| 'publish' != $post->post_status
+		if ( 'yes' === $this->settings->get( 'api_autosync' )
+			|| 'publish' !== $post->post_status
 			|| empty( $_POST['apple_news_publish_action'] )
-			|| $this->publish_action != $_POST['apple_news_publish_action'] ) {
+			|| $this->publish_action !== $_POST['apple_news_publish_action'] ) {
 			return;
 		}
 
@@ -282,23 +282,22 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	}
 
 	/**
-	 * Determine if a section is checked
+	 * Determine if a section is checked.
 	 *
-	 * @param array $sections
-	 * @param int $section_id
-	 * @param int $is_default
+	 * @param array $sections The list of sections applied to a particular post.
+	 * @param int $section_id The ID of the section to check.
+	 * @param bool $is_default Whether this section is the default section.
+	 *
 	 * @access public
+	 * @return bool True if the section should be checked, false otherwise.
 	 */
 	public static function section_is_checked( $sections, $section_id, $is_default ) {
 		// If no sections exist, return true if this is the default.
 		// If sections is an empty array, this is intentional though and nothing should be checked.
 		// If sections are provided, then only use those for matching.
-		if ( ( empty( $sections ) && ! is_array( $sections ) && 1 == $is_default )
-			|| ( ! empty( $sections ) && is_array( $sections ) && in_array( $section_id, $sections, true ) ) ) {
-			return true;
-		} else {
-			return false;
-		}
+		return ( ( empty( $sections ) && ! is_array( $sections ) && $is_default )
+			|| ( ! empty( $sections ) && is_array( $sections ) && in_array( $section_id, $sections, true ) )
+		);
 	}
 
 	/**

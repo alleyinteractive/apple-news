@@ -18,7 +18,7 @@ class Tweet extends Component {
 	 */
 	public static function node_matches( $node ) {
 		// Check if the body of a node is solely a tweet URL
-		$is_twitter_url = $node->nodeName == 'p' && preg_match(
+		$is_twitter_url = $node->nodeName === 'p' && preg_match(
 			'#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i',
 			trim( $node->nodeValue ) );
 

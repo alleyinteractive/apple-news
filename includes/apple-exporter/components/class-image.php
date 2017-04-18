@@ -20,7 +20,7 @@ class Image extends Component {
 	public static function node_matches( $node ) {
 		// Is this an image node?
 		if (
-		 	( 'img' == $node->nodeName || 'figure' == $node->nodeName )
+		 	( 'img' === $node->nodeName || 'figure' === $node->nodeName )
 			&& self::remote_file_exists( $node )
 		) {
 			return $node;
@@ -160,7 +160,7 @@ class Image extends Component {
 		// Full width images have top margin
 		// We can't use the standard layout registration due to grouping components
 		// with images so instead, send it through as a value.
-		if ( Component::ANCHOR_NONE == $this->get_anchor_position() ) {
+		if ( Component::ANCHOR_NONE === $this->get_anchor_position() ) {
 			$values = $this->register_non_anchor_layout( $values );
 		} else {
 			$values = $this->register_anchor_layout( $values );
@@ -224,7 +224,7 @@ class Image extends Component {
 	 */
 	private function find_caption_alignment() {
 		$text_alignment = null;
-		if ( Component::ANCHOR_NONE == $this->get_anchor_position() ) {
+		if ( Component::ANCHOR_NONE === $this->get_anchor_position() ) {
 			return 'center';
 		}
 
@@ -232,7 +232,7 @@ class Image extends Component {
 			case Component::ANCHOR_LEFT:
 				return 'left';
 			case Component::ANCHOR_AUTO:
-				if ( 'left' == $this->get_setting( 'body_orientation' ) ) {
+				if ( 'left' === $this->get_setting( 'body_orientation' ) ) {
 					return 'right';
 				}
 		}

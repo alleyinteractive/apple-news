@@ -31,7 +31,7 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 
 		// Create the meta box class and simulate a save
 		$meta_box = new Admin_Apple_Meta_Boxes( $this->settings );
-		if ( 'yes' == $this->settings->get( 'show_metabox' ) ) {
+		if ( 'yes' === $this->settings->get( 'show_metabox' ) ) {
 			$meta_box->do_publish( $post_id, get_post( $post_id ) );
 		}
 
@@ -65,7 +65,7 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 
 		// Create the meta box class and simulate a save
 		$meta_box = new Admin_Apple_Meta_Boxes( $this->settings );
-		if ( 'yes' == $this->settings->get( 'show_metabox' ) ) {
+		if ( 'yes' === $this->settings->get( 'show_metabox' ) ) {
 			$meta_box->do_publish( $post_id, get_post( $post_id ) );
 		}
 

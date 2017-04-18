@@ -92,7 +92,7 @@ class Component_Layouts extends Builder {
 			// The alignment position is the opposite of the body_orientation
 			// setting. In the case of centered body orientation, use left alignment.
 			// This behaviour was chosen by design.
-			if ( 'left' == $this->get_setting( 'body_orientation' ) ) {
+			if ( 'left' === $this->get_setting( 'body_orientation' ) ) {
 				$position = 'right';
 			} else {
 				$position = 'left';

@@ -126,7 +126,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			wp_die();
 		}
 
-		if ( 'publish' != $post->post_status ) {
+		if ( 'publish' !== $post->post_status ) {
 			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => sprintf(
@@ -166,7 +166,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
-		if ( 'admin_page_apple_news_bulk_export' != $hook ) {
+		if ( 'admin_page_apple_news_bulk_export' !== $hook ) {
 			return;
 		}
 

@@ -573,41 +573,41 @@ class Admin_Apple_Settings_Section extends Apple_News {
 				$field .= ">" . esc_html( $option ) . "</option>";
 			}
 			$field .= '</select>';
-		} else if ( 'font' == $type ) {
+		} elseif ( 'font' === $type ) {
 			$field = '<select class="select2 font" id="%s" name="%s">';
 			foreach ( self::$fonts as $option ) {
 				$field .= "<option value='" . esc_attr( $option ) . "'";
-				if ( $option == $value ) {
+				if ( $option === $value ) {
 					$field .= ' selected ';
 				}
 				$field .= ">" . esc_html( $option ) . "</option>";
 			}
 			$field .= '</select>';
-		} else if ( 'boolean' == $type ) {
+		} elseif ( 'boolean' === $type ) {
 			$field = '<select name="%s">';
 
 			$field .= '<option value="yes"';
-			if ( 'yes' == $value ) {
+			if ( 'yes' === $value ) {
 				$field .= ' selected ';
 			}
 			$field .= '>Yes</option>';
 
 			$field .= '<option value="no"';
-			if ( 'yes' != $value ) {
+			if ( 'yes' !== $value ) {
 				$field .= ' selected ';
 			}
 			$field .= '>No</option>';
 
 			$field .= '</select>';
-		} else if ( 'integer' == $type ) {
+		} elseif ( 'integer' === $type ) {
 			$field = '<input type="number" id="%s" name="%s" value="%s" size="%s" %s>';
-		} else if ( 'float' == $type ) {
+		} elseif ( 'float' === $type ) {
 			$field = '<input class="input-float" placeholder="' . esc_attr( $default_value ) . '" type="text" step="any" id="%s" name="%s" value="%s" size="%s">';
-		} else if ( 'color' == $type ) {
+		} elseif ( 'color' === $type ) {
 			$field = '<input type="text" id="%s" name="%s" value="%s" class="apple-news-color-picker" %s>';
-		} else if ( 'password' == $type ) {
+		} elseif ( 'password' === $type ) {
 			$field = '<input type="password" id="%s" name="%s" value="%s" size="%s" %s>';
-		} else if ( 'hidden' == $type ) {
+		} elseif ( 'hidden' === $type ) {
 			$field = '<input type="hidden" id="%s" name="%s" value="%s">';
 		}  else {
 			// If nothing else matches, it's a string.

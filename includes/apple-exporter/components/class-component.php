@@ -507,7 +507,7 @@ abstract class Component {
 		$col_span  = $this->get_setting( 'layout_columns' );
 
 		// If the body is centered, don't span the full width, but the same width of the body.
-		if ( 'center' == $this->get_setting( 'body_orientation' ) ) {
+		if ( 'center' === $this->get_setting( 'body_orientation' ) ) {
 			$col_start = floor( ( $this->get_setting( 'layout_columns' ) - $this->get_setting( 'body_column_span' ) ) / 2 );
 			$col_span  = $this->get_setting( 'body_column_span' );
 		}
@@ -626,7 +626,7 @@ abstract class Component {
 				$result = wp_safe_remote_get( $path );
 			}
 
-			if ( is_wp_error( $result ) || empty( $result['response']['code'] ) || 404 == $result['response']['code'] ) {
+			if ( is_wp_error( $result ) || empty( $result['response']['code'] ) || 404 === $result['response']['code'] ) {
 				return false;
 			} else {
 				return true;
