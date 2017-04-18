@@ -614,33 +614,70 @@ abstract class Component {
 	 * @access protected
 	 */
 	protected static function remote_file_exists( $node ) {
+
+		// Try to get a URL from the src attribute of the HTML.
 		$html = $node->ownerDocument->saveXML( $node );
-		preg_match( '/src="([^"]*?)"/im', $html, $matches );
-		$path = $matches[1];
-
-		// Is it a URL? Check the headers in case of 404
-		if ( false !== filter_var( $path, FILTER_VALIDATE_URL ) ) {
-			if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
-				$result = vip_safe_wp_remote_get( $path );
-			} else {
-				$result = wp_safe_remote_get( $path );
-			}
-
-			if ( is_wp_error( $result ) || empty( $result['response']['code'] ) || 404 === $result['response']['code'] ) {
-				return false;
-			} else {
-				return true;
-			}
+		$path = self::url_from_src( $html );
+		if ( empty( $path ) ) {
+			return false;
 		}
 
-		// This could be a local file path.
-		// Check that, except on WordPress VIP where this is not possible.
-		if ( ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV ) {
-			return file_exists( $path );
+		// Fork for method of retrieval if running on VIP.
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+			$result = vip_safe_wp_remote_get( $path );
+		} else {
+			$result = wp_safe_remote_get( $path );
 		}
 
-		// Nothing was found or no further validation is possible.
-		return false;
+		// Check the headers in case of an error.
+		return ( ! is_wp_error( $result )
+			&& ! empty( $result['response']['code'] )
+			&& $result['response']['code'] < 400
+		);
 	}
 
+	/**
+	 * Returns a full URL from the first `src` parameter in the provided HTML that
+	 * has content.
+	 *
+	 * @param string $html The HTML to examine for `src` parameters.
+	 *
+	 * @return string A URL on success, or a blank string on failure.
+	 */
+	protected static function url_from_src( $html ) {
+
+		// Try to find src values in the provided HTML.
+		if ( ! preg_match_all( '/src=[\'"]([^\'"]+)[\'"]/im', $html, $matches ) ) {
+			return '';
+		}
+
+		// Loop through matches, returning the first valid URL found.
+		foreach ( $matches[1] as $url ) {
+
+			// If this is a root-relative path, make absolute.
+			if ( 0 === strpos( $url, '/' ) ) {
+				$url = site_url( $url );
+			}
+
+			// Ensure the path begins with http.
+			if ( 0 !== strpos( $url, 'http' ) ) {
+				continue;
+			}
+
+			// Escape the URL and ensure it is valid.
+			$url = esc_url_raw( $url );
+			if ( empty( $url ) ) {
+				continue;
+			}
+
+			// Ensure the URL passes filter_var checks.
+			if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+				continue;
+			}
+
+			return $url;
+		}
+
+		return '';
+	}
 }

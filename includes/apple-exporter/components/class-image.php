@@ -20,7 +20,7 @@ class Image extends Component {
 	public static function node_matches( $node ) {
 		// Is this an image node?
 		if (
-		 	( 'img' === $node->nodeName || 'figure' === $node->nodeName )
+		 	( 'img' === (string) $node->nodeName || 'figure' === (string) $node->nodeName )
 			&& self::remote_file_exists( $node )
 		) {
 			return $node;
@@ -89,7 +89,7 @@ class Image extends Component {
 				'margin' => array(
 					'bottom' => 25,
 					'top' => 25,
-				)
+				),
 			)
 		);
 
@@ -128,19 +128,8 @@ class Image extends Component {
 	 */
 	protected function build( $text ) {
 
-		// Negotiate source URL.
-		preg_match( '/src="([^"]*?)"/im', $text, $matches );
-		$url = ( ! empty( $matches[1] ) ) ? $matches[1] : '';
-
-		// Convert root-relative paths to absolute paths.
-		if ( 0 === strpos( $url, '/' ) ) {
-			$url = site_url( $url );
-		}
-
-		// If the URL consists solely of a fragment, remove it.
-		if ( 0 === strpos( $url, '#' ) ) {
-			$url = '';
-		}
+		// Extract the URL from the text.
+		$url = self::url_from_src( $text );
 
 		/**
 		 * Allows for an image src value to be filtered before being applied.
@@ -151,7 +140,6 @@ class Image extends Component {
 		$url = esc_url_raw( apply_filters( 'apple_news_build_image_src', $url, $text ) );
 
 		// If we don't have a valid URL at this point, bail.
-		$url = esc_url_raw( $url );
 		if ( empty( $url ) ) {
 			return;
 		}
