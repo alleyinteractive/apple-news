@@ -564,7 +564,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 				$store_value = $use_name_as_value ? $option : $key;
 				$field .= "<option value='" . esc_attr( $store_value ) . "' ";
 				if ( $this->is_multiple( $name ) ) {
-					if ( in_array( $store_value, $value ) ) {
+					if ( in_array( $store_value, $value, true ) ) {
 						$field .= 'selected="selected"';
 					}
 				} else {

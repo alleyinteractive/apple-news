@@ -55,10 +55,10 @@ class Admin_Apple_Preview extends Apple_News {
 			$theme_settings = $themes->get_theme( $theme );
 			if ( empty( $theme_settings ) || ! is_array( $theme_settings ) ) {
 				?>
-				<p class="error-message"><?php echo sprintf(
-					__( 'The theme %s does not exist', 'apple-news' ),
-					$theme
-				) ?></p>
+				<p class="error-message"><?php printf(
+					esc_html__( 'The theme %s does not exist', 'apple-news' ),
+					esc_html( $theme )
+				); ?></p>
 				<?php
 				return;
 			}

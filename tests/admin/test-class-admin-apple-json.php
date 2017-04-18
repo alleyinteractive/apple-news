@@ -37,7 +37,7 @@ JSON;
 		$admin_json->action_router();
 
 		$stored_json_specs = get_option( 'apple_news_json_advertisement' );
-		$stored_json = json_encode( $stored_json_specs['apple_news_json_json'], JSON_PRETTY_PRINT );
+		$stored_json = wp_json_encode( $stored_json_specs['apple_news_json_json'], JSON_PRETTY_PRINT );
 		$this->assertEquals( $stored_json, $json );
 	}
 
@@ -78,7 +78,7 @@ JSON;
 		$admin_json->action_router();
 
 		$stored_json_specs = get_option( 'apple_news_json_audio' );
-		$stored_json = stripslashes( json_encode( $stored_json_specs['apple_news_json_json'], JSON_PRETTY_PRINT ) );
+		$stored_json = stripslashes( wp_json_encode( $stored_json_specs['apple_news_json_json'], JSON_PRETTY_PRINT ) );
 		$this->assertEquals( $stored_json, $json );
 	}
 
@@ -102,7 +102,7 @@ JSON;
 		$admin_json->action_router();
 
 		$stored_json_specs = get_option( 'apple_news_json_audio' );
-		$stored_json = json_encode( $stored_json_specs['apple_news_json_json'], JSON_PRETTY_PRINT );
+		$stored_json = wp_json_encode( $stored_json_specs['apple_news_json_json'], JSON_PRETTY_PRINT );
 
 		// Pass the mock workspace as a dependency
 		$workspace = $this->prophet->prophesize( '\Exporter\Workspace' );

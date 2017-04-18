@@ -106,7 +106,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 
 		// Check capabilities
 		if ( ! current_user_can( apply_filters( 'apple_news_publish_capability', 'manage_options' ) ) ) {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => __( 'You do not have permission to publish to Apple News', 'apple-news' ),
 			) );
@@ -119,7 +119,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Ensure the post exists and that it's published
 		$post = get_post( $id );
 		if ( empty( $post ) ) {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => __( 'This post no longer exists.', 'apple-news' ),
 			) );
@@ -127,7 +127,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		}
 
 		if ( 'publish' != $post->post_status ) {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => sprintf(
 					__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
@@ -145,12 +145,12 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		}
 
 		if ( $errors ) {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => $errors,
 			) );
 		} else {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => true,
 			) );
 		}

@@ -151,7 +151,7 @@ class Admin_Apple_Sections extends Apple_News {
 		// Try to get configured taxonomy.
 		$taxonomy = self::get_mapping_taxonomy();
 		if ( empty( $taxonomy ) || is_wp_error( $taxonomy ) ) {
-			wp_die( __( 'Unable to get a valid mapping taxonomy.', 'apple-news' ) );
+			wp_die( esc_html__( 'Unable to get a valid mapping taxonomy.', 'apple-news' ) );
 		}
 
 		// Try to get terms for the post.
@@ -257,14 +257,14 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Determine if we have anything to search for.
 		if ( empty( $_GET['term'] ) ) {
-			echo json_encode( array() );
+			echo wp_json_encode( array() );
 			exit;
 		}
 
 		// Try to get the taxonomy in use.
 		$taxonomy = self::get_mapping_taxonomy();
 		if ( empty( $taxonomy->name ) ) {
-			echo json_encode( array() );
+			echo wp_json_encode( array() );
 			exit;
 		}
 
@@ -281,12 +281,12 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// See if we got anything.
 		if ( empty( $terms ) || is_wp_error( $terms ) ) {
-			echo json_encode( array() );
+			echo wp_json_encode( array() );
 			exit;
 		}
 
 		// Encode results and bail.
-		echo json_encode( $terms );
+		echo wp_json_encode( $terms );
 		exit();
 	}
 
@@ -315,20 +315,20 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Don't allow access to this page if the user does not have permission.
 		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
-			wp_die( __( 'You do not have permissions to access this page.', 'apple-news' ) );
+			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
 		// Negotiate the taxonomy name.
 		$taxonomy = self::get_mapping_taxonomy();
 		if ( empty( $taxonomy->label ) ) {
-			wp_die( __( 'You specified an invalid mapping taxonomy.', 'apple-news' ) );
+			wp_die( esc_html__( 'You specified an invalid mapping taxonomy.', 'apple-news' ) );
 		}
 
 		// Try to get a list of sections.
 		$section_api = new Section( $this->settings );
 		$sections_raw = $section_api->get_sections();
 		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
-			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
+			wp_die( esc_html__( 'Unable to fetch a list of sections.', 'apple-news' ) );
 		}
 
 		// Convert sections returned from the API into a key/value pair of id/name.

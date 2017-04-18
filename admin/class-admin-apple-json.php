@@ -111,7 +111,7 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	public function page_json_render() {
 		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
-			wp_die( __( 'You do not have permissions to access this page.', 'apple-news' ) );
+			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
 		// Get components for the dropdown

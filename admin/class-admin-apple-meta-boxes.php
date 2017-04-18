@@ -140,7 +140,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		if ( ! empty( $_POST['apple_news_maturity_rating'] ) ) {
 			$maturity_rating = sanitize_text_field( $_POST['apple_news_maturity_rating'] );
-			if ( ! in_array( $maturity_rating, self::$maturity_ratings ) ) {
+			if ( ! in_array( $maturity_rating, self::$maturity_ratings, true ) ) {
 				$maturity_rating = '';
 			}
 		}
@@ -294,7 +294,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// If sections is an empty array, this is intentional though and nothing should be checked.
 		// If sections are provided, then only use those for matching.
 		if ( ( empty( $sections ) && ! is_array( $sections ) && 1 == $is_default )
-			|| ( ! empty( $sections ) && is_array( $sections ) && in_array( $section_id, $sections ) ) ) {
+			|| ( ! empty( $sections ) && is_array( $sections ) && in_array( $section_id, $sections, true ) ) ) {
 			return true;
 		} else {
 			return false;

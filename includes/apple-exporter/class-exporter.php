@@ -221,7 +221,7 @@ class Exporter {
 
 		// Clean up the data array and convert to JSON format.
 		$this->prepare_for_encoding( $json );
-		$json = json_encode( $json );
+		$json = wp_json_encode( $json );
 
 		// Check the JSON for unicode errors.
 		// For now, we'll assume that multiple unicode characters in sequence

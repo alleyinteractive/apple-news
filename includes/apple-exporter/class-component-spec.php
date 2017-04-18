@@ -127,7 +127,7 @@ class Component_Spec {
 		$this->find_tokens( $this->spec, $default_tokens );
 
 		foreach ( $new_tokens as $token ) {
-			if ( ! in_array( $token, $default_tokens ) ) {
+			if ( ! in_array( $token, $default_tokens, true ) ) {
 				return false;
 			}
 		}
@@ -252,7 +252,7 @@ class Component_Spec {
 	 * @access public
 	 */
 	public function format_json( $spec ) {
-		return json_encode( $spec, JSON_PRETTY_PRINT );
+		return wp_json_encode( $spec, JSON_PRETTY_PRINT );
 	}
 
 	/**

@@ -33,14 +33,16 @@ class Admin_Apple_Post_Sync {
 			$this->settings = $admin_settings->fetch_settings();
 		}
 
-		// Register update hook if needed
-		if ( 'yes' == $settings->get( 'api_autosync' ) || 'yes' == $settings->get( 'api_autosync_update' ) ) {
-			// This needs to happen after meta boxes save
+		// Register update hook if needed.
+		if ( 'yes' === $settings->get( 'api_autosync' )
+			|| 'yes' === $settings->get( 'api_autosync_update' )
+		) {
+			// This needs to happen after meta boxes save.
 			add_action( 'save_post', array( $this, 'do_publish' ), 99, 2 );
 		}
 
-		// Register delete hook if needed
-		if ( 'yes' == $settings->get( 'api_autosync_delete' ) ) {
+		// Register delete hook if needed.
+		if ( 'yes' === $settings->get( 'api_autosync_delete' ) ) {
 			add_action( 'before_delete_post', array( $this, 'do_delete' ) );
 		}
 	}
@@ -54,8 +56,8 @@ class Admin_Apple_Post_Sync {
 	 * @access public
 	 */
 	public function do_publish( $id, $post ) {
-		if ( 'publish' != $post->post_status
-			|| ! in_array( $post->post_type, $this->settings->get( 'post_types' ) )
+		if ( 'publish' !== $post->post_status
+			|| ! in_array( $post->post_type, $this->settings->post_types, true )
 			|| ( ! current_user_can( apply_filters( 'apple_news_publish_capability', 'manage_options' ) )
 				&& ! ( defined( 'DOING_CRON' ) && DOING_CRON ) ) ) {
 			return;
@@ -69,8 +71,8 @@ class Admin_Apple_Post_Sync {
 
 		// Proceed based on the current settings for auto publish and update.
 		$updated = get_post_meta( $id, 'apple_news_api_id', true );
-		if ( $updated && 'yes' != $this->settings->get( 'api_autosync_update' )
-			|| ! $updated && 'yes' != $this->settings->get( 'api_autosync' ) ) {
+		if ( $updated && 'yes' !== $this->settings->api_autosync_update
+			|| ! $updated && 'yes' !== $this->settings->api_autosync ) {
 			return;
 		}
 

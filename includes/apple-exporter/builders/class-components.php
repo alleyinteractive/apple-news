@@ -81,7 +81,7 @@ class Components extends Builder {
 		$pullquote_position = $this->content_setting( 'pullquote_position' );
 		$valid_positions = array( 'top', 'middle', 'bottom' );
 		if ( empty( $pullquote )
-		     || ! in_array( $pullquote_position, $valid_positions )
+		     || ! in_array( $pullquote_position, $valid_positions, true )
 		) {
 			return;
 		}
@@ -189,7 +189,7 @@ class Components extends Builder {
 
 			// If the cover is set to be displayed, remove it from the flow.
 			$order = $this->get_setting( 'meta_component_order' );
-			if ( is_array( $order ) && in_array( 'cover', $order ) ) {
+			if ( is_array( $order ) && in_array( 'cover', $order, true ) ) {
 				unset( $components[ $i ] );
 				$components = array_values( $components );
 			}

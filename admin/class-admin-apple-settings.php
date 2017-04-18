@@ -163,7 +163,7 @@ class Admin_Apple_Settings extends Apple_News {
 	 */
 	public function page_options_render() {
 		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
-			wp_die( __( 'You do not have permissions to access this page.', 'apple-news' ) );
+			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
 		$sections = $this->sections;
@@ -177,7 +177,7 @@ class Admin_Apple_Settings extends Apple_News {
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
-		if ( 'apple-news_page_apple-news-options' != $hook ) {
+		if ( 'apple-news_page_apple-news-options' !== $hook ) {
 			return;
 		}
 
