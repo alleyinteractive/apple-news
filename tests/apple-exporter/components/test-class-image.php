@@ -35,6 +35,29 @@ class Image_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Test empty src attribute.
+	 *
+	 * @access public
+	 */
+	public function testEmptySrc() {
+
+		// Setup.
+		$this->settings->set( 'use_remote_images', 'yes' );
+		$workspace = new \Apple_Exporter\Workspace( 1 );
+		$component = new Image(
+			'<img src="" alt="Example" align="left" />',
+			$workspace,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$result = $component->to_array();
+
+		// Test.
+		$this->assertEmpty( $result );
+	}
+
+	/**
 	 * Test the `apple_news_image_json` filter.
 	 *
 	 * @access public
@@ -69,6 +92,29 @@ class Image_Test extends Component_TestCase {
 			'apple_news_image_json',
 			array( $this, 'filter_apple_news_image_json' )
 		);
+	}
+
+	/**
+	 * Test src attribute that is just a fragment.
+	 *
+	 * @access public
+	 */
+	public function testFragmentSrc() {
+
+		// Setup.
+		$this->settings->set( 'use_remote_images', 'yes' );
+		$workspace = new \Apple_Exporter\Workspace( 1 );
+		$component = new Image(
+			'<img src="#fragment" alt="Example" align="left" />',
+			$workspace,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$result = $component->to_array();
+
+		// Test.
+		$this->assertEmpty( $result );
 	}
 
 	/**
@@ -126,6 +172,31 @@ class Image_Test extends Component_TestCase {
 		// Test.
 		$this->assertEquals( 'photo', $result['role'] );
 		$this->assertEquals( 'http://someurl.com/filename.jpg', $result['URL'] );
+		$this->assertEquals( 'anchored-image', $result['layout'] );
+	}
+
+	/**
+	 * Test relative src attribute.
+	 *
+	 * @access public
+	 */
+	public function testRelativeSrc() {
+
+		// Setup.
+		$this->settings->set( 'use_remote_images', 'yes' );
+		$workspace = new \Apple_Exporter\Workspace( 1 );
+		$component = new Image(
+			'<img src="/relative/path/to/image.jpg" alt="Example" align="left" />',
+			$workspace,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$result = $component->to_array();
+
+		// Test.
+		$this->assertEquals( 'photo', $result['role'] );
+		$this->assertEquals( 'http://example.org/relative/path/to/image.jpg', $result['URL'] );
 		$this->assertEquals( 'anchored-image', $result['layout'] );
 	}
 

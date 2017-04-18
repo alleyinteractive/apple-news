@@ -122,14 +122,42 @@ class Image extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $text The text to convert into a component.
+	 *
 	 * @access protected
 	 */
 	protected function build( $text ) {
-		preg_match( '/src="([^"]*?)"/im', $text, $matches );
-		$url      = esc_url_raw( apply_filters( 'apple_news_build_image_src', $matches[1], $text ) );
-		$filename = preg_replace( '/\\?.*/', '', \Apple_News::get_filename( $url ) );
 
+		// Negotiate source URL.
+		preg_match( '/src="([^"]*?)"/im', $text, $matches );
+		$url = ( ! empty( $matches[1] ) ) ? $matches[1] : '';
+
+		// Convert root-relative paths to absolute paths.
+		if ( 0 === strpos( $url, '/' ) ) {
+			$url = site_url( $url );
+		}
+
+		// If the URL consists solely of a fragment, remove it.
+		if ( 0 === strpos( $url, '#' ) ) {
+			$url = '';
+		}
+
+		/**
+		 * Allows for an image src value to be filtered before being applied.
+		 *
+		 * @param string $url The URL to be filtered.
+		 * @param string $text The raw text that was parsed for the URL.
+		 */
+		$url = esc_url_raw( apply_filters( 'apple_news_build_image_src', $url, $text ) );
+
+		// If we don't have a valid URL at this point, bail.
+		$url = esc_url_raw( $url );
+		if ( empty( $url ) ) {
+			return;
+		}
+
+		// Add the URL as a parameter for replacement.
+		$filename = preg_replace( '/\\?.*/', '', \Apple_News::get_filename( $url ) );
 		$values = array(
 			'#url#'  => $this->maybe_bundle_source( $url, $filename ),
 		);
