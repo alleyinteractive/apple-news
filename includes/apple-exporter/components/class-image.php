@@ -20,7 +20,7 @@ class Image extends Component {
 	public static function node_matches( $node ) {
 		// Is this an image node?
 		if (
-		 	( 'img' === (string) $node->nodeName || 'figure' === (string) $node->nodeName )
+		 	( 'img' === $node->nodeName || 'figure' === $node->nodeName )
 			&& self::remote_file_exists( $node )
 		) {
 			return $node;
