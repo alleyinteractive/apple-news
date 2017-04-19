@@ -1,6 +1,8 @@
 <?php
 namespace Apple_Exporter\Components;
 
+use \Apple_Exporter\Exporter_Content;
+
 /**
  * An HTML audio tag.
  *
@@ -52,17 +54,16 @@ class Audio extends Component {
 			return null;
 		}
 
-		$url = $match[1];
-
-		// If the URL is root-relative, make it absolute.
-		if ( 0 === strpos( $url, '/' ) ) {
-			$url = site_url( $url );
+		// Ensure the URL is valid.
+		$url = Exporter_Content::format_src_url( $match[1] );
+		if ( empty( $url ) ) {
+			return;
 		}
 
 		$this->register_json(
 			'json',
 			array(
-				'#url#' => $url,
+				'#url#' => esc_url_raw( $url ),
 			)
 	 	);
 	}

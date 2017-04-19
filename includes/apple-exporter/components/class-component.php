@@ -3,8 +3,9 @@ namespace Apple_Exporter\Components;
 
 require_once __DIR__ . '/../class-markdown.php';
 
-use Apple_Exporter\Parser;
-use Apple_Exporter\Component_Spec;
+use \Apple_Exporter\Component_Spec;
+use \Apple_Exporter\Exporter_Content;
+use \Apple_Exporter\Parser;
 
 /**
  * Base component class. All components must inherit from this class and
@@ -654,28 +655,13 @@ abstract class Component {
 		// Loop through matches, returning the first valid URL found.
 		foreach ( $matches[1] as $url ) {
 
-			// If this is a root-relative path, make absolute.
-			if ( 0 === strpos( $url, '/' ) ) {
-				$url = site_url( $url );
-			}
+			// Run the URL through the formatter.
+			$url = Exporter_Content::format_src_url( $url );
 
-			// Ensure the path begins with http.
-			if ( 0 !== strpos( $url, 'http' ) ) {
-				continue;
+			// If the URL passes validation, return it.
+			if ( ! empty( $url ) ) {
+				return $url;
 			}
-
-			// Escape the URL and ensure it is valid.
-			$url = esc_url_raw( $url );
-			if ( empty( $url ) ) {
-				continue;
-			}
-
-			// Ensure the URL passes filter_var checks.
-			if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
-				continue;
-			}
-
-			return $url;
 		}
 
 		return '';

@@ -4,7 +4,7 @@ namespace Apple_Exporter\Builders;
 require_once plugin_dir_path( __FILE__ ) . '../../../admin/class-admin-apple-news.php';
 
 use \Admin_Apple_News;
-use \Apple_Exporter\Workspace;
+use \Apple_Exporter\Exporter_Content;
 
 /**
  * @since 0.4.0
@@ -64,21 +64,22 @@ class Metadata extends Builder {
 		if ( preg_match_all( '/<video[^>]+poster="([^"]+)".*?>(.+?)<\/video>/s', $this->content_text(), $matches ) ) {
 
 			// Loop through matched video elements looking for MP4 files.
-			for ( $i = 0; $i < count( $matches[2] ); $i ++ ) {
+			$total = count( $matches[2] );
+			for ( $i = 0; $i < $total; $i ++ ) {
 
 				// Try to match an MP4 source URL.
 				if ( preg_match( '/src="([^\?"]+\.mp4[^"]*)"/', $matches[2][ $i ], $src ) ) {
-					$meta['thumbnailURL'] = $this->maybe_bundle_source(
-						$matches[1][ $i ]
-					);
-					$meta['videoURL'] = $src[1];
 
-					// If the videoURL is root-relative, make it absolute.
-					if ( 0 === strpos( $meta['videoURL'], '/' ) ) {
-						$meta['videoURL'] = site_url( $meta['videoURL'] );
+					// Include the thumbnail and video URL if the video URL is valid.
+					$url = Exporter_Content::format_src_url( $src[1] );
+					if ( ! empty( $url ) ) {
+						$meta['thumbnailURL'] = $this->maybe_bundle_source(
+							$matches[1][ $i ]
+						);
+						$meta['videoURL'] = esc_url_raw( $url );
+
+						break;
 					}
-
-					break;
 				}
 			}
 		}

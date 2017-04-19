@@ -11,6 +11,7 @@
 
 namespace Apple_Exporter\Components;
 
+use \Apple_Exporter\Exporter_Content;
 use \DOMElement;
 
 /**
@@ -69,19 +70,23 @@ class Video extends Component {
 			return;
 		}
 
-		// If the video URL is root-relative, make it absolute.
-		if ( 0 === strpos( $matches[1], '/' ) ) {
-			$matches[1] = site_url( $matches[1] );
+		// Ensure the source URL is valid.
+		$url = Exporter_Content::format_src_url( $matches[1] );
+		if ( empty( $url ) ) {
+			return;
 		}
 
 		// Set values.
 		$values = array(
-			'#url#' => $matches[1],
+			'#url#' => esc_url_raw( $url ),
 		);
 
 		// Add poster frame, if defined.
 		if ( preg_match( '/poster="([^"]+)"/', $html, $poster ) ) {
-			$values['#still_url#'] = $this->maybe_bundle_source( $poster[1] );
+			$still_url = Exporter_Content::format_src_url( $poster[1] );
+			if ( ! empty( $still_url ) ) {
+				$values['#still_url#'] = $this->maybe_bundle_source( $poster[1] );
+			}
 		}
 
 		$this->register_json(
