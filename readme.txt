@@ -4,7 +4,7 @@ Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 4.0
 Tested up to: 4.7.3
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -44,6 +44,17 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 1.2.6 =
+* WP Standards: Ensured all instances of in_array use the strict parameter
+* WP Standards: Replaced all remaining instances of == with ===
+* WP Standards: Replaced all remaining instances of != with !==
+* WP Standards: Ensured all calls to wp_die with translated strings were escaped
+* WP Standards: Added escaping in a few additional places
+* WP Standards: Replaced all remaining instances of json_encode with wp_json_encode
+* Bugfix: Root-relative URLs for images, audio, and video are now supported
+* Bugfix: Images, audio, and video with blank or invalid URLs are no longer included, avoiding an error with the API
+* Bugfix: Image blocks with multiple src attributes (e.g., when using a lazyload plugin with a raw <img> tag in the <noscript> block) are now intelligently probed
 
 = 1.2.5 =
 * Bugfix: Fixed version of PHPUnit at 5.7.* for PHP 7.* and 4.8.* for PHP 5.* in the Travis configuration to fix a bug with incompatibility with PHPUnit 6
