@@ -278,13 +278,9 @@ class Image extends Component {
 				'#caption_tracking#' => intval( $this->get_setting( 'caption_tracking' ) ) / 100,
 				'#caption_line_height#' => intval( $this->get_setting( 'caption_line_height' ) ),
 				'#caption_color#' => $this->get_setting( 'caption_color' ),
+				'#full_bleed_images#' => ( 'yes' === $this->get_setting( 'full_bleed_images' ) ),
 			)
 		);
-
-		// Add full bleed image option.
-		if ( 'yes' === $this->get_setting( 'full_bleed_images' ) ) {
-			$values['#full_bleed_images#'] = true;
-		}
 
 		return $values;
 	}
