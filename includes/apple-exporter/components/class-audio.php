@@ -54,6 +54,11 @@ class Audio extends Component {
 
 		$url = $match[1];
 
+		// If the URL is root-relative, make it absolute.
+		if ( 0 === strpos( $url, '/' ) ) {
+			$url = site_url( $url );
+		}
+
 		$this->register_json(
 			'json',
 			array(

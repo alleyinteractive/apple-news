@@ -73,6 +73,11 @@ class Metadata extends Builder {
 					);
 					$meta['videoURL'] = $src[1];
 
+					// If the videoURL is root-relative, make it absolute.
+					if ( 0 === strpos( $meta['videoURL'], '/' ) ) {
+						$meta['videoURL'] = site_url( $meta['videoURL'] );
+					}
+
 					break;
 				}
 			}

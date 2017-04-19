@@ -98,6 +98,11 @@ class Gallery extends Component {
 				continue;
 			}
 
+			// If the URL is root-relative, make it absolute.
+			if ( 0 === strpos( $matches[1], '/' ) ) {
+				$matches[1] = site_url( $matches[1] );
+			}
+
 			// Start building the item.
 			$content = array(
 				'URL' => $this->maybe_bundle_source( $matches[1] ),

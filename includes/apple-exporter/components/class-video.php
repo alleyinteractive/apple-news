@@ -69,7 +69,12 @@ class Video extends Component {
 			return;
 		}
 
-		// Set values
+		// If the video URL is root-relative, make it absolute.
+		if ( 0 === strpos( $matches[1], '/' ) ) {
+			$matches[1] = site_url( $matches[1] );
+		}
+
+		// Set values.
 		$values = array(
 			'#url#' => $matches[1],
 		);
