@@ -215,7 +215,8 @@ class Exporter_Content {
 		// Because PHP's DomDocument doesn't like HTML5 tags, ignore errors.
 		$dom = new \DOMDocument();
 		libxml_use_internal_errors( true );
-		$dom->loadHTML( '<?xml encoding="utf-8" ?>' . $this->content() );
+		//If the content is empty for some reason, pass &nbsp;, otherwise the foreach in split_into_components() breaks
+		$dom->loadHTML( '<?xml encoding="utf-8" ?>' . empty($this->content()) ? '&nbsp;' : $this->content() );
 		libxml_clear_errors( true );
 
 		// Find the first-level nodes of the body tag.
