@@ -248,7 +248,7 @@ class Settings {
 	 * @return int The number of columns for the body to span.
 	 */
 	public function body_column_span() {
-		return ( 'center' === $this->body_orientation ) ? 7 : 6;
+		return ( 'center' === $this->body_orientation || 'full' === $this->body_orientation ) ? 7 : 6;
 	}
 
 	/**
