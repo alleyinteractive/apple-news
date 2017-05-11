@@ -114,20 +114,24 @@ class Admin_Apple_JSON extends Apple_News {
 			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
-		// Get components for the dropdown
+		// Get components for the dropdown.
 		$components = $this->list_components();
 
-		// Get theme info for reference purposes
+		// Get theme info for reference purposes.
 		$themes = new Admin_Apple_Themes();
 		$theme_admin_url = $themes->theme_admin_url();
+		$all_themes = $themes->list_themes();
+		$selected_theme = ( ! empty( $_POST['apple_news_theme'] ) )
+			? sanitize_text_field( $_POST['apple_news_theme'] )
+			: '';
 
-		// Check if there is a valid selected component
+		// Check if there is a valid selected component.
 		$selected_component = $this->get_selected_component();
 
-		// If we have a class, get its specs
+		// If we have a class, get its specs.
 		$specs = $this->get_specs( $selected_component );
 
-		// Load the template
+		// Load the template.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_json.php';
 	}
 

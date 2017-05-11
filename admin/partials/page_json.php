@@ -31,12 +31,34 @@
 					)
 				)
 			) ?></p>
-			<select id="apple_news_component" name="apple_news_component">
-				<option name=""><?php esc_html_e( 'Select a component', 'apple-news' ) ?></option>
-				<?php foreach ( $components as $component_key => $component_name ) : ?>
-					<option value="<?php echo esc_attr( $component_key ) ?>" <?php selected( $component_key, $selected_component ) ?>><?php echo esc_html( $component_name ) ?></option>
-				<?php endforeach; ?>
-			</select>
+			<div>
+				<label for="apple_news_theme" class="screen-reader-text">
+					<?php esc_html_e( 'Select a theme', 'apple-news' ); ?>
+				</label>
+				<select id="apple_news_theme" name="apple_news_theme">
+					<option value="""><?php esc_html_e( 'Select a theme', 'apple-news' ); ?></option>
+					<?php foreach ( $all_themes as $theme_name ) : ?>
+						<option value="<?php echo esc_attr( $theme_name ) ?>"
+							<?php selected( $theme_name, $selected_theme ) ?>>
+								<?php echo esc_html( $theme_name ) ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<div>
+				<label for="apple_news_theme" class="screen-reader-text">
+					<?php esc_html_e( 'Select a component', 'apple-news' ); ?>
+				</label>
+				<select id="apple_news_component" name="apple_news_component">
+					<option value=""><?php esc_html_e( 'Select a component', 'apple-news' ); ?></option>
+					<?php foreach ( $components as $component_key => $component_name ) : ?>
+						<option value="<?php echo esc_attr( $component_key ) ?>"
+							<?php selected( $component_key, $selected_component ) ?>>
+								<?php echo esc_html( $component_name ) ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</div>
 
 			<?php if ( ! empty( $specs ) ) : ?>
 				<?php foreach ( $specs as $spec ) :
