@@ -158,6 +158,10 @@ class Apple_News {
 			'admin_enqueue_scripts',
 			array( $this, 'action_admin_enqueue_scripts' )
 		);
+		add_action(
+			'plugins_loaded',
+			array( $this, 'action_plugins_loaded' )
+		);
 	}
 
 	/**
@@ -201,6 +205,28 @@ class Apple_News {
 			'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
 			'media_modal_title' => esc_html__( 'Choose an image', 'apple-news' ),
 		) );
+	}
+
+	/**
+	 * Action hook callback for plugins_loaded.
+	 *
+	 * @since 1.3.0
+	 */
+	public function action_plugins_loaded() {
+
+		// Determine if the database version and code version are the same.
+		$current_version = get_option( 'apple_news_version' );
+		if ( version_compare( $current_version, self::$version, '>=' ) ) {
+			return;
+		}
+
+		// Handle upgrade to version 1.3.0.
+		if ( version_compare( $current_version, '1.3.0', '<' ) ) {
+			$this->upgrade_to_1_3_0();
+		}
+
+		// Set the database version to the current version in code.
+		update_option( 'apple_news_version', self::$version );
 	}
 
 	/**
@@ -437,6 +463,16 @@ class Apple_News {
 		array_map( 'delete_option', array_keys( $migrated_settings ) );
 
 		return $migrated_settings;
+	}
+
+	/**
+	 * Upgrades settings and data formats to be compatible with version 1.3.0.
+	 *
+	 * @access public
+	 */
+	public function upgrade_to_1_3_0() {
+		// TODO: Move all option updates from validate_settings here.
+		// TODO: Add custom json migration here.
 	}
 
 	/**
