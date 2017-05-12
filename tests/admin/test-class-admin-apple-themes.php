@@ -200,7 +200,9 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 			false
 		);
 
-		// TODO: Run the function to trigger the settings migration.
+		// Run the function to trigger the settings migration.
+		$an = new Apple_News;
+		$an->upgrade_to_1_3_0();
 
 		// Ensure that the default-body override was applied to the themes.
 		$themes = new \Admin_Apple_Themes();

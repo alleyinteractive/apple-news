@@ -308,7 +308,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @param boolean $silent We don't always want this to display a message if it's behind the scenes
 	 * @access private
 	 */
-	private function save_theme( $name, $settings, $silent = false ) {
+	public function save_theme( $name, $settings, $silent = false ) {
 		// Save the theme settings
 		update_option( $this->theme_key_from_name( $name ), $settings, false );
 

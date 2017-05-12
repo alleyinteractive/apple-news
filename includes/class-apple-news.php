@@ -376,6 +376,62 @@ class Apple_News {
 	}
 
 	/**
+	 * Migrates standalone customized JSON to each installed theme.
+	 *
+	 * @access public
+	 */
+	public function migrate_custom_json_to_themes() {
+
+		// Get a list of all themes that need to be updated.
+		$themes = new Admin_Apple_Themes();
+		$all_themes = $themes->list_themes();
+
+		// Get a list of components that may have customized JSON.
+		$component_factory = new \Apple_Exporter\Component_Factory();
+		$component_factory->initialize();
+		$components = $component_factory::get_components();
+
+		// Iterate over components and look for customized JSON for each.
+		$json_templates = array();
+		foreach ( $components as $component_class ) {
+
+			// Negotiate the component key.
+			$component = new $component_class;
+			$component_key = $component->get_component_name();
+
+			// Try to get the custom JSON for this component.
+			$custom_json = get_option( 'apple_news_json_' . $component_key );
+			if ( empty( $custom_json ) || ! is_array( $custom_json ) ) {
+				continue;
+			}
+
+			// Loop over custom JSON and add each.
+			foreach ( $custom_json as $legacy_key => $values ) {
+				$new_key = str_replace( 'apple_news_json_', '', $legacy_key );
+				$json_templates[ $component_key ][ $new_key ] = $values;
+			}
+		}
+
+		// Ensure there is custom JSON to save.
+		if ( empty( $json_templates ) ) {
+			return;
+		}
+
+		// Loop over themes and apply to each.
+		foreach ( $all_themes as $theme ) {
+			$theme_settings = $themes->get_theme( $theme );
+			$theme_settings['json_templates'] = $json_templates;
+			$themes->save_theme( $theme, $theme_settings, true );
+		}
+
+		// Remove custom JSON standalone options.
+		$component_keys = array_keys( $json_templates );
+		foreach ( $component_keys as $component_key ) {
+			delete_option( 'apple_news_json_' . $component_key );
+		}
+	}
+
+	/**
 	 * Migrate legacy header settings to new format.
 	 *
 	 * @param array $wp_settings An array of settings loaded from WP options.
@@ -471,8 +527,11 @@ class Apple_News {
 	 * @access public
 	 */
 	public function upgrade_to_1_3_0() {
+
 		// TODO: Move all option updates from validate_settings here.
-		// TODO: Add custom json migration here.
+
+		// Move the customized component JSON into the theme(s).
+		$this->migrate_custom_json_to_themes();
 	}
 
 	/**
