@@ -164,5 +164,56 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		);
 		$this->assertEmpty( get_option( $themes->theme_key_from_name( $name ) ) );
 	}
+
+	/**
+	 * Ensures that JSON customizations from versions prior to 1.3.0 are migrated to
+	 * the theme(s).
+	 *
+	 * @access public
+	 */
+	public function testJSONMigrateToTheme() {
+
+		// Create the default theme and the Test Theme.
+		$this->createDefaultTheme();
+		$this->createNewTheme( 'Test Theme' );
+
+		// Define the default-body JSON override we will be testing against.
+		$default_body = array(
+			'textAlignment' => 'left',
+			'fontName' => '#body_font#',
+			'fontSize' => '#body_size#',
+			'tracking' => '#body_tracking#',
+			'lineHeight' => '#body_line_height#',
+			'textColor' => '#body_color#',
+			'linkStyle' => array(
+				'textColor' => '#body_link_color#',
+			),
+			'paragraphSpacingBefore' => 24,
+			'paragraphSpacingAfter' => 24,
+		);
+
+		// Add legacy format JSON overrides.
+		update_option(
+			'apple_news_json_body', array(
+				'apple_news_json_default-body' => $default_body,
+			),
+			false
+		);
+
+		// TODO: Run the function to trigger the settings migration.
+
+		// Ensure that the default-body override was applied to the themes.
+		$themes = new \Admin_Apple_Themes();
+		$default_settings = get_option( $themes->theme_key_from_name( 'Default' ) );
+		$test_theme_settings = get_option( $themes->theme_key_from_name( 'Test Theme' ) );
+		$this->assertEquals(
+			$default_settings['json_templates']['body']['default-body'],
+			$default_body
+		);
+		$this->assertEquals(
+			$test_theme_settings['json_templates']['body']['default-body'],
+			$default_body
+		);
+	}
 }
 
