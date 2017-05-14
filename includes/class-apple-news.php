@@ -232,23 +232,19 @@ class Apple_News {
 	/**
 	 * Initialize the value of api_autosync_delete if not set.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_api_settings( $wp_settings ) {
+	public function migrate_api_settings() {
 
 		// Use the value of api_autosync_update for api_autosync_delete if not set
 		// since that was the previous value used to determine this behavior.
+		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['api_autosync_delete'] )
 		     && ! empty( $wp_settings['api_autosync_update'] )
 		) {
 			$wp_settings['api_autosync_delete'] = $wp_settings['api_autosync_update'];
 			update_option( self::$option_name, $wp_settings, 'no' );
 		}
-
-		return $wp_settings;
 	}
 
 	/**
@@ -517,6 +513,7 @@ class Apple_News {
 	public function upgrade_to_1_3_0() {
 		$this->migrate_settings();
 		$this->migrate_header_settings();
+		$this->migrate_api_settings();
 		$this->migrate_custom_json_to_themes();
 	}
 
@@ -529,9 +526,6 @@ class Apple_News {
 	 * @return array The modified settings array.
 	 */
 	public function validate_settings( $wp_settings ) {
-
-		// Check for presence of legacy API settings and migrate to new.
-		$wp_settings = $this->migrate_api_settings( $wp_settings );
 
 		// Ensure caption settings are set properly.
 		$wp_settings = $this->migrate_caption_settings( $wp_settings );
