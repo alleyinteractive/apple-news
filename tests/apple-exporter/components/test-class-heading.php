@@ -374,6 +374,8 @@ class Heading_Test extends Component_TestCase {
 		update_option( Apple_News::$option_name, $wp_settings );
 
 		// Run legacy settings through migrate script.
+		$apple_news = new Apple_News;
+		$apple_news->migrate_header_settings();
 		$admin_settings = new Admin_Apple_Settings();
 		$settings = $admin_settings->fetch_settings();
 

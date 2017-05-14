@@ -434,19 +434,17 @@ class Apple_News {
 	/**
 	 * Migrate legacy header settings to new format.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_header_settings( $wp_settings ) {
+	public function migrate_header_settings() {
 
 		// Check for presence of any legacy header setting.
+		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['header_font'] )
 		     && empty( $wp_settings['header_color'] )
 		     && empty( $wp_settings['header_line_height'] )
 		) {
-			return $wp_settings;
+			return;
 		}
 
 		// Clone settings, as necessary.
@@ -478,8 +476,6 @@ class Apple_News {
 
 		// Store the updated option to remove the legacy setting names.
 		update_option( self::$option_name, $wp_settings, 'no' );
-
-		return $wp_settings;
 	}
 
 	/**
@@ -520,6 +516,7 @@ class Apple_News {
 	 */
 	public function upgrade_to_1_3_0() {
 		$this->migrate_settings();
+		$this->migrate_header_settings();
 		$this->migrate_custom_json_to_themes();
 	}
 
@@ -532,9 +529,6 @@ class Apple_News {
 	 * @return array The modified settings array.
 	 */
 	public function validate_settings( $wp_settings ) {
-
-		// Check for presence of legacy header settings and migrate to new.
-		$wp_settings = $this->migrate_header_settings( $wp_settings );
 
 		// Check for presence of legacy API settings and migrate to new.
 		$wp_settings = $this->migrate_api_settings( $wp_settings );
