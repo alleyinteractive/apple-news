@@ -8,7 +8,7 @@
  * @subpackage Tests
  */
 
-use \Apple_Exporter\Settings as Settings;
+use \Apple_Exporter\Settings;
 
 /**
  * A class which is used to test the Admin_Apple_Themes class.
