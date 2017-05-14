@@ -47,6 +47,7 @@ class Admin_Apple_JSON_Test extends WP_UnitTestCase {
 }
 JSON;
 		$nonce = wp_create_nonce( 'apple_news_json' );
+		$_POST['apple_news_theme'] = 'Default';
 		$_POST['apple_news_component'] = 'Advertisement';
 		$_POST['apple_news_action'] = 'apple_news_save_json';
 		$_POST['apple_news_json_json'] = $json;
@@ -60,9 +61,10 @@ JSON;
 		$admin_json->action_router();
 
 		// Test.
-		$stored_json_specs = get_option( 'apple_news_json_advertisement' );
+		$themes = new Admin_Apple_Themes;
+		$theme = $themes->get_theme( __( 'Default', 'apple-news' ) );
 		$stored_json = wp_json_encode(
-			$stored_json_specs['apple_news_json_json'],
+			$theme['json_templates']['advertisement']['json'],
 			JSON_PRETTY_PRINT
 		);
 		$this->assertEquals( $stored_json, $json );
@@ -83,6 +85,7 @@ JSON;
 }
 JSON;
 		$nonce = wp_create_nonce( 'apple_news_json' );
+		$_POST['apple_news_theme'] = 'Default';
 		$_POST['apple_news_component'] = 'Audio';
 		$_POST['apple_news_action'] = 'apple_news_save_json';
 		$_POST['apple_news_json_json'] = $invalid_json;
@@ -107,8 +110,9 @@ JSON;
 		$specs = $audio->get_specs();
 
 		// Test.
-		$stored_json_specs = get_option( 'apple_news_json_audio' );
-		$this->assertEquals( $stored_json_specs, '' );
+		$themes = new Admin_Apple_Themes;
+		$theme = $themes->get_theme( __( 'Default', 'apple-news' ) );
+		$this->assertEmpty( $theme['json_templates']['audio']['json'] );
 		$this->assertEquals( $specs['json']->get_spec(), $specs['json']->spec );
 	}
 
@@ -127,6 +131,7 @@ JSON;
 }
 JSON;
 		$nonce = wp_create_nonce( 'apple_news_json' );
+		$_POST['apple_news_theme'] = 'Default';
 		$_POST['apple_news_component'] = 'Audio';
 		$_POST['apple_news_action'] = 'apple_news_save_json';
 		$_POST['apple_news_json_json'] = $json;
@@ -140,10 +145,11 @@ JSON;
 		$admin_json->action_router();
 
 		// Test.
-		$stored_json_specs = get_option( 'apple_news_json_audio' );
+		$themes = new Admin_Apple_Themes;
+		$theme = $themes->get_theme( __( 'Default', 'apple-news' ) );
 		$stored_json = stripslashes(
 			wp_json_encode(
-				$stored_json_specs['apple_news_json_json'],
+				$theme['json_templates']['audio']['json'],
 				JSON_PRETTY_PRINT
 			)
 		);
@@ -158,12 +164,13 @@ JSON;
 	public function testJSONUseCustomSpec() {
 
 		// Setup.
-		update_option( 'apple_news_json_advertisement', array(
-			'apple_news_json_json' => array(
-				'role' => 'banner_advertisement',
-				'bannerType' => 'double_height',
-			),
-		) );
+		$themes = new Admin_Apple_Themes;
+		$theme = $themes->get_theme( __( 'Default', 'apple-news' ) );
+		$theme['json_templates']['advertisement']['json'] = array(
+			'role' => 'banner_advertisement',
+			'bannerType' => 'double_height',
+		);
+		$themes->save_theme( __( 'Default', 'apple-news' ), $theme, true );
 		$component = new Advertisement(
 			null,
 			null,
@@ -176,5 +183,9 @@ JSON;
 		// Test.
 		$this->assertEquals( 'banner_advertisement', $json['role'] );
 		$this->assertEquals( 'double_height', $json['bannerType'] );
+
+		// Teardown.
+		unset( $theme['json_templates'] );
+		$themes->save_theme( __( 'Default', 'apple-news' ), $theme, true );
 	}
 }
