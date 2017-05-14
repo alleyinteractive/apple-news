@@ -328,14 +328,12 @@ class Apple_News {
 	/**
 	 * Migrate legacy caption settings to new format.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_caption_settings( $wp_settings ) {
+	public function migrate_caption_settings() {
 
 		// Check for the presence of caption-specific settings.
+		$wp_settings = get_option( self::$option_name );
 		if ( $this->_all_keys_exist( $wp_settings, array(
 			'caption_color',
 			'caption_font',
@@ -343,7 +341,7 @@ class Apple_News {
 			'caption_size',
 			'caption_tracking',
 		) ) ) {
-			return $wp_settings;
+			return;
 		}
 
 		// Clone and modify font size, if necessary.
@@ -367,8 +365,6 @@ class Apple_News {
 
 		// Store the updated option to save the new setting names.
 		update_option( self::$option_name, $wp_settings, 'no' );
-
-		return $wp_settings;
 	}
 
 	/**
@@ -514,23 +510,8 @@ class Apple_News {
 		$this->migrate_settings();
 		$this->migrate_header_settings();
 		$this->migrate_api_settings();
+		$this->migrate_caption_settings();
 		$this->migrate_custom_json_to_themes();
-	}
-
-	/**
-	 * Validate settings and see if any updates need to be performed.
-	 *
-	 * @param array|object $wp_settings Settings loaded from WP options.
-	 *
-	 * @access public
-	 * @return array The modified settings array.
-	 */
-	public function validate_settings( $wp_settings ) {
-
-		// Ensure caption settings are set properly.
-		$wp_settings = $this->migrate_caption_settings( $wp_settings );
-
-		return $wp_settings;
 	}
 
 	/**
