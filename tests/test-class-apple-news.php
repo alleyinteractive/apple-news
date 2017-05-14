@@ -53,7 +53,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 		unset( $legacy_settings['api_autosync_delete'] );
 		$apple_news = new Apple_News();
 		update_option( $apple_news::$option_name, $legacy_settings );
-		$apple_news->migrate_api_settings( $legacy_settings );
+		$apple_news->migrate_api_settings();
 
 		// Ensure the defaults did not overwrite the migrated legacy data.
 		$expected_settings = $legacy_settings;
