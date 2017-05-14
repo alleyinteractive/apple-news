@@ -250,14 +250,12 @@ class Apple_News {
 	/**
 	 * Migrate legacy blockquote settings to new format.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_blockquote_settings( $wp_settings ) {
+	public function migrate_blockquote_settings() {
 
 		// Check for the presence of blockquote-specific settings.
+		$wp_settings = get_option( self::$option_name );
 		if ( $this->_all_keys_exist( $wp_settings, array(
 			'blockquote_background_color',
 			'blockquote_border_color',
@@ -269,7 +267,7 @@ class Apple_News {
 			'blockquote_size',
 			'blockquote_tracking',
 		) ) ) {
-			return $wp_settings;
+			return;
 		}
 
 		// Set the background color to 90% of the body background.
@@ -321,8 +319,6 @@ class Apple_News {
 
 		// Store the updated option to save the new setting names.
 		update_option( self::$option_name, $wp_settings, 'no' );
-
-		return $wp_settings;
 	}
 
 	/**
@@ -511,6 +507,7 @@ class Apple_News {
 		$this->migrate_header_settings();
 		$this->migrate_api_settings();
 		$this->migrate_caption_settings();
+		$this->migrate_blockquote_settings();
 		$this->migrate_custom_json_to_themes();
 	}
 
