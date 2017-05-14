@@ -485,40 +485,32 @@ class Apple_News {
 	/**
 	 * Attempt to migrate settings from an older version of this plugin.
 	 *
-	 * @param array|object $wp_settings Settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_settings( $wp_settings ) {
+	public function migrate_settings() {
 
-		// If we are not given an object to update to an array, bail.
-		if ( ! is_object( $wp_settings ) ) {
-			return $wp_settings;
-		}
-
-		// Try to get all settings as an array to be merged.
-		$all_settings = $wp_settings->all();
-		if ( empty( $all_settings ) || ! is_array( $all_settings ) ) {
-			return $wp_settings;
+		// Attempt to load settings from the option.
+		$wp_settings = get_option( self::$option_name );
+		if ( false !== $wp_settings ) {
+			return;
 		}
 
 		// For each potential value, see if the WordPress option exists.
 		// If so, migrate its value into the new array format.
 		// If it doesn't exist, just use the default value.
+		$settings = new \Apple_Exporter\Settings();
+		$all_settings = $settings->all();
 		$migrated_settings = array();
 		foreach ( $all_settings as $key => $default ) {
 			$value = get_option( $key, $default );
 			$migrated_settings[ $key ] = $value;
 		}
 
-		// Store these settings
+		// Store these settings.
 		update_option( self::$option_name, $migrated_settings, 'no' );
 
-		// Delete the options to clean up
+		// Delete the options to clean up.
 		array_map( 'delete_option', array_keys( $migrated_settings ) );
-
-		return $migrated_settings;
 	}
 
 	/**
@@ -527,10 +519,7 @@ class Apple_News {
 	 * @access public
 	 */
 	public function upgrade_to_1_3_0() {
-
-		// TODO: Move all option updates from validate_settings here.
-
-		// Move the customized component JSON into the theme(s).
+		$this->migrate_settings();
 		$this->migrate_custom_json_to_themes();
 	}
 
@@ -543,14 +532,6 @@ class Apple_News {
 	 * @return array The modified settings array.
 	 */
 	public function validate_settings( $wp_settings ) {
-
-		// If this option doesn't exist, either the site has never installed
-		// this plugin or they may be using an old version with individual
-		// options. To be safe, attempt to migrate values. This will happen only
-		// once.
-		if ( false === $wp_settings ) {
-			$wp_settings = $this->migrate_settings( $wp_settings );
-		}
 
 		// Check for presence of legacy header settings and migrate to new.
 		$wp_settings = $this->migrate_header_settings( $wp_settings );

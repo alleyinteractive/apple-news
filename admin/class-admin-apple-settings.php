@@ -219,7 +219,7 @@ class Admin_Apple_Settings extends Apple_News {
 
 			// Initialize.
 			$settings = new Settings();
-			$wp_settings = $this->validate_settings( get_option( self::$option_name ) );
+			$wp_settings = get_option( self::$option_name );
 
 			// Merge settings in the option with defaults.
 			foreach ( $settings->all() as $key => $value ) {
