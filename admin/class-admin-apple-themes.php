@@ -643,7 +643,7 @@ class Admin_Apple_Themes extends Apple_News {
 			$formatting = $this->get_formatting_object();
 			$formatting_settings = $formatting->get_settings();
 			if ( empty( $formatting_settings ) ) {
-				return $theme_settings;
+				return array();
 			}
 
 			$formatting_settings_keys = array_keys( $formatting_settings );
