@@ -209,9 +209,18 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 
 		// Setup.
 		$themes = new \Admin_Apple_Themes();
+		$advertisement_json = array(
+			'role' => 'banner_advertisement',
+			'bannerType' => 'double_height',
+		);
 		$theme = array(
 			'layout_margin' => 100,
 			'layout_gutter' => 20,
+			'json_templates' => array(
+				'advertisement' => array(
+					'json' => $advertisement_json,
+				),
+			),
 			'theme_name' => 'Test Import Theme',
 		);
 
@@ -220,6 +229,10 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$theme = $themes->get_theme( 'Test Import Theme' );
 		$this->assertEquals( $theme['layout_margin'], 100 );
 		$this->assertEquals( $theme['layout_gutter'], 20 );
+		$this->assertEquals(
+			$theme['json_templates']['advertisement']['json'],
+			$advertisement_json
+		);
 
 		// Cleanup.
 		delete_option( $themes->theme_key_from_name( 'Test Import Theme' ) );
