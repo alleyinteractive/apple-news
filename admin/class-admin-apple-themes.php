@@ -843,12 +843,93 @@ class Admin_Apple_Themes extends Apple_News {
 			unset( $data[ $setting ] );
 		}
 
+		// Handle JSON templates.
+		$this->validate_json_templates( $data, $clean_settings );
+
 		// Check if invalid data was present
 		if ( ! empty( $data ) ) {
 			return __( 'The theme file contained unsupported settings', 'apple-news' );
 		}
 
 		return $clean_settings;
+	}
+
+	/**
+	 * Ensures that JSON templates defined in a theme spec are valid.
+	 *
+	 * @param array &$data The data array containing import data for the theme.
+	 * @param array &$clean_settings The cleaned array containing the final settings.
+	 *
+	 * @access private
+	 */
+	private function validate_json_templates( &$data, &$clean_settings ) {
+
+		// If no JSON templates are defined in the theme, bail.
+		if ( empty( $data['json_templates'] )
+			|| ! is_array( $data['json_templates'] )
+		) {
+			return;
+		}
+
+		// Get a list of components that may have customized JSON.
+		$component_factory = new \Apple_Exporter\Component_Factory();
+		$component_factory->initialize();
+		$components = $component_factory::get_components();
+
+		// Iterate over components and look for customized JSON for each.
+		foreach ( $components as $component_class ) {
+
+			// Negotiate the component key.
+			$component = new $component_class;
+			$component_key = $component->get_component_name();
+
+			// Determine if this component key is defined in the import data.
+			if ( empty( $data['json_templates'][ $component_key ] )
+				|| ! is_array( $data['json_templates'][ $component_key ] )
+			) {
+				continue;
+			}
+
+			// Loop through component key and validate.
+			$current_component = &$data['json_templates'][ $component_key ];
+			$specs = $component->get_specs();
+			foreach ( $specs as $spec_key => $spec ) {
+
+				// Determine if the spec is defined as a JSON template in the theme.
+				if ( empty( $current_component[ $spec_key ] )
+					|| ! is_array( $current_component[ $spec_key ] )
+				) {
+					continue;
+				}
+
+				// Validate this spec.
+				if ( ! $spec->validate( $current_component[ $spec_key ] ) ) {
+					\Admin_Apple_Notice::error( sprintf(
+						__(
+							'The spec for %s had invalid tokens and cannot be saved',
+							'apple-news'
+						),
+						$component_key . '/' . $spec_key
+					) );
+
+					return;
+				}
+
+				// Clone this spec over to the clean settings array.
+				$clean_settings['json_templates'][ $component_key ][ $spec_key ] = $current_component[ $spec_key ];
+				unset( $data['json_templates'][ $component_key ][ $spec_key ] );
+			}
+
+			// Clean up.
+			if ( empty( $data['json_templates'][ $component_key] ) ) {
+				unset( $data['json_templates'][ $component_key ] );
+			}
+		}
+
+		// Clean up.
+		if ( empty( $data['json_templates'] ) ) {
+			unset( $data['json_templates'] );
+		}
 	}
 
 	/**
