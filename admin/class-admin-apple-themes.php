@@ -301,6 +301,38 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Attempts to import a theme, given an associative array of theme properties.
+	 *
+	 * @param array $theme An associative array of theme properties to import.
+	 *
+	 * @access public
+	 * @return bool|string True on success, or an error message on failure.
+	 */
+	public function import_theme( $theme ) {
+
+		// Validate the theme before proceeding.
+		$result = $this->validate_data( $theme );
+		if ( ! is_array( $result ) ) {
+			return sprintf(
+				__(
+					'The theme file was invalid and cannot be imported: %s',
+					'apple-news'
+				),
+				$result
+			);
+		}
+
+		// Extract and remove the name since it doesn't need to be stored.
+		$name = $result['theme_name'];
+		unset( $result['theme_name'] );
+
+		// Process the save operation.
+		$this->save_theme( $name, $result, true );
+
+		return true;
+	}
+
+	/**
 	 * Saves the theme JSON for the key provided.
 	 *
 	 * @param string $name
@@ -516,18 +548,17 @@ class Admin_Apple_Themes extends Apple_News {
 
 		wp_import_cleanup( $this->file_id );
 
-		$result = $this->validate_data( $import_data );
-		if ( ! is_array( $result ) ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The theme file was invalid and cannot be imported: %s', 'apple-news' ),
-				$result
-			 ) );
+		// Try to get the theme name prior to import.
+		$name = ( ! empty( $import_data['theme_name'] ) )
+			? $import_data['theme_name']
+			: '';
+
+		// Try to import the theme.
+		$result = $this->import_theme( $import_data );
+		if ( true !== $result ) {
+			\Admin_Apple_Notice::error( $result );
+
 			return;
-		} else {
-			// Get the name from the data and unset it since it doesn't need to be stored
-			$name = $result['theme_name'];
-			unset( $result['theme_name'] );
-			$this->save_theme( $name, $result, true );
 		}
 
 		// Indicate success

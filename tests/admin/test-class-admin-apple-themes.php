@@ -201,6 +201,31 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Tests a theme import.
+	 *
+	 * @access public
+	 */
+	public function testImportTheme() {
+
+		// Setup.
+		$themes = new \Admin_Apple_Themes();
+		$theme = array(
+			'layout_margin' => 100,
+			'layout_gutter' => 20,
+			'theme_name' => 'Test Import Theme',
+		);
+
+		// Test.
+		$this->assertTrue( $themes->import_theme( $theme ) );
+		$theme = $themes->get_theme( 'Test Import Theme' );
+		$this->assertEquals( $theme['layout_margin'], 100 );
+		$this->assertEquals( $theme['layout_gutter'], 20 );
+
+		// Cleanup.
+		delete_option( $themes->theme_key_from_name( 'Test Import Theme' ) );
+	}
+
+	/**
 	 * Ensures that JSON customizations from versions prior to 1.3.0 are migrated to
 	 * the theme(s).
 	 *
