@@ -227,15 +227,45 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Test.
 		$this->assertTrue( $themes->import_theme( $theme ) );
 		$theme = $themes->get_theme( 'Test Import Theme' );
-		$this->assertEquals( $theme['layout_margin'], 100 );
-		$this->assertEquals( $theme['layout_gutter'], 20 );
+		$this->assertEquals( 100, $theme['layout_margin'] );
+		$this->assertEquals( 20, $theme['layout_gutter'] );
 		$this->assertEquals(
-			$theme['json_templates']['advertisement']['json'],
-			$advertisement_json
+			$advertisement_json,
+			$theme['json_templates']['advertisement']['json']
 		);
 
 		// Cleanup.
 		delete_option( $themes->theme_key_from_name( 'Test Import Theme' ) );
+	}
+
+	/**
+	 * Tests a theme import with an invalid JSON spec.
+	 *
+	 * @access public
+	 */
+	public function testImportThemeInvalidJSON() {
+
+		// Setup.
+		$themes = new \Admin_Apple_Themes();
+		$invalid_json = array(
+		    'role' => 'audio',
+		    'URL' => '#invalid#',
+		);
+		$theme = array(
+			'layout_margin' => 100,
+			'layout_gutter' => 20,
+			'json_templates' => array(
+				'audio' => array(
+					'json' => $invalid_json,
+				),
+			),
+			'theme_name' => 'Test Import Theme',
+		);
+
+		// Test.
+		$this->assertInternalType( 'string', $themes->import_theme( $theme ) );
+		$theme = $themes->get_theme( 'Test Import Theme' );
+		$this->assertEmpty( $theme );
 	}
 
 	/**
@@ -285,12 +315,12 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 			$themes->theme_key_from_name( 'Test Theme' )
 		);
 		$this->assertEquals(
-			$default_settings['json_templates']['body']['default-body'],
-			$default_body
+			$default_body,
+			$default_settings['json_templates']['body']['default-body']
 		);
 		$this->assertEquals(
-			$test_theme_settings['json_templates']['body']['default-body'],
-			$default_body
+			$default_body,
+			$test_theme_settings['json_templates']['body']['default-body']
 		);
 	}
 
