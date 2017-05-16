@@ -246,8 +246,9 @@ class Admin_Apple_JSON extends Apple_News {
 			return;
 		}
 
-		// Get the specs for the component.
-		$specs = $this->get_specs( $component );
+		// Get the specs for the component and theme.
+		$theme = stripslashes( sanitize_text_field( $_POST['apple_news_theme'] ) );
+		$specs = $this->get_specs( $component, $theme );
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error( sprintf(
 				__( 'The component %s has no specs and cannot be saved', 'apple-news' ),
@@ -262,10 +263,10 @@ class Admin_Apple_JSON extends Apple_News {
 		$updates = array();
 		foreach ( $specs as $spec ) {
 			// Ensure the value exists
-			$key = $spec->key_from_name( $spec->name );
+			$key = 'apple_news_json_' . $spec->key_from_name( $spec->name );
 			if ( isset( $_POST[ $key ] ) ) {
 				$custom_spec = stripslashes( sanitize_text_field( $_POST[ $key ] ) );
-				$result = $spec->save( $custom_spec );
+				$result = $spec->save( $custom_spec, $theme );
 				if ( true === $result ) {
 					$updates[] = $spec->label;
 				}

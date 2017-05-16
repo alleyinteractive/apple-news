@@ -112,7 +112,7 @@ JSON;
 		// Test.
 		$themes = new Admin_Apple_Themes;
 		$theme = $themes->get_theme( __( 'Default', 'apple-news' ) );
-		$this->assertEmpty( $theme['json_templates']['audio']['json'] );
+		$this->assertTrue( empty( $theme['json_templates']['audio']['json'] ) );
 		$this->assertEquals( $specs['json']->get_spec(), $specs['json']->spec );
 	}
 
