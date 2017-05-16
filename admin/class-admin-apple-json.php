@@ -126,10 +126,14 @@ class Admin_Apple_JSON extends Apple_News {
 			: '';
 
 		// Check if there is a valid selected component.
-		$selected_component = $this->get_selected_component();
+		$selected_component = ( ! empty( $selected_theme ) )
+			? $this->get_selected_component()
+			: '';
 
 		// If we have a class, get its specs.
-		$specs = $this->get_specs( $selected_component );
+		$specs = ( ! empty( $selected_component ) )
+			? $this->get_specs( $selected_component )
+			: array();
 
 		// Load the template.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_json.php';
@@ -174,24 +178,38 @@ class Admin_Apple_JSON extends Apple_News {
 	 * @access private
 	 */
 	private function reset_json() {
-		// Get the selected component
+
+		// Ensure a theme was selected.
+		if ( empty( $_POST['apple_news_theme'] ) ) {
+			\Admin_Apple_Notice::error(
+				__( 'Unable to reset JSON since no theme was selected.', 'apple-news' )
+			);
+
+			return;
+		}
+
+		// Get the selected component.
 		$component = $this->get_selected_component();
 		if ( empty( $component ) ) {
 			\Admin_Apple_Notice::error(
-				__( 'Unable to save JSON since no component was provided', 'apple-news' )
+				__( 'Unable to reset JSON since no component was provided', 'apple-news' )
 			);
+
+			return;
 		}
 
-		// Get the specs for the component
+		// Get the specs for the component.
 		$specs = $this->get_specs( $component );
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error( sprintf(
-				__( 'The component %s has no specs and cannot be saved', 'apple-news' ),
+				__( 'The component %s has no specs and cannot be reset', 'apple-news' ),
 				$component
 			) );
+
+			return;
 		}
 
-		// Iterate over the specs and reset each one
+		// Iterate over the specs and reset each one.
 		foreach ( $specs as $spec ) {
 			$spec->delete();
 		}
@@ -208,21 +226,35 @@ class Admin_Apple_JSON extends Apple_News {
 	 * @access private
 	 */
 	private function save_json() {
-		// Get the selected component
+
+		// Ensure a theme was selected.
+		if ( empty( $_POST['apple_news_theme'] ) ) {
+			\Admin_Apple_Notice::error(
+				__( 'Unable to save JSON since no theme was selected.', 'apple-news' )
+			);
+
+			return;
+		}
+
+		// Get the selected component.
 		$component = $this->get_selected_component();
 		if ( empty( $component ) ) {
 			\Admin_Apple_Notice::error(
 				__( 'Unable to save JSON since no component was provided', 'apple-news' )
 			);
+
+			return;
 		}
 
-		// Get the specs for the component
+		// Get the specs for the component.
 		$specs = $this->get_specs( $component );
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error( sprintf(
 				__( 'The component %s has no specs and cannot be saved', 'apple-news' ),
 				$component
 			) );
+
+			return;
 		}
 
 		// Iterate over the specs and save each one.
