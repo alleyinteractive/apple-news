@@ -121,7 +121,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Ensure the default theme was created.
 		$this->assertEquals(
 			__( 'Default', 'apple-news' ),
-			get_option( $this->themes::THEME_ACTIVE_KEY )
+			get_option( Admin_Apple_Themes::THEME_ACTIVE_KEY )
 		);
 		$this->assertEquals(
 			$this->getFormattingSettings( $this->settings->all() ),
@@ -129,7 +129,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		);
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ) ),
-			get_option( $this->themes::THEME_INDEX_KEY )
+			get_option( Admin_Apple_Themes::THEME_INDEX_KEY )
 		);
 	}
 
@@ -168,7 +168,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Ensure both themes exist.
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ), $name ),
-			get_option( $this->themes::THEME_INDEX_KEY )
+			get_option( Admin_Apple_Themes::THEME_INDEX_KEY )
 		);
 		$this->assertNotEmpty(
 			get_option( $this->themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) )
@@ -188,7 +188,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Ensure only the default theme exists after deletion.
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ) ),
-			get_option( $this->themes::THEME_INDEX_KEY )
+			get_option( Admin_Apple_Themes::THEME_INDEX_KEY )
 		);
 		$this->assertEmpty( get_option( $this->themes->theme_key_from_name( $name ) ) );
 	}
@@ -508,7 +508,7 @@ JSON;
 		$this->themes->action_router();
 
 		// Check that the theme got set.
-		$this->assertEquals( $name, get_option( $this->themes::THEME_ACTIVE_KEY ) );
+		$this->assertEquals( $name, get_option( Admin_Apple_Themes::THEME_ACTIVE_KEY ) );
 		$current_settings = $settings_obj->fetch_settings();
 		$this->assertEquals( 50, $current_settings['layout_margin'] );
 	}
