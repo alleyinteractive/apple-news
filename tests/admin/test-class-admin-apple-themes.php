@@ -8,6 +8,8 @@
  * @subpackage Tests
  */
 
+use \Apple_Exporter\Exporter;
+use \Apple_Exporter\Exporter_Content;
 use \Apple_Exporter\Settings;
 
 /**
@@ -27,8 +29,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$settings->save_settings( $this->settings->all() );
 
 		// Force creation of a default theme.
-		$themes = new \Admin_Apple_Themes();
-		$themes->setup_theme_pages();
+		$this->themes->setup_theme_pages();
 	}
 
 	/**
@@ -61,8 +62,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		}
 
 		// Invoke the save operation in the themes class.
-		$themes = new \Admin_Apple_Themes();
-		$themes->action_router();
+		$this->themes->action_router();
 	}
 
 	/**
@@ -100,9 +100,9 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		parent::setup();
 
 		// Remove the Default and Test Theme themes, if they exist.
-		$themes = new \Admin_Apple_Themes();
-		delete_option( $themes->theme_key_from_name( 'Default' ) );
-		delete_option( $themes->theme_key_from_name( 'Test Theme' ) );
+		$this->themes = new \Admin_Apple_Themes();
+		delete_option( $this->themes->theme_key_from_name( 'Default' ) );
+		delete_option( $this->themes->theme_key_from_name( 'Test Theme' ) );
 
 		// Cache default settings for future use.
 		$this->settings = new Settings();
@@ -115,24 +115,21 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	 */
 	public function testCreateDefaultTheme() {
 
-		// Setup.
-		$themes = new \Admin_Apple_Themes();
-
 		// Create the default theme.
 		$this->createDefaultTheme();
 
 		// Ensure the default theme was created.
 		$this->assertEquals(
 			__( 'Default', 'apple-news' ),
-			get_option( $themes::THEME_ACTIVE_KEY )
+			get_option( $this->themes::THEME_ACTIVE_KEY )
 		);
 		$this->assertEquals(
 			$this->getFormattingSettings( $this->settings->all() ),
-			get_option( $themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) )
+			get_option( $this->themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) )
 		);
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ) ),
-			get_option( $themes::THEME_INDEX_KEY )
+			get_option( $this->themes::THEME_INDEX_KEY )
 		);
 	}
 
@@ -148,12 +145,11 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$this->createNewTheme( $name );
 
 		// Check that the data was saved properly.
-		$themes = new \Admin_Apple_Themes();
 		$current_settings = $this->settings->all();
 
 		// Array diff against the option value.
 		$diff_settings = $this->getFormattingSettings( $current_settings );
-		$new_theme_settings = get_option( $themes->theme_key_from_name( $name ) );
+		$new_theme_settings = get_option( $this->themes->theme_key_from_name( $name ) );
 		$this->assertEquals( $diff_settings, $new_theme_settings );
 	}
 
@@ -161,9 +157,6 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	 * Ensure that a theme can be deleted.
 	 */
 	public function testDeleteTheme() {
-
-		// Setup.
-		$themes = new \Admin_Apple_Themes();
 
 		// Create the default theme.
 		$this->createDefaultTheme();
@@ -175,12 +168,12 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		// Ensure both themes exist.
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ), $name ),
-			get_option( $themes::THEME_INDEX_KEY )
+			get_option( $this->themes::THEME_INDEX_KEY )
 		);
 		$this->assertNotEmpty(
-			get_option( $themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) )
+			get_option( $this->themes->theme_key_from_name( __( 'Default', 'apple-news' ) ) )
 		);
-		$this->assertNotEmpty( get_option( $themes->theme_key_from_name( $name ) ) );
+		$this->assertNotEmpty( get_option( $this->themes->theme_key_from_name( $name ) ) );
 
 		// Delete the test theme.
 		$nonce = wp_create_nonce( 'apple_news_themes' );
@@ -190,14 +183,14 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$_POST['page'] = 'apple-news-themes';
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-themes';
 		$_REQUEST['_wpnonce'] = $nonce;
-		$themes->action_router();
+		$this->themes->action_router();
 
 		// Ensure only the default theme exists after deletion.
 		$this->assertEquals(
 			array( __( 'Default', 'apple-news' ) ),
-			get_option( $themes::THEME_INDEX_KEY )
+			get_option( $this->themes::THEME_INDEX_KEY )
 		);
-		$this->assertEmpty( get_option( $themes->theme_key_from_name( $name ) ) );
+		$this->assertEmpty( get_option( $this->themes->theme_key_from_name( $name ) ) );
 	}
 
 	/**
@@ -208,7 +201,6 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	public function testImportTheme() {
 
 		// Setup.
-		$themes = new \Admin_Apple_Themes();
 		$advertisement_json = array(
 			'role' => 'banner_advertisement',
 			'bannerType' => 'double_height',
@@ -225,8 +217,8 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		);
 
 		// Test.
-		$this->assertTrue( $themes->import_theme( $theme ) );
-		$theme = $themes->get_theme( 'Test Import Theme' );
+		$this->assertTrue( $this->themes->import_theme( $theme ) );
+		$theme = $this->themes->get_theme( 'Test Import Theme' );
 		$this->assertEquals( 100, $theme['layout_margin'] );
 		$this->assertEquals( 20, $theme['layout_gutter'] );
 		$this->assertEquals(
@@ -235,7 +227,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		);
 
 		// Cleanup.
-		delete_option( $themes->theme_key_from_name( 'Test Import Theme' ) );
+		delete_option( $this->themes->theme_key_from_name( 'Test Import Theme' ) );
 	}
 
 	/**
@@ -246,7 +238,6 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	public function testImportThemeInvalidJSON() {
 
 		// Setup.
-		$themes = new \Admin_Apple_Themes();
 		$invalid_json = array(
 		    'role' => 'audio',
 		    'URL' => '#invalid#',
@@ -263,8 +254,8 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		);
 
 		// Test.
-		$this->assertInternalType( 'string', $themes->import_theme( $theme ) );
-		$theme = $themes->get_theme( 'Test Import Theme' );
+		$this->assertInternalType( 'string', $this->themes->import_theme( $theme ) );
+		$theme = $this->themes->get_theme( 'Test Import Theme' );
 		$this->assertEmpty( $theme );
 	}
 
@@ -307,12 +298,11 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$apple_news->migrate_custom_json_to_themes();
 
 		// Ensure that the default-body override was applied to the themes.
-		$themes = new \Admin_Apple_Themes();
 		$default_settings = get_option(
-			$themes->theme_key_from_name( __( 'Default', 'apple-news' ) )
+			$this->themes->theme_key_from_name( __( 'Default', 'apple-news' ) )
 		);
 		$test_theme_settings = get_option(
-			$themes->theme_key_from_name( 'Test Theme' )
+			$this->themes->theme_key_from_name( 'Test Theme' )
 		);
 		$this->assertEquals(
 			$default_body,
@@ -325,14 +315,175 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensures that a custom spec is saved properly.
+	 *
+	 * @access public
+	 */
+	public function testJSONSaveCustomSpec() {
+
+		// Setup.
+		$this->createDefaultTheme();
+		$json = <<<JSON
+{
+    "role": "banner_advertisement",
+    "bannerType": "double_height"
+}
+JSON;
+		$nonce = wp_create_nonce( 'apple_news_json' );
+		$_POST['apple_news_theme'] = $this->themes->get_active_theme();
+		$_POST['apple_news_component'] = 'Advertisement';
+		$_POST['apple_news_action'] = 'apple_news_save_json';
+		$_POST['apple_news_json_json'] = $json;
+		$_POST['page'] = 'apple-news-json';
+		$_POST['redirect'] = false;
+		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
+		$_REQUEST['_wpnonce'] = $nonce;
+
+		// Trigger the save operation.
+		$admin_json = new \Admin_Apple_JSON();
+		$admin_json->action_router();
+
+		// Test.
+		$theme = $this->themes->get_theme( $this->themes->get_active_theme() );
+		$stored_json = wp_json_encode(
+			$theme['json_templates']['advertisement']['json'],
+			JSON_PRETTY_PRINT
+		);
+		$this->assertEquals( $stored_json, $json );
+	}
+
+	/**
+	 * Ensure that invalid tokens are not saved in a custom spec.
+	 *
+	 * @access public
+	 */
+	public function testJSONSaveInvalidTokens() {
+
+		// Setup.
+		$this->createDefaultTheme();
+		$invalid_json = <<<JSON
+{
+    "role": "audio",
+    "URL": "#invalid#"
+}
+JSON;
+		$nonce = wp_create_nonce( 'apple_news_json' );
+		$_POST['apple_news_theme'] = $this->themes->get_active_theme();
+		$_POST['apple_news_component'] = 'Audio';
+		$_POST['apple_news_action'] = 'apple_news_save_json';
+		$_POST['apple_news_json_json'] = $invalid_json;
+		$_POST['page'] = 'apple-news-json';
+		$_POST['redirect'] = false;
+		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
+		$_REQUEST['_wpnonce'] = $nonce;
+
+		// Trigger the save operation.
+		$admin_json = new \Admin_Apple_JSON();
+		$admin_json->action_router();
+
+		// Test.
+		$theme = $this->themes->get_theme( $this->themes->get_active_theme() );
+		$this->assertTrue( empty( $theme['json_templates'] ) );
+	}
+
+	/**
+	 * Ensure that valid tokens are saved in the custom JSON spec.
+	 *
+	 * @access public
+	 */
+	public function testJSONSaveValidTokens() {
+
+		// Setup.
+		$this->createDefaultTheme();
+		$json = <<<JSON
+{
+    "role": "audio",
+    "URL": "http://someurl.com"
+}
+JSON;
+		$nonce = wp_create_nonce( 'apple_news_json' );
+		$_POST['apple_news_theme'] = $this->themes->get_active_theme();
+		$_POST['apple_news_component'] = 'Audio';
+		$_POST['apple_news_action'] = 'apple_news_save_json';
+		$_POST['apple_news_json_json'] = $json;
+		$_POST['page'] = 'apple-news-json';
+		$_POST['redirect'] = false;
+		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
+		$_REQUEST['_wpnonce'] = $nonce;
+
+		// Trigger the spec save.
+		$admin_json = new \Admin_Apple_JSON();
+		$admin_json->action_router();
+
+		// Test.
+		$theme = $this->themes->get_theme( $this->themes->get_active_theme() );
+		$stored_json = stripslashes(
+			wp_json_encode(
+				$theme['json_templates']['audio']['json'],
+				JSON_PRETTY_PRINT
+			)
+		);
+		$this->assertEquals( $stored_json, $json );
+	}
+
+	/**
+	 * Ensure that the custom spec is used on render.
+	 *
+	 * @access public
+	 */
+	public function testJSONUseCustomSpec() {
+
+		// Setup.
+		$this->createDefaultTheme();
+		$json = <<<JSON
+{
+    "columnStart": "#body_offset#",
+    "columnSpan": "#body_column_span#",
+    "margin": {
+        "top": 50,
+        "bottom": 50
+    }
+}
+JSON;
+		$nonce = wp_create_nonce( 'apple_news_json' );
+		$_POST['apple_news_theme'] = $this->themes->get_active_theme();
+		$_POST['apple_news_component'] = 'Body';
+		$_POST['apple_news_action'] = 'apple_news_save_json';
+		$_POST['apple_news_json_body-layout'] = $json;
+		$_POST['page'] = 'apple-news-json';
+		$_POST['redirect'] = false;
+		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
+		$_REQUEST['_wpnonce'] = $nonce;
+
+		// Trigger the spec save.
+		$admin_json = new \Admin_Apple_JSON();
+		$admin_json->action_router();
+
+		// Test.
+		$settings = new Admin_Apple_Settings();
+		$content  = new Exporter_Content(
+			1,
+			__( 'My Title', 'apple-news' ),
+			'<p>' . __( 'Hello, World!', 'apple-news' ) . '</p>'
+		);
+		$exporter = new Exporter( $content, null, $settings->fetch_settings() );
+		$json = json_decode( $exporter->export(), true );
+		$this->assertEquals(
+			50,
+			$json['componentLayouts']['body-layout']['margin']['bottom']
+		);
+		$this->assertEquals(
+			50,
+			$json['componentLayouts']['body-layout']['margin']['top']
+		);
+	}
+
+	/**
 	 * Ensure that a new theme can be set as the active theme.
 	 *
 	 * @access public
 	 */
 	public function testSetTheme() {
-
-		// Setup.
-		$themes = new \Admin_Apple_Themes();
 
 		// Create the default theme.
 		$this->createDefaultTheme();
@@ -354,10 +505,10 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$_POST['page'] = 'apple-news-themes';
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-themes';
 		$_REQUEST['_wpnonce'] = $nonce;
-		$themes->action_router();
+		$this->themes->action_router();
 
 		// Check that the theme got set.
-		$this->assertEquals( $name, get_option( $themes::THEME_ACTIVE_KEY ) );
+		$this->assertEquals( $name, get_option( $this->themes::THEME_ACTIVE_KEY ) );
 		$current_settings = $settings_obj->fetch_settings();
 		$this->assertEquals( 50, $current_settings['layout_margin'] );
 	}
