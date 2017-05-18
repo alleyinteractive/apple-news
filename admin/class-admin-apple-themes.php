@@ -430,9 +430,9 @@ class Admin_Apple_Themes extends Apple_News {
 	 *
 	 * @param string $name
 	 * @param boolean $silent We don't always want this to display a message if it's behind the scenes
-	 * @access private
+	 * @access public
 	 */
-	private function set_theme( $name = null, $silent = false ) {
+	public function set_theme( $name = null, $silent = false ) {
 		// If no name was provided, attempt to get it from POST data
 		if ( empty( $name ) && ! empty( $_POST['apple_news_active_theme'] ) ) {
 			$name = sanitize_text_field( $_POST['apple_news_active_theme'] );

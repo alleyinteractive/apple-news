@@ -230,6 +230,37 @@ class Apple_News {
 	}
 
 	/**
+	 * Create the default theme, if it does not exist.
+	 *
+	 * @access public
+	 */
+	public function create_default_theme() {
+
+		// Determine if a current theme exists.
+		$themes = new \Admin_Apple_Themes;
+		$active_theme = $themes->get_active_theme();
+		if ( ! empty( $active_theme ) ) {
+			return;
+		}
+
+		// Build the theme formatting settings from the base settings array.
+		$formatting = new \Admin_Apple_Settings_Section_Formatting( '' );
+		$formatting_settings = $formatting->get_settings();
+		$wp_settings = get_option( self::$option_name, array() );
+		$theme_settings = array();
+		foreach ( $wp_settings as $setting_key => $setting_value ) {
+			if ( isset( $formatting_settings[ $setting_key ] ) ) {
+				$theme_settings[ $setting_key ] = $setting_value;
+			}
+		}
+
+		// Save the theme and make it active.
+		$name = __( 'Default', 'apple-news' );
+		$themes->save_theme( $name, $theme_settings, true );
+		$themes->set_theme( $name, true );
+	}
+
+	/**
 	 * Initialize the value of api_autosync_delete if not set.
 	 *
 	 * @access public
@@ -498,17 +529,54 @@ class Apple_News {
 	}
 
 	/**
+	 * Removes formatting settings from the primary settings object.
+	 *
+	 * @access public
+	 */
+	public function remove_global_formatting_settings() {
+
+		// Loop through formatting settings and remove them from saved settings.
+		$formatting = new \Admin_Apple_Settings_Section_Formatting( '' );
+		$formatting_settings = array_keys( $formatting->get_settings() );
+		$wp_settings = get_option( self::$option_name, array() );
+		foreach ( $formatting_settings as $setting_key ) {
+			if ( isset( $wp_settings[ $setting_key ] ) ) {
+				unset( $wp_settings[ $setting_key ] );
+			}
+		}
+
+		// Update the option.
+		update_option( self::$option_name, $wp_settings, false );
+	}
+
+	/**
 	 * Upgrades settings and data formats to be compatible with version 1.3.0.
 	 *
 	 * @access public
 	 */
 	public function upgrade_to_1_3_0() {
-		$this->migrate_settings();
-		$this->migrate_header_settings();
-		$this->migrate_api_settings();
-		$this->migrate_caption_settings();
-		$this->migrate_blockquote_settings();
+
+		// Determine if themes have been created yet.
+		$themes = new \Admin_Apple_Themes;
+		$theme_list = $themes->list_themes();
+		if ( empty( $theme_list ) ) {
+			$this->migrate_settings();
+			$this->migrate_header_settings();
+			$this->migrate_caption_settings();
+			$this->migrate_blockquote_settings();
+		}
+
+		// Create the default theme, if it does not exist.
+		$this->create_default_theme();
+
+		// Move any custom JSON that might have been defined into the theme(s).
 		$this->migrate_custom_json_to_themes();
+
+		// Migrate API settings.
+		$this->migrate_api_settings();
+
+		// Remove all formatting settings from the primary settings array.
+		$this->remove_global_formatting_settings();
 	}
 
 	/**
