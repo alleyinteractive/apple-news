@@ -35,19 +35,132 @@ class Admin_Apple_Themes extends Apple_News {
 	const THEME_ACTIVE_KEY = 'apple_news_active_theme';
 
 	/**
-	 * Prefix for individual theme keys.
-	 *
-	 * @var string
-	 */
-	const THEME_KEY_PREFIX = 'apple_news_theme_';
-
-	/**
 	 * Valid actions handled by this class and their callback functions.
 	 *
 	 * @var array
 	 * @access private
 	 */
 	private $valid_actions;
+
+	/**
+	 * Renders a theme option field for use in a form.
+	 *
+	 * @param \Apple_Exporter\Theme $theme The Theme object to use.
+	 * @param string $option_name The option name to process.
+	 *
+	 * @access public
+	 * @return string The HTML for the field.
+	 */
+	public static function render_field( $theme, $option_name ) {
+
+		// Ensure we were given a valid theme.
+		if ( ! $theme instanceof \Apple_Exporter\Theme ) {
+			return '';
+		}
+
+		// Ensure the option exists.
+		$options = $theme->get_options();
+		if ( ! isset( $options[ $option_name ] ) ) {
+			return '';
+		}
+
+		// Ensure the option is not hidden. Hidden options should not be used.
+		$option = $options[ $option_name ];
+		if ( 'hidden' === $option['type'] ) {
+			return '';
+		}
+
+		// If the field has its own render callback, use that instead.
+		if ( ! empty( $option['callback'] ) ) {
+			return call_user_func( $option['callback'] );
+		}
+
+		// Build the field, forking for option type.
+		$field = '';
+		$value = $theme->get_value( $option_name );
+		switch ( $option['type'] ) {
+			case 'color':
+				$field = '<input type="text" id="%s" name="%s" value="%s" class="apple-news-color-picker">';
+
+				break;
+			case 'float':
+				$field = '<input class="input-float" placeholder="' . esc_attr( $option['default'] ) . '" type="text" step="any" id="%s" name="%s" value="%s">';
+
+				break;
+			case 'font':
+
+				// Build the options list.
+				$fonts = Admin_Apple_Settings_Section::list_fonts();
+				foreach ( $fonts as $option ) {
+					$field .= sprintf(
+						'<option value="%s" %s>%s</option>',
+						esc_attr( $option ),
+						selected( $option, $value, false ),
+						esc_html( $option )
+					);
+				}
+
+				// Wrap the options in the select.
+				$field = '<select class="select2 font" id="%s" name="%s">' . $field
+					. '</select>';
+
+				break;
+			case 'integer':
+				$field = '<input type="number" id="%s" name="%s" value="%s">';
+
+				break;
+			default:
+
+				// Handle array types differently.
+				if ( is_array( $option['type'] ) ) {
+
+					// Build the options list.
+					foreach ( $option['type'] as $option_value ) {
+						$field .= sprintf(
+							'<option value="%s" %s>%s</option>',
+							esc_attr( $option_value ),
+							selected( $value, $option_value, false ),
+							esc_html( $option_value )
+						);
+					}
+
+					// Wrap the options in the select.
+					$field = '<select id="%s" name="%s">' . $field . '</select>';
+
+					break;
+				}
+
+				// If nothing else matches, it's a string.
+				$field = '<input type="text" id="%s" name="%s" value="%s">';
+
+				break;
+		}
+
+		// Add a description, if set.
+		if ( ! empty( $option['description'] ) ) {
+			$field .= apply_filters(
+				'apple_news_field_description_output_html',
+				'<br/><i>' . $option['description'] . '</i>',
+				$option_name
+			);
+		}
+
+		// Use a different template for selects.
+		if ( is_array( $option['type'] ) || 'font' === $option['type'] ) {
+			return sprintf(
+				$field,
+				esc_attr( $option_name ),
+				esc_attr( $option_name )
+			);
+		}
+
+		return sprintf(
+			$field,
+			esc_attr( $option_name ),
+			esc_attr( $option_name ),
+			esc_attr( $value )
+		);
+	}
 
 	/**
 	 * Constructor.
@@ -165,21 +278,19 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access public
 	 */
 	public function page_theme_edit_render() {
+
+		// Ensure the user has permission to load this screen.
 		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
 			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
-		$error = $theme_name = '';
-		// Check for a valid theme
-		if ( ! isset( $_GET['theme'] ) ) {
-			// Load current live settings as a basis for the new theme
-			$section = $this->get_formatting_object();
-		} else {
+		// Negotiate theme object.
+		$error = '';
+		$theme = new \Apple_Exporter\Theme;
+		if ( isset( $_GET['theme'] ) ) {
 			$theme_name = sanitize_text_field( $_GET['theme'] );
-
-			// Load the theme
-			$section = $this->get_formatting_object( $theme_name );
-			if ( empty( $section ) || ! is_object( $section ) ) {
+			$theme->set_name( $theme_name );
+			if ( false === $theme->load() ) {
 				$error = sprintf(
 					__( 'The theme %s does not exist', 'apple-news' ),
 					$theme_name
@@ -187,10 +298,13 @@ class Admin_Apple_Themes extends Apple_News {
 			}
 		}
 
-		// Set the URL for the back button and form action
+		// Set the URL for the back button and form action.
 		$theme_admin_url = $this->theme_admin_url();
 
-		// Load the edit page
+		// Get information about theme options.
+		$theme_options = $theme->get_options();
+
+		// Load the edit page.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_theme_edit.php';
 	}
 
@@ -960,17 +1074,6 @@ class Admin_Apple_Themes extends Apple_News {
 		$settings->save_settings( $new_settings );
 
 		return true;
-	}
-
-	/**
-	 * Generates a key for the theme from the provided name
-	 *
-	 * @param string $name
-	 * @return string
-	 * @access public
-	 */
-	public function theme_key_from_name( $name ) {
-		return self::THEME_KEY_PREFIX . md5( $name );
 	}
 
 	/**

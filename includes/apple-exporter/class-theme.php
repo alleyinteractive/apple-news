@@ -19,18 +19,39 @@ namespace Apple_Exporter;
 class Theme {
 
 	/**
+	 * Prefix for individual theme keys.
+	 *
+	 * @var string
+	 */
+	const THEME_KEY_PREFIX = 'apple_news_theme_';
+
+	/**
 	 * Option group configuration, to be used when printing fields.
 	 *
 	 * @var array
 	 */
-	private static $_groups;
+	private static $_groups = array();
 
 	/**
 	 * Theme options configuration.
 	 *
 	 * @var array
 	 */
-	private static $_options;
+	private static $_options = array();
+
+	/**
+	 * The name of this theme.
+	 *
+	 * @var string
+	 */
+	private $_name = '';
+
+	/**
+	 * Values for theme options for this theme.
+	 *
+	 * @var array
+	 */
+	private $_values = array();
 
 	/**
 	 * Returns an array of groups of configurable options for themes.
@@ -49,6 +70,21 @@ class Theme {
 	}
 
 	/**
+	 * Gets the name of this theme.
+	 *
+	 * @return string The name of the theme.
+	 */
+	public function get_name() {
+
+		// If no name is set, use the default.
+		if ( empty( $this->_name ) ) {
+			$this->_name = __( 'Default', 'apple-news' );
+		}
+
+		return $this->_name;
+	}
+
+	/**
 	 * Returns an array of configurable options for themes.
 	 *
 	 * @access public
@@ -62,6 +98,96 @@ class Theme {
 		}
 
 		return self::$_options;
+	}
+
+	/**
+	 * Gets a value for a theme option for this theme.
+	 *
+	 * @param string $option The option name for which to retrieve a value.
+	 *
+	 * @access public
+	 * @return mixed The value for the option name provided.
+	 */
+	public function get_value( $option ) {
+
+		// Attempt to return the value from the values array.
+		if ( isset( $this->_values[ $option ] ) ) {
+			return $this->_values[ $option ];
+		}
+
+		// Attempt to fall back to the default.
+		if ( isset( self::$_options[ $option ]['default'] ) ) {
+			return self::$_options[ $option ]['default'];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Loads theme information from the database.
+	 *
+	 * @access public
+	 * @return bool True on success, false on failure.
+	 */
+	public function load() {
+
+		// Attempt to load the theme from the database.
+		$values = get_option( self::THEME_KEY_PREFIX . md5( $this->get_name() ) );
+		if ( ! is_array( $values ) ) {
+			return false;
+		}
+
+		// Loop over loaded values from the database and add to local values.
+		foreach ( $values as $key => $value ) {
+
+			// Skip any keys that don't exist in the options spec.
+			if ( ! isset( self::$_options[ $key ] ) ) {
+				continue;
+			}
+
+			// Skip any keys that use the default value.
+			if ( self::$_options[ $key ] === $value ) {
+				continue;
+			}
+
+			// Store the value in the list of overrides.
+			$this->_values[ $key ] = $value;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Renders the meta component order field.
+	 *
+	 * @access public
+	 */
+	public function render_meta_component_order() {
+
+		// Get the current order.
+		$component_order = $this->get_value( 'meta_component_order' );
+		if ( empty( $component_order ) || ! is_array( $component_order ) ) {
+			$component_order = array();
+		}
+
+		// Get inactive components.
+		$inactive_components = array_diff(
+			self::$_options['meta_component_order']['default'],
+			$component_order
+		);
+
+		// Load the template.
+		include plugin_dir_path( dirname( dirname( __DIR__ ) ) )
+			. 'partials/field_meta_component_order.php';
+	}
+
+	/**
+	 * Sets the theme name property.
+	 *
+	 * @param string $name The name to set.
+	 */
+	public function set_name( $name ) {
+		$this->_name = $name;
 	}
 
 	/**
@@ -371,8 +497,6 @@ class Theme {
 				'default' => 'by #author# | #M j, Y | g:i A#',
 				'description' => __( 'Set the byline format. Two tokens can be present, #author# to denote the location of the author name and a <a href="http://php.net/manual/en/function.date.php" target="blank">PHP date format</a> string also encapsulated by #. The default format is "by #author# | #M j, Y | g:i A#". Note that byline format updates only preview on save.', 'apple-news' ),
 				'label' => __( 'Byline format', 'apple-news' ),
-				'required' => false,
-				'size' => 40,
 				'type' => 'text',
 			),
 			'byline_line_height' => array(
@@ -632,6 +756,10 @@ class Theme {
 				'label' => __( 'Use initial drop cap', 'apple-news' ),
 				'type' => array( 'yes', 'no' ),
 			),
+			'json_templates' => array(
+				'default' => array(),
+				'type' => 'hidden',
+			),
 			'layout_gutter' => array(
 				'default' => 20,
 				'label' => __( 'Layout gutter', 'apple-news' ),
@@ -648,11 +776,10 @@ class Theme {
 			),
 			'meta_component_order' => array(
 				'default' => array( 'cover', 'title', 'byline' ),
-				'callback' => array(
-					get_class( $this ),
-					'render_meta_component_order'
-				),
-				'sanitize' => array( $this, 'sanitize_array' ),
+				'callback' => array( $this, 'render_meta_component_order' ),
+				'sanitize' => function ( $value ) {
+					return array_map( 'sanitize_text_field', $value );
+				},
 			),
 			'monospaced_color' => array(
 				'default' => '#4f4f4f',
