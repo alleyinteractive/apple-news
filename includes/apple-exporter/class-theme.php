@@ -19,6 +19,13 @@ namespace Apple_Exporter;
 class Theme {
 
 	/**
+	 * Option group configuration, to be used when printing fields.
+	 *
+	 * @var array
+	 */
+	private static $_groups;
+
+	/**
 	 * Theme options configuration.
 	 *
 	 * @var array
@@ -26,18 +33,219 @@ class Theme {
 	private static $_options;
 
 	/**
+	 * Returns an array of groups of configurable options for themes.
+	 *
+	 * @access public
+	 * @return array Groups of configurable options for themes.
+	 */
+	public function get_groups() {
+
+		// If groups have not been initialized, initialize them now.
+		if ( empty( self::$_groups ) ) {
+			$this->_initialize_groups();
+		}
+
+		return self::$_groups;
+	}
+
+	/**
 	 * Returns an array of configurable options for themes.
 	 *
 	 * @access public
+	 * @return array Configurable options for themes.
 	 */
 	public function get_options() {
 
 		// If options have not been initialized, initialize them now.
-		if ( empty( $_options ) ) {
+		if ( empty( self::$_options ) ) {
 			$this->_initialize_options();
 		}
 
 		return self::$_options;
+	}
+
+	/**
+	 * Initializes the groups array with values.
+	 *
+	 * @access private
+	 */
+	private function _initialize_groups() {
+		self::$_groups = array(
+			'layout' => array(
+				'label' => __( 'Layout Spacing', 'apple-news' ),
+				'description' => __( 'The spacing for the base layout of the exported articles', 'apple-news' ),
+				'settings' => array( 'layout_margin', 'layout_gutter' ),
+			),
+			'body' => array(
+				'label' => __( 'Body', 'apple-news' ),
+				'settings' => array(
+					'body_font',
+					'body_size',
+					'body_line_height',
+					'body_tracking',
+					'body_color',
+					'body_link_color',
+					'body_background_color',
+					'body_orientation',
+				),
+			),
+			'dropcap' => array(
+				'label' => __( 'Drop Cap', 'apple-news' ),
+				'settings' => array(
+					'initial_dropcap',
+					'dropcap_background_color',
+					'dropcap_color',
+					'dropcap_font',
+					'dropcap_number_of_characters',
+					'dropcap_number_of_lines',
+					'dropcap_number_of_raised_lines',
+					'dropcap_padding',
+				),
+			),
+			'byline' => array(
+				'label' => __( 'Byline', 'apple-news' ),
+				'description' => __( "The byline displays the article's author and publish date", 'apple-news' ),
+				'settings' => array(
+					'byline_font',
+					'byline_size',
+					'byline_line_height',
+					'byline_tracking',
+					'byline_color',
+					'byline_format',
+				),
+			),
+			'heading1' => array(
+				'label' => __( 'Heading 1', 'apple-news' ),
+				'settings' => array(
+					'header1_font',
+					'header1_color',
+					'header1_size',
+					'header1_line_height',
+					'header1_tracking',
+				),
+			),
+			'heading2' => array(
+				'label' => __( 'Heading 2', 'apple-news' ),
+				'settings' => array(
+					'header2_font',
+					'header2_color',
+					'header2_size',
+					'header2_line_height',
+					'header2_tracking',
+				),
+			),
+			'heading3' => array(
+				'label' => __( 'Heading 3', 'apple-news' ),
+				'settings' => array(
+					'header3_font',
+					'header3_color',
+					'header3_size',
+					'header3_line_height',
+					'header3_tracking',
+				),
+			),
+			'heading4' => array(
+				'label' => __( 'Heading 4', 'apple-news' ),
+				'settings' => array(
+					'header4_font',
+					'header4_color',
+					'header4_size',
+					'header4_line_height',
+					'header4_tracking',
+				),
+			),
+			'heading5' => array(
+				'label' => __( 'Heading 5', 'apple-news' ),
+				'settings' => array(
+					'header5_font',
+					'header5_color',
+					'header5_size',
+					'header5_line_height',
+					'header5_tracking',
+				),
+			),
+			'heading6' => array(
+				'label' => __( 'Heading 6', 'apple-news' ),
+				'settings' => array(
+					'header6_font',
+					'header6_color',
+					'header6_size',
+					'header6_line_height',
+					'header6_tracking',
+				),
+			),
+			'caption' => array(
+				'label' => __( 'Image caption', 'apple-news' ),
+				'settings' => array(
+					'caption_font',
+					'caption_size',
+					'caption_line_height',
+					'caption_tracking',
+					'caption_color',
+				),
+			),
+			'pullquote' => array(
+				'label' => __( 'Pull quote', 'apple-news' ),
+				'description' => sprintf(
+					'%s <a href="https://en.wikipedia.org/wiki/Pull_quote">%s</a>.',
+					__( 'Articles can have an optional', 'apple-news' ),
+					__( 'Pull quote', 'apple-news' )
+				),
+				'settings' => array(
+					'pullquote_font',
+					'pullquote_size',
+					'pullquote_line_height',
+					'pullquote_tracking',
+					'pullquote_color',
+					'pullquote_hanging_punctuation',
+					'pullquote_border_style',
+					'pullquote_border_color',
+					'pullquote_border_width',
+					'pullquote_transform',
+				),
+			),
+			'blockquote' => array(
+				'label' => __( 'Blockquote', 'apple-news' ),
+				'settings' => array(
+					'blockquote_font',
+					'blockquote_size',
+					'blockquote_line_height',
+					'blockquote_tracking',
+					'blockquote_color',
+					'blockquote_border_style',
+					'blockquote_border_color',
+					'blockquote_border_width',
+					'blockquote_background_color',
+				),
+			),
+			'monospaced' => array(
+				'label' => __( 'Monospaced (<pre>, <code>, <samp>)', 'apple-news' ),
+				'settings' => array(
+					'monospaced_font',
+					'monospaced_size',
+					'monospaced_line_height',
+					'monospaced_tracking',
+					'monospaced_color',
+				),
+			),
+			'gallery' => array(
+				'label' => __( 'Gallery', 'apple-news' ),
+				'description' => __( 'Can either be a standard gallery, or mosaic.', 'apple-news' ),
+				'settings' => array( 'gallery_type' ),
+			),
+			'advertisement' => array(
+				'label' => __( 'Advertisement', 'apple-news' ),
+				'settings' => array(
+					'enable_advertisement',
+					'ad_frequency',
+					'ad_margin',
+				),
+			),
+			'component_order' => array(
+				'label' => __( 'Component Order', 'apple-news' ),
+				'settings' => array( 'meta_component_order' ),
+			),
+		);
 	}
 
 	/**
