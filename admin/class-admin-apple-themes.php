@@ -28,7 +28,6 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	public $theme_page_name;
 
-	// TODO: REFACTOR FROM HERE
 	/**
 	 * Valid actions handled by this class and their callback functions.
 	 *
@@ -158,9 +157,11 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
-	 * Constructor.
+	 * Constructor. Sets page names dynamically and registers actions.
+	 *
+	 * @access public
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->theme_page_name = $this->plugin_domain . '-themes';
 		$this->theme_edit_page_name = $this->plugin_domain . '-theme-edit';
 
@@ -170,19 +171,19 @@ class Admin_Apple_Themes extends Apple_News {
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_export_theme' => array(
-				'callback' =>  array( $this, 'export_theme' ),
+				'callback' => array( $this, 'export_theme' ),
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_delete_theme' => array(
-				'callback' =>  array( $this, 'delete_theme' ),
+				'callback' => array( $this, 'delete_theme' ),
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_save_edit_theme' => array(
-				'callback' =>  array( $this, 'save_edit_theme' ),
+				'callback' => array( $this, 'save_edit_theme' ),
 				'nonce' => 'apple_news_save_edit_theme',
 			),
 			'apple_news_set_theme' => array(
-				'callback' =>  array( $this, 'set_theme' ),
+				'callback' => array( $this, 'set_theme' ),
 				'nonce' => 'apple_news_themes',
 			),
 		);
@@ -194,79 +195,35 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
-	 * Fix the title since WordPress doesn't set one.
+	 * Attempts to import a theme, given an associative array of theme properties.
 	 *
-	 * @param string $admin_title The title to be filtered.
+	 * @param array $theme An associative array of theme properties to import.
 	 *
 	 * @access public
-	 * @return string
+	 * @return bool|string True on success, or an error message on failure.
 	 */
-	public function set_title( $admin_title ) {
-		$screen = get_current_screen();
-		if ( 'admin_page_' . $this->theme_edit_page_name === $screen->base ) {
-			$admin_title = sprintf(
-				__( 'Edit Theme %s', 'apple-news' ),
-				trim( $admin_title )
+	public function import_theme( $theme ) {
+
+		// Validate the theme before proceeding.
+		$result = $this->validate_data( $theme );
+		if ( ! is_array( $result ) ) {
+			return sprintf(
+				__(
+					'The theme file was invalid and cannot be imported: %s',
+					'apple-news'
+				),
+				$result
 			);
 		}
 
-		return $admin_title;
-	}
+		// Extract and remove the name since it doesn't need to be stored.
+		$name = $result['theme_name'];
+		unset( $result['theme_name'] );
 
-	/**
-	 * Check for a valid theme setup on the site.
-	 *
-	 * @access private
-	 */
-	private function validate_themes() {
+		// Process the save operation.
+		$this->save_theme( $name, $result, true );
 
-		// Determine if there are themes defined.
-		$themes = $this->list_themes();
-		if ( empty( $themes ) ) {
-			$theme = new \Apple_Exporter\Theme();
-			$theme->save();
-			$theme->set_active();
-		}
-	}
-
-	/**
-	 * Options page setup.
-	 *
-	 * @access public
-	 */
-	public function setup_theme_pages() {
-		$this->validate_themes();
-
-		add_submenu_page(
-			'apple_news_index',
-			__( 'Apple News Themes', 'apple-news' ),
-			__( 'Themes', 'apple-news' ),
-			apply_filters( 'apple_news_settings_capability', 'manage_options' ),
-			$this->theme_page_name,
-			array( $this, 'page_themes_render' )
-		);
-
-		add_submenu_page(
-			null,
-			__( 'Apple News Edit Theme', 'apple-news' ),
-			__( 'Edit Theme', 'apple-news' ),
-			apply_filters( 'apple_news_settings_capability', 'manage_options' ),
-			$this->theme_edit_page_name,
-			array( $this, 'page_theme_edit_render' )
-		);
-	}
-
-	/**
-	 * Themes page render.
-	 *
-	 * @access public
-	 */
-	public function page_themes_render() {
-		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
-			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
-		}
-
-		include plugin_dir_path( __FILE__ ) . 'partials/page_themes.php';
+		return true;
 	}
 
 	/**
@@ -303,6 +260,19 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Load the edit page.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_theme_edit.php';
+	}
+
+	/**
+	 * Themes page render.
+	 *
+	 * @access public
+	 */
+	public function page_themes_render() {
+		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
+			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
+		}
+
+		include plugin_dir_path( __FILE__ ) . 'partials/page_themes.php';
 	}
 
 	/**
@@ -381,47 +351,69 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
-	 * List all available themes
+	 * Fix the title since WordPress doesn't set one.
+	 *
+	 * @param string $admin_title The title to be filtered.
 	 *
 	 * @access public
-	 * @return array
+	 * @return string
 	 */
-	public function list_themes() {
-		return get_option( self::THEME_INDEX_KEY, array() );
-	}
-
-	/**
-	 * Attempts to import a theme, given an associative array of theme properties.
-	 *
-	 * @param array $theme An associative array of theme properties to import.
-	 *
-	 * @access public
-	 * @return bool|string True on success, or an error message on failure.
-	 */
-	public function import_theme( $theme ) {
-
-		// Validate the theme before proceeding.
-		$result = $this->validate_data( $theme );
-		if ( ! is_array( $result ) ) {
-			return sprintf(
-				__(
-					'The theme file was invalid and cannot be imported: %s',
-					'apple-news'
-				),
-				$result
+	public function set_title( $admin_title ) {
+		$screen = get_current_screen();
+		if ( 'admin_page_' . $this->theme_edit_page_name === $screen->base ) {
+			$admin_title = sprintf(
+				__( 'Edit Theme %s', 'apple-news' ),
+				trim( $admin_title )
 			);
 		}
 
-		// Extract and remove the name since it doesn't need to be stored.
-		$name = $result['theme_name'];
-		unset( $result['theme_name'] );
-
-		// Process the save operation.
-		$this->save_theme( $name, $result, true );
-
-		return true;
+		return $admin_title;
 	}
 
+	/**
+	 * Options page setup.
+	 *
+	 * @access public
+	 */
+	public function setup_theme_pages() {
+		$this->validate_themes();
+
+		add_submenu_page(
+			'apple_news_index',
+			__( 'Apple News Themes', 'apple-news' ),
+			__( 'Themes', 'apple-news' ),
+			apply_filters( 'apple_news_settings_capability', 'manage_options' ),
+			$this->theme_page_name,
+			array( $this, 'page_themes_render' )
+		);
+
+		add_submenu_page(
+			null,
+			__( 'Apple News Edit Theme', 'apple-news' ),
+			__( 'Edit Theme', 'apple-news' ),
+			apply_filters( 'apple_news_settings_capability', 'manage_options' ),
+			$this->theme_edit_page_name,
+			array( $this, 'page_theme_edit_render' )
+		);
+	}
+
+	/**
+	 * Check for a valid theme setup on the site.
+	 *
+	 * @access private
+	 */
+	private function validate_themes() {
+
+		// Determine if there are themes defined.
+		$themes = \Apple_Exporter\Theme::get_registry();
+		if ( empty( $themes ) ) {
+			$theme = new \Apple_Exporter\Theme();
+			$theme->save();
+			$theme->set_active();
+		}
+	}
+
+	// TODO: REFACTOR FROM HERE
 	/**
 	 * Saves the theme JSON for the key provided.
 	 *
@@ -454,7 +446,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	private function index_theme( $name ) {
 		// Get the index
-		$index = self::list_themes();
+		$index = \Apple_Exporter\Theme::get_registry();
 		if ( ! is_array( $index ) ) {
 			$index = array();
 		}
@@ -479,7 +471,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function unindex_theme( $name ) {
-		$themes = $this->list_themes();
+		$themes = \Apple_Exporter\Theme::get_registry();
 		$index = array_search( $name, $themes );
 		if ( false === $index ) {
 			\Admin_Apple_Notice::error( sprintf(

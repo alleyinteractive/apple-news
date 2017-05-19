@@ -61,6 +61,23 @@ class Theme {
 	private $_values = array();
 
 	/**
+	 * Gets a list of registered themes.
+	 *
+	 * @access public
+	 * @return array
+	 */
+	public static function get_registry() {
+
+		// Attempt to get the registry.
+		$registry = get_option( self::INDEX_KEY );
+		if ( empty( $registry ) || ! is_array( $registry ) ) {
+			return array();
+		}
+
+		return $registry;
+	}
+
+	/**
 	 * Renders the meta component order field.
 	 *
 	 * @access public
@@ -167,15 +184,21 @@ class Theme {
 	}
 
 	/**
-	 * Loads theme information from the database.
+	 * Loads theme information from provided values or the database.
+	 *
+	 * @param array $values Optional. Values to load. Defaults to a database load.
 	 *
 	 * @access public
 	 * @return bool True on success, false on failure.
 	 */
-	public function load() {
+	public function load( $values = array() ) {
 
-		// Attempt to load the theme from the database.
-		$values = get_option( self::theme_key( $this->get_name() ) );
+		// If no values were provided, attempt to load from the database.
+		if ( empty( $values ) ) {
+			$values = get_option( self::theme_key( $this->get_name() ) );
+		}
+
+		// Ensure that values are an array we can iterate over.
 		if ( ! is_array( $values ) ) {
 			return false;
 		}
@@ -192,6 +215,8 @@ class Theme {
 			if ( self::$_options[ $key ] === $value ) {
 				continue;
 			}
+
+			// TODO: Add sanitization and keep track of last error message if failed
 
 			// Store the value in the list of overrides.
 			$this->_values[ $key ] = $value;
@@ -211,7 +236,7 @@ class Theme {
 		update_option( self::theme_key( $this->get_name() ), $this->_values, false );
 
 		// Ensure the theme is registered.
-		$registry = $this->_fetch_registry();
+		$registry = $this->get_registry();
 		if ( in_array( $this->get_name(), $registry, true ) ) {
 			return;
 		}
@@ -249,23 +274,6 @@ class Theme {
 	 */
 	public function set_name( $name ) {
 		$this->_name = $name;
-	}
-
-	/**
-	 * Fetches a list of registered themes.
-	 *
-	 * @access private
-	 * @return array
-	 */
-	private function _fetch_registry() {
-
-		// Attempt to get the registry.
-		$registry = get_option( self::INDEX_KEY );
-		if ( empty( $registry ) || ! is_array( $registry ) ) {
-			return array();
-		}
-
-		return $registry;
 	}
 
 	/**

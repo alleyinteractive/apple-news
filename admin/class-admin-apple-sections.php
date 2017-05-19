@@ -356,7 +356,7 @@ class Admin_Apple_Sections extends Apple_News {
 		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
 		$theme_obj = new Admin_Apple_Themes();
 		$theme_admin_url = add_query_arg( 'page', $theme_obj->theme_page_name, admin_url( 'admin.php' ) );
-		$themes = $theme_obj->list_themes();
+		$themes = \Apple_Exporter\Theme::get_registry();
 
 		// Load the partial with the form.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_sections.php';

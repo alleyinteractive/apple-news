@@ -405,7 +405,7 @@ class Apple_News {
 
 		// Get a list of all themes that need to be updated.
 		$themes = new Admin_Apple_Themes();
-		$all_themes = $themes->list_themes();
+		$all_themes = \Apple_Exporter\Theme::get_registry();
 
 		// Get a list of components that may have customized JSON.
 		$component_factory = new \Apple_Exporter\Component_Factory();
@@ -562,7 +562,7 @@ class Apple_News {
 
 		// Determine if themes have been created yet.
 		$themes = new \Admin_Apple_Themes;
-		$theme_list = $themes->list_themes();
+		$theme_list = \Apple_Exporter\Theme::get_registry();
 		if ( empty( $theme_list ) ) {
 			$this->migrate_settings();
 			$this->migrate_header_settings();
