@@ -628,6 +628,11 @@ class Theme {
 				continue;
 			}
 
+			// Skip JSON templates, which will be validated separately.
+			if ( 'json_templates' === $option_key ) {
+				continue;
+			}
+
 			// Perform basic sanitization based on option type.
 			switch ( $option['type'] ) {
 				case 'array':
@@ -781,7 +786,12 @@ class Theme {
 				return false;
 			}
 
-			// Fork for sanitization type.
+			// Skip JSON templates for now, as they are validated separately.
+			if ( 'json_templates' === $key ) {
+				continue;
+			}
+
+				// Fork for sanitization type.
 			switch ( $options[ $key ]['type'] ) {
 				case 'array':
 

@@ -219,33 +219,35 @@ class Admin_Apple_Themes extends Apple_News {
 	/**
 	 * Attempts to import a theme, given an associative array of theme properties.
 	 *
-	 * @param array $theme An associative array of theme properties to import.
-	 *
-	 * @todo Convert this to use new Theme class.
+	 * @param array $settings An associative array of theme settings to import.
 	 *
 	 * @access public
 	 * @return bool|string True on success, or an error message on failure.
 	 */
-	public function import_theme( $theme ) {
+	public function import_theme( $settings ) {
 
-		// Validate the theme before proceeding.
-		$result = $this->validate_data( $theme );
-		if ( ! is_array( $result ) ) {
+		// Ensure that a theme name was provided.
+		if ( empty( $settings['theme_name'] ) ) {
+			return __( 'The theme file did not include a name', 'apple-news' );
+		}
+
+		// Extract and remove the name since it doesn't need to be stored.
+		$name = $settings['theme_name'];
+		unset( $settings['theme_name'] );
+
+		// Create a new theme object and attempt to save it.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $name );
+		$theme->load( $settings );
+		if ( ! $theme->save() ) {
 			return sprintf(
 				__(
 					'The theme file was invalid and cannot be imported: %s',
 					'apple-news'
 				),
-				$result
+				$theme->get_last_error()
 			);
 		}
-
-		// Extract and remove the name since it doesn't need to be stored.
-		$name = $result['theme_name'];
-		unset( $result['theme_name'] );
-
-		// Process the save operation.
-		//$this->save_theme( $name, $result, true );
 
 		return true;
 	}
