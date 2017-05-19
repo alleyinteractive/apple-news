@@ -37,7 +37,7 @@
 										<br />
 									<?php endforeach; ?>
 
-									<?php if ( $group['description'] ) : ?>
+									<?php if ( ! empty( $group['description'] ) ) : ?>
 										<p class="description"><?php echo '(' . wp_kses_post( $group['description'] ) . ')'; ?></p>
 									<?php endif; ?>
 								</fieldset>

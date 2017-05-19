@@ -162,10 +162,10 @@ class Theme {
 	 *
 	 * @access public
 	 */
-	public function render_meta_component_order() {
+	public static function render_meta_component_order( $theme ) {
 
 		// Get the current order.
-		$component_order = $this->get_value( 'meta_component_order' );
+		$component_order = $theme->get_value( 'meta_component_order' );
 		if ( empty( $component_order ) || ! is_array( $component_order ) ) {
 			$component_order = array();
 		}
@@ -177,8 +177,8 @@ class Theme {
 		);
 
 		// Load the template.
-		include plugin_dir_path( dirname( dirname( __DIR__ ) ) )
-			. 'partials/field_meta_component_order.php';
+		include dirname( dirname( plugin_dir_path( __FILE__ ) ) )
+			. '/admin/partials/field_meta_component_order.php';
 	}
 
 	/**
@@ -776,7 +776,7 @@ class Theme {
 			),
 			'meta_component_order' => array(
 				'default' => array( 'cover', 'title', 'byline' ),
-				'callback' => array( $this, 'render_meta_component_order' ),
+				'callback' => array( get_class( $this ), 'render_meta_component_order' ),
 				'sanitize' => function ( $value ) {
 					return array_map( 'sanitize_text_field', $value );
 				},

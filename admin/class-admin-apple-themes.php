@@ -66,13 +66,13 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Ensure the option is not hidden. Hidden options should not be used.
 		$option = $options[ $option_name ];
-		if ( 'hidden' === $option['type'] ) {
+		if ( ! empty( $option['type'] ) && 'hidden' === $option['type'] ) {
 			return '';
 		}
 
 		// If the field has its own render callback, use that instead.
 		if ( ! empty( $option['callback'] ) ) {
-			return call_user_func( $option['callback'] );
+			return call_user_func( $option['callback'], $theme );
 		}
 
 		// Build the field, forking for option type.
@@ -91,12 +91,12 @@ class Admin_Apple_Themes extends Apple_News {
 
 				// Build the options list.
 				$fonts = Admin_Apple_Settings_Section::list_fonts();
-				foreach ( $fonts as $option ) {
+				foreach ( $fonts as $font_name ) {
 					$field .= sprintf(
 						'<option value="%s" %s>%s</option>',
-						esc_attr( $option ),
-						selected( $option, $value, false ),
-						esc_html( $option )
+						esc_attr( $font_name ),
+						selected( $font_name, $value, false ),
+						esc_html( $font_name )
 					);
 				}
 

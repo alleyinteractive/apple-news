@@ -1,6 +1,8 @@
 <?php
 /**
  * This class is in charge of handling Apple News previews
+ *
+ * @todo Update this class to use Themes to render settings.
  */
 class Admin_Apple_Preview extends Apple_News {
 	/**
