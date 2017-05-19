@@ -170,7 +170,7 @@ class Admin_Apple_Themes extends Apple_News {
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_delete_theme' => array(
-				'callback' => array( $this, 'delete_theme' ),
+				'callback' => array( $this, '_delete_theme' ),
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_save_edit_theme' => array(
@@ -422,6 +422,38 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Handles deleting a theme.
+	 *
+	 * @access private
+	 */
+	private function _delete_theme() {
+
+		// Attempt to get the name of the theme from postdata.
+		if ( empty( $name ) && ! empty( $_POST['apple_news_theme'] ) ) {
+			$name = sanitize_text_field( $_POST['apple_news_theme'] );
+		}
+
+		// Ensure a name was provided.
+		if ( empty( $name ) ) {
+			\Admin_Apple_Notice::error(
+				__( 'Unable to delete the theme because no name was provided', 'apple-news' )
+			);
+			return;
+		}
+
+		// Remove the theme.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $name );
+		$theme->delete();
+
+		// Indicate success.
+		\Admin_Apple_Notice::success( sprintf(
+			__( 'Successfully deleted theme %s', 'apple-news' ),
+			$name
+		) );
+	}
+
+	/**
 	 * Handles setting the active theme.
 	 *
 	 * @access private
@@ -455,43 +487,6 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Handles deleting a theme.
-	 *
-	 * @todo Update this to use the new Theme class.
-	 *
-	 * @param string $name
-	 * @access private
-	 */
-	private function delete_theme( $name = null ) {
-		// If no name was provided, attempt to get it from POST data
-		if ( empty( $name ) && ! empty( $_POST['apple_news_theme'] ) ) {
-			$name = sanitize_text_field( $_POST['apple_news_theme'] );
-		}
-
-		if ( empty( $name ) ) {
-			\Admin_Apple_Notice::error(
-				__( 'Unable to delete the theme because no name was provided', 'apple-news' )
-			);
-			return;
-		}
-
-		// Get the key
-		$key = $this->theme_key_from_name( $name );
-
-		// Unindex the theme
-		//$this->unindex_theme( $name );
-
-		// Delete the theme
-		delete_option( $key );
-
-		// Indicate success
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'Successfully deleted theme %s', 'apple-news' ),
-			$name
-		) );
-	}
 
 	/**
 	 * Handles uploading a new theme from a JSON file.
