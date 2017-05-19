@@ -232,34 +232,31 @@ class Apple_News {
 	/**
 	 * Create the default theme, if it does not exist.
 	 *
-	 * @todo Update this to use the new Theme class.
-	 *
 	 * @access public
 	 */
 	public function create_default_theme() {
 
-		// Determine if a current theme exists.
-		$themes = new \Admin_Apple_Themes;
-		$active_theme = $themes->get_active_theme();
+		// Determine if a default theme exists.
+		$active_theme = \Apple_Exporter\Theme::get_active_theme_name();
 		if ( ! empty( $active_theme ) ) {
 			return;
 		}
 
 		// Build the theme formatting settings from the base settings array.
-		$formatting = new \Admin_Apple_Settings_Section_Formatting( '' );
-		$formatting_settings = $formatting->get_settings();
+		$theme = new \Apple_Exporter\Theme;
+		$options = $theme->get_options();
 		$wp_settings = get_option( self::$option_name, array() );
 		$theme_settings = array();
-		foreach ( $wp_settings as $setting_key => $setting_value ) {
-			if ( isset( $formatting_settings[ $setting_key ] ) ) {
-				$theme_settings[ $setting_key ] = $setting_value;
+		foreach ( $options as $option_key => $option ) {
+			if ( isset( $wp_settings[ $option_key ] ) ) {
+				$theme_settings[ $option_key ] = $wp_settings[ $option_key ];
 			}
 		}
 
 		// Save the theme and make it active.
-		$name = __( 'Default', 'apple-news' );
-		$themes->save_theme( $name, $theme_settings, true );
-		$themes->set_theme( $name, true );
+		$theme->load( $theme_settings );
+		$theme->save();
+		$theme->set_active();
 	}
 
 	/**
