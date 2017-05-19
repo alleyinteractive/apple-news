@@ -34,7 +34,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @var array
 	 * @access private
 	 */
-	private $valid_actions;
+	private $_valid_actions;
 
 	/**
 	 * Renders a theme option field for use in a form.
@@ -160,7 +160,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$this->theme_page_name = $this->plugin_domain . '-themes';
 		$this->theme_edit_page_name = $this->plugin_domain . '-theme-edit';
 
-		$this->valid_actions = array(
+		$this->_valid_actions = array(
 			'apple_news_upload_theme' => array(
 				'callback' => array( $this, 'upload_theme' ),
 				'nonce' => 'apple_news_themes',
@@ -178,7 +178,7 @@ class Admin_Apple_Themes extends Apple_News {
 				'nonce' => 'apple_news_save_edit_theme',
 			),
 			'apple_news_set_theme' => array(
-				'callback' => array( $this, 'set_theme' ),
+				'callback' => array( $this, '_set_theme' ),
 				'nonce' => 'apple_news_themes',
 			),
 		);
@@ -204,16 +204,16 @@ class Admin_Apple_Themes extends Apple_News {
 		// Determine if a valid action was specified.
 		$action = sanitize_text_field( $_POST['action'] );
 		if ( ( empty( $action )
-			|| ! array_key_exists( $action, $this->valid_actions ) )
+			|| ! array_key_exists( $action, $this->_valid_actions ) )
 		) {
 			return;
 		}
 
 		// Check the nonce.
-		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
+		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Call the callback for the action for further processing.
-		call_user_func( $this->valid_actions[ $action ]['callback'] );
+		call_user_func( $this->_valid_actions[ $action ]['callback'] );
 	}
 
 	/**
@@ -402,8 +402,6 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access public
 	 */
 	public function setup_theme_pages() {
-		$this->validate_themes();
-
 		add_submenu_page(
 			'apple_news_index',
 			__( 'Apple News Themes', 'apple-news' ),
@@ -424,64 +422,39 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
-	 * Check for a valid theme setup on the site.
+	 * Handles setting the active theme.
 	 *
 	 * @access private
 	 */
-	private function validate_themes() {
+	private function _set_theme() {
 
-		// Determine if there are themes defined.
-		$themes = \Apple_Exporter\Theme::get_registry();
-		if ( empty( $themes ) ) {
-			$theme = new \Apple_Exporter\Theme();
-			$theme->save();
-			$theme->set_active();
-		}
-	}
-
-	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Handles setting the active theme.
-	 *
-	 * @param string $name
-	 * @param boolean $silent We don't always want this to display a message if it's behind the scenes
-	 * @access public
-	 */
-	public function set_theme( $name = null, $silent = false ) {
-		// If no name was provided, attempt to get it from POST data
-		if ( empty( $name ) && ! empty( $_POST['apple_news_active_theme'] ) ) {
+		// Get the theme name from postdata.
+		if ( ! empty( $_POST['apple_news_active_theme'] ) ) {
 			$name = sanitize_text_field( $_POST['apple_news_active_theme'] );
 		}
 
+		// Ensure we have a theme name.
 		if ( empty( $name ) ) {
 			\Admin_Apple_Notice::error(
 				__( 'Unable to set the theme because no name was provided', 'apple-news' )
 			);
+
 			return;
 		}
 
-		// Update global formatting settings with the theme settings
-		$result = $this->update_global_settings( $name );
-		if ( false === $result ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'There was an error updating global settings with the theme %s', 'apple-news' ),
-				$name
-			) );
-			return;
-		}
+		// Set the theme as active.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $name );
+		$theme->set_active();
 
-		// Set the theme active
-		update_option( self::THEME_ACTIVE_KEY, $name, false );
-
-		// Indicate success
-		if ( true !== $silent ) {
-			\Admin_Apple_Notice::success( sprintf(
-				__( 'Successfully switched to theme %s', 'apple-news' ),
-				$name
-			) );
-		}
+		// Indicate success.
+		\Admin_Apple_Notice::success( sprintf(
+			__( 'Successfully switched to theme %s', 'apple-news' ),
+			$name
+		) );
 	}
+
+	// TODO: REFACTOR FROM HERE
 
 	/**
 	 * Handles deleting a theme.
@@ -753,28 +726,6 @@ class Admin_Apple_Themes extends Apple_News {
 			}
 
 			return $theme_settings;
-		}
-	}
-
-	/**
-	 * Get a formatting object for the given theme.
-	 * If no theme is provided, get current global formatting settings.
-	 *
-	 * @todo Remove this.
-	 *
-	 * @return array
-	 * @access private
-	 */
-	private function get_formatting_object( $name = null ) {
-		if ( empty( $name ) ) {
-			return new Admin_Apple_Settings_Section_Formatting( '' );
-		} else {
-			return new Admin_Apple_Settings_Section_Formatting(
-				$this->theme_edit_page_name,
-				false,
-				'apple_news_save_edit_theme',
-				$this->theme_key_from_name( $name )
-			);
 		}
 	}
 
