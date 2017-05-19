@@ -129,8 +129,15 @@ class Component_Spec {
 		$this->find_tokens( $spec, $new_tokens );
 		$this->find_tokens( $this->spec, $default_tokens );
 
-		// Removing tokens is fine, but new tokens cannot be added.
+		// Removing tokens is fine, but new tokens cannot be added, except for postmeta.
 		foreach ( $new_tokens as $token ) {
+
+			// If the new token references postmeta, allow it.
+			if ( 0 === strpos( $token, '#postmeta.' ) ) {
+				continue;
+			}
+
+			// Check for standard tokens.
 			if ( ! in_array( $token, $default_tokens, true ) ) {
 				return false;
 			}
