@@ -367,6 +367,16 @@ class Theme {
 	private $_values = array();
 
 	/**
+	 * Gets the active theme name.
+	 *
+	 * @access public
+	 * @return string The name of the active theme.
+	 */
+	public static function get_active_theme_name() {
+		return get_option( self::ACTIVE_KEY, '' );
+	}
+
+	/**
 	 * Gets the list of iOS fonts.
 	 *
 	 * @access public
