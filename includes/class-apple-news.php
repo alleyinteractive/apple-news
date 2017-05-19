@@ -396,6 +396,8 @@ class Apple_News {
 	/**
 	 * Migrates standalone customized JSON to each installed theme.
 	 *
+	 * @todo Update this to use new Theme class
+	 *
 	 * @access public
 	 */
 	public function migrate_custom_json_to_themes() {
@@ -552,6 +554,8 @@ class Apple_News {
 
 	/**
 	 * Upgrades settings and data formats to be compatible with version 1.3.0.
+	 *
+	 * @todo Update this to use new Theme class
 	 *
 	 * @access public
 	 */
