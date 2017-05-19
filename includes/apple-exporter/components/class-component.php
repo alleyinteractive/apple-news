@@ -485,7 +485,10 @@ abstract class Component {
 	protected function register_json( $spec_name, $values = array() ) {
 		$component_spec = $this->get_spec( $spec_name );
 		if ( ! empty( $component_spec ) ) {
-			$this->json = $component_spec->substitute_values( $values );
+			$post_id = ( ! empty( $this->workspace->content_id ) )
+				? $this->workspace->content_id
+				: 0;
+			$this->json = $component_spec->substitute_values( $values, $post_id );
 		}
 	}
 
@@ -502,7 +505,10 @@ abstract class Component {
 	protected function register_style( $name, $spec_name, $values = array(), $property = null ) {
 		$component_spec = $this->get_spec( $spec_name );
 		if ( ! empty( $component_spec ) ) {
-			$json = $component_spec->substitute_values( $values );
+			$post_id = ( ! empty( $this->workspace->content_id ) )
+				? $this->workspace->content_id
+				: 0;
+			$json = $component_spec->substitute_values( $values, $post_id );
 			$this->styles->register_style( $name, $json );
 			$this->set_json( $property, $name );
 		}
@@ -521,7 +527,10 @@ abstract class Component {
 	protected function register_layout( $name, $spec_name, $values = array(), $property = null ) {
 		$component_spec = $this->get_spec( $spec_name );
 		if ( ! empty( $component_spec ) ) {
-			$json = $component_spec->substitute_values( $values );
+			$post_id = ( ! empty( $this->workspace->content_id ) )
+				? $this->workspace->content_id
+				: 0;
+			$json = $component_spec->substitute_values( $values, $post_id );
 			$this->layouts->register_layout( $name, $json );
 			$this->set_json( $property, $name );
 		}
