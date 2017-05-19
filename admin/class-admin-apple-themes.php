@@ -84,7 +84,7 @@ class Admin_Apple_Themes extends Apple_News {
 			case 'font':
 
 				// Build the options list.
-				$fonts = Admin_Apple_Settings_Section::list_fonts();
+				$fonts = \Apple_Exporter\Theme::get_fonts();
 				foreach ( $fonts as $font_name ) {
 					$field .= sprintf(
 						'<option value="%s" %s>%s</option>',
@@ -198,6 +198,8 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Attempts to import a theme, given an associative array of theme properties.
 	 *
 	 * @param array $theme An associative array of theme properties to import.
+	 *
+	 * @todo Convert this to use new Theme class.
 	 *
 	 * @access public
 	 * @return bool|string True on success, or an error message on failure.
@@ -699,17 +701,23 @@ class Admin_Apple_Themes extends Apple_News {
 	/**
 	 * Handle saving theme settings from the edit form.
 	 *
-	 * @param string $name
 	 * @access private
 	 */
 	private function save_edit_theme() {
-		// Get the theme name
+
+		// Create a theme object.
+		$theme = new \Apple_Exporter\Theme;
+
+		// Get the theme name.
 		if ( ! isset( $_POST['apple_news_theme_name'] ) ) {
 			\Admin_Apple_Notice::error(
 				__( 'No theme name was set', 'apple-news' )
 			);
+
+			return;
 		}
 
+		// Ensure the theme name is valid.
 		$name = sanitize_text_field( $_POST['apple_news_theme_name'] );
 		if ( empty( $name ) ) {
 			\Admin_Apple_Notice::error(
@@ -717,24 +725,61 @@ class Admin_Apple_Themes extends Apple_News {
 			);
 		}
 
-		// Create a formatting object from the name.
-		// It will automatically save settings.
-		$formatting = $this->get_formatting_object( $name );
+		// Negotiate previous theme name.
+		$previous_name = ( ! empty( $_POST['apple_news_theme_name_previous'] ) )
+			? sanitize_text_field( $_POST['apple_news_theme_name_previous'] )
+			: '';
 
-		// Index the theme and check if it changed names
-		$this->index_theme( $name );
-		$previous_name = ( isset( $_POST['apple_news_theme_name_previous'] ) ) ? sanitize_text_field( $_POST['apple_news_theme_name_previous'] ) : '';
-		if ( $name !== $previous_name && ! empty( $previous_name ) ) {
-			$this->unindex_theme( $previous_name );
+		// Determine whether this theme is new, is an update, or is being renamed.
+		$action = 'update';
+		if ( empty( $previous_name ) ) {
+			$action = 'new';
+		} elseif ( $name !== $previous_name ) {
+			$action = 'rename';
 		}
 
-		// If this is the active theme, update global settings
-		if ( $name === $this->get_active_theme()
-			|| $previous_name === $this->get_active_theme() ) {
-			$this->set_theme( $name, true );
+		// If the theme is new or renamed, ensure the name isn't taken.
+		if ( ( 'new' === $action || 'rename' === $action )
+			&& \Apple_Exporter\Theme::theme_exists( $name )
+		) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'Theme name %s is already in use.', 'apple-news' ),
+				$name
+			) );
+
+			return;
 		}
 
-		// Indicate success
+		// Set the theme name.
+		if ( 'rename' === $action ) {
+			$theme->set_name( $previous_name );
+		} else {
+			$theme->set_name( $name );
+		}
+
+		// If the theme isn't new, load existing configuration from the database.
+		if ( 'new' !== $action ) {
+			$theme->load();
+		}
+
+		// Load postdata into the theme and try to save.
+		$theme->load_postdata();
+		if ( ! $theme->save() ) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'Could not save theme %1$s: %2$s', 'apple-news' ),
+				$name,
+				$theme->get_last_error()
+			) );
+
+			return;
+		}
+
+		// Process rename, if requested.
+		if ( 'rename' === $action ) {
+			$theme->rename( $name );
+		}
+
+		// Indicate success.
 		\Admin_Apple_Notice::success( sprintf(
 			__( 'The theme %s was saved successfully', 'apple-news' ),
 			$name
@@ -796,223 +841,6 @@ class Admin_Apple_Themes extends Apple_News {
 				'apple_news_save_edit_theme',
 				$this->theme_key_from_name( $name )
 			);
-		}
-	}
-
-	/**
-	 * Validate data for an import file upload.
-	 *
-	 * @param array $data
-	 * @return array|boolean
-	 * @access private
-	 */
-	private function validate_data( $data ) {
-		$settings = new \Apple_Exporter\Settings();
-		$default_settings = $settings->all();
-		$clean_settings = array();
-
-		// Check for the theme name
-		if ( ! isset( $data['theme_name'] ) ) {
-			return __( 'The theme file did not include a name', 'apple-news' );
-		}
-		$clean_settings['theme_name'] = $data['theme_name'];
-		unset( $data['theme_name'] );
-
-		// Get the formatting settings that are allowed to be included in a theme
-		$formatting = $this->get_formatting_object();
-		$formatting_settings = $formatting->get_settings();
-		if ( empty( $formatting_settings ) || ! is_array( $formatting_settings ) ) {
-			return __( 'There was an error retrieving formatting settings', 'apple-news' );
-		}
-		$valid_settings = array_keys( $formatting_settings );
-
-		// Get all available fonts in the system
-		$fonts = $formatting->list_fonts();
-
-		// Iterate through the valid settings and handle
-		// the appropriate validation and sanitization for each
-		foreach ( $valid_settings as $setting ) {
-			if ( ! isset( $data[ $setting ] ) ) {
-				// Get the default value instead.
-				// This ensures backwards compatiblity with theme files
-				// when new settings are added in future plugin versions.
-				if ( isset( $default_settings[ $setting ] ) ) {
-					$data[ $setting ] = $default_settings[ $setting ];
-				} else {
-					return sprintf(
-						__( 'The theme was missing the required setting %s and no default was found', 'apple-news' ),
-						$setting
-					);
-				}
-			}
-
-			// Find the appropriate sanitization method for each setting
-			if ( ! empty( $formatting_settings[ $setting ]['type'] ) ) {
-				// Figure out the proper sanitization function
-				if ( 'integer' === $formatting_settings[ $setting ]['type'] ) {
-					// Simply sanitize
-					$clean_settings[ $setting ] = absint( $data[ $setting ] );
-				} else if ( 'float' === $formatting_settings[ $setting ]['type'] ) {
-					// Simply sanitize
-					$clean_settings[ $setting ] = floatval( $data[ $setting ] );
-				} else if ( 'color' === $formatting_settings[ $setting ]['type'] ) {
-					// Sanitize
-					$color = sanitize_text_field( $data[ $setting ] );
-
-					// Validate
-					if ( false === preg_match( '/#([a-f0-9]{3}){1,2}\b/i', $color ) ) {
-						return sprintf(
-							__( 'Invalid color value %s specified for setting %s', 'apple-news' ),
-							$color,
-							$setting
-						);
-					}
-
-					$clean_settings[ $setting ] = $color;
-				} else if ( 'font' === $formatting_settings[ $setting ]['type'] ) {
-					// Sanitize
-					$color = sanitize_text_field( $data[ $setting ] );
-
-					// Validate
-					if ( ! in_array( $data[ $setting ], $fonts, true ) ) {
-						return sprintf(
-							__( 'Invalid font value %s specified for setting %s', 'apple-news' ),
-							$data[ $setting ],
-							$setting
-						);
-					}
-
-					$clean_settings[ $setting ] = $data[ $setting ];
-				} else if ( 'text' === $formatting_settings[ $setting ]['type'] ) {
-					// Simply sanitize
-					$clean_settings[ $setting ] = sanitize_text_field( $data[ $setting ] );
-				} else if ( is_array( $formatting_settings[ $setting ]['type'] ) ) {
-					// Sanitize
-					$color = sanitize_text_field( $data[ $setting ] );
-
-					// Validate
-					if ( ! in_array( $data[ $setting ], $formatting_settings[ $setting ]['type'], true ) ) {
-						return sprintf(
-							__( 'Invalid value %s specified for setting %s', 'apple-news' ),
-							$data[ $setting ],
-							$setting
-						);
-					}
-
-					$clean_settings[ $setting ] = $data[ $setting ];
-				}
-			} else if ( 'meta_component_order' === $setting ) {
-				// This needs to be handled specially
-				if ( ! is_array( $data[ $setting ] ) ) {
-					return __( 'Invalid value for meta component order', 'apple-news' );
-				}
-
-				// This has to be done separately for PHP 5.3 compatibility
-				$array_diff = array_diff( $data[ $setting ], array( 'cover', 'title', 'byline' ) );
-				if ( ! empty( $array_diff ) ) {
-					return __( 'Invalid value for meta component order', 'apple-news' );
-				}
-
-				// Sanitize
-				$clean_settings[ $setting ] = array_map( 'sanitize_text_field', $data[ $setting ] );
-			} else {
-				return sprintf(
-					__( 'An invalid setting was encountered: %s', 'apple-news' ),
-					$setting
-				);
-			}
-
-			// Remove this from the settings being processed so we know later
-			// if extra, invalid data was included.
-			unset( $data[ $setting ] );
-		}
-
-		// Handle JSON templates.
-		$this->validate_json_templates( $data, $clean_settings );
-
-		// Check if invalid data was present
-		if ( ! empty( $data ) ) {
-			return __( 'The theme file contained unsupported settings', 'apple-news' );
-		}
-
-		return $clean_settings;
-	}
-
-	/**
-	 * Ensures that JSON templates defined in a theme spec are valid.
-	 *
-	 * @param array &$data The data array containing import data for the theme.
-	 * @param array &$clean_settings The cleaned array containing the final settings.
-	 *
-	 * @access private
-	 */
-	private function validate_json_templates( &$data, &$clean_settings ) {
-
-		// If no JSON templates are defined in the theme, bail.
-		if ( empty( $data['json_templates'] )
-			|| ! is_array( $data['json_templates'] )
-		) {
-			return;
-		}
-
-		// Get a list of components that may have customized JSON.
-		$component_factory = new \Apple_Exporter\Component_Factory();
-		$component_factory->initialize();
-		$components = $component_factory::get_components();
-
-		// Iterate over components and look for customized JSON for each.
-		foreach ( $components as $component_class ) {
-
-			// Negotiate the component key.
-			$component = new $component_class;
-			$component_key = $component->get_component_name();
-
-			// Determine if this component key is defined in the import data.
-			if ( empty( $data['json_templates'][ $component_key ] )
-				|| ! is_array( $data['json_templates'][ $component_key ] )
-			) {
-				continue;
-			}
-
-			// Loop through component key and validate.
-			$current_component = &$data['json_templates'][ $component_key ];
-			$specs = $component->get_specs();
-			foreach ( $specs as $spec_key => $spec ) {
-
-				// Determine if the spec is defined as a JSON template in the theme.
-				if ( empty( $current_component[ $spec_key ] )
-					|| ! is_array( $current_component[ $spec_key ] )
-				) {
-					continue;
-				}
-
-				// Validate this spec.
-				if ( ! $spec->validate( $current_component[ $spec_key ] ) ) {
-					\Admin_Apple_Notice::error( sprintf(
-						__(
-							'The spec for %s had invalid tokens and cannot be saved',
-							'apple-news'
-						),
-						$component_key . '/' . $spec_key
-					) );
-
-					return;
-				}
-
-				// Clone this spec over to the clean settings array.
-				$clean_settings['json_templates'][ $component_key ][ $spec_key ] = $current_component[ $spec_key ];
-				unset( $data['json_templates'][ $component_key ][ $spec_key ] );
-			}
-
-			// Clean up.
-			if ( empty( $data['json_templates'][ $component_key] ) ) {
-				unset( $data['json_templates'][ $component_key ] );
-			}
-		}
-
-		// Clean up.
-		if ( empty( $data['json_templates'] ) ) {
-			unset( $data['json_templates'] );
 		}
 	}
 

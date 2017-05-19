@@ -33,6 +33,302 @@ class Theme {
 	const INDEX_KEY = 'apple_news_installed_themes';
 
 	/**
+	 * All available iOS fonts.
+	 *
+	 * @since 0.4.0
+	 * @access private
+	 * @var array
+	 */
+	private static $_fonts = array(
+		'AcademyEngravedLetPlain',
+		'AlNile-Bold',
+		'AlNile',
+		'AmericanTypewriter',
+		'AmericanTypewriter-Bold',
+		'AmericanTypewriter-Condensed',
+		'AmericanTypewriter-CondensedBold',
+		'AmericanTypewriter-CondensedLight',
+		'AmericanTypewriter-Light',
+		'AppleColorEmoji',
+		'AppleSDGothicNeo-Thin',
+		'AppleSDGothicNeo-Light',
+		'AppleSDGothicNeo-Regular',
+		'AppleSDGothicNeo-Medium',
+		'AppleSDGothicNeo-SemiBold',
+		'AppleSDGothicNeo-Bold',
+		'AppleSDGothicNeo-Medium',
+		'ArialMT',
+		'Arial-BoldItalicMT',
+		'Arial-BoldMT',
+		'Arial-ItalicMT',
+		'ArialHebrew',
+		'ArialHebrew-Bold',
+		'ArialHebrew-Light',
+		'ArialRoundedMTBold',
+		'Avenir-Black',
+		'Avenir-BlackOblique',
+		'Avenir-Book',
+		'Avenir-BookOblique',
+		'Avenir-Heavy',
+		'Avenir-HeavyOblique',
+		'Avenir-Light',
+		'Avenir-LightOblique',
+		'Avenir-Medium',
+		'Avenir-MediumOblique',
+		'Avenir-Oblique',
+		'Avenir-Roman',
+		'AvenirNext-Bold',
+		'AvenirNext-BoldItalic',
+		'AvenirNext-DemiBold',
+		'AvenirNext-DemiBoldItalic',
+		'AvenirNext-Heavy',
+		'AvenirNext-HeavyItalic',
+		'AvenirNext-Italic',
+		'AvenirNext-Medium',
+		'AvenirNext-MediumItalic',
+		'AvenirNext-Regular',
+		'AvenirNext-UltraLight',
+		'AvenirNext-UltraLightItalic',
+		'AvenirNext-Bold',
+		'AvenirNext-BoldItalic',
+		'AvenirNext-DemiBold',
+		'AvenirNext-DemiBoldItalic',
+		'AvenirNext-Heavy',
+		'AvenirNext-HeavyItalic',
+		'AvenirNext-Italic',
+		'AvenirNext-Medium',
+		'AvenirNext-MediumItalic',
+		'AvenirNext-Regular',
+		'AvenirNext-UltraLight',
+		'AvenirNext-UltraLightItalic',
+		'BanglaSangamMN',
+		'BanglaSangamMN-Bold',
+		'Baskerville',
+		'Baskerville-Bold',
+		'Baskerville-BoldItalic',
+		'Baskerville-Italic',
+		'Baskerville-SemiBold',
+		'Baskerville-SemiBoldItalic',
+		'BodoniSvtyTwoITCTT-Bold',
+		'BodoniSvtyTwoITCTT-Book',
+		'BodoniSvtyTwoITCTT-BookIta',
+		'BodoniSvtyTwoOSITCTT-Bold',
+		'BodoniSvtyTwoOSITCTT-Book',
+		'BodoniSvtyTwoOSITCTT-BookIt',
+		'BodoniSvtyTwoSCITCTT-Book',
+		'BradleyHandITCTT-Bold',
+		'ChalkboardSE-Bold',
+		'ChalkboardSE-Light',
+		'ChalkboardSE-Regular',
+		'Chalkduster',
+		'Cochin',
+		'Cochin-Bold',
+		'Cochin-BoldItalic',
+		'Cochin-Italic',
+		'Copperplate',
+		'Copperplate-Bold',
+		'Copperplate-Light',
+		'Courier',
+		'Courier-Bold',
+		'Courier-BoldOblique',
+		'Courier-Oblique',
+		'CourierNewPS-BoldItalicMT',
+		'CourierNewPS-BoldMT',
+		'CourierNewPS-ItalicMT',
+		'CourierNewPSMT',
+		'DBLCDTempBlack',
+		'DINAlternate-Bold',
+		'DINCondensed-Bold',
+		'DamascusBold',
+		'Damascus',
+		'DamascusLight',
+		'DamascusMedium',
+		'DamascusSemiBold',
+		'DevanagariSangamMN',
+		'DevanagariSangamMN-Bold',
+		'Didot',
+		'Didot-Bold',
+		'Didot-Italic',
+		'DiwanMishafi',
+		'EuphemiaUCAS',
+		'EuphemiaUCAS-Bold',
+		'EuphemiaUCAS-Italic',
+		'Farah',
+		'Futura-CondensedExtraBold',
+		'Futura-CondensedMedium',
+		'Futura-Medium',
+		'Futura-MediumItalic',
+		'GeezaPro',
+		'GeezaPro-Bold',
+		'Georgia',
+		'Georgia-Bold',
+		'Georgia-BoldItalic',
+		'Georgia-Italic',
+		'GillSans',
+		'GillSans-Bold',
+		'GillSans-BoldItalic',
+		'GillSans-Italic',
+		'GillSans-Light',
+		'GillSans-LightItalic',
+		'GujaratiSangamMN',
+		'GujaratiSangamMN-Bold',
+		'GurmukhiMN',
+		'GurmukhiMN-Bold',
+		'STHeitiSC-Light',
+		'STHeitiSC-Medium',
+		'STHeitiTC-Light',
+		'STHeitiTC-Medium',
+		'Helvetica',
+		'Helvetica-Bold',
+		'Helvetica-BoldOblique',
+		'Helvetica-Light',
+		'Helvetica-LightOblique',
+		'Helvetica-Oblique',
+		'HelveticaNeue',
+		'HelveticaNeue-Bold',
+		'HelveticaNeue-BoldItalic',
+		'HelveticaNeue-CondensedBlack',
+		'HelveticaNeue-CondensedBold',
+		'HelveticaNeue-Italic',
+		'HelveticaNeue-Light',
+		'HelveticaNeue-LightItalic',
+		'HelveticaNeue-Medium',
+		'HelveticaNeue-MediumItalic',
+		'HelveticaNeue-UltraLight',
+		'HelveticaNeue-UltraLightItalic',
+		'HelveticaNeue-Thin',
+		'HelveticaNeue-ThinItalic',
+		'HiraKakuProN-W3',
+		'HiraKakuProN-W6',
+		'HiraMinProN-W3',
+		'HiraMinProN-W6',
+		'HoeflerText-Black',
+		'HoeflerText-BlackItalic',
+		'HoeflerText-Italic',
+		'HoeflerText-Regular',
+		'IowanOldStyle-Bold',
+		'IowanOldStyle-BoldItalic',
+		'IowanOldStyle-Italic',
+		'IowanOldStyle-Roman',
+		'Kailasa',
+		'Kailasa-Bold',
+		'KannadaSangamMN',
+		'KannadaSangamMN-Bold',
+		'KhmerSangamMN',
+		'KohinoorDevanagari-Book',
+		'KohinoorDevanagari-Light',
+		'KohinoorDevanagari-Medium',
+		'LaoSangamMN',
+		'MalayalamSangamMN',
+		'MalayalamSangamMN-Bold',
+		'Marion-Bold',
+		'Marion-Italic',
+		'Marion-Regular',
+		'Menlo-BoldItalic',
+		'Menlo-Regular',
+		'Menlo-Bold',
+		'Menlo-Italic',
+		'MarkerFelt-Thin',
+		'MarkerFelt-Wide',
+		'Noteworthy-Bold',
+		'Noteworthy-Light',
+		'Optima-Bold',
+		'Optima-BoldItalic',
+		'Optima-ExtraBlack',
+		'Optima-Italic',
+		'Optima-Regular',
+		'OriyaSangamMN',
+		'OriyaSangamMN-Bold',
+		'Palatino-Bold',
+		'Palatino-BoldItalic',
+		'Palatino-Italic',
+		'Palatino-Roman',
+		'Papyrus',
+		'Papyrus-Condensed',
+		'PartyLetPlain',
+		'SanFranciscoDisplay-Black',
+		'SanFranciscoDisplay-Bold',
+		'SanFranciscoDisplay-Heavy',
+		'SanFranciscoDisplay-Light',
+		'SanFranciscoDisplay-Medium',
+		'SanFranciscoDisplay-Regular',
+		'SanFranciscoDisplay-Semibold',
+		'SanFranciscoDisplay-Thin',
+		'SanFranciscoDisplay-Ultralight',
+		'SanFranciscoRounded-Black',
+		'SanFranciscoRounded-Bold',
+		'SanFranciscoRounded-Heavy',
+		'SanFranciscoRounded-Light',
+		'SanFranciscoRounded-Medium',
+		'SanFranciscoRounded-Regular',
+		'SanFranciscoRounded-Semibold',
+		'SanFranciscoRounded-Thin',
+		'SanFranciscoRounded-Ultralight',
+		'SanFranciscoText-Bold',
+		'SanFranciscoText-BoldG1',
+		'SanFranciscoText-BoldG2',
+		'SanFranciscoText-BoldG3',
+		'SanFranciscoText-BoldItalic',
+		'SanFranciscoText-BoldItalicG1',
+		'SanFranciscoText-BoldItalicG2',
+		'SanFranciscoText-BoldItalicG3',
+		'SanFranciscoText-Heavy',
+		'SanFranciscoText-HeavyItalic',
+		'SanFranciscoText-Light',
+		'SanFranciscoText-LightItalic',
+		'SanFranciscoText-Medium',
+		'SanFranciscoText-MediumItalic',
+		'SanFranciscoText-Regular',
+		'SanFranciscoText-RegularG1',
+		'SanFranciscoText-RegularG2',
+		'SanFranciscoText-RegularG3',
+		'SanFranciscoText-RegularItalic',
+		'SanFranciscoText-RegularItalicG1',
+		'SanFranciscoText-RegularItalicG2',
+		'SanFranciscoText-RegularItalicG3',
+		'SanFranciscoText-Semibold',
+		'SanFranciscoText-SemiboldItalic',
+		'SanFranciscoText-Thin',
+		'SanFranciscoText-ThinItalic',
+		'SavoyeLetPlain',
+		'SinhalaSangamMN',
+		'SinhalaSangamMN-Bold',
+		'SnellRoundhand',
+		'SnellRoundhand-Black',
+		'SnellRoundhand-Bold',
+		'Superclarendon-Regular',
+		'Superclarendon-BoldItalic',
+		'Superclarendon-Light',
+		'Superclarendon-BlackItalic',
+		'Superclarendon-Italic',
+		'Superclarendon-LightItalic',
+		'Superclarendon-Bold',
+		'Superclarendon-Black',
+		'Symbol',
+		'TamilSangamMN',
+		'TamilSangamMN-Bold',
+		'TeluguSangamMN',
+		'TeluguSangamMN-Bold',
+		'Thonburi',
+		'Thonburi-Bold',
+		'Thonburi-Light',
+		'TimesNewRomanPS-BoldItalicMT',
+		'TimesNewRomanPS-BoldMT',
+		'TimesNewRomanPS-ItalicMT',
+		'TimesNewRomanPSMT',
+		'Trebuchet-BoldItalic',
+		'TrebuchetMS',
+		'TrebuchetMS-Bold',
+		'TrebuchetMS-Italic',
+		'Verdana',
+		'Verdana-Bold',
+		'Verdana-BoldItalic',
+		'Verdana-Italic',
+		'ZapfDingbatsITC',
+		'Zapfino',
+	);
+
+	/**
 	 * Option group configuration, to be used when printing fields.
 	 *
 	 * @var array
@@ -47,8 +343,17 @@ class Theme {
 	private static $_options = array();
 
 	/**
+	 * Keeps track of the last error message generated.
+	 *
+	 * @access private
+	 * @var string
+	 */
+	private $_last_error = '';
+
+	/**
 	 * The name of this theme.
 	 *
+	 * @access private
 	 * @var string
 	 */
 	private $_name = '';
@@ -56,9 +361,20 @@ class Theme {
 	/**
 	 * Values for theme options for this theme.
 	 *
+	 * @access private
 	 * @var array
 	 */
 	private $_values = array();
+
+	/**
+	 * Gets the list of iOS fonts.
+	 *
+	 * @access public
+	 * @return array The list of iOS fonts.
+	 */
+	public static function get_fonts() {
+		return self::$_fonts;
+	}
 
 	/**
 	 * Gets a list of registered themes.
@@ -102,6 +418,18 @@ class Theme {
 	}
 
 	/**
+	 * Determine if a theme with a given name exists.
+	 *
+	 * @param string $name The name of the theme to check.
+	 *
+	 * @access public
+	 * @return bool True if the theme exists, false if not.
+	 */
+	public static function theme_exists( $name ) {
+		return ( in_array( $name, self::get_registry(), true ) );
+	}
+
+	/**
 	 * Gets the name of a theme key used in the options table based on a name.
 	 *
 	 * @param string $name The name to use when generating the key.
@@ -111,6 +439,20 @@ class Theme {
 	 */
 	public static function theme_key( $name ) {
 		return 'apple_news_theme_' . md5( $name );
+	}
+
+	/**
+	 * Deletes this theme from the database and removes it from the theme registry.
+	 *
+	 * @access public
+	 */
+	public function delete() {
+
+		// Delete the theme from the options table.
+		delete_option( self::theme_key( $this->get_name() ) );
+
+		// Remove the theme from the theme registry.
+		$this->_remove_from_registry( $this->get_name() );
 	}
 
 	/**
@@ -127,6 +469,16 @@ class Theme {
 		}
 
 		return self::$_groups;
+	}
+
+	/**
+	 * Retrieves the last error logged.
+	 *
+	 * @access public
+	 * @return string The text of the last error.
+	 */
+	public function get_last_error() {
+		return $this->_last_error;
 	}
 
 	/**
@@ -216,8 +568,6 @@ class Theme {
 				continue;
 			}
 
-			// TODO: Add sanitization and keep track of last error message if failed
-
 			// Store the value in the list of overrides.
 			$this->_values[ $key ] = $value;
 		}
@@ -226,24 +576,118 @@ class Theme {
 	}
 
 	/**
-	 * Saves the current theme.
+	 * Loads fields based on postdata.
 	 *
 	 * @access public
 	 */
+	public function load_postdata() {
+
+		// Remove all configured values except for JSON templates.
+		$json_templates = ( ! empty( $this->_values['json_templates'] ) )
+			? $this->_values['json_templates']
+			: array();
+		$this->_values = array( 'json_templates' => $json_templates );
+
+		// Loop through options and extract each from postdata.
+		$options = self::get_options();
+		foreach ( $options as $option_key => $option ) {
+
+			// If there is no value for this option key, skip it.
+			if ( ! isset( $_POST[ $option_key ] ) ) {
+				continue;
+			}
+
+			// Perform basic sanitization based on option type.
+			switch ( $option['type'] ) {
+				case 'float':
+					$this->_values[ $option_key ] = floatval( $_POST[ $option_key ] );
+
+					break;
+
+				case 'integer':
+					$this->_values[ $option_key ] = absint( $_POST[ $option_key ] );
+
+					break;
+
+				default:
+
+					// Handle arrays.
+					if ( is_array( $option['type'] )
+						&& is_array( $_POST[ $option_key ] )
+					) {
+						$this->_values[ $option_key ] = array_map(
+							'sanitize_text_field',
+							$_POST[ $option_key ]
+						);
+
+						break;
+					}
+
+					// Fall back to simple text field sanitization.
+					$this->_values[ $option_key ] = sanitize_text_field(
+						$_POST[ $option_key ]
+					);
+
+					break;
+			}
+		}
+	}
+
+	/**
+	 * Rename this theme.
+	 *
+	 * @param string $name The name to rename to.
+	 *
+	 * @access public
+	 * @return bool True on success, false on failure.
+	 */
+	public function rename( $name ) {
+
+		// Get the list of installed themes and ensure the new name isn't taken.
+		if ( self::theme_exists( $name ) ) {
+			$this->_log_error( sprintf(
+				__( 'Theme name %s is already in use.', 'apple-news' ),
+				$name
+			) );
+
+			return false;
+		}
+
+		// Change the name of this theme and attempt to save.
+		$old_name = $this->get_name();
+		$this->set_name( $name );
+		if ( ! $this->save() ) {
+			return false;
+		}
+
+		// Remove the old theme.
+		$old_theme = new self;
+		$old_theme->set_name( $old_name );
+		$old_theme->delete();
+
+		return true;
+	}
+
+	/**
+	 * Saves the current theme.
+	 *
+	 * @access public
+	 * @return bool True on success, false on failure.
+	 */
 	public function save() {
+
+		// Ensure theme is valid before saving.
+		if ( ! $this->validate() ) {
+			return false;
+		}
 
 		// Save the theme.
 		update_option( self::theme_key( $this->get_name() ), $this->_values, false );
 
-		// Ensure the theme is registered.
-		$registry = $this->get_registry();
-		if ( in_array( $this->get_name(), $registry, true ) ) {
-			return;
-		}
-
 		// Add to the registry.
-		$registry[] = $this->get_name();
-		$this->_save_registry( $registry );
+		$this->_add_to_registry( $this->get_name() );
+
+		return true;
 	}
 
 	/**
@@ -274,6 +718,169 @@ class Theme {
 	 */
 	public function set_name( $name ) {
 		$this->_name = $name;
+	}
+
+	/**
+	 * Sanitizes and validates the values array.
+	 *
+	 * If an error is encountered, it will be saved in the $_last_error property.
+	 *
+	 * @access public
+	 * @return bool True if the values are valid, false if not.
+	 */
+	public function validate() {
+
+		// If values is not an array, then the configuration is invalid.
+		if ( ! is_array( $this->_values ) ) {
+			$this->_log_error( __(
+				'Theme values were not in array format.',
+				'apple-news'
+			) );
+
+			return false;
+		}
+
+		// Loop through provided values and check each.
+		$options = $this->get_options();
+		foreach ( $this->_values as $key => &$value ) {
+
+			// If the provided key is not in the valid options spec, mark invalid.
+			if ( ! isset( $options[ $key ] ) ) {
+				$this->_log_error( sprintf(
+					__( 'An invalid setting was encountered: %s', 'apple-news' ),
+					$key
+				) );
+
+				return false;
+			}
+
+			// Fork for sanitization type.
+			switch ( $options[ $key ]['type'] ) {
+				case 'color':
+
+					// Sanitize.
+					$value = sanitize_text_field( $value );
+
+					// Ensure the color value provided is valid.
+					if ( false === preg_match( '/#([a-f0-9]{3}){1,2}\b/i', $value ) ) {
+						$this->_log_error( sprintf(
+							__(
+								'Invalid color value %1$s specified for setting %2$s',
+								'apple-news'
+							),
+							$value,
+							$key
+						) );
+
+						return false;
+					}
+
+					break;
+
+				case 'float':
+					$value = floatval( $value );
+
+					break;
+
+				case 'font':
+
+					// Sanitize.
+					$value = sanitize_text_field( $value );
+
+					// Ensure the named font is part of the whitelist.
+					if ( ! in_array( $value, self::$_fonts, true ) ) {
+						$this->_log_error( sprintf(
+							__(
+								'Invalid font value %1$s specified for setting %2$s',
+								'apple-news'
+							),
+							$value,
+							$key
+						) );
+
+						return false;
+					}
+
+					break;
+
+				case 'integer':
+					$value = absint( $value );
+
+					break;
+
+				default:
+
+					// Handle array literals.
+					if ( is_array( $options[ $key ]['type'] ) ) {
+
+						// Sanitize.
+						$value = array_map( 'sanitize_text_field', $value );
+
+						// Ensure that the provided value is one that is listed.
+						if ( ! in_array( $value, $options[ $key ]['type'], true ) ) {
+							$this->_log_error( sprintf(
+								__( 'Invalid value %1$s specified for setting %2$s', 'apple-news' ),
+								$value,
+								$key
+							) );
+
+							return false;
+						}
+
+						break;
+					}
+
+					// Fall back to treating as a standard text field.
+					$value = sanitize_text_field( $value );
+
+					break;
+			}
+		}
+
+		// Validate meta_component_order separately.
+		if ( ! empty( $this->_values['meta_component_order'] ) ) {
+
+			// Ensure no values were provided other than what is permissible.
+			foreach ( $this->_values['meta_component_order'] as $component ) {
+				if ( ! in_array( $component, $options['meta_component_order']['default'], true ) ) {
+					$this->_log_error(
+						__( 'Invalid value for meta component order', 'apple-news' )
+					);
+
+					return false;
+				}
+			}
+		}
+
+		// Handle JSON templates.
+		$this->validate_json_templates();
+
+		return true;
+	}
+
+	/**
+	 * Adds a theme to the registry.
+	 *
+	 * @param string $name The name of the theme to add.
+	 *
+	 * @access private
+	 */
+	private function _add_to_registry( $name ) {
+
+		// Fetch the registry.
+		$registry = self::get_registry();
+
+		// Attempt to find the theme in the registry.
+		$key = array_search( $name, $registry, true );
+		if ( false !== $key ) {
+			return;
+		}
+
+		// Add the theme from the registry.
+		$registry[] = $name;
+
+		// Update the registry.
+		update_option( self::INDEX_KEY, $registry, false );
 	}
 
 	/**
@@ -512,7 +1119,6 @@ class Theme {
 			'blockquote_line_height' => array(
 				'default' => 24,
 				'label' => __( 'Blockquote line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'blockquote_size' => array(
@@ -544,7 +1150,6 @@ class Theme {
 			'body_line_height' => array(
 				'default' => 24,
 				'label' => __( 'Body line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'body_link_color' => array(
@@ -588,7 +1193,6 @@ class Theme {
 			'byline_line_height' => array(
 				'default' => 24,
 				'label' => __( 'Byline line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'byline_size' => array(
@@ -615,7 +1219,6 @@ class Theme {
 			'caption_line_height' => array(
 				'default' => 24,
 				'label' => __( 'Caption line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'caption_size' => array(
@@ -688,7 +1291,6 @@ class Theme {
 			'header1_line_height' => array(
 				'default' => 52,
 				'label' => __( 'Header 1 line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'header1_size' => array(
@@ -715,7 +1317,6 @@ class Theme {
 			'header2_line_height' => array(
 				'default' => 36,
 				'label' => __( 'Header 2 line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'header2_size' => array(
@@ -742,7 +1343,6 @@ class Theme {
 			'header3_line_height' => array(
 				'default' => 28,
 				'label' => __( 'Header 3 line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'header3_size' => array(
@@ -769,7 +1369,6 @@ class Theme {
 			'header4_line_height' => array(
 				'default' => 26,
 				'label' => __( 'Header 4 line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'header4_size' => array(
@@ -796,7 +1395,6 @@ class Theme {
 			'header5_line_height' => array(
 				'default' => 24,
 				'label' => __( 'Header 5 line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'header5_size' => array(
@@ -823,7 +1421,6 @@ class Theme {
 			'header6_line_height' => array(
 				'default' => 22,
 				'label' => __( 'Header 6 line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'header6_size' => array(
@@ -863,9 +1460,7 @@ class Theme {
 			'meta_component_order' => array(
 				'default' => array( 'cover', 'title', 'byline' ),
 				'callback' => array( get_class( $this ), 'render_meta_component_order' ),
-				'sanitize' => function ( $value ) {
-					return array_map( 'sanitize_text_field', $value );
-				},
+				'type' => 'array',
 			),
 			'monospaced_color' => array(
 				'default' => '#4f4f4f',
@@ -880,7 +1475,6 @@ class Theme {
 			'monospaced_line_height' => array(
 				'default' => 20,
 				'label' => __( 'Monospaced line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'monospaced_size' => array(
@@ -928,7 +1522,6 @@ class Theme {
 			'pullquote_line_height' => array(
 				'default' => 48,
 				'label' => __( 'Pull quote line height', 'apple-news' ),
-				'sanitize' => 'floatval',
 				'type' => 'float',
 			),
 			'pullquote_size' => array(
@@ -951,24 +1544,115 @@ class Theme {
 	}
 
 	/**
-	 * Updates the theme registry in the options table.
+	 * Sets the last error to the provided message.
 	 *
-	 * @param array $registry The registry to save.
+	 * @param string $message The message to set.
+	 *
+	 * @access private
+	 */
+	private function _log_error( $message ) {
+		$this->_last_error = $message;
+	}
+
+	/**
+	 * Removes a theme from the registry.
+	 *
+	 * @param string $name The name of the theme to remove.
+	 *
+	 * @access private
+	 */
+	private function _remove_from_registry( $name ) {
+
+		// Fetch the registry.
+		$registry = self::get_registry();
+
+		// Attempt to find the theme in the registry.
+		$key = array_search( $name, $registry, true );
+		if ( false === $key ) {
+			return;
+		}
+
+		// Remove the theme from the registry.
+		unset( $registry[ $key ] );
+
+		// Update the registry.
+		update_option( self::INDEX_KEY, $registry, false );
+	}
+
+	/**
+	 * Ensures that JSON templates defined in a theme spec are valid.
 	 *
 	 * @access private
 	 * @return bool True on success, false on failure.
 	 */
-	private function _save_registry( $registry ) {
+	private function _validate_json_templates() {
 
-		// Ensure the registry is an array.
-		if ( ! is_array( $registry ) ) {
+		// If no JSON templates are defined, count as a success.
+		if ( empty( $this->_values['json_templates'] ) ) {
+			return true;
+		}
+
+		// Get a list of components that may have customized JSON.
+		$component_factory = new \Apple_Exporter\Component_Factory();
+		$component_factory->initialize();
+		$components = $component_factory::get_components();
+
+		// Iterate over components and look for customized JSON for each.
+		$invalid_components = $this->_values['json_templates'];
+		foreach ( $components as $component_class ) {
+
+			// Negotiate the component key.
+			$component = new $component_class;
+			$component_key = $component->get_component_name();
+
+			// Determine if this component key is defined in this theme.
+			if ( empty( $this->_values['json_templates'][ $component_key ] )
+				|| ! is_array( $this->_values['json_templates'][ $component_key ] )
+			) {
+				continue;
+			}
+
+			// Loop through component key and validate.
+			$current_component = &$this->_values['json_templates'][ $component_key ];
+			$specs = $component->get_specs();
+			foreach ( $specs as $spec_key => $spec ) {
+
+				// Determine if the spec is defined as a JSON template in the theme.
+				if ( empty( $current_component[ $spec_key ] )
+					|| ! is_array( $current_component[ $spec_key ] )
+				) {
+					continue;
+				}
+
+				// Validate this spec.
+				if ( ! $spec->validate( $current_component[ $spec_key ] ) ) {
+					$this->_log_error( sprintf(
+						__(
+							'The spec for %s had invalid tokens and cannot be saved',
+							'apple-news'
+						),
+						$component_key . '/' . $spec_key
+					) );
+
+					return false;
+				}
+
+				// Log this spec as valid.
+				unset( $invalid_components[ $component_key ][ $spec_key ] );
+				$invalid_components[ $component_key ] = array_filter( $invalid_components[ $component_key ] );
+				$invalid_components = array_filter( $invalid_components );
+			}
+		}
+
+		// If there are any invalid components, fail.
+		if ( ! empty( $invalid_components ) ) {
+			$this->_log_error(
+				__( 'The theme file contained unsupported settings', 'apple-news' )
+			);
+
 			return false;
 		}
 
-		// Sanitize values before insertion.
-		$registry = array_map( 'sanitize_text_field', $registry );
-
-		// Update the registry.
-		update_option( self::INDEX_KEY, $registry, false );
+		return true;
 	}
 }
