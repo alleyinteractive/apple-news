@@ -99,14 +99,14 @@ class Component_Spec {
 			if ( is_array( $value ) ) {
 
 				// Call this function recursively to handle the substitution on this child array.
-				$spec[ $key ] = $this->value_iterator( $spec[ $key ], $values );
+				$spec[ $key ] = $this->value_iterator( $spec[ $key ], $values, $post_id );
 			} elseif ( ! is_array( $value ) && $this->is_token( $value ) ) {
 
 				// Fork for postmeta vs. standard tokens.
 				if ( 0 === strpos( $value, '#postmeta.' ) ) {
 					$meta_key = substr( $value, strlen( '#postmeta.' ), -1 );
 					$meta_value = get_post_meta( $post_id, $meta_key, true );
-					$value = ( ! empty( $meta_value ) ) ? $value : '';
+					$value = ( ! empty( $meta_value ) ) ? $meta_value : '';
 				} elseif ( ! empty( $values[ $value ] ) ) {
 					$value = $values[ $value ];
 				}
@@ -234,6 +234,10 @@ class Component_Spec {
 		$component_key = $this->key_from_name( $this->component );
 		$spec_key = $this->key_from_name( $this->name );
 		$theme_settings = $themes->get_theme( $theme );
+		// TODO: REFACTOR THIS
+		if ( ! is_array( $theme_settings['json_templates'] ) ) {
+			$theme_settings['json_templates'] = array();
+		}
 		$theme_settings['json_templates'][ $component_key ][ $spec_key ] = $json;
 		$themes->save_theme( $theme, $theme_settings, true );
 
