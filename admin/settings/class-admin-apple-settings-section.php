@@ -158,16 +158,15 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * @param string $section_option_name
 	 */
 	function __construct( $page, $hidden = false, $save_action = 'apple_news_options', $section_option_name = null ) {
-		$this->page									= $page;
-		self::$section_option_name	= ( ! empty( $section_option_name ) ) ? $section_option_name : self::$option_name;
-		$this->save_action					= $save_action;
-		$base_settings							= new \Apple_Exporter\Settings;
-		self::$base_settings				= $base_settings->all();
-		self::$loaded_settings			= get_option( self::$section_option_name );
-		$this->settings							= apply_filters( 'apple_news_section_settings', $this->settings, $page );
-		$this->groups								= apply_filters( 'apple_news_section_groups', $this->groups, $page );
-		self::$fonts								= apply_filters( 'apple_news_fonts_list', self::$fonts );
-		$this->hidden								= $hidden;
+		$this->page = $page;
+		self::$section_option_name = ( ! empty( $section_option_name ) ) ? $section_option_name : self::$option_name;
+		$this->save_action = $save_action;
+		$base_settings = new \Apple_Exporter\Settings;
+		self::$base_settings = $base_settings->all();
+		self::$loaded_settings = get_option( self::$section_option_name );
+		$this->settings = apply_filters( 'apple_news_section_settings', $this->settings, $page );
+		$this->groups = apply_filters( 'apple_news_section_groups', $this->groups, $page );
+		$this->hidden = $hidden;
 
 		// Save settings if necessary
 		$this->save_settings();
@@ -277,38 +276,6 @@ class Admin_Apple_Settings_Section extends Apple_News {
 				$field .= ">" . esc_html( $option ) . "</option>";
 			}
 			$field .= '</select>';
-		} elseif ( 'font' === $type ) {
-			$field = '<select class="select2 font" id="%s" name="%s">';
-			foreach ( self::$fonts as $option ) {
-				$field .= "<option value='" . esc_attr( $option ) . "'";
-				if ( $option === $value ) {
-					$field .= ' selected ';
-				}
-				$field .= ">" . esc_html( $option ) . "</option>";
-			}
-			$field .= '</select>';
-		} elseif ( 'boolean' === $type ) {
-			$field = '<select name="%s">';
-
-			$field .= '<option value="yes"';
-			if ( 'yes' === $value ) {
-				$field .= ' selected ';
-			}
-			$field .= '>Yes</option>';
-
-			$field .= '<option value="no"';
-			if ( 'yes' !== $value ) {
-				$field .= ' selected ';
-			}
-			$field .= '>No</option>';
-
-			$field .= '</select>';
-		} elseif ( 'integer' === $type ) {
-			$field = '<input type="number" id="%s" name="%s" value="%s" size="%s" %s>';
-		} elseif ( 'float' === $type ) {
-			$field = '<input class="input-float" placeholder="' . esc_attr( $default_value ) . '" type="text" step="any" id="%s" name="%s" value="%s" size="%s">';
-		} elseif ( 'color' === $type ) {
-			$field = '<input type="text" id="%s" name="%s" value="%s" class="apple-news-color-picker" %s>';
 		} elseif ( 'password' === $type ) {
 			$field = '<input type="password" id="%s" name="%s" value="%s" size="%s" %s>';
 		} elseif ( 'hidden' === $type ) {
@@ -325,7 +292,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		}
 
 		// Use the proper template to build the field
-		if ( is_array( $type ) || 'font' === $type || 'boolean' === $type ) {
+		if ( is_array( $type ) ) {
 			return sprintf(
 				$field,
 				esc_attr( $name ),
