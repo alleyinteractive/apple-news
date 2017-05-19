@@ -19,11 +19,18 @@ namespace Apple_Exporter;
 class Theme {
 
 	/**
-	 * Prefix for individual theme keys.
+	 * Key for the active theme.
 	 *
 	 * @var string
 	 */
-	const THEME_KEY_PREFIX = 'apple_news_theme_';
+	const ACTIVE_KEY = 'apple_news_active_theme';
+
+	/**
+	 * Key for the theme index.
+	 *
+	 * @var string
+	 */
+	const INDEX_KEY = 'apple_news_installed_themes';
 
 	/**
 	 * Option group configuration, to be used when printing fields.
@@ -52,6 +59,42 @@ class Theme {
 	 * @var array
 	 */
 	private $_values = array();
+
+	/**
+	 * Renders the meta component order field.
+	 *
+	 * @access public
+	 */
+	public static function render_meta_component_order( $theme ) {
+
+		// Get the current order.
+		$component_order = $theme->get_value( 'meta_component_order' );
+		if ( empty( $component_order ) || ! is_array( $component_order ) ) {
+			$component_order = array();
+		}
+
+		// Get inactive components.
+		$inactive_components = array_diff(
+			self::$_options['meta_component_order']['default'],
+			$component_order
+		);
+
+		// Load the template.
+		include dirname( dirname( plugin_dir_path( __FILE__ ) ) )
+			. '/admin/partials/field_meta_component_order.php';
+	}
+
+	/**
+	 * Gets the name of a theme key used in the options table based on a name.
+	 *
+	 * @param string $name The name to use when generating the key.
+	 *
+	 * @access public
+	 * @return string The compiled key.
+	 */
+	public static function theme_key( $name ) {
+		return 'apple_news_theme_' . md5( $name );
+	}
 
 	/**
 	 * Returns an array of groups of configurable options for themes.
@@ -132,7 +175,7 @@ class Theme {
 	public function load() {
 
 		// Attempt to load the theme from the database.
-		$values = get_option( self::THEME_KEY_PREFIX . md5( $this->get_name() ) );
+		$values = get_option( self::theme_key( $this->get_name() ) );
 		if ( ! is_array( $values ) ) {
 			return false;
 		}
@@ -158,27 +201,45 @@ class Theme {
 	}
 
 	/**
-	 * Renders the meta component order field.
+	 * Saves the current theme.
 	 *
 	 * @access public
 	 */
-	public static function render_meta_component_order( $theme ) {
+	public function save() {
 
-		// Get the current order.
-		$component_order = $theme->get_value( 'meta_component_order' );
-		if ( empty( $component_order ) || ! is_array( $component_order ) ) {
-			$component_order = array();
+		// Save the theme.
+		update_option( self::theme_key( $this->get_name() ), $this->_values, false );
+
+		// Ensure the theme is registered.
+		$registry = $this->_fetch_registry();
+		if ( in_array( $this->get_name(), $registry, true ) ) {
+			return;
 		}
 
-		// Get inactive components.
-		$inactive_components = array_diff(
-			self::$_options['meta_component_order']['default'],
-			$component_order
-		);
+		// Add to the registry.
+		$registry[] = $this->get_name();
+		$this->_save_registry( $registry );
+	}
 
-		// Load the template.
-		include dirname( dirname( plugin_dir_path( __FILE__ ) ) )
-			. '/admin/partials/field_meta_component_order.php';
+	/**
+	 * Sets the current theme as the active theme.
+	 *
+	 * @access public
+	 * @return bool True on success, false on failure.
+	 */
+	public function set_active() {
+
+		// Ensure that this theme is saved before setting it as active.
+		$theme = new self;
+		$theme->set_name( $this->get_name() );
+		if ( ! $theme->load() ) {
+			return false;
+		}
+
+		// Update the option that tracks the active theme to reference this theme.
+		update_option( self::ACTIVE_KEY, $this->get_name(), false );
+
+		return true;
 	}
 
 	/**
@@ -188,6 +249,23 @@ class Theme {
 	 */
 	public function set_name( $name ) {
 		$this->_name = $name;
+	}
+
+	/**
+	 * Fetches a list of registered themes.
+	 *
+	 * @access private
+	 * @return array
+	 */
+	private function _fetch_registry() {
+
+		// Attempt to get the registry.
+		$registry = get_option( self::INDEX_KEY );
+		if ( empty( $registry ) || ! is_array( $registry ) ) {
+			return array();
+		}
+
+		return $registry;
 	}
 
 	/**
@@ -862,5 +940,27 @@ class Theme {
 				'type' => array( 'none', 'uppercase' ),
 			),
 		);
+	}
+
+	/**
+	 * Updates the theme registry in the options table.
+	 *
+	 * @param array $registry The registry to save.
+	 *
+	 * @access private
+	 * @return bool True on success, false on failure.
+	 */
+	private function _save_registry( $registry ) {
+
+		// Ensure the registry is an array.
+		if ( ! is_array( $registry ) ) {
+			return false;
+		}
+
+		// Sanitize values before insertion.
+		$registry = array_map( 'sanitize_text_field', $registry );
+
+		// Update the registry.
+		update_option( self::INDEX_KEY, $registry, false );
 	}
 }

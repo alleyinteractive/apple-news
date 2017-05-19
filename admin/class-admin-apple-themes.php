@@ -1,39 +1,34 @@
 <?php
 /**
+ * Publish to Apple News Admin: Admin_Apple_Themes class
+ *
+ * Contains a class which is used to manage themes.
+ *
+ * @package Apple_News
+ */
+
+/**
  * This class is in charge of handling the management of Apple News themes.
  */
 class Admin_Apple_Themes extends Apple_News {
 
 	/**
-	 * Theme management page name.
-	 *
-	 * @var string
-	 * @access public
-	 */
-	public $theme_page_name;
-
-	/**
 	 * Theme edit page name.
 	 *
-	 * @var string
 	 * @access public
+	 * @var string
 	 */
 	public $theme_edit_page_name;
 
 	/**
-	 * Key for the theme index.
+	 * Theme management page name.
 	 *
+	 * @access public
 	 * @var string
 	 */
-	const THEME_INDEX_KEY = 'apple_news_installed_themes';
+	public $theme_page_name;
 
-	/**
-	 * Key for the active theme.
-	 *
-	 * @var string
-	 */
-	const THEME_ACTIVE_KEY = 'apple_news_active_theme';
-
+	// TODO: REFACTOR FROM HERE
 	/**
 	 * Valid actions handled by this class and their callback functions.
 	 *
@@ -195,18 +190,18 @@ class Admin_Apple_Themes extends Apple_News {
 		add_action( 'admin_menu', array( $this, 'setup_theme_pages' ), 99 );
 		add_action( 'admin_init', array( $this, 'action_router' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
-		add_filter( 'admin_title', array( $this, 'set_title' ), 10, 2 );
+		add_filter( 'admin_title', array( $this, 'set_title' ), 10, 1 );
 	}
 
 	/**
 	 * Fix the title since WordPress doesn't set one.
 	 *
-	 * @param string $admin_title
-	 * @param string $title
-	 * @return strign
+	 * @param string $admin_title The title to be filtered.
+	 *
 	 * @access public
+	 * @return string
 	 */
-	public function set_title( $admin_title, $title ) {
+	public function set_title( $admin_title ) {
 		$screen = get_current_screen();
 		if ( 'admin_page_' . $this->theme_edit_page_name === $screen->base ) {
 			$admin_title = sprintf(
@@ -224,11 +219,13 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function validate_themes() {
+
+		// Determine if there are themes defined.
 		$themes = $this->list_themes();
 		if ( empty( $themes ) ) {
-			$name = __( 'Default', 'apple-news' );
-			$this->save_theme( $name, $this->get_formatting_settings() );
-			$this->set_theme( $name, true );
+			$theme = new \Apple_Exporter\Theme();
+			$theme->save();
+			$theme->set_active();
 		}
 	}
 
@@ -391,27 +388,6 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	public function list_themes() {
 		return get_option( self::THEME_INDEX_KEY, array() );
-	}
-
-	/**
-	 * Get the active theme
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_active_theme() {
-		return get_option( self::THEME_ACTIVE_KEY );
-	}
-
-	/**
-	 * Get a specific theme
-	 *
-	 * @param string $name
-	 * @access public
-	 * @return array
-	 */
-	public function get_theme( $name ) {
-		return get_option( $this->theme_key_from_name( $name ), array() );
 	}
 
 	/**
