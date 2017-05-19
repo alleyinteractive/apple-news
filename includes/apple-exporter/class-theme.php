@@ -417,8 +417,9 @@ class Theme {
 		}
 
 		// Get inactive components.
+		$options = self::get_options();
 		$inactive_components = array_diff(
-			self::$_options['meta_component_order']['default'],
+			$options['meta_component_order']['default'],
 			$component_order
 		);
 
@@ -556,8 +557,9 @@ class Theme {
 		}
 
 		// Attempt to fall back to the default.
-		if ( isset( self::$_options[ $option ]['default'] ) ) {
-			return self::$_options[ $option ]['default'];
+		$options = self::get_options();
+		if ( isset( $options[ $option ]['default'] ) ) {
+			return $options[ $option ]['default'];
 		}
 
 		return null;
@@ -584,10 +586,11 @@ class Theme {
 		}
 
 		// Loop over loaded values from the database and add to local values.
+		$options = self::get_options();
 		foreach ( $values as $key => $value ) {
 
 			// Skip any keys that don't exist in the options spec.
-			if ( ! isset( self::$_options[ $key ] ) ) {
+			if ( ! isset( $options[ $key ] ) ) {
 				continue;
 			}
 
@@ -606,10 +609,15 @@ class Theme {
 	public function load_postdata() {
 
 		// Remove all configured values except for JSON templates.
-		$json_templates = ( ! empty( $this->_values['json_templates'] ) )
-			? $this->_values['json_templates']
-			: array();
-		$this->_values = array( 'json_templates' => $json_templates );
+		if ( ! empty( $this->_values['json_templates'] )
+			&& is_array( $this->_values['json_templates'] )
+		) {
+			$this->_values = array(
+				'json_templates' => $this->_values['json_templates'],
+			);
+		} else {
+			$this->_values = array();
+		}
 
 		// Loop through options and extract each from postdata.
 		$options = self::get_options();
@@ -1482,7 +1490,8 @@ class Theme {
 			),
 			'json_templates' => array(
 				'default' => array(),
-				'type' => 'hidden',
+				'hidden' => true,
+				'type' => 'array',
 			),
 			'layout_gutter' => array(
 				'default' => 20,
@@ -1496,7 +1505,8 @@ class Theme {
 			),
 			'layout_width' => array(
 				'default' => 1024,
-				'type' => 'hidden',
+				'hidden' => true,
+				'type' => 'integer',
 			),
 			'meta_component_order' => array(
 				'default' => array( 'cover', 'title', 'byline' ),

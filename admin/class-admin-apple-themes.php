@@ -60,7 +60,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Ensure the option is not hidden. Hidden options should not be used.
 		$option = $options[ $option_name ];
-		if ( ! empty( $option['type'] ) && 'hidden' === $option['type'] ) {
+		if ( ! empty( $option['hidden'] ) ) {
 			return '';
 		}
 
