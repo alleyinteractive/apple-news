@@ -103,28 +103,23 @@ class Admin_Apple_Themes extends Apple_News {
 				$field = '<input type="number" id="%s" name="%s" value="%s">';
 
 				break;
-			default:
+			case 'select':
 
-				// Handle array types differently.
-				if ( is_array( $option['type'] ) ) {
-
-					// Build the options list.
-					foreach ( $option['type'] as $option_value ) {
-						$field .= sprintf(
-							'<option value="%s" %s>%s</option>',
-							esc_attr( $option_value ),
-							selected( $value, $option_value, false ),
-							esc_html( $option_value )
-						);
-					}
-
-					// Wrap the options in the select.
-					$field = '<select id="%s" name="%s">' . $field . '</select>';
-
-					break;
+				// Build the options list.
+				foreach ( $option['type'] as $option_value ) {
+					$field .= sprintf(
+						'<option value="%s" %s>%s</option>',
+						esc_attr( $option_value ),
+						selected( $value, $option_value, false ),
+						esc_html( $option_value )
+					);
 				}
 
-				// If nothing else matches, it's a string.
+				// Wrap the options in the select.
+				$field = '<select id="%s" name="%s">' . $field . '</select>';
+
+				break;
+			default:
 				$field = '<input type="text" id="%s" name="%s" value="%s">';
 
 				break;
@@ -140,7 +135,7 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Use a different template for selects.
-		if ( is_array( $option['type'] ) || 'font' === $option['type'] ) {
+		if ( 'select' === $option['type'] || 'font' === $option['type'] ) {
 			return sprintf(
 				$field,
 				esc_attr( $option_name ),

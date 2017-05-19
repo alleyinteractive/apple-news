@@ -591,12 +591,7 @@ class Theme {
 				continue;
 			}
 
-			// Skip any keys that use the default value.
-			if ( self::$_options[ $key ] === $value ) {
-				continue;
-			}
-
-			// Store the value in the list of overrides.
+			// Store the value.
 			$this->_values[ $key ] = $value;
 		}
 
@@ -627,6 +622,16 @@ class Theme {
 
 			// Perform basic sanitization based on option type.
 			switch ( $option['type'] ) {
+				case 'array':
+					if ( is_array( $_POST[ $option_key ] ) ) {
+						$this->_values[ $option_key ] = array_map(
+							'sanitize_text_field',
+							$_POST[ $option_key ]
+						);
+					}
+
+					break;
+
 				case 'float':
 					$this->_values[ $option_key ] = floatval( $_POST[ $option_key ] );
 
@@ -638,20 +643,6 @@ class Theme {
 					break;
 
 				default:
-
-					// Handle arrays.
-					if ( is_array( $option['type'] )
-						&& is_array( $_POST[ $option_key ] )
-					) {
-						$this->_values[ $option_key ] = array_map(
-							'sanitize_text_field',
-							$_POST[ $option_key ]
-						);
-
-						break;
-					}
-
-					// Fall back to simple text field sanitization.
 					$this->_values[ $option_key ] = sanitize_text_field(
 						$_POST[ $option_key ]
 					);
@@ -784,6 +775,27 @@ class Theme {
 
 			// Fork for sanitization type.
 			switch ( $options[ $key ]['type'] ) {
+				case 'array':
+
+					// Ensure the provided value is actually an array.
+					if ( ! is_array( $value ) ) {
+						$this->_log_error( sprintf(
+							__(
+								'Array expected for setting %1$s, %2$s provided',
+								'apple-news'
+							),
+							$key,
+							gettype( $value )
+						) );
+
+						return false;
+					}
+
+					// Sanitize.
+					$value = array_map( 'sanitize_text_field', $value );
+
+					break;
+
 				case 'color':
 
 					// Sanitize.
@@ -836,29 +848,25 @@ class Theme {
 
 					break;
 
-				default:
+				case 'select':
 
-					// Handle array literals.
-					if ( is_array( $options[ $key ]['type'] ) ) {
+					// Sanitize.
+					$value = sanitize_text_field( $value );
 
-						// Sanitize.
-						$value = array_map( 'sanitize_text_field', $value );
+					// Ensure that the value is one of the allowed options.
+					if ( ! in_array( $value, $options[ $key ]['options'] ) ) {
+						$this->_log_error( sprintf(
+							__( 'Invalid value %1$s specified for setting %2$s', 'apple-news' ),
+							$value,
+							$key
+						) );
 
-						// Ensure that the provided value is one that is listed.
-						if ( ! in_array( $value, $options[ $key ]['type'], true ) ) {
-							$this->_log_error( sprintf(
-								__( 'Invalid value %1$s specified for setting %2$s', 'apple-news' ),
-								$value,
-								$key
-							) );
-
-							return false;
-						}
-
-						break;
+						return false;
 					}
 
-					// Fall back to treating as a standard text field.
+					break;
+
+				default:
 					$value = sanitize_text_field( $value );
 
 					break;
@@ -881,7 +889,7 @@ class Theme {
 		}
 
 		// Handle JSON templates.
-		$this->validate_json_templates();
+		$this->_validate_json_templates();
 
 		return true;
 	}
@@ -1127,7 +1135,8 @@ class Theme {
 			'blockquote_border_style' => array(
 				'default' => 'solid',
 				'label' => __( 'Blockquote border style', 'apple-news' ),
-				'type' => array( 'solid', 'dashed', 'dotted', 'none' ),
+				'options' => array( 'solid', 'dashed', 'dotted', 'none' ),
+				'type' => 'select',
 			),
 			'blockquote_border_width' => array(
 				'default' => 3,
@@ -1189,7 +1198,8 @@ class Theme {
 				'default' => 'left',
 				'description' => __( 'Controls margins on larger screens. Left orientation includes one column of margin on the right, right orientation includes one column of margin on the left, and center orientation includes one column of margin on either side.', 'apple-news' ),
 				'label' => __( 'Body orientation', 'apple-news' ),
-				'type' => array( 'left', 'center', 'right' ),
+				'options' => array( 'left', 'center', 'right' ),
+				'type' => 'select',
 			),
 			'body_size' => array(
 				'default' => 18,
@@ -1299,12 +1309,14 @@ class Theme {
 			'enable_advertisement' => array(
 				'default' => 'yes',
 				'label' => __( 'Enable advertisements', 'apple-news' ),
-				'type' => array( 'yes', 'no' ),
+				'options' => array( 'yes', 'no' ),
+				'type' => 'select',
 			),
 			'gallery_type' => array(
 				'default' => 'gallery',
 				'label' => __( 'Gallery type', 'apple-news' ),
-				'type' => array( 'gallery', 'mosaic' ),
+				'options' => array( 'gallery', 'mosaic' ),
+				'type' => 'select',
 			),
 			'header1_color' => array(
 				'default' => '#333333',
@@ -1465,7 +1477,8 @@ class Theme {
 			'initial_dropcap' => array(
 				'default' => 'yes',
 				'label' => __( 'Use initial drop cap', 'apple-news' ),
-				'type' => array( 'yes', 'no' ),
+				'options' => array( 'yes', 'no' ),
+				'type' => 'select',
 			),
 			'json_templates' => array(
 				'default' => array(),
@@ -1524,7 +1537,8 @@ class Theme {
 			'pullquote_border_style' => array(
 				'default' => 'solid',
 				'label' => __( 'Pull quote border style', 'apple-news' ),
-				'type' => array( 'solid', 'dashed', 'dotted', 'none' ),
+				'options' => array( 'solid', 'dashed', 'dotted', 'none' ),
+				'type' => 'select',
 			),
 			'pullquote_border_width' => array(
 				'default' => 3,
@@ -1545,7 +1559,8 @@ class Theme {
 				'default' => 'no',
 				'description' => __( 'If set to "yes," adds smart quotes (if not already present) and sets the hanging punctuation option to true.', 'apple-news' ),
 				'label' => __( 'Pullquote hanging punctuation', 'apple-news' ),
-				'type' => array( 'no', 'yes' ),
+				'options' => array( 'no', 'yes' ),
+				'type' => 'select',
 			),
 			'pullquote_line_height' => array(
 				'default' => 48,
@@ -1566,7 +1581,8 @@ class Theme {
 			'pullquote_transform' => array(
 				'default' => 'uppercase',
 				'label' => __( 'Pull quote transformation', 'apple-news' ),
-				'type' => array( 'none', 'uppercase' ),
+				'options' => array( 'none', 'uppercase' ),
+				'type' => 'select',
 			),
 		);
 	}
