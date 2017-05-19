@@ -442,6 +442,24 @@ class Theme {
 	}
 
 	/**
+	 * Returns an array of all settings for this theme.
+	 *
+	 * @access public
+	 * @return array
+	 */
+	public function all_settings() {
+
+		// Loop through options and compile an array of all options with values.
+		$all_settings = array();
+		$options = self::get_options();
+		foreach ( $options as $option_key => $option ) {
+			$all_settings[ $option_key ] = $this->get_value( $option_key );
+		}
+
+		return $all_settings;
+	}
+
+	/**
 	 * Deletes this theme from the database and removes it from the theme registry.
 	 *
 	 * @access public

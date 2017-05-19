@@ -187,6 +187,26 @@ class Settings {
 	}
 
 	/**
+	 * Merges an array of provided settings with settings stored in this object.
+	 *
+	 * @param array $settings An array of settings to merge.
+	 *
+	 * @access public
+	 */
+	public function merge( $settings ) {
+
+		// Ensure $settings is a non-empty array.
+		if ( empty( $settings ) || ! is_array( $settings ) ) {
+			return;
+		}
+
+		// Loop through provided settings and set each.
+		foreach ( $settings as $key => $value ) {
+			$this->$key = $value;
+		}
+	}
+
+	/**
 	 * Set a setting.
 	 *
 	 * @param string $name The setting key to modify.

@@ -49,7 +49,7 @@
 			</div>
 			<?php
 				$preview = new Admin_Apple_Preview();
-				$preview->get_preview_html();
+				$preview->get_preview_html( $theme->get_name() );
 			?>
 		</div>
 		<p class="apple-news-theme-edit-buttons">
