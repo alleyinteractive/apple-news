@@ -162,7 +162,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		$this->_valid_actions = array(
 			'apple_news_upload_theme' => array(
-				'callback' => array( $this, 'upload_theme' ),
+				'callback' => array( $this, '_upload_theme' ),
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_export_theme' => array(
@@ -486,16 +486,15 @@ class Admin_Apple_Themes extends Apple_News {
 		) );
 	}
 
-	// TODO: REFACTOR FROM HERE
-
 	/**
 	 * Handles uploading a new theme from a JSON file.
 	 *
 	 * @access private
 	 */
-	private function upload_theme() {
-		$file = wp_import_handle_upload();
+	private function _upload_theme() {
 
+		// Try to handle the file upload.
+		$file = wp_import_handle_upload();
 		if ( isset( $file['error'] ) ) {
 			\Admin_Apple_Notice::error(
 				__( 'There was an error uploading the theme file', 'apple-news' )
@@ -503,6 +502,7 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
+		// Ensure the filepath and ID are set.
 		if ( ! isset( $file['file'], $file['id'] ) ) {
 			\Admin_Apple_Notice::error(
 				__( 'The file did not upload properly. Please try again.', 'apple-news' )
@@ -510,8 +510,8 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
+		// Ensure the file exists at the given path.
 		$this->file_id = absint( $file['id'] );
-
 		if ( ! file_exists( $file['file'] ) ) {
 			wp_import_cleanup( $this->file_id );
 			\Admin_Apple_Notice::error( sprintf(
@@ -521,6 +521,7 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
+		// Ensure the given path is a filepath.
 		if ( ! is_file( $file['file'] ) ) {
 			wp_import_cleanup( $this->file_id );
 			\Admin_Apple_Notice::error(
@@ -529,9 +530,9 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
+		// Get the contents of the file and clean up.
 		$file_contents = file_get_contents( $file['file'] );
 		$import_data = json_decode( $file_contents, true );
-
 		wp_import_cleanup( $this->file_id );
 
 		// Try to get the theme name prior to import.
@@ -547,12 +548,14 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
-		// Indicate success
+		// Indicate success.
 		\Admin_Apple_Notice::success( sprintf(
 			__( 'Successfully uploaded theme %s', 'apple-news' ),
 			$name
 		) );
 	}
+
+	// TODO: REFACTOR FROM HERE
 
 	/**
 	 * Handles exporting a new theme to a JSON file.
