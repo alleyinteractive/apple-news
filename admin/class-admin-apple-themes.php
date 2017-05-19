@@ -190,6 +190,33 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Route all possible theme actions to the right place.
+	 *
+	 * @access public
+	 */
+	public function action_router() {
+
+		// Determine if an action was specified.
+		if ( ! isset( $_POST['action'] ) ) {
+			return;
+		}
+
+		// Determine if a valid action was specified.
+		$action = sanitize_text_field( $_POST['action'] );
+		if ( ( empty( $action )
+			|| ! array_key_exists( $action, $this->valid_actions ) )
+		) {
+			return;
+		}
+
+		// Check the nonce.
+		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
+
+		// Call the callback for the action for further processing.
+		call_user_func( $this->valid_actions[ $action ]['callback'] );
+	}
+
+	/**
 	 * Attempts to import a theme, given an associative array of theme properties.
 	 *
 	 * @param array $theme An associative array of theme properties to import.
@@ -218,7 +245,7 @@ class Admin_Apple_Themes extends Apple_News {
 		unset( $result['theme_name'] );
 
 		// Process the save operation.
-		$this->save_theme( $name, $result, true );
+		//$this->save_theme( $name, $result, true );
 
 		return true;
 	}
@@ -411,98 +438,6 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	// TODO: REFACTOR FROM HERE
-	/**
-	 * Saves the theme JSON for the key provided.
-	 *
-	 * @param string $name
-	 * @param array $settings
-	 * @param boolean $silent We don't always want this to display a message if it's behind the scenes
-	 * @access private
-	 */
-	public function save_theme( $name, $settings, $silent = false ) {
-		// Save the theme settings
-		update_option( $this->theme_key_from_name( $name ), $settings, false );
-
-		// Update the index
-		$this->index_theme( $name );
-
-		// Indicate success
-		if ( true !== $silent ) {
-			\Admin_Apple_Notice::success( sprintf(
-				__( 'The theme %s was saved successfully', 'apple-news' ),
-				$name
-			) );
-		}
-	}
-
-	/**
-	 * Saves the theme to the theme index.
-	 *
-	 * @param string $name
-	 * @access private
-	 */
-	private function index_theme( $name ) {
-		// Get the index
-		$index = \Apple_Exporter\Theme::get_registry();
-		if ( ! is_array( $index ) ) {
-			$index = array();
-		}
-
-		$key = $this->theme_key_from_name( $name );
-
-		// Add the key to the index
-		$index[] = $name;
-
-		// If a duplicate was added, it's just going to overwrite.
-		// The user has been warned by this point.
-		$index = array_unique( $index );
-
-		// Save the theme index
-		update_option( self::THEME_INDEX_KEY, $index, false );
-	}
-
-	/**
-	 * Saves the theme to the theme index.
-	 *
-	 * @param string $name
-	 * @access private
-	 */
-	private function unindex_theme( $name ) {
-		$themes = \Apple_Exporter\Theme::get_registry();
-		$index = array_search( $name, $themes );
-		if ( false === $index ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The theme %s to be deleted does not exist', 'apple-news' ),
-				$name
-			) );
-			return;
-		}
-
-		// Remove from the index and delete settings
-		unset( $themes[ $index ] );
-		update_option( self::THEME_INDEX_KEY, $themes, false );
-		delete_option( $this->theme_key_from_name( $name ) );
-	}
-
-	/**
-	 * Route all possible theme actions to the right place.
-	 *
-	 * @param string $hook
-	 * @access public
-	 */
-	public function action_router() {
-		// Check for a valid action
-		$action	= isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : null;
-		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
-			return;
-		}
-
-		// Check the nonce
-		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
-
-		// Call the callback for the action for further processing
-		call_user_func( $this->valid_actions[ $action ]['callback'] );
-	}
 
 	/**
 	 * Handles setting the active theme.
@@ -549,6 +484,8 @@ class Admin_Apple_Themes extends Apple_News {
 	/**
 	 * Handles deleting a theme.
 	 *
+	 * @todo Update this to use the new Theme class.
+	 *
 	 * @param string $name
 	 * @access private
 	 */
@@ -569,7 +506,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$key = $this->theme_key_from_name( $name );
 
 		// Unindex the theme
-		$this->unindex_theme( $name );
+		//$this->unindex_theme( $name );
 
 		// Delete the theme
 		delete_option( $key );

@@ -167,6 +167,8 @@ class Component_Spec {
 	 * @param array $spec The spec definition to save.
 	 * @param string $theme Optional. Theme name to save to if other than default.
 	 *
+	 * @todo Update this to use the new Theme class.
+	 *
 	 * @access public
 	 * @return boolean True on success, false on failure.
 	 */
@@ -218,7 +220,7 @@ class Component_Spec {
 		$spec_key = $this->key_from_name( $this->name );
 		$theme_settings = $themes->get_theme( $theme );
 		$theme_settings['json_templates'][ $component_key ][ $spec_key ] = $json;
-		$themes->save_theme( $theme, $theme_settings, true );
+		//$themes->save_theme( $theme, $theme_settings, true );
 
 		// Indicate success.
 		return true;
@@ -228,6 +230,8 @@ class Component_Spec {
 	 * Delete the current spec override.
 	 *
 	 * @param string $theme Optional. Theme to delete from if not the default.
+	 *
+	 * @todo Update this to use the new Theme class.
 	 *
 	 * @access public
 	 * @return bool True on success, false on failure.
@@ -264,7 +268,7 @@ class Component_Spec {
 		}
 
 		// Update the theme.
-		$themes->save_theme( $theme, $theme_settings, true );
+		//$themes->save_theme( $theme, $theme_settings, true );
 
 		return true;
 	}
