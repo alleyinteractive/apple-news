@@ -68,6 +68,8 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	/**
 	 * A helper function to extract formatting settings from general settings.
 	 *
+	 * @todo Update this to use the new Theme class.
+	 *
 	 * @param array $all_settings An array of settings to filter.
 	 *
 	 * @access public

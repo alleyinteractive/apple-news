@@ -232,6 +232,8 @@ class Apple_News {
 	/**
 	 * Create the default theme, if it does not exist.
 	 *
+	 * @todo Update this to use the new Theme class.
+	 *
 	 * @access public
 	 */
 	public function create_default_theme() {
@@ -530,6 +532,8 @@ class Apple_News {
 
 	/**
 	 * Removes formatting settings from the primary settings object.
+	 *
+	 * @todo Update this to use the new Theme class.
 	 *
 	 * @access public
 	 */

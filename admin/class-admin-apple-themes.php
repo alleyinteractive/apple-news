@@ -813,6 +813,8 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Get a formatting object for the given theme.
 	 * If no theme is provided, get current global formatting settings.
 	 *
+	 * @todo Remove this.
+	 *
 	 * @return array
 	 * @access private
 	 */

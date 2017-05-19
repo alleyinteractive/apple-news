@@ -92,7 +92,6 @@ class Admin_Apple_Settings extends Apple_News {
 	private function add_sections() {
 		$this->add_section( new Admin_Apple_Settings_Section_API( $this->page_name ) );
 		$this->add_section( new Admin_Apple_Settings_Section_Post_Types( $this->page_name ) );
-		$this->add_section( new Admin_Apple_Settings_Section_Formatting( $this->page_name, true ) );
 		$this->add_section( new Admin_Apple_Settings_Section_Advanced( $this->page_name ) );
 		$this->add_section( new Admin_Apple_Settings_Section_Developer_Tools( $this->page_name ) );
 	}

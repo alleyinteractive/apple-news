@@ -108,6 +108,8 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 	/**
 	 * Gets formatting settings for themes.
 	 *
+	 * @todo Update this to use the new Theme class.
+	 *
 	 * @access private
 	 */
 	private function getFormattingSettings( $all_settings ) {
