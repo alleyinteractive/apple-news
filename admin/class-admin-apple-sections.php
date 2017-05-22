@@ -189,7 +189,7 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @param string $section_id The Apple News section ID
 	 *
 	 * @access public
-	 * @return array The theme settings, if set
+	 * @return string The name of the theme, or null if not found.
 	 */
 	public static function get_theme_for_section( $section_id ) {
 
@@ -199,12 +199,7 @@ class Admin_Apple_Sections extends Apple_News {
 			return null;
 		}
 
-		// Get theme settings.
-		$theme = new \Apple_Exporter\Theme;
-		$theme->set_name( $theme_mappings[ $section_id ] );
-		$theme->load();
-
-		return $theme->all_settings();
+		return $theme_mappings[ $section_id ];
 	}
 
 	/**

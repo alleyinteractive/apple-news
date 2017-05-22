@@ -182,24 +182,35 @@ class Export extends Action {
 	 * @access private
 	 */
 	private function set_theme( $settings, $sections ) {
-		// This can only work if there is explicitly one section
+
+		// This can only work if there is explicitly one section.
 		if ( ! is_array( $sections ) || 1 !== count( $sections ) ) {
 			return $settings;
 		}
 
-		// Check if there is a custom theme mapping
-		$theme_settings = Admin_Apple_Sections::get_theme_for_section( basename( $sections[0] ) );
-		if ( empty( $theme_settings ) || ! is_array( $theme_settings ) ) {
+		// Check if there is a custom theme mapping.
+		$theme_name = Admin_Apple_Sections::get_theme_for_section( basename( $sections[0] ) );
+		if ( empty( $theme_name ) ) {
 			return $settings;
 		}
 
-		// Replace all settings with the theme settings
+		// Try to get theme settings.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $theme_name );
+		if ( ! $theme->load() ) {
+			return $settings;
+		}
+
+		// Set theme as active for this session.
+		$theme->use_this();
+
+		// Replace all settings with the theme settings.
+		$theme_settings = $theme->all_settings();
 		foreach ( $theme_settings as $key => $value ) {
 			$settings->$key = $value;
 		}
 
 		return $settings;
 	}
-
 }
 

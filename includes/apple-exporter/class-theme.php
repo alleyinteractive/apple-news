@@ -343,6 +343,13 @@ class Theme {
 	private static $_options = array();
 
 	/**
+	 * Theme in current usage.
+	 *
+	 * @var self
+	 */
+	private static $_used;
+
+	/**
 	 * Keeps track of the last error message generated.
 	 *
 	 * @access private
@@ -401,6 +408,28 @@ class Theme {
 		}
 
 		return $registry;
+	}
+
+	/**
+	 * Gets the theme in use for this session.
+	 *
+	 * @access public
+	 */
+	public static function get_used() {
+
+		// Determine if a theme is already set.
+		if ( self::$_used instanceof self ) {
+			return self::$_used;
+		}
+
+		// Set the default.
+		$theme_name = \Apple_Exporter\Theme::get_active_theme_name();
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $theme_name );
+		$theme->load();
+		$theme->use_this();
+
+		return self::$_used;
 	}
 
 	/**
@@ -750,6 +779,15 @@ class Theme {
 	 */
 	public function set_name( $name ) {
 		$this->_name = $name;
+	}
+
+	/**
+	 * Sets this theme as the theme to be used during current execution.
+	 *
+	 * @access public
+	 */
+	public function use_this() {
+		self::$_used = $this;
 	}
 
 	/**
