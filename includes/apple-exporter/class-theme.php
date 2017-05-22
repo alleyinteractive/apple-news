@@ -418,7 +418,7 @@ class Theme {
 	public static function get_used() {
 
 		// Determine if a theme is already set.
-		if ( self::$_used instanceof self ) {
+		if ( ! empty( self::$_used ) && self::$_used instanceof self ) {
 			return self::$_used;
 		}
 
@@ -829,7 +829,7 @@ class Theme {
 				continue;
 			}
 
-				// Fork for sanitization type.
+			// Fork for sanitization type.
 			switch ( $options[ $key ]['type'] ) {
 				case 'array':
 
@@ -944,10 +944,8 @@ class Theme {
 			}
 		}
 
-		// Handle JSON templates.
-		$this->_validate_json_templates();
-
-		return true;
+		// Finally, validate JSON templates.
+		return $this->_validate_json_templates();
 	}
 
 	/**
@@ -1741,7 +1739,13 @@ class Theme {
 
 				// Log this spec as valid.
 				unset( $invalid_components[ $component_key ][ $spec_key ] );
-				$invalid_components[ $component_key ] = array_filter( $invalid_components[ $component_key ] );
+
+				// Clean up array for this component key, if necessary.
+				if ( isset( $invalid_components[ $component_key ] ) ) {
+					$invalid_components[ $component_key ] = array_filter( $invalid_components[ $component_key ] );
+				}
+
+				// Clean up root-level components list.
 				$invalid_components = array_filter( $invalid_components );
 			}
 		}

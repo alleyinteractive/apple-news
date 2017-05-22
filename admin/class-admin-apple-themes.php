@@ -238,8 +238,7 @@ class Admin_Apple_Themes extends Apple_News {
 		// Create a new theme object and attempt to save it.
 		$theme = new \Apple_Exporter\Theme;
 		$theme->set_name( $name );
-		$theme->load( $settings );
-		if ( ! $theme->save() ) {
+		if ( ! $theme->load( $settings ) || ! $theme->save() ) {
 			return sprintf(
 				__(
 					'The theme file was invalid and cannot be imported: %s',
@@ -402,6 +401,16 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access public
 	 */
 	public function setup_theme_pages() {
+
+		// Ensure there is at least one theme created.
+		$registry = \Apple_Exporter\Theme::get_registry();
+		if ( empty( $registry ) ) {
+			$theme = new \Apple_Exporter\Theme;
+			$theme->save();
+			$theme->set_active();
+		}
+
+		// Add the primary themes page.
 		add_submenu_page(
 			'apple_news_index',
 			__( 'Apple News Themes', 'apple-news' ),
@@ -411,6 +420,7 @@ class Admin_Apple_Themes extends Apple_News {
 			array( $this, 'page_themes_render' )
 		);
 
+		// Add the edit theme page.
 		add_submenu_page(
 			null,
 			__( 'Apple News Edit Theme', 'apple-news' ),
