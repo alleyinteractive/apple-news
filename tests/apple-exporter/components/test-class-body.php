@@ -282,7 +282,11 @@ HTML;
 	public function testWithoutDropcap() {
 
 		// Setup.
-		$this->settings->set( 'initial_dropcap', 'no' );
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['initial_dropcap'] = 'no';
+		$theme->load( $settings );
+		$theme->save();
 		$body_component = new Body(
 			'<p>my text</p>',
 			null,

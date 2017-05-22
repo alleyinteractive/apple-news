@@ -359,6 +359,14 @@ class Theme {
 	private static $_used_name;
 
 	/**
+	 * Tracks whether a dropcap was applied or not.
+	 *
+	 * @access public
+	 * @var bool
+	 */
+	public $dropcap_applied = false;
+
+	/**
 	 * Keeps track of the last error message generated.
 	 *
 	 * @access private

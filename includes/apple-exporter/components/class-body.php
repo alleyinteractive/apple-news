@@ -11,14 +11,6 @@ use \DOMElement;
 class Body extends Component {
 
 	/**
-	 * Tracks whether a dropcap was applied or not.
-	 *
-	 * @access private
-	 * @var bool
-	 */
-	private static $_dropcap_applied = false;
-
-	/**
 	 * Override. This component doesn't need a layout update if marked as the
 	 * target of an anchor.
 	 *
@@ -231,10 +223,10 @@ class Body extends Component {
 
 		// Determine whether to apply dropcap style.
 		$theme = \Apple_Exporter\Theme::get_used();
-		if ( ! self::$_dropcap_applied
+		if ( ! $theme->dropcap_applied
 			&& 'yes' === $theme->get_value( 'initial_dropcap' )
 		) {
-			self::$_dropcap_applied = true;
+			$theme->dropcap_applied = true;
 			$this->set_initial_dropcap_style();
 		} else {
 			$this->set_default_style();
