@@ -174,7 +174,7 @@ class Admin_Apple_Themes extends Apple_News {
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_save_edit_theme' => array(
-				'callback' => array( $this, 'save_edit_theme' ),
+				'callback' => array( $this, '_save_edit_theme' ),
 				'nonce' => 'apple_news_save_edit_theme',
 			),
 			'apple_news_set_theme' => array(
@@ -507,6 +507,94 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Handle saving theme settings from the edit form.
+	 *
+	 * @access private
+	 */
+	private function _save_edit_theme() {
+
+		// Create a theme object.
+		$theme = new \Apple_Exporter\Theme;
+
+		// Get the theme name.
+		if ( ! isset( $_POST['apple_news_theme_name'] ) ) {
+			\Admin_Apple_Notice::error(
+				__( 'No theme name was set', 'apple-news' )
+			);
+
+			return;
+		}
+
+		// Ensure the theme name is valid.
+		$name = sanitize_text_field( $_POST['apple_news_theme_name'] );
+		if ( empty( $name ) ) {
+			\Admin_Apple_Notice::error(
+				__( 'The theme name was empty', 'apple-news' )
+			);
+		}
+
+		// Negotiate previous theme name.
+		$previous_name = ( ! empty( $_POST['apple_news_theme_name_previous'] ) )
+			? sanitize_text_field( $_POST['apple_news_theme_name_previous'] )
+			: '';
+
+		// Determine whether this theme is new, is an update, or is being renamed.
+		$action = 'update';
+		if ( empty( $previous_name ) ) {
+			$action = 'new';
+		} elseif ( $name !== $previous_name ) {
+			$action = 'rename';
+		}
+
+		// If the theme is new or renamed, ensure the name isn't taken.
+		if ( ( 'new' === $action || 'rename' === $action )
+			&& \Apple_Exporter\Theme::theme_exists( $name )
+		) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'Theme name %s is already in use.', 'apple-news' ),
+				$name
+			) );
+
+			return;
+		}
+
+		// Set the theme name.
+		if ( 'rename' === $action ) {
+			$theme->set_name( $previous_name );
+		} else {
+			$theme->set_name( $name );
+		}
+
+		// If the theme isn't new, load existing configuration from the database.
+		if ( 'new' !== $action ) {
+			$theme->load();
+		}
+
+		// Load postdata into the theme and try to save.
+		$theme->load_postdata();
+		if ( ! $theme->save() ) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'Could not save theme %1$s: %2$s', 'apple-news' ),
+				$name,
+				$theme->get_last_error()
+			) );
+
+			return;
+		}
+
+		// Process rename, if requested.
+		if ( 'rename' === $action ) {
+			$theme->rename( $name );
+		}
+
+		// Indicate success.
+		\Admin_Apple_Notice::success( sprintf(
+			__( 'The theme %s was saved successfully', 'apple-news' ),
+			$name
+		) );
+	}
+
+	/**
 	 * Handles setting the active theme.
 	 *
 	 * @access private
@@ -609,94 +697,6 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Handle saving theme settings from the edit form.
-	 *
-	 * @access private
-	 */
-	private function save_edit_theme() {
-
-		// Create a theme object.
-		$theme = new \Apple_Exporter\Theme;
-
-		// Get the theme name.
-		if ( ! isset( $_POST['apple_news_theme_name'] ) ) {
-			\Admin_Apple_Notice::error(
-				__( 'No theme name was set', 'apple-news' )
-			);
-
-			return;
-		}
-
-		// Ensure the theme name is valid.
-		$name = sanitize_text_field( $_POST['apple_news_theme_name'] );
-		if ( empty( $name ) ) {
-			\Admin_Apple_Notice::error(
-				__( 'The theme name was empty', 'apple-news' )
-			);
-		}
-
-		// Negotiate previous theme name.
-		$previous_name = ( ! empty( $_POST['apple_news_theme_name_previous'] ) )
-			? sanitize_text_field( $_POST['apple_news_theme_name_previous'] )
-			: '';
-
-		// Determine whether this theme is new, is an update, or is being renamed.
-		$action = 'update';
-		if ( empty( $previous_name ) ) {
-			$action = 'new';
-		} elseif ( $name !== $previous_name ) {
-			$action = 'rename';
-		}
-
-		// If the theme is new or renamed, ensure the name isn't taken.
-		if ( ( 'new' === $action || 'rename' === $action )
-			&& \Apple_Exporter\Theme::theme_exists( $name )
-		) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'Theme name %s is already in use.', 'apple-news' ),
-				$name
-			) );
-
-			return;
-		}
-
-		// Set the theme name.
-		if ( 'rename' === $action ) {
-			$theme->set_name( $previous_name );
-		} else {
-			$theme->set_name( $name );
-		}
-
-		// If the theme isn't new, load existing configuration from the database.
-		if ( 'new' !== $action ) {
-			$theme->load();
-		}
-
-		// Load postdata into the theme and try to save.
-		$theme->load_postdata();
-		if ( ! $theme->save() ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'Could not save theme %1$s: %2$s', 'apple-news' ),
-				$name,
-				$theme->get_last_error()
-			) );
-
-			return;
-		}
-
-		// Process rename, if requested.
-		if ( 'rename' === $action ) {
-			$theme->rename( $name );
-		}
-
-		// Indicate success.
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'The theme %s was saved successfully', 'apple-news' ),
-			$name
-		) );
-	}
 
 	/**
 	 * Filter the current settings down to only formatting settings.
