@@ -166,7 +166,7 @@ class Admin_Apple_Themes extends Apple_News {
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_export_theme' => array(
-				'callback' => array( $this, 'export_theme' ),
+				'callback' => array( $this, '_export_theme' ),
 				'nonce' => 'apple_news_themes',
 			),
 			'apple_news_delete_theme' => array(
@@ -454,6 +454,59 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Handles exporting a new theme to a JSON file.
+	 *
+	 * @access private
+	 */
+	private function _export_theme() {
+
+		// Get the theme name from POST data.
+		if ( ! empty( $_POST['apple_news_theme'] ) ) {
+			$name = sanitize_text_field( $_POST['apple_news_theme'] );
+		}
+
+		// Ensure we got a theme name.
+		if ( empty( $name ) ) {
+			\Admin_Apple_Notice::error( __(
+				'Unable to export the theme because no name was provided',
+				'apple-news'
+			) );
+			return;
+		}
+
+		// Try to load the theme.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $name );
+		if ( ! $theme->load() ) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'The theme %s could not be found', 'apple-news' ),
+				$name
+			) );
+			return;
+		}
+
+		// Get the settings from the theme.
+		$settings = $theme->all_settings();
+
+		// Add the theme name.
+		$settings['theme_name'] = $name;
+
+		// Generate the filename.
+		$filename = \Apple_Exporter\Theme::theme_key( $name ) . '.json';
+
+		// Negotiate whether to pretty print the JSON.
+		$pretty_print = defined( 'JSON_PRETTY_PRINT' ) ? JSON_PRETTY_PRINT : null;
+
+		// Stream the download to the user.
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Disposition: attachment; filename=' . $filename );
+		header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ), true );
+		echo wp_json_encode( $settings, $pretty_print );
+
+		exit;
+	}
+
+	/**
 	 * Handles setting the active theme.
 	 *
 	 * @access private
@@ -556,52 +609,6 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Handles exporting a new theme to a JSON file.
-	 *
-	 * @param string $name
-	 * @access private
-	 */
-	private function export_theme( $name = null ) {
-		// If no name was provided, attempt to get it from POST data
-		if ( empty( $name ) && ! empty( $_POST['apple_news_theme'] ) ) {
-			$name = sanitize_text_field( $_POST['apple_news_theme'] );
-		}
-
-		if ( empty( $name ) ) {
-			\Admin_Apple_Notice::error(
-				__( 'Unable to export the theme because no name was provided', 'apple-news' )
-			);
-			return;
-		}
-
-		$key = $this->theme_key_from_name( $name );
-		$theme = get_option( $key );
-		if ( empty( $theme ) ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The theme $s could not be found', 'apple-news' ),
-				$name
-			) );
-			return;
-		}
-
-		// Add the theme name
-		$theme['theme_name'] = $name;
-
-		// Generate the filename
-		$filename = $key . '.json';
-
-		// Start the download
-		header( 'Content-Description: File Transfer' );
-		header( 'Content-Disposition: attachment; filename=' . $filename );
-		header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ), true );
-
-		$JSON_PRETTY_PRINT = defined( 'JSON_PRETTY_PRINT' ) ? JSON_PRETTY_PRINT : null;
-		echo wp_json_encode( $theme, $JSON_PRETTY_PRINT );
-
-		exit;
-	}
 
 	/**
 	 * Handle saving theme settings from the edit form.
