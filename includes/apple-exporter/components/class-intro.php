@@ -59,14 +59,18 @@ class Intro extends Component {
 	 * @access private
 	 */
 	private function set_style() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_style(
 			'default-intro',
 			'default-intro',
 			array(
-				'#body_font#' => $this->get_setting( 'body_font' ),
-				'#body_size#' => intval( $this->get_setting( 'body_size' ) ),
-				'#body_line_height#' => intval( $this->get_setting( 'body_line_height' ) ),
-				'#body_color#' => $this->get_setting( 'body_color' ),
+				'#body_font#' => $theme->get_value( 'body_font' ),
+				'#body_size#' => intval( $theme->get_value( 'body_size' ) ),
+				'#body_line_height#' => intval( $theme->get_value( 'body_line_height' ) ),
+				'#body_color#' => $theme->get_value( 'body_color' ),
 			),
 			'textStyle'
 		);

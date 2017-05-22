@@ -67,15 +67,19 @@ class Title extends Component {
 	 * @access private
 	 */
 	private function set_style() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_style(
 			'default-title',
 			'default-title',
 			array(
-				'#header1_font#' => $this->get_setting( 'header1_font' ),
-				'#header1_size#' => intval( $this->get_setting( 'header1_size' ) ),
-				'#header1_line_height#' => intval( $this->get_setting( 'header1_line_height' ) ),
-				'#header1_tracking#' => intval( $this->get_setting( 'header1_tracking' ) ) / 100,
-				'#header1_color#' => $this->get_setting( 'header1_color' ),
+				'#header1_font#' => $theme->get_value( 'header1_font' ),
+				'#header1_size#' => intval( $theme->get_value( 'header1_size' ) ),
+				'#header1_line_height#' => intval( $theme->get_value( 'header1_line_height' ) ),
+				'#header1_tracking#' => intval( $theme->get_value( 'header1_tracking' ) ) / 100,
+				'#header1_color#' => $theme->get_value( 'header1_color' ),
 				'#text_alignment#' => $this->find_text_alignment(),
 			),
 			'textStyle'

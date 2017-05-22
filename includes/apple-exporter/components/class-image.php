@@ -211,13 +211,17 @@ class Image extends Component {
 	 * @access private
 	 */
 	private function register_non_anchor_layout( $values ) {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Set values to merge into the spec
 		$layout_values = array();
 
 		if ( 'yes' === $this->get_setting( 'full_bleed_images' ) ) {
 			$spec_name = 'non-anchored-full-bleed-image';
 		} else {
-			$layout_values['#layout_columns_minus_4#'] = $this->get_setting( 'layout_columns' ) - 4;
+			$layout_values['#layout_columns_minus_4#'] = $theme->get_layout_columns() - 4;
 			$spec_name = 'non-anchored-image';
 		}
 
@@ -239,6 +243,10 @@ class Image extends Component {
 	 * @access private
 	 */
 	private function find_caption_alignment() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$text_alignment = null;
 		if ( Component::ANCHOR_NONE === $this->get_anchor_position() ) {
 			return 'center';
@@ -248,7 +256,7 @@ class Image extends Component {
 			case Component::ANCHOR_LEFT:
 				return 'left';
 			case Component::ANCHOR_AUTO:
-				if ( 'left' === $this->get_setting( 'body_orientation' ) ) {
+				if ( 'left' === $theme->get_value( 'body_orientation' ) ) {
 					return 'right';
 				}
 		}
@@ -267,17 +275,20 @@ class Image extends Component {
 	 */
 	private function group_component( $caption, $values ) {
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Roll up the image component into a container.
 		$values = array_merge(
 			$values,
 			array(
 				'#caption#' => $caption,
 				'#text_alignment#' => $this->find_caption_alignment(),
-				'#caption_font#' => $this->get_setting( 'caption_font' ),
-				'#caption_size#' => intval( $this->get_setting( 'caption_size' ) ),
-				'#caption_tracking#' => intval( $this->get_setting( 'caption_tracking' ) ) / 100,
-				'#caption_line_height#' => intval( $this->get_setting( 'caption_line_height' ) ),
-				'#caption_color#' => $this->get_setting( 'caption_color' ),
+				'#caption_font#' => $theme->get_value( 'caption_font' ),
+				'#caption_size#' => intval( $theme->get_value( 'caption_size' ) ),
+				'#caption_tracking#' => intval( $theme->get_value( 'caption_tracking' ) ) / 100,
+				'#caption_line_height#' => intval( $theme->get_value( 'caption_line_height' ) ),
+				'#caption_color#' => $theme->get_value( 'caption_color' ),
 				'#full_bleed_images#' => ( 'yes' === $this->get_setting( 'full_bleed_images' ) ),
 			)
 		);

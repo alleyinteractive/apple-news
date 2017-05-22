@@ -529,6 +529,48 @@ class Theme {
 	}
 
 	/**
+	 * When a component is displayed aligned relative to another one, slide the
+	 * other component a few columns. This varies for centered and non-centered
+	 * layouts, as centered layouts have more columns.
+	 *
+	 * @access public
+	 * @return int The number of columns for aligned components to span.
+	 */
+	public function get_alignment_offset() {
+		return ( 'center' === $this->get_value( 'body_orientation' ) ) ? 5 : 3;
+	}
+
+	/**
+	 * Get the body column span.
+	 *
+	 * @access public
+	 * @return int The number of columns for the body to span.
+	 */
+	public function get_body_column_span() {
+		return ( 'center' === $this->get_value( 'body_orientation' ) ) ? 7 : 6;
+	}
+
+	/**
+	 * Get the left margin column offset.
+	 *
+	 * @access public
+	 * @return int The number of columns to offset on the left.
+	 */
+	public function get_body_offset() {
+		switch ( $this->get_value( 'body_orientation' ) ) {
+			case 'right':
+				return $this->get_layout_columns() - $this->get_value( 'body_column_span' );
+			case 'center':
+				return floor(
+					( $this->get_layout_columns() - $this->get_value( 'body_column_span' ) ) / 2
+				);
+				break;
+			default:
+				return 0;
+		}
+	}
+
+	/**
 	 * Returns an array of groups of configurable options for themes.
 	 *
 	 * @access public
@@ -552,6 +594,16 @@ class Theme {
 	 */
 	public function get_last_error() {
 		return $this->_last_error;
+	}
+
+	/**
+	 * Get the computed layout columns.
+	 *
+	 * @access public
+	 * @return int The number of layout columns to use.
+	 */
+	public function get_layout_columns() {
+		return ( 'center' === $this->get_value( 'body_orientation' ) ) ? 9 : 7;
 	}
 
 	/**

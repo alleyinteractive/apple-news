@@ -107,20 +107,6 @@ class Settings {
 	}
 
 	/**
-	 * When a component is displayed aligned relative to another one, slide the
-	 * other component a few columns. This varies for centered and non-centered
-	 * layouts, as centered layouts have more columns.
-	 *
-	 * @since 0.4.0
-	 *
-	 * @access public
-	 * @return int The number of columns for aligned components to span.
-	 */
-	public function alignment_offset() {
-		return ( 'center' === $this->body_orientation ) ? 5 : 3;
-	}
-
-	/**
 	 * Get all settings.
 	 *
 	 * @access public
@@ -128,36 +114,6 @@ class Settings {
 	 */
 	public function all() {
 		return $this->_settings;
-	}
-
-	/**
-	 * Get the body column span.
-	 *
-	 * @access public
-	 * @return int The number of columns for the body to span.
-	 */
-	public function body_column_span() {
-		return ( 'center' === $this->body_orientation ) ? 7 : 6;
-	}
-
-	/**
-	 * Get the left margin column offset.
-	 *
-	 * @access public
-	 * @return int The number of columns to offset on the left.
-	 */
-	public function body_offset() {
-		switch ( $this->body_orientation ) {
-			case 'right':
-				return $this->layout_columns - $this->body_column_span;
-			case 'center':
-				return floor(
-					( $this->layout_columns - $this->body_column_span ) / 2
-				);
-				break;
-			default:
-				return 0;
-		}
 	}
 
 	/**
@@ -174,36 +130,6 @@ class Settings {
 	 */
 	public function get( $name ) {
 		return $this->$name;
-	}
-
-	/**
-	 * Get the computed layout columns.
-	 *
-	 * @access public
-	 * @return int The number of layout columns to use.
-	 */
-	public function layout_columns() {
-		return ( 'center' === $this->body_orientation ) ? 9 : 7;
-	}
-
-	/**
-	 * Merges an array of provided settings with settings stored in this object.
-	 *
-	 * @param array $settings An array of settings to merge.
-	 *
-	 * @access public
-	 */
-	public function merge( $settings ) {
-
-		// Ensure $settings is a non-empty array.
-		if ( empty( $settings ) || ! is_array( $settings ) ) {
-			return;
-		}
-
-		// Loop through provided settings and set each.
-		foreach ( $settings as $key => $value ) {
-			$this->$key = $value;
-		}
 	}
 
 	/**

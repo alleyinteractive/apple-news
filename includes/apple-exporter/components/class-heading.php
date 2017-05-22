@@ -156,12 +156,16 @@ class Heading extends Component {
 	 * @access private
 	 */
 	private function set_layout() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_layout(
 			'heading-layout',
 			'heading-layout',
-			 array(
-				'#body_offset#' => $this->get_setting( 'body_offset' ),
-				'#body_column_span#' => $this->get_setting( 'body_column_span' ),
+			array(
+				'#body_offset#' => $theme->get_body_offset(),
+				'#body_column_span#' => $theme->get_body_column_span(),
 			),
 			'layout'
 		);
@@ -173,16 +177,20 @@ class Heading extends Component {
 	 * @access private
 	 */
 	private function set_style( $level ) {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_style(
 			'default-heading-' . $level,
 			'default-heading-' . $level,
 			array(
-				'#header' . $level . '_font#' => $this->get_setting( 'header' . $level . '_font' ),
-				'#header' . $level . '_size#'  => intval( $this->get_setting( 'header' . $level . '_size' ) ),
-				'#header' . $level . '_line_height#' => intval( $this->get_setting( 'header' . $level . '_line_height' ) ),
-				'#header' . $level . '_color#' => $this->get_setting( 'header' . $level . '_color' ),
+				'#header' . $level . '_font#' => $theme->get_value( 'header' . $level . '_font' ),
+				'#header' . $level . '_size#'  => intval( $theme->get_value( 'header' . $level . '_size' ) ),
+				'#header' . $level . '_line_height#' => intval( $theme->get_value( 'header' . $level . '_line_height' ) ),
+				'#header' . $level . '_color#' => $theme->get_value( 'header' . $level . '_color' ),
 				'#text_alignment#' => $this->find_text_alignment(),
-				'#header' . $level . '_tracking#' => intval( $this->get_setting( 'header' . $level . '_tracking' ) ) / 100,
+				'#header' . $level . '_tracking#' => intval( $theme->get_value( 'header' . $level . '_tracking' ) ) / 100,
 			),
 			'textStyle'
 		);

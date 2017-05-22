@@ -13,13 +13,17 @@ class Layout_Test extends WP_UnitTestCase {
 	}
 
 	public function testRegisterLayout() {
-		$this->settings->set( 'layout_margin', 123 );
-		$this->settings->set( 'layout_gutter', 222 );
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['layout_margin'] = 123;
+		$settings['layout_gutter'] = 222;
+		$theme->load( $settings );
+		$theme->save();
 		$layout = new Layout( $this->content, $this->settings );
 		$result = $layout->to_array();
 
-		$this->assertEquals( $this->settings->get( 'layout_columns' ), $result[ 'columns' ] );
-		$this->assertEquals( $this->settings->get( 'layout_width' ), $result[ 'width' ] );
+		$this->assertEquals( $theme->get_layout_columns(), $result[ 'columns' ] );
+		$this->assertEquals( $theme->get_value( 'layout_width' ), $result[ 'width' ] );
 		$this->assertEquals( 123, $result[ 'margin' ] );
 		$this->assertEquals( 222, $result[ 'gutter' ] );
 	}

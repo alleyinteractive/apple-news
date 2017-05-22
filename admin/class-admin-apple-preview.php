@@ -38,7 +38,6 @@ class Admin_Apple_Preview extends Apple_News {
 		// Merge plugin-level settings with theme-level settings.
 		$admin_settings = new Admin_Apple_Settings();
 		$settings = $admin_settings->fetch_settings();
-		$settings->merge( $theme->all_settings() );
 
 		?>
 		<div class="apple-news-preview">
@@ -64,7 +63,7 @@ class Admin_Apple_Preview extends Apple_News {
 				);
 
 				// Get the order of the top components.
-				foreach ( $settings->meta_component_order as $component ) {
+				foreach ( $theme->get_value( 'meta_component_order' ) as $component ) {
 					echo wp_kses( $$component, Admin_Apple_Settings_Section::$allowed_html );
 				}
 			?>
