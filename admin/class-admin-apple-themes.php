@@ -422,6 +422,45 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
+	 * Returns the URL of the themes admin page.
+	 *
+	 * @access public
+	 * @return string The URL of the themes admin page.
+	 */
+	public function theme_admin_url() {
+		return add_query_arg(
+			'page',
+			$this->theme_page_name,
+			admin_url( 'admin.php' )
+		);
+	}
+
+	/**
+	 * Generates the edit URL for a theme.
+	 *
+	 * @param string $name The name of the theme for which to generate an edit URL.
+	 *
+	 * @access public
+	 * @return string The URL to edit a specific theme.
+	 */
+	public function theme_edit_url( $name = null ) {
+
+		// Build the base edit URL.
+		$url = add_query_arg(
+			'page',
+			$this->theme_edit_page_name,
+			admin_url( 'admin.php' )
+		);
+
+		// Add the theme name to edit, if set.
+		if ( ! empty( $name ) ) {
+			$url = add_query_arg( 'theme', $name, $url );
+		}
+
+		return $url;
+	}
+
+	/**
 	 * Handles deleting a theme.
 	 *
 	 * @access private
@@ -694,101 +733,5 @@ class Admin_Apple_Themes extends Apple_News {
 			__( 'Successfully uploaded theme %s', 'apple-news' ),
 			$name
 		) );
-	}
-
-	// TODO: REFACTOR FROM HERE
-
-	/**
-	 * Filter the current settings down to only formatting settings.
-	 *
-	 * @return array
-	 * @access private
-	 */
-	private function get_formatting_settings( $name = null ) {
-		// Determine what to do based on if the name is set
-		if ( ! empty( $name ) ) {
-			return $this->get_formatting_object( $name )->get_loaded_settings();
-		} else {
-			// Get the keys of all formatting settings
-			$formatting = $this->get_formatting_object();
-			$formatting_settings = $formatting->get_settings();
-			if ( empty( $formatting_settings ) ) {
-				return array();
-			}
-
-			$formatting_settings_keys = array_keys( $formatting_settings );
-
-			// Get all current settings
-			$settings = new Admin_Apple_Settings();
-			$all_settings = $settings->fetch_settings()->all();
-
-			// Retrieve values only for formatting settings
-			$theme_settings = array();
-			foreach ( $formatting_settings_keys as $key ) {
-				if ( isset( $all_settings[ $key ] ) ) {
-					$theme_settings[ $key ] = $all_settings[ $key ];
-				}
-			}
-
-			return $theme_settings;
-		}
-	}
-
-	/**
-	 * Updates global settings with the active theme settings.
-	 *
-	 * @param string $name
-	 * @return boolean
-	 * @access private
-	 */
-	private function update_global_settings( $name ) {
-		// Attempt to load the theme settings
-		$key = $this->theme_key_from_name( $name );
-		$new_settings = get_option( $key );
-		if ( empty( $new_settings ) ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'There was an error loading settings for the theme %s', 'apple-news' ),
-				$key
-			) );
-			return false;
-		}
-
-		// Preserve API settings since these are not part of the theme
-		$settings = new \Admin_Apple_Settings();
-		$current_settings = $settings->fetch_settings()->all();
-		$new_settings = wp_parse_args( $new_settings, $current_settings );
-
-		// Load the settings from the theme
-		$settings->save_settings( $new_settings );
-
-		return true;
-	}
-
-	/**
-	 * Generates the edit URL for a theme
-	 *
-	 * @param string $name
-	 * @return string
-	 * @access public
-	 */
-	public function theme_edit_url( $name = null ) {
-		$url = add_query_arg( 'page', $this->theme_edit_page_name, admin_url( 'admin.php' ) );
-
-		if ( ! empty( $name ) ) {
-			$url = add_query_arg( 'theme', $name, $url );
-		}
-
-		return $url;
-	}
-
-	/**
-	 * Returns the URL of the themes admin page
-	 *
-	 * @param string $name
-	 * @return string
-	 * @access public
-	 */
-	public function theme_admin_url() {
-		return add_query_arg( 'page', $this->theme_page_name, admin_url( 'admin.php' ) );
 	}
 }
