@@ -67,6 +67,8 @@ class Component_Tests extends WP_UnitTestCase {
 	public function setup() {
 
 		// Setup.
+		$themes = new Admin_Apple_Themes;
+		$themes->setup_theme_pages();
 		$file = dirname( dirname( __DIR__ ) ) . '/data/test-image.jpg';
 		$cover = $this->factory->attachment->create_upload_object( $file );
 		$this->settings = new Settings;
@@ -89,6 +91,17 @@ class Component_Tests extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Actions to be run after every test.
+	 *
+	 * @access public
+	 */
+	public function tearDown() {
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+		$theme->delete();
+	}
+
+	/**
 	 * Ensures that the specified component order is respected.
 	 *
 	 * @dataProvider dataMetaComponentOrdering
@@ -102,8 +115,12 @@ class Component_Tests extends WP_UnitTestCase {
 	public function testMetaComponentOrdering( $order, $expected, $components ) {
 
 		// Setup.
-		$this->settings->set( 'enable_advertisement', 'no' );
-		$this->settings->set( 'meta_component_order', $order );
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['enable_advertisement'] = 'no';
+		$settings['meta_component_order'] = $order;
+		$theme->load( $settings );
+		$theme->save();
 		$builder = new Components( $this->content, $this->settings );
 		$result = $builder->to_array();
 
