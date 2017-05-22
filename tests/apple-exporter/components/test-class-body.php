@@ -41,7 +41,12 @@ class Body_Test extends Component_TestCase {
 	public function testFilter() {
 
 		// Setup.
-		$this->settings->set( 'initial_dropcap', 'no' );
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+		$theme->load();
+		$settings = $theme->all_settings();
+		$settings['initial_dropcap'] = 'no';
+		$theme->save();
 		$component = new Body(
 			'<p>my text</p>',
 			null,

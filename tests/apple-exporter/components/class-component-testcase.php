@@ -9,7 +9,14 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 
 	protected $prophet;
 
+	/**
+	 * Actions to be run before every test.
+	 *
+	 * @access public
+	 */
 	public function setup() {
+		$themes = new Admin_Apple_Themes;
+		$themes->setup_theme_pages();
 		$this->prophet  = new \Prophecy\Prophet;
 		$this->settings = new Settings();
 		$this->content  = new Exporter_Content( 1, __( 'My Title', 'apple-news' ), '<p>' . __( 'Hello, World!', 'apple-news' ) . '</p>' );
@@ -17,8 +24,16 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 		$this->layouts  = new Component_Layouts( $this->content, $this->settings );
 	}
 
+	/**
+	 * Actions to be run after every test.
+	 *
+	 * @access public
+	 */
 	public function tearDown() {
 		$this->prophet->checkPredictions();
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+		$theme->delete();
 	}
 
 	protected function build_node( $html ) {

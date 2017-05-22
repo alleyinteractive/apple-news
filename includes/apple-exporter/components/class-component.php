@@ -414,7 +414,17 @@ abstract class Component {
 	 * @access protected
 	 */
 	protected function get_setting( $name ) {
-		// TODO - how is this used?
+
+		// Attempt to get the setting from the theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+		if ( ! empty( $theme ) && $theme instanceof \Apple_Exporter\Theme ) {
+			$settings = $theme->all_settings();
+			if ( isset( $settings[ $name ] ) ) {
+				return $settings[ $name ];
+			}
+		}
+
+		// Fall back to getting the global setting from the settings object.
 		return $this->settings->get( $name );
 	}
 
