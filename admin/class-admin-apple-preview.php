@@ -1,41 +1,24 @@
 <?php
 /**
- * This class is in charge of handling Apple News previews
+ * Publish to Apple News Admin: Admin_Apple_Preview class
  *
- * @todo Update this class to use Themes to render settings.
+ * Contains a class which is used to generate a theme preview.
+ *
+ * @package Apple_News
+ */
+
+/**
+ * A class which is used to generate a theme preview.
  */
 class Admin_Apple_Preview extends Apple_News {
+
 	/**
 	 * Constructor.
-	 */
-	function __construct() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
-	}
-
-	/**
-	 * Register assets for the options page.
 	 *
-	 * @param string $hook
 	 * @access public
 	 */
-	public function register_assets( $hook ) {
-		if ( 'admin_page_apple-news-theme-edit' !== $hook ) {
-			return;
-		}
-
-		wp_enqueue_style(
-			'apple-news-preview-css',
-			plugin_dir_url( __FILE__ ) . '../assets/css/preview.css',
-			array(),
-			self::$version
-		);
-
-		wp_enqueue_script(
-			'apple-news-preview-js',
-			plugin_dir_url( __FILE__ ) . '../assets/js/preview.js',
-			array( 'jquery' ),
-			self::$version
-		);
+	public function __construct() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 	}
 
 	/**
@@ -112,5 +95,36 @@ class Admin_Apple_Preview extends Apple_News {
 			</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Register assets for the options page.
+	 *
+	 * @param string $hook The hook that is firing in the current context.
+	 *
+	 * @access public
+	 */
+	public function register_assets( $hook ) {
+
+		// Only fire on the theme edit page.
+		if ( 'admin_page_apple-news-theme-edit' !== $hook ) {
+			return;
+		}
+
+		// Add the theme preview stylesheet.
+		wp_enqueue_style(
+			'apple-news-preview-css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/preview.css',
+			array(),
+			self::$version
+		);
+
+		// Add the theme preview script.
+		wp_enqueue_script(
+			'apple-news-preview-js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/preview.js',
+			array( 'jquery' ),
+			self::$version
+		);
 	}
 }
