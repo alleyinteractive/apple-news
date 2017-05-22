@@ -172,19 +172,23 @@ HTML;
 		);
 
 		// Set body settings.
-		$this->settings->body_font = 'TestFontName';
-		$this->settings->body_size = 20;
-		$this->settings->body_color = '#abcdef';
-		$this->settings->body_link_color = '#fedcba';
-		$this->settings->body_line_height = 28;
-		$this->settings->body_tracking = 50;
-		$this->settings->dropcap_background_color = '#abcabc';
-		$this->settings->dropcap_color = '#defdef';
-		$this->settings->dropcap_font = 'TestFontName2';
-		$this->settings->dropcap_number_of_characters = 15;
-		$this->settings->dropcap_number_of_lines = 10;
-		$this->settings->dropcap_number_of_raised_lines = 5;
-		$this->settings->dropcap_padding = 20;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['body_font'] = 'TestFontName';
+		$settings['body_size'] = 20;
+		$settings['body_color'] = '#abcdef';
+		$settings['body_link_color'] = '#fedcba';
+		$settings['body_line_height'] = 28;
+		$settings['body_tracking'] = 50;
+		$settings['dropcap_background_color'] = '#abcabc';
+		$settings['dropcap_color'] = '#defdef';
+		$settings['dropcap_font'] = 'TestFontName2';
+		$settings['dropcap_number_of_characters'] = 15;
+		$settings['dropcap_number_of_lines'] = 10;
+		$settings['dropcap_number_of_raised_lines'] = 5;
+		$settings['dropcap_padding'] = 20;
+		$theme->load( $settings );
+		$theme->save();
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );

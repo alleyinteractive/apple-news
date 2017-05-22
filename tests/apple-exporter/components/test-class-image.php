@@ -208,12 +208,16 @@ class Image_Test extends Component_TestCase {
 	public function testSettings() {
 
 		// Setup.
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
 		$this->settings->full_bleed_images = 'yes';
-		$this->settings->caption_color = '#abcdef';
-		$this->settings->caption_font = 'TestFontName';
-		$this->settings->caption_line_height = 28;
-		$this->settings->caption_size = 20;
-		$this->settings->caption_tracking = 50;
+		$settings['caption_color'] = '#abcdef';
+		$settings['caption_font'] = 'TestFontName';
+		$settings['caption_line_height'] = 28;
+		$settings['caption_size'] = 20;
+		$settings['caption_tracking'] = 50;
+		$theme->load( $settings );
+		$theme->save();
 		$html = <<<HTML
 <figure>
 	<img src="http://someurl.com/filename.jpg" alt="Example">

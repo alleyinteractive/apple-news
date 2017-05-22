@@ -98,11 +98,15 @@ class Heading_Test extends Component_TestCase {
 		$content = new Exporter_Content( 3, 'Title', '<h1>Heading</h1>' );
 
 		// Set header settings.
-		$this->settings->header1_font = 'TestFontName1';
-		$this->settings->header1_size = 60;
-		$this->settings->header1_color = '#012345';
-		$this->settings->header1_line_height = 66;
-		$this->settings->header1_tracking = 6;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['header1_font'] = 'TestFontName1';
+		$settings['header1_size'] = 60;
+		$settings['header1_color'] = '#012345';
+		$settings['header1_line_height'] = 66;
+		$settings['header1_tracking'] = 6;
+		$theme->load( $settings );
+		$theme->save();
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -142,11 +146,15 @@ class Heading_Test extends Component_TestCase {
 		$content = new Exporter_Content( 3, 'Title', '<h2>Heading</h2>' );
 
 		// Set header settings.
-		$this->settings->header2_font = 'TestFontName2';
-		$this->settings->header2_size = 50;
-		$this->settings->header2_color = '#123456';
-		$this->settings->header2_line_height = 55;
-		$this->settings->header2_tracking = 5;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['header2_font'] = 'TestFontName2';
+		$settings['header2_size'] = 50;
+		$settings['header2_color'] = '#123456';
+		$settings['header2_line_height'] = 55;
+		$settings['header2_tracking'] = 5;
+		$theme->load( $settings );
+		$theme->save();
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -186,11 +194,15 @@ class Heading_Test extends Component_TestCase {
 		$content = new Exporter_Content( 3, 'Title', '<h3>Heading</h3>' );
 
 		// Set header settings.
-		$this->settings->header3_font = 'TestFontName3';
-		$this->settings->header3_size = 40;
-		$this->settings->header3_color = '#234567';
-		$this->settings->header3_line_height = 44;
-		$this->settings->header3_tracking = 4;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['header3_font'] = 'TestFontName3';
+		$settings['header3_size'] = 40;
+		$settings['header3_color'] = '#234567';
+		$settings['header3_line_height'] = 44;
+		$settings['header3_tracking'] = 4;
+		$theme->load( $settings );
+		$theme->save();
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -230,11 +242,15 @@ class Heading_Test extends Component_TestCase {
 		$content = new Exporter_Content( 3, 'Title', '<h4>Heading</h4>' );
 
 		// Set header settings.
-		$this->settings->header4_font = 'TestFontName4';
-		$this->settings->header4_size = 30;
-		$this->settings->header4_color = '#345678';
-		$this->settings->header4_line_height = 33;
-		$this->settings->header4_tracking = 3;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['header4_font'] = 'TestFontName4';
+		$settings['header4_size'] = 30;
+		$settings['header4_color'] = '#345678';
+		$settings['header4_line_height'] = 33;
+		$settings['header4_tracking'] = 3;
+		$theme->load( $settings );
+		$theme->save();
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -274,11 +290,15 @@ class Heading_Test extends Component_TestCase {
 		$content = new Exporter_Content( 3, 'Title', '<h5>Heading</h5>' );
 
 		// Set header settings.
-		$this->settings->header5_font = 'TestFontName5';
-		$this->settings->header5_size = 20;
-		$this->settings->header5_color = '#456789';
-		$this->settings->header5_line_height = 22;
-		$this->settings->header5_tracking = 2;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['header5_font'] = 'TestFontName5';
+		$settings['header5_size'] = 20;
+		$settings['header5_color'] = '#456789';
+		$settings['header5_line_height'] = 22;
+		$settings['header5_tracking'] = 2;
+		$theme->load( $settings );
+		$theme->save();
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -318,11 +338,15 @@ class Heading_Test extends Component_TestCase {
 		$content = new Exporter_Content( 3, 'Title', '<h6>Heading</h6>' );
 
 		// Set header settings.
-		$this->settings->header6_font = 'TestFontName6';
-		$this->settings->header6_size = 10;
-		$this->settings->header6_color = '#567890';
-		$this->settings->header6_line_height = 11;
-		$this->settings->header6_tracking = 1;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['header6_font'] = 'TestFontName6';
+		$settings['header6_size'] = 10;
+		$settings['header6_color'] = '#567890';
+		$settings['header6_line_height'] = 11;
+		$settings['header6_tracking'] = 1;
+		$theme->load( $settings );
+		$theme->save();
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -385,24 +409,26 @@ class Heading_Test extends Component_TestCase {
 		$this->assertEmpty( $this->settings->header_line_height );
 
 		// Ensure legacy settings were applied to new values.
-		$this->assertEquals( '#abcdef', $settings->header1_color );
-		$this->assertEquals( '#abcdef', $settings->header2_color );
-		$this->assertEquals( '#abcdef', $settings->header3_color );
-		$this->assertEquals( '#abcdef', $settings->header4_color );
-		$this->assertEquals( '#abcdef', $settings->header5_color );
-		$this->assertEquals( '#abcdef', $settings->header6_color );
-		$this->assertEquals( 'TestFont', $settings->header1_font );
-		$this->assertEquals( 'TestFont', $settings->header2_font );
-		$this->assertEquals( 'TestFont', $settings->header3_font );
-		$this->assertEquals( 'TestFont', $settings->header4_font );
-		$this->assertEquals( 'TestFont', $settings->header5_font );
-		$this->assertEquals( 'TestFont', $settings->header6_font );
-		$this->assertEquals( 128, $settings->header1_line_height );
-		$this->assertEquals( 128, $settings->header2_line_height );
-		$this->assertEquals( 128, $settings->header3_line_height );
-		$this->assertEquals( 128, $settings->header4_line_height );
-		$this->assertEquals( 128, $settings->header5_line_height );
-		$this->assertEquals( 128, $settings->header6_line_height );
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$this->assertEquals( '#abcdef', $settings['header1_color'] );
+		$this->assertEquals( '#abcdef', $settings['header2_color'] );
+		$this->assertEquals( '#abcdef', $settings['header3_color'] );
+		$this->assertEquals( '#abcdef', $settings['header4_color'] );
+		$this->assertEquals( '#abcdef', $settings['header5_color'] );
+		$this->assertEquals( '#abcdef', $settings['header6_color'] );
+		$this->assertEquals( 'TestFont', $settings['header1_font'] );
+		$this->assertEquals( 'TestFont', $settings['header2_font'] );
+		$this->assertEquals( 'TestFont', $settings['header3_font'] );
+		$this->assertEquals( 'TestFont', $settings['header4_font'] );
+		$this->assertEquals( 'TestFont', $settings['header5_font'] );
+		$this->assertEquals( 'TestFont', $settings['header6_font'] );
+		$this->assertEquals( 128, $settings['header1_line_height'] );
+		$this->assertEquals( 128, $settings['header2_line_height'] );
+		$this->assertEquals( 128, $settings['header3_line_height'] );
+		$this->assertEquals( 128, $settings['header4_line_height'] );
+		$this->assertEquals( 128, $settings['header5_line_height'] );
+		$this->assertEquals( 128, $settings['header6_line_height'] );
 	}
 
 	/**
