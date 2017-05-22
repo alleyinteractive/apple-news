@@ -7,13 +7,29 @@ use Apple_Exporter\Builders\Advertising_Settings as Advertising_Settings;
 class Test_Class_Advertising_Settings extends WP_UnitTestCase {
 
 	public function setup() {
+		$themes = new Admin_Apple_Themes;
+		$themes->setup_theme_pages();
+		$this->theme = new \Apple_Exporter\Theme;
+		$this->theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+		$this->theme->load();
 		$this->settings = new Settings();
 		$this->content = new Exporter_Content( 1, 'My Title', '<p>Hello, World!</p>' );
 	}
 
+	/**
+	 * Cleanup to be run after every execution.
+	 *
+	 * @access public
+	 */
+	public function tearDown() {
+		$this->theme = new \Apple_Exporter\Theme;
+		$this->theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+		$this->theme->save();
+	}
+
 	public function testDefaultAdSettings() {
 		$builder = new Advertising_Settings( $this->content, $this->settings );
-		$result  = $builder->to_array();
+		$result = $builder->to_array();
 		$this->assertEquals( 2, count( $result ) );
 		$this->assertEquals( 1, $result['frequency'] );
 		$this->assertEquals( 1, count( $result['layout'] ) );
@@ -22,14 +38,28 @@ class Test_Class_Advertising_Settings extends WP_UnitTestCase {
 	}
 
 	public function testNoAds() {
-		$this->settings->set( 'enable_advertisement', 'no' );
+
+		// Setup.
+		$settings = $this->theme->all_settings();
+		$settings['enable_advertisement'] = 'no';
+		$this->theme->load( $settings );
+		$this->theme->save();
+
+		// Test.
 		$builder = new Advertising_Settings( $this->content, $this->settings );
-		$result  = $builder->to_array();
+		$result = $builder->to_array();
 		$this->assertEquals( 0, count( $result ) );
 	}
 
 	public function testCustomAdFrequency() {
-		$this->settings->set( 'ad_frequency', '5' );
+
+		// Setup.
+		$settings = $this->theme->all_settings();
+		$settings['ad_frequency'] = 5;
+		$this->theme->load( $settings );
+		$this->theme->save();
+
+		// Test.
 		$builder = new Advertising_Settings( $this->content, $this->settings );
 		$result  = $builder->to_array();
 		$this->assertEquals( 2, count( $result ) );
@@ -40,7 +70,14 @@ class Test_Class_Advertising_Settings extends WP_UnitTestCase {
 	}
 
 	public function testCustomAdMargin() {
-		$this->settings->set( 'ad_margin', '20' );
+
+		// Setup.
+		$settings = $this->theme->all_settings();
+		$settings['ad_margin'] = 20;
+		$this->theme->load( $settings );
+		$this->theme->save();
+
+		// Test.
 		$builder = new Advertising_Settings( $this->content, $this->settings );
 		$result  = $builder->to_array();
 		$this->assertEquals( 2, count( $result ) );

@@ -345,9 +345,18 @@ class Theme {
 	/**
 	 * Theme in current usage.
 	 *
+	 * @access private
 	 * @var self
 	 */
 	private static $_used;
+
+	/**
+	 * Theme name in current usage.
+	 * 
+	 * @access private
+	 * @var string
+	 */
+	private static $_used_name;
 
 	/**
 	 * Keeps track of the last error message generated.
@@ -511,6 +520,12 @@ class Theme {
 
 		// Remove the theme from the theme registry.
 		$this->_remove_from_registry( $this->get_name() );
+
+		// Remove from used, if necessary.
+		if ( self::$_used_name === $this->get_name() ) {
+			self::$_used_name = null;
+			self::$_used = null;
+		}
 	}
 
 	/**
@@ -726,6 +741,11 @@ class Theme {
 		$old_theme->set_name( $old_name );
 		$old_theme->delete();
 
+		// Refresh used if in active use.
+		if ( $old_name === self::$_used_name ) {
+			$this->use_this();
+		}
+
 		return true;
 	}
 
@@ -747,6 +767,11 @@ class Theme {
 
 		// Add to the registry.
 		$this->_add_to_registry( $this->get_name() );
+
+		// Refresh loaded theme, if currently in use.
+		if ( self::$_used_name === $this->get_name() ) {
+			$this->use_this();
+		}
 
 		return true;
 	}
@@ -787,6 +812,7 @@ class Theme {
 	 * @access public
 	 */
 	public function use_this() {
+		self::$_used_name = $this->get_name();
 		self::$_used = $this;
 	}
 

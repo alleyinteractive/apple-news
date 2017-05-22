@@ -470,12 +470,6 @@ JSON;
 		$admin_json = new \Admin_Apple_JSON();
 		$admin_json->action_router();
 
-		// Refresh the used theme.
-		$theme = new \Apple_Exporter\Theme;
-		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
-		$this->assertTrue( $theme->load() );
-		$theme->use_this();
-
 		// Test.
 		$settings = new Admin_Apple_Settings();
 		$content  = new Exporter_Content(

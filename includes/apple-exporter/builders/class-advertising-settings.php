@@ -15,13 +15,14 @@ class Advertising_Settings extends Builder {
 	protected function build() {
 		$advertising_settings = array();
 
-		// Get advertising settings
-		$enable_advertisement = $this->get_setting( 'enable_advertisement' );
-		$ad_frequency = intval( $this->get_setting( 'ad_frequency' ) );
+		// Get advertising settings from the theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+		$enable_advertisement = $theme->get_value( 'enable_advertisement' );
+		$ad_frequency = intval( $theme->get_value( 'ad_frequency' ) );
 
 		if ( 'yes' === $enable_advertisement && $ad_frequency > 0 ) {
 			$advertising_settings['frequency'] = $ad_frequency;
-			$ad_margin = intval( $this->get_setting( 'ad_margin' ) );
+			$ad_margin = intval( $theme->get_value( 'ad_margin' ) );
 			if ( ! empty( $ad_margin ) ) {
 				$advertising_settings['layout'] = array(
 					'margin' => array(
