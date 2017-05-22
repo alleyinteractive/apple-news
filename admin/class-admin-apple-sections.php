@@ -192,14 +192,19 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @return array The theme settings, if set
 	 */
 	public static function get_theme_for_section( $section_id ) {
+
+		// Try to get the theme mapping for this section ID.
 		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
 		if ( ! isset( $theme_mappings[ $section_id ] ) ) {
 			return null;
 		}
 
-		$theme = $theme_mappings[ $section_id ];
-		$theme_obj = new Admin_Apple_Themes();
-		return $theme_obj->get_theme( $theme_mappings[ $section_id ] );
+		// Get theme settings.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $theme_mappings[ $section_id ] );
+		$theme->load();
+
+		return $theme->all_settings();
 	}
 
 	/**
