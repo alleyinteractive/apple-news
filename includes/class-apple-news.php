@@ -396,14 +396,11 @@ class Apple_News {
 	/**
 	 * Migrates standalone customized JSON to each installed theme.
 	 *
-	 * @todo Update this to use new Theme class
-	 *
 	 * @access public
 	 */
 	public function migrate_custom_json_to_themes() {
 
 		// Get a list of all themes that need to be updated.
-		$themes = new Admin_Apple_Themes();
 		$all_themes = \Apple_Exporter\Theme::get_registry();
 
 		// Get a list of components that may have customized JSON.
@@ -438,10 +435,14 @@ class Apple_News {
 		}
 
 		// Loop over themes and apply to each.
-		foreach ( $all_themes as $theme ) {
-			$theme_settings = $themes->get_theme( $theme );
-			$theme_settings['json_templates'] = $json_templates;
-			$themes->save_theme( $theme, $theme_settings, true );
+		foreach ( $all_themes as $theme_name ) {
+			$theme = new \Apple_Exporter\Theme;
+			$theme->set_name( $theme_name );
+			$theme->load();
+			$settings = $theme->all_settings();
+			$settings['json_templates'] = $json_templates;
+			$theme->load( $settings );
+			$theme->save();
 		}
 
 		// Remove custom JSON standalone options.
@@ -532,15 +533,13 @@ class Apple_News {
 	/**
 	 * Removes formatting settings from the primary settings object.
 	 *
-	 * @todo Update this to use the new Theme class.
-	 *
 	 * @access public
 	 */
 	public function remove_global_formatting_settings() {
 
 		// Loop through formatting settings and remove them from saved settings.
-		$formatting = new \Admin_Apple_Settings_Section_Formatting( '' );
-		$formatting_settings = array_keys( $formatting->get_settings() );
+		$theme = new \Apple_Exporter\Theme;
+		$formatting_settings = array_keys( $theme->get_options() );
 		$wp_settings = get_option( self::$option_name, array() );
 		foreach ( $formatting_settings as $setting_key ) {
 			if ( isset( $wp_settings[ $setting_key ] ) ) {
@@ -555,14 +554,11 @@ class Apple_News {
 	/**
 	 * Upgrades settings and data formats to be compatible with version 1.3.0.
 	 *
-	 * @todo Update this to use new Theme class
-	 *
 	 * @access public
 	 */
 	public function upgrade_to_1_3_0() {
 
 		// Determine if themes have been created yet.
-		$themes = new \Admin_Apple_Themes;
 		$theme_list = \Apple_Exporter\Theme::get_registry();
 		if ( empty( $theme_list ) ) {
 			$this->migrate_settings();
