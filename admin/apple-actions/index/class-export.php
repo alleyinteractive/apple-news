@@ -110,6 +110,10 @@ class Export extends Action {
 	 * @access public
 	 */
 	public function format_byline( $post, $author = '', $date = '' ) {
+
+		// Get information about the currently used theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Get the author
 		if ( empty( $author ) ) {
 			$author = ucfirst( get_the_author_meta( 'display_name', $post->post_author ) );
@@ -124,7 +128,7 @@ class Export extends Action {
 		$date_format = 'M j, Y | g:i A';
 
 		// Check for a custom byline format
-		$byline_format = $this->get_setting( 'byline_format' );
+		$byline_format = $theme->get_value( 'byline_format' );
 		if ( ! empty( $byline_format ) ) {
 			// Find and replace the author format placeholder name with a temporary placeholder
 			// This is because some bylines could contain hashtags!
