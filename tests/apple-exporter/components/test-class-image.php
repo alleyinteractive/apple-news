@@ -212,12 +212,12 @@ class Image_Test extends Component_TestCase {
 		$settings = $theme->all_settings();
 		$this->settings->full_bleed_images = 'yes';
 		$settings['caption_color'] = '#abcdef';
-		$settings['caption_font'] = 'TestFontName';
+		$settings['caption_font'] = 'AmericanTypewriter';
 		$settings['caption_line_height'] = 28;
 		$settings['caption_size'] = 20;
 		$settings['caption_tracking'] = 50;
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		$html = <<<HTML
 <figure>
 	<img src="http://someurl.com/filename.jpg" alt="Example">
@@ -240,7 +240,7 @@ HTML;
 			$result['components'][1]['textStyle']['textColor']
 		);
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$result['components'][1]['textStyle']['fontName']
 		);
 		$this->assertEquals(

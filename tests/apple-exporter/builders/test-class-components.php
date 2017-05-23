@@ -120,7 +120,7 @@ class Component_Tests extends WP_UnitTestCase {
 		$settings['enable_advertisement'] = 'no';
 		$settings['meta_component_order'] = $order;
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		$builder = new Components( $this->content, $this->settings );
 		$result = $builder->to_array();
 

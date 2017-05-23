@@ -75,7 +75,7 @@ class Quote_Test extends Component_TestCase {
 		$settings = $theme->all_settings();
 		$settings['pullquote_hanging_punctuation'] = 'yes';
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		add_filter(
 			'apple_news_apply_hanging_punctuation',
 			array( $this, 'filter_apple_news_apply_hanging_punctuation' ),
@@ -152,7 +152,7 @@ class Quote_Test extends Component_TestCase {
 		// Set quote settings.
 		$theme = \Apple_Exporter\Theme::get_used();
 		$settings = $theme->all_settings();
-		$settings['blockquote_font'] = 'TestFontName';
+		$settings['blockquote_font'] = 'AmericanTypewriter';
 		$settings['blockquote_size'] = 20;
 		$settings['blockquote_color'] = '#abcdef';
 		$settings['blockquote_line_height'] = 28;
@@ -162,7 +162,7 @@ class Quote_Test extends Component_TestCase {
 		$settings['blockquote_border_style'] = 'dashed';
 		$settings['blockquote_border_width'] = 10;
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -170,7 +170,7 @@ class Quote_Test extends Component_TestCase {
 
 		// Validate body settings in generated JSON.
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$json['componentTextStyles']['default-blockquote']['fontName']
 		);
 		$this->assertEquals(
@@ -224,7 +224,7 @@ class Quote_Test extends Component_TestCase {
 		// Set quote settings.
 		$theme = \Apple_Exporter\Theme::get_used();
 		$settings = $theme->all_settings();
-		$settings['pullquote_font'] = 'TestFontName';
+		$settings['pullquote_font'] = 'AmericanTypewriter';
 		$settings['pullquote_size'] = 20;
 		$settings['pullquote_color'] = '#abcdef';
 		$settings['pullquote_hanging_punctuation'] = 'yes';
@@ -232,7 +232,7 @@ class Quote_Test extends Component_TestCase {
 		$settings['pullquote_tracking'] = 50;
 		$settings['pullquote_transform'] = 'uppercase';
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -240,7 +240,7 @@ class Quote_Test extends Component_TestCase {
 
 		// Validate body settings in generated JSON.
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$json['componentTextStyles']['default-pullquote']['fontName']
 		);
 		$this->assertEquals(
@@ -313,7 +313,7 @@ class Quote_Test extends Component_TestCase {
 		$settings = $theme->all_settings();
 		$settings['pullquote_hanging_punctuation'] = $hanging_punctuation;
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		$component = new Quote(
 			'<blockquote class="apple-news-pullquote"><p>' . $text . '</p></blockquote>',
 			null,

@@ -24,7 +24,7 @@ class Test_Class_Advertising_Settings extends WP_UnitTestCase {
 	public function tearDown() {
 		$this->theme = new \Apple_Exporter\Theme;
 		$this->theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
-		$this->theme->save();
+		$this->assertTrue( $this->theme->save() );
 	}
 
 	public function testDefaultAdSettings() {
@@ -43,7 +43,7 @@ class Test_Class_Advertising_Settings extends WP_UnitTestCase {
 		$settings = $this->theme->all_settings();
 		$settings['enable_advertisement'] = 'no';
 		$this->theme->load( $settings );
-		$this->theme->save();
+		$this->assertTrue( $this->theme->save() );
 
 		// Test.
 		$builder = new Advertising_Settings( $this->content, $this->settings );
@@ -57,7 +57,7 @@ class Test_Class_Advertising_Settings extends WP_UnitTestCase {
 		$settings = $this->theme->all_settings();
 		$settings['ad_frequency'] = 5;
 		$this->theme->load( $settings );
-		$this->theme->save();
+		$this->assertTrue( $this->theme->save() );
 
 		// Test.
 		$builder = new Advertising_Settings( $this->content, $this->settings );
@@ -75,7 +75,7 @@ class Test_Class_Advertising_Settings extends WP_UnitTestCase {
 		$settings = $this->theme->all_settings();
 		$settings['ad_margin'] = 20;
 		$this->theme->load( $settings );
-		$this->theme->save();
+		$this->assertTrue( $this->theme->save() );
 
 		// Test.
 		$builder = new Advertising_Settings( $this->content, $this->settings );

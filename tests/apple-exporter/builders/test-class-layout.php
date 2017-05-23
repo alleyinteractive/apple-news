@@ -18,7 +18,7 @@ class Layout_Test extends WP_UnitTestCase {
 		$settings['layout_margin'] = 123;
 		$settings['layout_gutter'] = 222;
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		$layout = new Layout( $this->content, $this->settings );
 		$result = $layout->to_array();
 

@@ -103,13 +103,13 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 		// Create the default theme.
 		$theme = new \Apple_Exporter\Theme;
 		$theme->set_name( 'Default' );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		unset( $theme );
 
 		// Create a test theme.
 		$theme = new \Apple_Exporter\Theme;
 		$theme->set_name( 'Test Theme' );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		unset( $theme );
 	}
 

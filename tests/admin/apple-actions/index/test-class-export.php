@@ -153,7 +153,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		// Create a default theme.
 		$default_theme = new \Apple_Exporter\Theme;
 		$default_theme->set_name( 'Default' );
-		$default_theme->save();
+		$this->assertTrue( $default_theme->save() );
 
 		// Create a test theme with different settings to differentiate.
 		$test_theme = new \Apple_Exporter\Theme;
@@ -161,7 +161,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$test_settings = $test_theme->all_settings();
 		$test_settings['body_color'] = '#123456';
 		$test_theme->load( $test_settings );
-		$test_theme->save();
+		$this->assertTrue( $test_theme->save() );
 
 		// Create a post
 		$title = 'My Title';

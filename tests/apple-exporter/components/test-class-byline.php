@@ -91,13 +91,13 @@ class Byline_Test extends Component_TestCase {
 		// Set byline settings.
 		$theme = \Apple_Exporter\Theme::get_used();
 		$settings = $theme->all_settings();
-		$settings['byline_font'] = 'TestFontName';
+		$settings['byline_font'] = 'AmericanTypewriter';
 		$settings['byline_size'] = 20;
 		$settings['byline_color'] = '#abcdef';
 		$settings['byline_line_height'] = 28;
 		$settings['byline_tracking'] = 50;
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -105,7 +105,7 @@ class Byline_Test extends Component_TestCase {
 
 		// Validate byline settings in generated JSON.
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$json['componentTextStyles']['default-byline']['fontName']
 		);
 		$this->assertEquals(

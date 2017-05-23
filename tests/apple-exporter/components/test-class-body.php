@@ -46,7 +46,7 @@ class Body_Test extends Component_TestCase {
 		$theme->load();
 		$settings = $theme->all_settings();
 		$settings['initial_dropcap'] = 'no';
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		$component = new Body(
 			'<p>my text</p>',
 			null,
@@ -174,7 +174,7 @@ HTML;
 		// Set body settings.
 		$theme = \Apple_Exporter\Theme::get_used();
 		$settings = $theme->all_settings();
-		$settings['body_font'] = 'TestFontName';
+		$settings['body_font'] = 'AmericanTypewriter';
 		$settings['body_size'] = 20;
 		$settings['body_color'] = '#abcdef';
 		$settings['body_link_color'] = '#fedcba';
@@ -182,13 +182,13 @@ HTML;
 		$settings['body_tracking'] = 50;
 		$settings['dropcap_background_color'] = '#abcabc';
 		$settings['dropcap_color'] = '#defdef';
-		$settings['dropcap_font'] = 'TestFontName2';
+		$settings['dropcap_font'] = 'AmericanTypewriter-Bold';
 		$settings['dropcap_number_of_characters'] = 15;
 		$settings['dropcap_number_of_lines'] = 10;
 		$settings['dropcap_number_of_raised_lines'] = 5;
 		$settings['dropcap_padding'] = 20;
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -196,7 +196,7 @@ HTML;
 
 		// Validate body settings in generated JSON.
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$json['componentTextStyles']['default-body']['fontName']
 		);
 		$this->assertEquals(
@@ -228,7 +228,7 @@ HTML;
 			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['textColor']
 		);
 		$this->assertEquals(
-			'TestFontName2',
+			'AmericanTypewriter-Bold',
 			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['fontName']
 		);
 		$this->assertEquals(
@@ -290,7 +290,7 @@ HTML;
 		$settings = $theme->all_settings();
 		$settings['initial_dropcap'] = 'no';
 		$theme->load( $settings );
-		$theme->save();
+		$this->assertTrue( $theme->save() );
 		$body_component = new Body(
 			'<p>my text</p>',
 			null,
