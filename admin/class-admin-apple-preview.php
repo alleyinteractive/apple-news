@@ -63,7 +63,11 @@ class Admin_Apple_Preview extends Apple_News {
 				);
 
 				// Get the order of the top components.
-				foreach ( $theme->get_value( 'meta_component_order' ) as $component ) {
+				$meta_component_order = $theme->get_value( 'meta_component_order' );
+				if ( ! is_array( $meta_component_order ) ) {
+					$meta_component_order = array();
+				}
+				foreach ( $meta_component_order as $component ) {
 					echo wp_kses( $$component, Admin_Apple_Settings_Section::$allowed_html );
 				}
 			?>
