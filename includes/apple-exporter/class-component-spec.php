@@ -253,7 +253,9 @@ class Component_Spec {
 		$spec_key = $this->key_from_name( $this->name );
 		$theme_settings = $themes->get_theme( $theme );
 		// TODO: REFACTOR THIS
-		if ( ! is_array( $theme_settings['json_templates'] ) ) {
+		if ( empty( $theme_settings['json_templates'] )
+			|| ! is_array( $theme_settings['json_templates'] )
+		) {
 			$theme_settings['json_templates'] = array();
 		}
 		$theme_settings['json_templates'][ $component_key ][ $spec_key ] = $json;

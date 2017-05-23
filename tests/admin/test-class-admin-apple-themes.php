@@ -479,6 +479,56 @@ JSON;
 	}
 
 	/**
+	 * Ensure that postmeta in a custom spec is used on render.
+	 *
+	 * @access public
+	 */
+	public function testJSONUseCustomSpecPostmeta() {
+
+		// Setup.
+		$this->createDefaultTheme();
+		$json = <<<JSON
+{
+    "columnStart": "#body_offset#",
+    "columnSpan": "#postmeta.apple_news_column_span#",
+    "margin": {
+        "top": 50,
+        "bottom": 50
+    }
+}
+JSON;
+		$nonce = wp_create_nonce( 'apple_news_json' );
+		$_POST['apple_news_theme'] = $this->themes->get_active_theme();
+		$_POST['apple_news_component'] = 'Body';
+		$_POST['apple_news_action'] = 'apple_news_save_json';
+		$_POST['apple_news_json_body-layout'] = $json;
+		$_POST['page'] = 'apple-news-json';
+		$_POST['redirect'] = false;
+		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
+		$_REQUEST['_wpnonce'] = $nonce;
+
+		// Trigger the spec save.
+		$admin_json = new \Admin_Apple_JSON();
+		$admin_json->action_router();
+
+		// Test.
+		$post_id = $this->factory->post->create();
+		$settings = new Admin_Apple_Settings();
+		$content  = new Exporter_Content(
+			$post_id,
+			__( 'My Title', 'apple-news' ),
+			'<p>' . __( 'Hello, World!', 'apple-news' ) . '</p>'
+		);
+		add_post_meta( $post_id, 'apple_news_column_span', 2, true );
+		$exporter = new Exporter( $content, null, $settings->fetch_settings() );
+		$json = json_decode( $exporter->export(), true );
+		$this->assertEquals(
+			2,
+			$json['componentLayouts']['body-layout']['columnSpan']
+		);
+	}
+
+	/**
 	 * Ensure that a new theme can be set as the active theme.
 	 *
 	 * @access public
