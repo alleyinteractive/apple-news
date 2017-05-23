@@ -222,16 +222,16 @@ class Apple_News {
 
 		// Determine if this is a clean install (no settings set yet).
 		$settings = get_option( self::$option_name );
-		if ( empty( $settings ) ) {
-			update_option( 'apple_news_version', self::$version );
+		if ( ! empty( $settings ) ) {
 
-			return;
+			// Handle upgrade to version 1.3.0.
+			if ( version_compare( $current_version, '1.3.0', '<' ) ) {
+				$this->upgrade_to_1_3_0();
+			}
 		}
 
-		// Handle upgrade to version 1.3.0.
-		if ( version_compare( $current_version, '1.3.0', '<' ) ) {
-			$this->upgrade_to_1_3_0();
-		}
+		// Ensure the default theme is created.
+		$this->create_default_theme();
 
 		// Set the database version to the current version in code.
 		update_option( 'apple_news_version', self::$version );
