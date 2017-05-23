@@ -424,7 +424,6 @@ class Heading_Test extends Component_TestCase {
 		// Ensure legacy settings were applied to new values.
 		$theme = new \Apple_Exporter\Theme;
 		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
-		echo 'Trying to load ' . \Apple_Exporter\Theme::get_active_theme_name() . "\n";
 		$this->assertTrue( $theme->load() );
 		$settings = $theme->all_settings();
 		$this->assertEquals( '#abcdef', $settings['header1_color'] );

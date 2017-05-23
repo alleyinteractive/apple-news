@@ -29,7 +29,8 @@ class Export extends Action {
 	 * @param int $id
 	 */
 	function __construct( $settings, $id = null, $sections = null ) {
-		parent::__construct( $this->set_theme( $settings, $sections ) );
+		parent::__construct( $settings );
+		$this->set_theme( $sections );
 		$this->id = $id;
 	}
 
@@ -173,44 +174,38 @@ class Export extends Action {
 	}
 
 	/**
-	 * Overrides settings if a theme is explicitly mapped to the section for this post.
+	 * Sets the active theme for this session if explicitly set or mapped.
 	 *
 	 * @since 1.2.3
-	 * @param Settings $settings
-	 * @param array $sections
-	 * @return Settings
+	 *
+	 * @param array $sections Explicit sections mapped for this post.
+	 *
 	 * @access private
 	 */
-	private function set_theme( $settings, $sections ) {
+	private function set_theme( $sections ) {
 
 		// This can only work if there is explicitly one section.
 		if ( ! is_array( $sections ) || 1 !== count( $sections ) ) {
-			return $settings;
+			return;
 		}
 
 		// Check if there is a custom theme mapping.
 		$theme_name = Admin_Apple_Sections::get_theme_for_section( basename( $sections[0] ) );
 		if ( empty( $theme_name ) ) {
-			return $settings;
+			return;
 		}
 
 		// Try to get theme settings.
 		$theme = new \Apple_Exporter\Theme;
 		$theme->set_name( $theme_name );
 		if ( ! $theme->load() ) {
-			return $settings;
+
+			// Fall back to the active theme.
+			$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+			$theme->load();
 		}
 
 		// Set theme as active for this session.
 		$theme->use_this();
-
-		// Replace all settings with the theme settings.
-		$theme_settings = $theme->all_settings();
-		foreach ( $theme_settings as $key => $value ) {
-			$settings->$key = $value;
-		}
-
-		return $settings;
 	}
 }
-
