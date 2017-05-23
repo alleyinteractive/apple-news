@@ -580,6 +580,8 @@ class Admin_Apple_Themes extends Apple_News {
 			\Admin_Apple_Notice::error(
 				__( 'The theme name was empty', 'apple-news' )
 			);
+
+			return;
 		}
 
 		// Negotiate previous theme name.
