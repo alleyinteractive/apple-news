@@ -104,9 +104,27 @@ class Component_Spec {
 
 				// Fork for postmeta vs. standard tokens.
 				if ( 0 === strpos( $value, '#postmeta.' ) ) {
+
+					// Try to get the value from postmeta.
 					$meta_key = substr( $value, strlen( '#postmeta.' ), -1 );
-					$meta_value = get_post_meta( $post_id, $meta_key, true );
+					$meta_value = (string) get_post_meta( $post_id, $meta_key, true );
 					$value = ( ! empty( $meta_value ) ) ? $meta_value : '';
+
+					/**
+					 * Allows for filtering a postmeta value used in Apple News JSON.
+					 *
+					 * @since 1.3.0
+					 *
+					 * @param string $value The postmeta value to be filtered.
+					 * @param int $post_id The post ID for the post being rendered.
+					 * @param string $meta_key The meta key being rendered.
+					 */
+					$value = apply_filters(
+						'apple_news_postmeta_json_token',
+						$value,
+						$post_id,
+						$meta_key
+					);
 				} elseif ( ! empty( $values[ $value ] ) ) {
 					$value = $values[ $value ];
 				}
