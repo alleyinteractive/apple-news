@@ -68,8 +68,23 @@ class Settings {
 			return $this->_settings[ $name ];
 		}
 
-		// Fall back to trying to get the setting from the theme.
+		// Fall back to trying to get the setting dynamically from the theme.
 		$theme = \Apple_Exporter\Theme::get_used();
+		$method_name = 'get_' . $name;
+		if ( method_exists( $theme, $method_name ) ) {
+			$value = call_user_func( array( $theme, $method_name ) );
+
+			// Log a deprecated notice, since this is no longer preferred.
+			_deprecated_function(
+				__( 'Getting formatting settings through the \\Apple_Exporter\\Settings object', 'apple-news' ),
+				'1.3.0',
+				__( 'the \\Apple_Exporter\\Theme object', 'apple-news' )
+			);
+
+			return $value;
+		}
+
+		// Fall back to trying to get the setting from the theme.
 		$value = $theme->get_value( $name );
 		if ( null !== $value ) {
 
@@ -79,6 +94,8 @@ class Settings {
 				'1.3.0',
 				__( 'the \\Apple_Exporter\\Theme object', 'apple-news' )
 			);
+
+			return $value;
 		}
 
 		return null;
