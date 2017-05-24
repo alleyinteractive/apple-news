@@ -58,6 +58,10 @@ class HTML {
 	 * @return string The formatted HTML.
 	 */
 	public function format( $html ) {
-		return wp_kses( $html, $this->_allowed_html );
+		$html = wp_kses( $html, $this->_allowed_html );
+        if($html == '<p> </p>') {
+            $html = '<p>&nbsp; </p>';
+        }
+        return $html;
 	}
 }
