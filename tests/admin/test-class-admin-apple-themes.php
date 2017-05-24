@@ -509,7 +509,7 @@ JSON;
 }
 JSON;
 		$nonce = wp_create_nonce( 'apple_news_json' );
-		$_POST['apple_news_theme'] = $this->themes->get_active_theme();
+		$_POST['apple_news_theme'] = \Apple_Exporter\Theme::get_active_theme_name();
 		$_POST['apple_news_component'] = 'Body';
 		$_POST['apple_news_action'] = 'apple_news_save_json';
 		$_POST['apple_news_json_body-layout'] = $json;
