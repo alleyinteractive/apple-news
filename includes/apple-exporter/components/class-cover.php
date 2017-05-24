@@ -89,11 +89,15 @@ class Cover extends Component {
 	 * @access private
 	 */
 	private function set_default_layout() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_full_width_layout(
 			'headerPhotoLayout',
 			'headerPhotoLayout',
 			array(
-				'#layout_columns#' => $this->get_setting( 'layout_columns' ),
+				'#layout_columns#' => $theme->get_layout_columns(),
 			)
 		);
 
@@ -101,7 +105,7 @@ class Cover extends Component {
 			'headerBelowTextPhotoLayout',
 			'headerBelowTextPhotoLayout',
 			array(
-				'#layout_columns#' => $this->get_setting( 'layout_columns' ),
+				'#layout_columns#' => $theme->get_layout_columns(),
 			)
 		);
 	}

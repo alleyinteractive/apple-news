@@ -90,34 +90,37 @@ class Text_Styles extends Builder {
 	 */
 	private function _add_html_styles() {
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Add style for <code> tags.
 		$this->register_style( 'default-tag-code', array(
-			'fontName' => $this->get_setting( 'monospaced_font' ),
-			'fontSize' => intval( $this->get_setting( 'monospaced_size' ) ),
-			'tracking' => intval( $this->get_setting( 'monospaced_tracking' ) ) / 100,
-			'lineHeight' => intval( $this->get_setting( 'monospaced_line_height' ) ),
-			'textColor' => $this->get_setting( 'monospaced_color' ),
+			'fontName' => $theme->get_value( 'monospaced_font' ),
+			'fontSize' => intval( $theme->get_value( 'monospaced_size' ) ),
+			'tracking' => intval( $theme->get_value( 'monospaced_tracking' ) ) / 100,
+			'lineHeight' => intval( $theme->get_value( 'monospaced_line_height' ) ),
+			'textColor' => $theme->get_value( 'monospaced_color' ),
 		) );
 
 		// Add style for <pre> tags.
 		$this->register_style( 'default-tag-pre', array(
 			'textAlignment' => 'left',
-			'fontName' => $this->get_setting( 'monospaced_font' ),
-			'fontSize' => intval( $this->get_setting( 'monospaced_size' ) ),
-			'tracking' => intval( $this->get_setting( 'monospaced_tracking' ) ) / 100,
-			'lineHeight' => intval( $this->get_setting( 'monospaced_line_height' ) ),
-			'textColor' => $this->get_setting( 'monospaced_color' ),
+			'fontName' => $theme->get_value( 'monospaced_font' ),
+			'fontSize' => intval( $theme->get_value( 'monospaced_size' ) ),
+			'tracking' => intval( $theme->get_value( 'monospaced_tracking' ) ) / 100,
+			'lineHeight' => intval( $theme->get_value( 'monospaced_line_height' ) ),
+			'textColor' => $theme->get_value( 'monospaced_color' ),
 			'paragraphSpacingBefore' => 18,
 			'paragraphSpacingAfter' => 18,
 		) );
 
 		// Add style for <samp> tags.
 		$this->register_style( 'default-tag-samp', array(
-			'fontName' => $this->get_setting( 'monospaced_font' ),
-			'fontSize' => intval( $this->get_setting( 'monospaced_size' ) ),
-			'tracking' => intval( $this->get_setting( 'monospaced_tracking' ) ) / 100,
-			'lineHeight' => intval( $this->get_setting( 'monospaced_line_height' ) ),
-			'textColor' => $this->get_setting( 'monospaced_color' ),
+			'fontName' => $theme->get_value( 'monospaced_font' ),
+			'fontSize' => intval( $theme->get_value( 'monospaced_size' ) ),
+			'tracking' => intval( $theme->get_value( 'monospaced_tracking' ) ) / 100,
+			'lineHeight' => intval( $theme->get_value( 'monospaced_line_height' ) ),
+			'textColor' => $theme->get_value( 'monospaced_color' ),
 		) );
 	}
 }

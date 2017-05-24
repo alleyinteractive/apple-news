@@ -293,19 +293,22 @@ class Quote extends Component {
 	 */
 	private function _build_blockquote( $text ) {
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Set JSON for this element.
 		$values = array(
-			'#body_offset#' => $this->get_setting( 'body_offset' ),
-			'#body_column_span#' => $this->get_setting( 'body_column_span' ),
-			'#layout_gutter#' => $this->get_setting( 'layout_gutter' ),
-			'#blockquote_background_color#' => $this->get_setting( 'blockquote_background_color' ),
+			'#body_offset#' => $theme->get_body_offset(),
+			'#body_column_span#' => $theme->get_body_column_span(),
+			'#layout_gutter#' => $theme->get_value( 'layout_gutter' ),
+			'#blockquote_background_color#' => $theme->get_value( 'blockquote_background_color' ),
 			'#text#' => $this->parser->parse( $text ),
 			'#format#' => $this->parser->format,
 		);
 
 		// Set component attributes.
 		// Determine if there is a border specified.
-		if ( 'none' !== $this->get_setting( 'blockquote_border_style' ) ) {
+		if ( 'none' !== $theme->get_value( 'blockquote_border_style' ) ) {
 			$values = $this->_set_blockquote_border( $values );
 			$spec_name = 'blockquote-with-border-json';
 		} else {
@@ -327,9 +330,12 @@ class Quote extends Component {
 	 */
 	private function _build_pullquote( $text ) {
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Apply additional formatting to the text if hanging punctuation is set.
 		$text = $this->parser->parse( $text );
-		if ( 'yes' === $this->get_setting( 'pullquote_hanging_punctuation' ) ) {
+		if ( 'yes' === $theme->get_value( 'pullquote_hanging_punctuation' ) ) {
 			$text = $this->_apply_hanging_punctuation( $text );
 		}
 
@@ -340,7 +346,7 @@ class Quote extends Component {
 		);
 
 		// Determine if there is a border specified.
-		if ( 'none' !== $this->get_setting( 'pullquote_border_style' ) ) {
+		if ( 'none' !== $theme->get_value( 'pullquote_border_style' ) ) {
 			$values = $this->_set_pullquote_border( $values );
 			$spec_name = 'pullquote-with-border-json';
 		} else {
@@ -365,8 +371,11 @@ class Quote extends Component {
 	 */
 	private function _set_blockquote_border( $values ) {
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Determine if there is a border specified.
-		if ( 'none' === $this->get_setting( 'blockquote_border_style' ) ) {
+		if ( 'none' === $theme->get_value( 'blockquote_border_style' ) ) {
 			return $values;
 		}
 
@@ -374,9 +383,9 @@ class Quote extends Component {
 		return array_merge(
 			$values,
 			array(
-				'#blockquote_border_width#' => $this->get_setting( 'blockquote_border_width' ),
-				'#blockquote_border_style#' => $this->get_setting( 'blockquote_border_style' ),
-				'#blockquote_border_color#' => $this->get_setting( 'blockquote_border_color' ),
+				'#blockquote_border_width#' => $theme->get_value( 'blockquote_border_width' ),
+				'#blockquote_border_style#' => $theme->get_value( 'blockquote_border_style' ),
+				'#blockquote_border_color#' => $theme->get_value( 'blockquote_border_color' ),
 			)
 		);
 	}
@@ -399,16 +408,20 @@ class Quote extends Component {
 	 * @access private
 	 */
 	private function _set_blockquote_style() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_style(
 			'default-blockquote',
 			'default-blockquote',
 			array(
-				'#blockquote_font#' => $this->get_setting( 'blockquote_font' ),
-				'#blockquote_size#' => intval( $this->get_setting( 'blockquote_size' ) ),
-				'#blockquote_color#' => $this->get_setting( 'blockquote_color' ),
-				'#blockquote_line_height#' => intval( $this->get_setting( 'blockquote_line_height' ) ),
+				'#blockquote_font#' => $theme->get_value( 'blockquote_font' ),
+				'#blockquote_size#' => intval( $theme->get_value( 'blockquote_size' ) ),
+				'#blockquote_color#' => $theme->get_value( 'blockquote_color' ),
+				'#blockquote_line_height#' => intval( $theme->get_value( 'blockquote_line_height' ) ),
 				'#text_alignment#' => $this->find_text_alignment(),
-				'#blockquote_tracking#' => intval( $this->get_setting( 'blockquote_tracking' ) ) / 100,
+				'#blockquote_tracking#' => intval( $theme->get_value( 'blockquote_tracking' ) ) / 100,
 			),
 			'textStyle'
 		);
@@ -431,13 +444,17 @@ class Quote extends Component {
 	 * @access private
 	 */
 	private function _set_pullquote_border( $values ) {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Set the border.
 		return array_merge(
 			$values,
 			array(
-				'#pullquote_border_width#' => $this->get_setting( 'pullquote_border_width' ),
-				'#pullquote_border_style#' => $this->get_setting( 'pullquote_border_style' ),
-				'#pullquote_border_color#' => $this->get_setting( 'pullquote_border_color' ),
+				'#pullquote_border_width#' => $theme->get_value( 'pullquote_border_width' ),
+				'#pullquote_border_style#' => $theme->get_value( 'pullquote_border_style' ),
+				'#pullquote_border_color#' => $theme->get_value( 'pullquote_border_color' ),
 			)
 		);
 	}
@@ -460,18 +477,22 @@ class Quote extends Component {
 	 * @access private
 	 */
 	private function _set_pullquote_style() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_style(
 			'default-pullquote',
 			'default-pullquote',
 			array(
-				'#pullquote_font#' => $this->get_setting( 'pullquote_font' ),
-				'#pullquote_size#' => intval( $this->get_setting( 'pullquote_size' ) ),
-				'#pullquote_hanging_punctuation#' => ( 'yes' === $this->get_setting( 'pullquote_hanging_punctuation' ) ),
-				'#pullquote_color#' => $this->get_setting( 'pullquote_color' ),
-				'#pullquote_transform#' => $this->get_setting( 'pullquote_transform' ),
-				'#pullquote_line_height#' => intval( $this->get_setting( 'pullquote_line_height' ) ),
+				'#pullquote_font#' => $theme->get_value( 'pullquote_font' ),
+				'#pullquote_size#' => intval( $theme->get_value( 'pullquote_size' ) ),
+				'#pullquote_hanging_punctuation#' => ( 'yes' === $theme->get_value( 'pullquote_hanging_punctuation' ) ),
+				'#pullquote_color#' => $theme->get_value( 'pullquote_color' ),
+				'#pullquote_transform#' => $theme->get_value( 'pullquote_transform' ),
+				'#pullquote_line_height#' => intval( $theme->get_value( 'pullquote_line_height' ) ),
 				'#text_alignment#' => $this->find_text_alignment(),
-				'#pullquote_tracking#' => intval( $this->get_setting( 'pullquote_tracking' ) ) / 100,
+				'#pullquote_tracking#' => intval( $theme->get_value( 'pullquote_tracking' ) ) / 100,
 			),
 			'textStyle'
 		);

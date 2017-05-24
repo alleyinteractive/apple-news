@@ -29,7 +29,8 @@ class Export extends Action {
 	 * @param int $id
 	 */
 	function __construct( $settings, $id = null, $sections = null ) {
-		parent::__construct( $this->set_theme( $settings, $sections ) );
+		parent::__construct( $settings );
+		$this->set_theme( $sections );
 		$this->id = $id;
 	}
 
@@ -109,6 +110,10 @@ class Export extends Action {
 	 * @access public
 	 */
 	public function format_byline( $post, $author = '', $date = '' ) {
+
+		// Get information about the currently used theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Get the author
 		if ( empty( $author ) ) {
 			$author = ucfirst( get_the_author_meta( 'display_name', $post->post_author ) );
@@ -123,7 +128,7 @@ class Export extends Action {
 		$date_format = 'M j, Y | g:i A';
 
 		// Check for a custom byline format
-		$byline_format = $this->get_setting( 'byline_format' );
+		$byline_format = $theme->get_value( 'byline_format' );
 		if ( ! empty( $byline_format ) ) {
 			// Find and replace the author format placeholder name with a temporary placeholder
 			// This is because some bylines could contain hashtags!
@@ -173,33 +178,38 @@ class Export extends Action {
 	}
 
 	/**
-	 * Overrides settings if a theme is explicitly mapped to the section for this post.
+	 * Sets the active theme for this session if explicitly set or mapped.
 	 *
 	 * @since 1.2.3
-	 * @param Settings $settings
-	 * @param array $sections
-	 * @return Settings
+	 *
+	 * @param array $sections Explicit sections mapped for this post.
+	 *
 	 * @access private
 	 */
-	private function set_theme( $settings, $sections ) {
-		// This can only work if there is explicitly one section
+	private function set_theme( $sections ) {
+
+		// This can only work if there is explicitly one section.
 		if ( ! is_array( $sections ) || 1 !== count( $sections ) ) {
-			return $settings;
+			return;
 		}
 
-		// Check if there is a custom theme mapping
-		$theme_settings = Admin_Apple_Sections::get_theme_for_section( basename( $sections[0] ) );
-		if ( empty( $theme_settings ) || ! is_array( $theme_settings ) ) {
-			return $settings;
+		// Check if there is a custom theme mapping.
+		$theme_name = Admin_Apple_Sections::get_theme_for_section( basename( $sections[0] ) );
+		if ( empty( $theme_name ) ) {
+			return;
 		}
 
-		// Replace all settings with the theme settings
-		foreach ( $theme_settings as $key => $value ) {
-			$settings->$key = $value;
+		// Try to get theme settings.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $theme_name );
+		if ( ! $theme->load() ) {
+
+			// Fall back to the active theme.
+			$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+			$theme->load();
 		}
 
-		return $settings;
+		// Set theme as active for this session.
+		$theme->use_this();
 	}
-
 }
-

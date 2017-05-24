@@ -46,8 +46,8 @@
 			</thead>
 			<tbody id="theme-list">
 			<?php
-				$all_themes = $themes->list_themes();
-				$active_theme = $themes->get_active_theme();
+				$all_themes = \Apple_Exporter\Theme::get_registry();
+				$active_theme = \Apple_Exporter\Theme::get_active_theme_name();
 				if ( empty( $all_themes ) ) :
 				?>
 					<tr>

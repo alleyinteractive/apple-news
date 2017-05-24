@@ -9,12 +9,49 @@
 			<input type="text" id="apple_news_theme_name" name="apple_news_theme_name" value="<?php echo esc_attr( $theme_name ) ?>" />
 			<input type="hidden" id="apple_news_theme_name_previous" name="apple_news_theme_name_previous" value="<?php echo esc_attr( $theme_name ) ?>" />
 		</p>
-		<?php
-			// Get formatting settings
-			$section->before_section();
-			include plugin_dir_path( __FILE__ ) . 'page_options_section.php';
-			$section->after_section();
-		?>
+		<div id="apple-news-formatting">
+			<div class="apple-news-settings-left">
+				<h3><?php esc_html_e( 'Theme Settings', 'apple-news' ); ?></h3>
+				<?php esc_html_e( 'Configuration for the visual appearance of the theme. Updates to these settings will not change the appearance of any articles previously published to your channel in Apple News using this theme unless you republish them.', 'apple-news' ); ?>
+				<table class="form-table apple-news">
+					<?php foreach ( $theme->get_groups() as $group ) : ?>
+						<?php do_action( 'apple_news_before_setting_group', $group, false ); ?>
+						<tr>
+							<th scope="row"><?php echo esc_html( $group['label'] ); ?></th>
+							<td>
+								<fieldset>
+									<?php foreach ( $group['settings'] as $setting_name ) : ?>
+										<?php do_action( 'apple_news_before_setting', $setting_name, $theme_options[ $setting_name ] ); ?>
+										<label class="setting-container">
+											<?php if ( ! empty( $theme_options[ $setting_name ]['label'] ) ) : ?>
+												<span class="label-name"><?php echo esc_html( $theme_options[ $setting_name ]['label'] ); ?></span>
+											<?php endif; ?>
+											<?php
+											echo wp_kses(
+												Admin_Apple_Themes::render_field( $theme, $setting_name ),
+												Admin_Apple_Settings_Section::$allowed_html
+											);
+											?>
+										</label>
+										<?php do_action( 'apple_news_after_setting', $setting_name, $theme_options[ $setting_name ] ); ?>
+										<br />
+									<?php endforeach; ?>
+
+									<?php if ( ! empty( $group['description'] ) ) : ?>
+										<p class="description"><?php echo '(' . wp_kses_post( $group['description'] ) . ')'; ?></p>
+									<?php endif; ?>
+								</fieldset>
+							</td>
+						</tr>
+						<?php do_action( 'apple_news_after_setting_group', $group, false ); ?>
+					<?php endforeach; ?>
+				</table>
+			</div>
+			<?php
+				$preview = new Admin_Apple_Preview();
+				$preview->get_preview_html( $theme->get_name() );
+			?>
+		</div>
 		<p class="apple-news-theme-edit-buttons">
 			<?php
 				submit_button(

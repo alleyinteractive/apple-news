@@ -42,7 +42,7 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 			'apple_news_admin_email' => array(
 				'label' => __( 'Administrator Email', 'apple-news' ),
 				'required' => false,
-				'type' => 'text',
+				'type' => 'string',
 			),
 		);
 

@@ -189,17 +189,17 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @param string $section_id The Apple News section ID
 	 *
 	 * @access public
-	 * @return array The theme settings, if set
+	 * @return string The name of the theme, or null if not found.
 	 */
 	public static function get_theme_for_section( $section_id ) {
+
+		// Try to get the theme mapping for this section ID.
 		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
 		if ( ! isset( $theme_mappings[ $section_id ] ) ) {
 			return null;
 		}
 
-		$theme = $theme_mappings[ $section_id ];
-		$theme_obj = new Admin_Apple_Themes();
-		return $theme_obj->get_theme( $theme_mappings[ $section_id ] );
+		return $theme_mappings[ $section_id ];
 	}
 
 	/**
@@ -356,7 +356,7 @@ class Admin_Apple_Sections extends Apple_News {
 		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
 		$theme_obj = new Admin_Apple_Themes();
 		$theme_admin_url = add_query_arg( 'page', $theme_obj->theme_page_name, admin_url( 'admin.php' ) );
-		$themes = $theme_obj->list_themes();
+		$themes = \Apple_Exporter\Theme::get_registry();
 
 		// Load the partial with the form.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_sections.php';

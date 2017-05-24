@@ -135,6 +135,9 @@ class Components extends Builder {
 			return;
 		}
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Otherwise, iterate over the components and look for the first image.
 		foreach ( $components as $i => $component ) {
 
@@ -188,7 +191,7 @@ class Components extends Builder {
 			$this->set_content_property( 'cover', $original_url );
 
 			// If the cover is set to be displayed, remove it from the flow.
-			$order = $this->get_setting( 'meta_component_order' );
+			$order = $theme->get_value( 'meta_component_order' );
 			if ( is_array( $order ) && in_array( 'cover', $order, true ) ) {
 				unset( $components[ $i ] );
 				$components = array_values( $components );
@@ -266,7 +269,11 @@ class Components extends Builder {
 	 * @return int Estimated number of text lines that fit next to a square anchor.
 	 */
 	private function _anchor_lines_coefficient() {
-		return ceil( 18 / $this->get_setting( 'body_size' ) * 18 );
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
+		return ceil( 18 / $theme->get_value( 'body_size' ) * 18 );
 	}
 
 	/**
@@ -283,6 +290,9 @@ class Components extends Builder {
 		if ( $target_component->is_anchor_target() ) {
 			return;
 		}
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
 
 		// Get the component's anchor settings, if set.
 		$anchor_json = $component->get_json( 'anchor' );
@@ -307,7 +317,7 @@ class Components extends Builder {
 		// Given $component, find out the opposite position.
 		$other_position = Component::ANCHOR_LEFT;
 		if ( ( Component::ANCHOR_AUTO === $component->get_anchor_position()
-		       && 'left' !== $this->get_setting( 'body_orientation' ) )
+		       && 'left' !== $theme->get_value( 'body_orientation' ) )
 		     || Component::ANCHOR_LEFT === $component->get_anchor_position()
 		) {
 			$other_position = Component::ANCHOR_RIGHT;
@@ -332,20 +342,23 @@ class Components extends Builder {
 	 */
 	private function _characters_per_line_anchored() {
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Get the body text size in points.
-		$body_size = $this->get_setting( 'body_size' );
+		$body_size = $theme->get_value( 'body_size' );
 
 		// Calculate the base estimated characters per line.
 		$cpl = 20 + 230 * pow( M_E, - 0.144 * $body_size );
 
 		// If the alignment is centered, cut CPL in half due to less available space.
-		$body_orientation = $this->get_setting( 'body_orientation' );
+		$body_orientation = $theme->get_value( 'body_orientation' );
 		if ( 'center' === $body_orientation ) {
 			$cpl /= 2;
 		}
 
 		// If using a condensed font, boost the CPL.
-		$body_font = $this->get_setting( 'body_font' );
+		$body_font = $theme->get_value( 'body_font' );
 		if ( false !== stripos( $body_font, 'condensed' ) ) {
 			$cpl *= 1.5;
 		}
@@ -536,6 +549,9 @@ class Components extends Builder {
 		$prev = null;
 		$current = null;
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Loop through components, grouping as necessary.
 		foreach ( $components as $component ) {
 
@@ -620,12 +636,12 @@ class Components extends Builder {
 		$regrouped_components = array(
 			'role' => 'container',
 			'layout' => array(
-				'columnSpan' => $this->get_setting( 'layout_columns' ),
+				'columnSpan' => $theme->get_layout_columns(),
 				'columnStart' => 0,
 				'ignoreDocumentMargin' => true,
 			),
 			'style' => array(
-				'backgroundColor' => $this->get_setting( 'body_background_color' ),
+				'backgroundColor' => $theme->get_value( 'body_background_color' ),
 			),
 			'components' => array_slice( $new_components, $cover_index + 1 ),
 		);
@@ -647,8 +663,11 @@ class Components extends Builder {
 	 */
 	private function _meta_components() {
 
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Attempt to get the component order.
-		$meta_component_order = $this->get_setting( 'meta_component_order' );
+		$meta_component_order = $theme->get_value( 'meta_component_order' );
 		if ( empty( $meta_component_order )
 		     || ! is_array( $meta_component_order )
 		) {

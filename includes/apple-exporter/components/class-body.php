@@ -221,9 +221,12 @@ class Body extends Component {
 			)
 	 	);
 
-		if ( 'yes' === $this->get_setting( 'initial_dropcap' ) ) {
-			// Toggle setting. This should only happen in the initial paragraph.
-			$this->set_setting( 'initial_dropcap', 'no' );
+		// Determine whether to apply dropcap style.
+		$theme = \Apple_Exporter\Theme::get_used();
+		if ( ! $theme->dropcap_applied
+			&& 'yes' === $theme->get_value( 'initial_dropcap' )
+		) {
+			$theme->dropcap_applied = true;
 			$this->set_initial_dropcap_style();
 		} else {
 			$this->set_default_style();
@@ -248,23 +251,28 @@ class Body extends Component {
 	 * @access private
 	 */
 	private function set_default_layout() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
+		// Register the standard layout.
 		$this->register_layout(
 			'body-layout',
 			'body-layout',
 			array(
-				'#body_offset#' => $this->get_setting( 'body_offset' ),
-				'#body_column_span#' => $this->get_setting( 'body_column_span' ),
+				'#body_offset#' => $theme->get_body_offset(),
+				'#body_column_span#' => $theme->get_body_column_span(),
 			),
 			'layout'
 		);
 
-		// Also pre-register the layout that will be used later for the last body component
+		// Also pre-register the layout that will be used later for the last body component.
 		$this->register_layout(
 			'body-layout-last',
 			'body-layout-last',
 			array(
-				'#body_offset#' => $this->get_setting( 'body_offset' ),
-				'#body_column_span#' => $this->get_setting( 'body_column_span' ),
+				'#body_offset#' => $theme->get_body_offset(),
+				'#body_column_span#' => $theme->get_body_column_span(),
 			)
 		);
 	}
@@ -298,13 +306,17 @@ class Body extends Component {
 	 * @access private
 	 */
 	private function get_default_style_values() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		return array(
-			'#body_font#' => $this->get_setting( 'body_font' ),
-			'#body_size#' => intval( $this->get_setting( 'body_size' ) ),
-			'#body_tracking#' => intval( $this->get_setting( 'body_tracking' ) ) / 100,
-			'#body_line_height#' => intval( $this->get_setting( 'body_line_height' ) ),
-			'#body_color#' => $this->get_setting( 'body_color' ),
-			'#body_link_color#' => $this->get_setting( 'body_link_color' ),
+			'#body_font#' => $theme->get_value( 'body_font' ),
+			'#body_size#' => intval( $theme->get_value( 'body_size' ) ),
+			'#body_tracking#' => intval( $theme->get_value( 'body_tracking' ) ) / 100,
+			'#body_line_height#' => intval( $theme->get_value( 'body_line_height' ) ),
+			'#body_color#' => $theme->get_value( 'body_color' ),
+			'#body_link_color#' => $theme->get_value( 'body_link_color' ),
 		);
 	}
 
@@ -328,8 +340,12 @@ class Body extends Component {
 	 * @access private
 	 */
 	private function set_initial_dropcap_style() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Negotiate the number of lines.
-		$number_of_lines = absint( $this->get_setting( 'dropcap_number_of_lines' ) );
+		$number_of_lines = absint( $theme->get_value( 'dropcap_number_of_lines' ) );
 		if ( $number_of_lines < 2 ) {
 			$number_of_lines = 2;
 		} elseif ( $number_of_lines > 10 ) {
@@ -338,16 +354,16 @@ class Body extends Component {
 
 		// Start building the custom dropcap body style.
 		$dropcap_style = array(
-			'#dropcap_font#' => $this->get_setting( 'dropcap_font' ),
-			'#dropcap_number_of_characters#' => absint( $this->get_setting( 'dropcap_number_of_characters' ) ),
+			'#dropcap_font#' => $theme->get_value( 'dropcap_font' ),
+			'#dropcap_number_of_characters#' => absint( $theme->get_value( 'dropcap_number_of_characters' ) ),
 			'#dropcap_number_of_lines#' => $number_of_lines,
-			'#dropcap_number_of_raised_lines#' => absint( $this->get_setting( 'dropcap_number_of_raised_lines' ) ),
-			'#dropcap_padding#' => absint( $this->get_setting( 'dropcap_padding' ) ),
-			'#dropcap_color#' => $this->get_setting( 'dropcap_color' ),
+			'#dropcap_number_of_raised_lines#' => absint( $theme->get_value( 'dropcap_number_of_raised_lines' ) ),
+			'#dropcap_padding#' => absint( $theme->get_value( 'dropcap_padding' ) ),
+			'#dropcap_color#' => $theme->get_value( 'dropcap_color' ),
 		);
 
 		// Add the background color, if defined.
-		$background_color = $this->get_setting( 'dropcap_background_color' );
+		$background_color = $theme->get_value( 'dropcap_background_color' );
 		if ( ! empty( $background_color ) ) {
 			$dropcap_style['#dropcap_background_color#'] = $background_color;
 		}

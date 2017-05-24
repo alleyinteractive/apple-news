@@ -10,302 +10,6 @@ use Apple_Exporter\Settings as Settings;
 class Admin_Apple_Settings_Section extends Apple_News {
 
 	/**
-	 * All available iOS fonts.
-	 *
-	 * @since 0.4.0
-	 * @var array
-	 * @access protected
-	 */
-	protected static $fonts = array(
-		'AcademyEngravedLetPlain',
-		'AlNile-Bold',
-		'AlNile',
-		'AmericanTypewriter',
-		'AmericanTypewriter-Bold',
-		'AmericanTypewriter-Condensed',
-		'AmericanTypewriter-CondensedBold',
-		'AmericanTypewriter-CondensedLight',
-		'AmericanTypewriter-Light',
-		'AppleColorEmoji',
-		'AppleSDGothicNeo-Thin',
-		'AppleSDGothicNeo-Light',
-		'AppleSDGothicNeo-Regular',
-		'AppleSDGothicNeo-Medium',
-		'AppleSDGothicNeo-SemiBold',
-		'AppleSDGothicNeo-Bold',
-		'AppleSDGothicNeo-Medium',
-		'ArialMT',
-		'Arial-BoldItalicMT',
-		'Arial-BoldMT',
-		'Arial-ItalicMT',
-		'ArialHebrew',
-		'ArialHebrew-Bold',
-		'ArialHebrew-Light',
-		'ArialRoundedMTBold',
-		'Avenir-Black',
-		'Avenir-BlackOblique',
-		'Avenir-Book',
-		'Avenir-BookOblique',
-		'Avenir-Heavy',
-		'Avenir-HeavyOblique',
-		'Avenir-Light',
-		'Avenir-LightOblique',
-		'Avenir-Medium',
-		'Avenir-MediumOblique',
-		'Avenir-Oblique',
-		'Avenir-Roman',
-		'AvenirNext-Bold',
-		'AvenirNext-BoldItalic',
-		'AvenirNext-DemiBold',
-		'AvenirNext-DemiBoldItalic',
-		'AvenirNext-Heavy',
-		'AvenirNext-HeavyItalic',
-		'AvenirNext-Italic',
-		'AvenirNext-Medium',
-		'AvenirNext-MediumItalic',
-		'AvenirNext-Regular',
-		'AvenirNext-UltraLight',
-		'AvenirNext-UltraLightItalic',
-		'AvenirNext-Bold',
-		'AvenirNext-BoldItalic',
-		'AvenirNext-DemiBold',
-		'AvenirNext-DemiBoldItalic',
-		'AvenirNext-Heavy',
-		'AvenirNext-HeavyItalic',
-		'AvenirNext-Italic',
-		'AvenirNext-Medium',
-		'AvenirNext-MediumItalic',
-		'AvenirNext-Regular',
-		'AvenirNext-UltraLight',
-		'AvenirNext-UltraLightItalic',
-		'BanglaSangamMN',
-		'BanglaSangamMN-Bold',
-		'Baskerville',
-		'Baskerville-Bold',
-		'Baskerville-BoldItalic',
-		'Baskerville-Italic',
-		'Baskerville-SemiBold',
-		'Baskerville-SemiBoldItalic',
-		'BodoniSvtyTwoITCTT-Bold',
-		'BodoniSvtyTwoITCTT-Book',
-		'BodoniSvtyTwoITCTT-BookIta',
-		'BodoniSvtyTwoOSITCTT-Bold',
-		'BodoniSvtyTwoOSITCTT-Book',
-		'BodoniSvtyTwoOSITCTT-BookIt',
-		'BodoniSvtyTwoSCITCTT-Book',
-		'BradleyHandITCTT-Bold',
-		'ChalkboardSE-Bold',
-		'ChalkboardSE-Light',
-		'ChalkboardSE-Regular',
-		'Chalkduster',
-		'Cochin',
-		'Cochin-Bold',
-		'Cochin-BoldItalic',
-		'Cochin-Italic',
-		'Copperplate',
-		'Copperplate-Bold',
-		'Copperplate-Light',
-		'Courier',
-		'Courier-Bold',
-		'Courier-BoldOblique',
-		'Courier-Oblique',
-		'CourierNewPS-BoldItalicMT',
-		'CourierNewPS-BoldMT',
-		'CourierNewPS-ItalicMT',
-		'CourierNewPSMT',
-		'DBLCDTempBlack',
-		'DINAlternate-Bold',
-		'DINCondensed-Bold',
-		'DamascusBold',
-		'Damascus',
-		'DamascusLight',
-		'DamascusMedium',
-		'DamascusSemiBold',
-		'DevanagariSangamMN',
-		'DevanagariSangamMN-Bold',
-		'Didot',
-		'Didot-Bold',
-		'Didot-Italic',
-		'DiwanMishafi',
-		'EuphemiaUCAS',
-		'EuphemiaUCAS-Bold',
-		'EuphemiaUCAS-Italic',
-		'Farah',
-		'Futura-CondensedExtraBold',
-		'Futura-CondensedMedium',
-		'Futura-Medium',
-		'Futura-MediumItalic',
-		'GeezaPro',
-		'GeezaPro-Bold',
-		'Georgia',
-		'Georgia-Bold',
-		'Georgia-BoldItalic',
-		'Georgia-Italic',
-		'GillSans',
-		'GillSans-Bold',
-		'GillSans-BoldItalic',
-		'GillSans-Italic',
-		'GillSans-Light',
-		'GillSans-LightItalic',
-		'GujaratiSangamMN',
-		'GujaratiSangamMN-Bold',
-		'GurmukhiMN',
-		'GurmukhiMN-Bold',
-		'STHeitiSC-Light',
-		'STHeitiSC-Medium',
-		'STHeitiTC-Light',
-		'STHeitiTC-Medium',
-		'Helvetica',
-		'Helvetica-Bold',
-		'Helvetica-BoldOblique',
-		'Helvetica-Light',
-		'Helvetica-LightOblique',
-		'Helvetica-Oblique',
-		'HelveticaNeue',
-		'HelveticaNeue-Bold',
-		'HelveticaNeue-BoldItalic',
-		'HelveticaNeue-CondensedBlack',
-		'HelveticaNeue-CondensedBold',
-		'HelveticaNeue-Italic',
-		'HelveticaNeue-Light',
-		'HelveticaNeue-LightItalic',
-		'HelveticaNeue-Medium',
-		'HelveticaNeue-MediumItalic',
-		'HelveticaNeue-UltraLight',
-		'HelveticaNeue-UltraLightItalic',
-		'HelveticaNeue-Thin',
-		'HelveticaNeue-ThinItalic',
-		'HiraKakuProN-W3',
-		'HiraKakuProN-W6',
-		'HiraMinProN-W3',
-		'HiraMinProN-W6',
-		'HoeflerText-Black',
-		'HoeflerText-BlackItalic',
-		'HoeflerText-Italic',
-		'HoeflerText-Regular',
-		'IowanOldStyle-Bold',
-		'IowanOldStyle-BoldItalic',
-		'IowanOldStyle-Italic',
-		'IowanOldStyle-Roman',
-		'Kailasa',
-		'Kailasa-Bold',
-		'KannadaSangamMN',
-		'KannadaSangamMN-Bold',
-		'KhmerSangamMN',
-		'KohinoorDevanagari-Book',
-		'KohinoorDevanagari-Light',
-		'KohinoorDevanagari-Medium',
-		'LaoSangamMN',
-		'MalayalamSangamMN',
-		'MalayalamSangamMN-Bold',
-		'Marion-Bold',
-		'Marion-Italic',
-		'Marion-Regular',
-		'Menlo-BoldItalic',
-		'Menlo-Regular',
-		'Menlo-Bold',
-		'Menlo-Italic',
-		'MarkerFelt-Thin',
-		'MarkerFelt-Wide',
-		'Noteworthy-Bold',
-		'Noteworthy-Light',
-		'Optima-Bold',
-		'Optima-BoldItalic',
-		'Optima-ExtraBlack',
-		'Optima-Italic',
-		'Optima-Regular',
-		'OriyaSangamMN',
-		'OriyaSangamMN-Bold',
-		'Palatino-Bold',
-		'Palatino-BoldItalic',
-		'Palatino-Italic',
-		'Palatino-Roman',
-		'Papyrus',
-		'Papyrus-Condensed',
-		'PartyLetPlain',
-		'SanFranciscoDisplay-Black',
-		'SanFranciscoDisplay-Bold',
-		'SanFranciscoDisplay-Heavy',
-		'SanFranciscoDisplay-Light',
-		'SanFranciscoDisplay-Medium',
-		'SanFranciscoDisplay-Regular',
-		'SanFranciscoDisplay-Semibold',
-		'SanFranciscoDisplay-Thin',
-		'SanFranciscoDisplay-Ultralight',
-		'SanFranciscoRounded-Black',
-		'SanFranciscoRounded-Bold',
-		'SanFranciscoRounded-Heavy',
-		'SanFranciscoRounded-Light',
-		'SanFranciscoRounded-Medium',
-		'SanFranciscoRounded-Regular',
-		'SanFranciscoRounded-Semibold',
-		'SanFranciscoRounded-Thin',
-		'SanFranciscoRounded-Ultralight',
-		'SanFranciscoText-Bold',
-		'SanFranciscoText-BoldG1',
-		'SanFranciscoText-BoldG2',
-		'SanFranciscoText-BoldG3',
-		'SanFranciscoText-BoldItalic',
-		'SanFranciscoText-BoldItalicG1',
-		'SanFranciscoText-BoldItalicG2',
-		'SanFranciscoText-BoldItalicG3',
-		'SanFranciscoText-Heavy',
-		'SanFranciscoText-HeavyItalic',
-		'SanFranciscoText-Light',
-		'SanFranciscoText-LightItalic',
-		'SanFranciscoText-Medium',
-		'SanFranciscoText-MediumItalic',
-		'SanFranciscoText-Regular',
-		'SanFranciscoText-RegularG1',
-		'SanFranciscoText-RegularG2',
-		'SanFranciscoText-RegularG3',
-		'SanFranciscoText-RegularItalic',
-		'SanFranciscoText-RegularItalicG1',
-		'SanFranciscoText-RegularItalicG2',
-		'SanFranciscoText-RegularItalicG3',
-		'SanFranciscoText-Semibold',
-		'SanFranciscoText-SemiboldItalic',
-		'SanFranciscoText-Thin',
-		'SanFranciscoText-ThinItalic',
-		'SavoyeLetPlain',
-		'SinhalaSangamMN',
-		'SinhalaSangamMN-Bold',
-		'SnellRoundhand',
-		'SnellRoundhand-Black',
-		'SnellRoundhand-Bold',
-		'Superclarendon-Regular',
-		'Superclarendon-BoldItalic',
-		'Superclarendon-Light',
-		'Superclarendon-BlackItalic',
-		'Superclarendon-Italic',
-		'Superclarendon-LightItalic',
-		'Superclarendon-Bold',
-		'Superclarendon-Black',
-		'Symbol',
-		'TamilSangamMN',
-		'TamilSangamMN-Bold',
-		'TeluguSangamMN',
-		'TeluguSangamMN-Bold',
-		'Thonburi',
-		'Thonburi-Bold',
-		'Thonburi-Light',
-		'TimesNewRomanPS-BoldItalicMT',
-		'TimesNewRomanPS-BoldMT',
-		'TimesNewRomanPS-ItalicMT',
-		'TimesNewRomanPSMT',
-		'Trebuchet-BoldItalic',
-		'TrebuchetMS',
-		'TrebuchetMS-Bold',
-		'TrebuchetMS-Italic',
-		'Verdana',
-		'Verdana-Bold',
-		'Verdana-BoldItalic',
-		'Verdana-Italic',
-		'ZapfDingbatsITC',
-		'Zapfino',
-	);
-
-	/**
 	 * Name of the settings section.
 	 *
 	 * @var string
@@ -454,16 +158,15 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * @param string $section_option_name
 	 */
 	function __construct( $page, $hidden = false, $save_action = 'apple_news_options', $section_option_name = null ) {
-		$this->page									= $page;
-		self::$section_option_name	= ( ! empty( $section_option_name ) ) ? $section_option_name : self::$option_name;
-		$this->save_action					= $save_action;
-		$base_settings							= new \Apple_Exporter\Settings;
-		self::$base_settings				= $base_settings->all();
-		self::$loaded_settings			= get_option( self::$section_option_name );
-		$this->settings							= apply_filters( 'apple_news_section_settings', $this->settings, $page );
-		$this->groups								= apply_filters( 'apple_news_section_groups', $this->groups, $page );
-		self::$fonts								= apply_filters( 'apple_news_fonts_list', self::$fonts );
-		$this->hidden								= $hidden;
+		$this->page = $page;
+		self::$section_option_name = ( ! empty( $section_option_name ) ) ? $section_option_name : self::$option_name;
+		$this->save_action = $save_action;
+		$base_settings = new \Apple_Exporter\Settings;
+		self::$base_settings = $base_settings->all();
+		self::$loaded_settings = get_option( self::$section_option_name );
+		$this->settings = apply_filters( 'apple_news_section_settings', $this->settings, $page );
+		$this->groups = apply_filters( 'apple_news_section_groups', $this->groups, $page );
+		$this->hidden = $hidden;
 
 		// Save settings if necessary
 		$this->save_settings();
@@ -573,38 +276,6 @@ class Admin_Apple_Settings_Section extends Apple_News {
 				$field .= ">" . esc_html( $option ) . "</option>";
 			}
 			$field .= '</select>';
-		} elseif ( 'font' === $type ) {
-			$field = '<select class="select2 font" id="%s" name="%s">';
-			foreach ( self::$fonts as $option ) {
-				$field .= "<option value='" . esc_attr( $option ) . "'";
-				if ( $option === $value ) {
-					$field .= ' selected ';
-				}
-				$field .= ">" . esc_html( $option ) . "</option>";
-			}
-			$field .= '</select>';
-		} elseif ( 'boolean' === $type ) {
-			$field = '<select name="%s">';
-
-			$field .= '<option value="yes"';
-			if ( 'yes' === $value ) {
-				$field .= ' selected ';
-			}
-			$field .= '>Yes</option>';
-
-			$field .= '<option value="no"';
-			if ( 'yes' !== $value ) {
-				$field .= ' selected ';
-			}
-			$field .= '>No</option>';
-
-			$field .= '</select>';
-		} elseif ( 'integer' === $type ) {
-			$field = '<input type="number" id="%s" name="%s" value="%s" size="%s" %s>';
-		} elseif ( 'float' === $type ) {
-			$field = '<input class="input-float" placeholder="' . esc_attr( $default_value ) . '" type="text" step="any" id="%s" name="%s" value="%s" size="%s">';
-		} elseif ( 'color' === $type ) {
-			$field = '<input type="text" id="%s" name="%s" value="%s" class="apple-news-color-picker" %s>';
 		} elseif ( 'password' === $type ) {
 			$field = '<input type="password" id="%s" name="%s" value="%s" size="%s" %s>';
 		} elseif ( 'hidden' === $type ) {
@@ -621,7 +292,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		}
 
 		// Use the proper template to build the field
-		if ( is_array( $type ) || 'font' === $type || 'boolean' === $type ) {
+		if ( is_array( $type ) ) {
 			return sprintf(
 				$field,
 				esc_attr( $name ),
@@ -847,15 +518,5 @@ class Admin_Apple_Settings_Section extends Apple_News {
 
 		// Save to options
 		update_option( self::$section_option_name, $settings, 'no' );
-	}
-
-	/**
-	 * Get all available fonts.
-	 *
-	 * @return array
-	 * @access public
-	 */
-	public static function list_fonts() {
-		return self::$fonts;
 	}
 }

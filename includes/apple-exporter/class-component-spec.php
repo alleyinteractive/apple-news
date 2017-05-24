@@ -200,18 +200,12 @@ class Component_Spec {
 	 * Save the provided spec override.
 	 *
 	 * @param array $spec The spec definition to save.
-	 * @param string $theme Optional. Theme name to save to if other than default.
+	 * @param string $theme_name Optional. Theme name to save to if other than default.
 	 *
 	 * @access public
 	 * @return boolean True on success, false on failure.
 	 */
-	public function save( $spec, $theme = '' ) {
-
-		// Negotiate the theme name.
-		$themes = new \Admin_Apple_Themes();
-		if ( empty( $theme ) ) {
-			$theme = $themes->get_active_theme();
-		}
+	public function save( $spec, $theme_name = '' ) {
 
 		// Validate the JSON.
 		$json = json_decode( $spec, true );
@@ -231,7 +225,7 @@ class Component_Spec {
 		if ( $custom_json === $default_json ) {
 			// Delete the spec in case we've reverted back to default.
 			// No need to keep it in storage.
-			return $this->delete( $theme );
+			return $this->delete( $theme_name );
 		}
 
 		// Validate the JSON.
@@ -248,18 +242,53 @@ class Component_Spec {
 			return $result;
 		}
 
-		// If we've gotten to this point, save the JSON.
-		$component_key = $this->key_from_name( $this->component );
-		$spec_key = $this->key_from_name( $this->name );
-		$theme_settings = $themes->get_theme( $theme );
-		// TODO: REFACTOR THIS
+		// Negotiate the theme name.
+		if ( empty( $theme_name ) ) {
+			$theme_name = \Apple_Exporter\Theme::get_active_theme_name();
+		}
+
+		// Attempt to load the theme to be saved.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $theme_name );
+		if ( ! $theme->load() ) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'Unable to load theme %s to save spec', 'apple-news' ),
+				$theme_name
+			) );
+
+			return false;
+		}
+
+		// Ensure that json_templates is set in the theme and is an array.
+		$theme_settings = $theme->all_settings();
 		if ( empty( $theme_settings['json_templates'] )
 			|| ! is_array( $theme_settings['json_templates'] )
 		) {
 			$theme_settings['json_templates'] = array();
 		}
+
+		// Try to load the custom JSON into the theme.
+		$component_key = $this->key_from_name( $this->component );
+		$spec_key = $this->key_from_name( $this->name );
 		$theme_settings['json_templates'][ $component_key ][ $spec_key ] = $json;
-		$themes->save_theme( $theme, $theme_settings, true );
+		if ( ! $theme->load( $theme_settings ) ) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'The spec for %s could not be loaded into the theme', 'apple-news' ),
+				$this->label
+			) );
+
+			return false;
+		}
+
+		// Try to save the theme.
+		if ( ! $theme->save() ) {
+			\Admin_Apple_Notice::error( sprintf(
+				__( 'The spec for %s could not be saved to the theme', 'apple-news' ),
+				$this->label
+			) );
+
+			return false;
+		}
 
 		// Indicate success.
 		return true;
@@ -268,25 +297,31 @@ class Component_Spec {
 	/**
 	 * Delete the current spec override.
 	 *
-	 * @param string $theme Optional. Theme to delete from if not the default.
+	 * @param string $theme_name Optional. Theme to delete from if not the default.
 	 *
 	 * @access public
 	 * @return bool True on success, false on failure.
 	 */
-	public function delete( $theme = '' ) {
+	public function delete( $theme_name = '' ) {
 
 		// Negotiate theme name.
-		$themes = new \Admin_Apple_Themes();
-		if ( empty( $theme ) ) {
-			$theme = $themes->get_active_theme();
+		if ( empty( $theme_name ) ) {
+			$theme_name = \Apple_Exporter\Theme::get_active_theme_name();
 		}
 
 		// Compute component and spec keys.
 		$component_key = $this->key_from_name( $this->component );
 		$spec_key = $this->key_from_name( $this->name );
 
+		// Try to load theme settings.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $theme_name );
+		if ( ! $theme->load() ) {
+			return false;
+		}
+
 		// Determine if this spec override is defined in the theme.
-		$theme_settings = $themes->get_theme( $theme );
+		$theme_settings = $theme->all_settings();
 		if ( ! isset( $theme_settings['json_templates'][ $component_key ][ $spec_key ] ) ) {
 			return false;
 		}
@@ -305,29 +340,23 @@ class Component_Spec {
 		}
 
 		// Update the theme.
-		$themes->save_theme( $theme, $theme_settings, true );
+		if ( ! $theme->load( $theme_settings ) ) {
+			return false;
+		}
 
-		return true;
+		return $theme->save();
 	}
 
 	/**
 	 * Get the spec for this component as JSON.
 	 *
-	 * @param string $theme Optional. A theme other than the default to load from.
-	 *
 	 * @access public
 	 * @return array The configuration for the spec.
 	 */
-	public function get_spec( $theme = '' ) {
+	public function get_spec() {
 
-		// Negotiate theme name.
-		if ( empty( $theme ) ) {
-			$themes = new \Admin_Apple_Themes();
-			$theme = $themes->get_active_theme();
-		}
-
-		// Determine if this spec in the specified theme is overridden.
-		$override = $this->get_override( $theme );
+		// Determine if there is an override for this spec.
+		$override = $this->get_override();
 		if ( ! empty( $override ) ) {
 			return $override;
 		}
@@ -349,27 +378,23 @@ class Component_Spec {
 	/**
 	 * Get the override for this component spec.
 	 *
-	 * @param string $theme Optional. Theme name to load from if not default.
-	 *
 	 * @access public
 	 * @return array|null An array of values if an override is present, else null.
 	 */
-	public function get_override( $theme = '' ) {
+	public function get_override() {
 
-		// Negotiate theme name.
-		$themes = new \Admin_Apple_Themes();
-		if ( empty( $theme ) ) {
-			$theme = $themes->get_active_theme();
+		// Try to get JSON templates.
+		$theme = \Apple_Exporter\Theme::get_used();
+		$json_templates = $theme->get_value( 'json_templates' );
+		if ( empty( $json_templates ) || ! is_array( $json_templates ) ) {
+			return null;
 		}
-
-		// Get the configuration from the theme.
-		$theme_options = $themes->get_theme( $theme );
 
 		// Determine if there is an override in the theme.
 		$component = $this->key_from_name( $this->component );
 		$spec = $this->key_from_name( $this->name );
-		if ( ! empty( $theme_options['json_templates'][ $component ][ $spec ] ) ) {
-			return $theme_options['json_templates'][ $component ][ $spec ];
+		if ( ! empty( $json_templates[ $component ][ $spec ] ) ) {
+			return $json_templates[ $component ][ $spec ];
 		}
 
 		return null;

@@ -74,16 +74,20 @@ class Byline extends Component {
 	 * @access private
 	 */
 	private function set_default_style() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_style(
 			'default-byline',
 			'default-byline',
 			array(
 				'#text_alignment#' => $this->find_text_alignment(),
-				'#byline_font#' => $this->get_setting( 'byline_font' ),
-				'#byline_size#' => intval( $this->get_setting( 'byline_size' ) ),
-				'#byline_line_height#' => intval( $this->get_setting( 'byline_line_height' ) ),
-				'#byline_tracking#' => intval( $this->get_setting( 'byline_tracking' ) ) / 100,
-				'#byline_color#' => $this->get_setting( 'byline_color' ),
+				'#byline_font#' => $theme->get_value( 'byline_font' ),
+				'#byline_size#' => intval( $theme->get_value( 'byline_size' ) ),
+				'#byline_line_height#' => intval( $theme->get_value( 'byline_line_height' ) ),
+				'#byline_tracking#' => intval( $theme->get_value( 'byline_tracking' ) ) / 100,
+				'#byline_color#' => $theme->get_value( 'byline_color' ),
 			),
 			'textStyle'
 		);

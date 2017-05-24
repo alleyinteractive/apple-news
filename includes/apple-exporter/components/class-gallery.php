@@ -88,6 +88,7 @@ class Gallery extends Component {
 		}
 
 		// Loop through items and construct slides.
+		$theme = \Apple_Exporter\Theme::get_used();
 		$items = array();
 		foreach ( $nodes->item( 0 )->childNodes as $item ) {
 
@@ -135,7 +136,7 @@ class Gallery extends Component {
 		$this->register_json(
 			'json',
 			array(
-				'#gallery_type#' => $this->get_setting( 'gallery_type' ),
+				'#gallery_type#' => $theme->get_value( 'gallery_type' ),
 				'#items#' => $items,
 			)
 	 	);

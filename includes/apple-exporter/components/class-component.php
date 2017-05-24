@@ -414,7 +414,6 @@ abstract class Component {
 	 * @access protected
 	 */
 	protected function get_setting( $name ) {
-		// TODO - how is this used?
 		return $this->settings->get( $name );
 	}
 
@@ -549,14 +548,18 @@ abstract class Component {
 	 * @access protected
 	 */
 	protected function register_full_width_layout( $name, $spec_name, $values = array(), $property = null ) {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Initial colStart and colSpan
 		$col_start = 0;
-		$col_span  = $this->get_setting( 'layout_columns' );
+		$col_span  = $theme->get_layout_columns();
 
 		// If the body is centered, don't span the full width, but the same width of the body.
-		if ( 'center' === $this->get_setting( 'body_orientation' ) ) {
-			$col_start = floor( ( $this->get_setting( 'layout_columns' ) - $this->get_setting( 'body_column_span' ) ) / 2 );
-			$col_span  = $this->get_setting( 'body_column_span' );
+		if ( 'center' === $theme->get_value( 'body_orientation' ) ) {
+			$col_start = floor( ( $theme->get_layout_columns() - $theme->get_body_column_span() ) / 2 );
+			$col_span = $theme->get_body_column_span();
 		}
 
 		// Merge this into the existing spec.

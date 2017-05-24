@@ -41,7 +41,12 @@ class Body_Test extends Component_TestCase {
 	public function testFilter() {
 
 		// Setup.
-		$this->settings->set( 'initial_dropcap', 'no' );
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+		$theme->load();
+		$settings = $theme->all_settings();
+		$settings['initial_dropcap'] = 'no';
+		$this->assertTrue( $theme->save() );
 		$component = new Body(
 			'<p>my text</p>',
 			null,
@@ -167,19 +172,23 @@ HTML;
 		);
 
 		// Set body settings.
-		$this->settings->body_font = 'TestFontName';
-		$this->settings->body_size = 20;
-		$this->settings->body_color = '#abcdef';
-		$this->settings->body_link_color = '#fedcba';
-		$this->settings->body_line_height = 28;
-		$this->settings->body_tracking = 50;
-		$this->settings->dropcap_background_color = '#abcabc';
-		$this->settings->dropcap_color = '#defdef';
-		$this->settings->dropcap_font = 'TestFontName2';
-		$this->settings->dropcap_number_of_characters = 15;
-		$this->settings->dropcap_number_of_lines = 10;
-		$this->settings->dropcap_number_of_raised_lines = 5;
-		$this->settings->dropcap_padding = 20;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['body_font'] = 'AmericanTypewriter';
+		$settings['body_size'] = 20;
+		$settings['body_color'] = '#abcdef';
+		$settings['body_link_color'] = '#fedcba';
+		$settings['body_line_height'] = 28;
+		$settings['body_tracking'] = 50;
+		$settings['dropcap_background_color'] = '#abcabc';
+		$settings['dropcap_color'] = '#defdef';
+		$settings['dropcap_font'] = 'AmericanTypewriter-Bold';
+		$settings['dropcap_number_of_characters'] = 15;
+		$settings['dropcap_number_of_lines'] = 10;
+		$settings['dropcap_number_of_raised_lines'] = 5;
+		$settings['dropcap_padding'] = 20;
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
@@ -187,7 +196,7 @@ HTML;
 
 		// Validate body settings in generated JSON.
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$json['componentTextStyles']['default-body']['fontName']
 		);
 		$this->assertEquals(
@@ -219,7 +228,7 @@ HTML;
 			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['textColor']
 		);
 		$this->assertEquals(
-			'TestFontName2',
+			'AmericanTypewriter-Bold',
 			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['fontName']
 		);
 		$this->assertEquals(
@@ -277,7 +286,11 @@ HTML;
 	public function testWithoutDropcap() {
 
 		// Setup.
-		$this->settings->set( 'initial_dropcap', 'no' );
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['initial_dropcap'] = 'no';
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
 		$body_component = new Body(
 			'<p>my text</p>',
 			null,

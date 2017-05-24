@@ -2,7 +2,6 @@
 require_once plugin_dir_path( __FILE__ ) . '../includes/apple-exporter/class-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'settings/class-admin-apple-settings-section.php';
 require_once plugin_dir_path( __FILE__ ) . 'settings/class-admin-apple-settings-section-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'settings/class-admin-apple-settings-section-formatting.php';
 require_once plugin_dir_path( __FILE__ ) . 'settings/class-admin-apple-settings-section-advanced.php';
 require_once plugin_dir_path( __FILE__ ) . 'settings/class-admin-apple-settings-section-post-types.php';
 require_once plugin_dir_path( __FILE__ ) . 'settings/class-admin-apple-settings-section-developer-tools.php';
@@ -78,7 +77,6 @@ class Admin_Apple_Settings extends Apple_News {
 
 		if ( ! self::$initialized ) {
 			add_action( 'admin_init', array( $this, 'register_sections' ), 5 );
-			add_action( 'admin_head', array( $this, 'update_message' ) );
 			add_action( 'admin_menu', array( $this, 'setup_options_page' ), 99 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 			self::$initialized = true;
@@ -93,7 +91,6 @@ class Admin_Apple_Settings extends Apple_News {
 	private function add_sections() {
 		$this->add_section( new Admin_Apple_Settings_Section_API( $this->page_name ) );
 		$this->add_section( new Admin_Apple_Settings_Section_Post_Types( $this->page_name ) );
-		$this->add_section( new Admin_Apple_Settings_Section_Formatting( $this->page_name, true ) );
 		$this->add_section( new Admin_Apple_Settings_Section_Advanced( $this->page_name ) );
 		$this->add_section( new Admin_Apple_Settings_Section_Developer_Tools( $this->page_name ) );
 	}
@@ -117,27 +114,6 @@ class Admin_Apple_Settings extends Apple_News {
 	public function register_sections() {
 		$this->add_sections();
 		$this->sections = apply_filters( 'apple_news_settings_sections', $this->sections );
-	}
-
-	/**
-	 * Add a message to direct users to the new themes page.
-	 *
-	 * @since 1.2.2
-	 * @access public
-	 */
-	public function update_message() {
-		$screen = get_current_screen();
-		if ( 'apple-news_page_' . $this->page_name !== $screen->base ) {
-			return;
-		}
-
-		$themes = new Admin_Apple_Themes();
-		\Admin_Apple_Notice::info( sprintf(
-			'%s <a href="%s">%s</a>',
-			__( 'Formatting settings have moved to', 'apple-news' ),
-			$themes->theme_admin_url(),
-			__( 'Apple News Themes', 'apple-news' )
-		) );
 	}
 
 	/**

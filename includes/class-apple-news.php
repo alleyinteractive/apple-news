@@ -220,13 +220,51 @@ class Apple_News {
 			return;
 		}
 
-		// Handle upgrade to version 1.3.0.
-		if ( version_compare( $current_version, '1.3.0', '<' ) ) {
-			$this->upgrade_to_1_3_0();
+		// Determine if this is a clean install (no settings set yet).
+		$settings = get_option( self::$option_name );
+		if ( ! empty( $settings ) ) {
+
+			// Handle upgrade to version 1.3.0.
+			if ( version_compare( $current_version, '1.3.0', '<' ) ) {
+				$this->upgrade_to_1_3_0();
+			}
 		}
+
+		// Ensure the default theme is created.
+		$this->create_default_theme();
 
 		// Set the database version to the current version in code.
 		update_option( 'apple_news_version', self::$version );
+	}
+
+	/**
+	 * Create the default theme, if it does not exist.
+	 *
+	 * @access public
+	 */
+	public function create_default_theme() {
+
+		// Determine if a default theme exists.
+		$active_theme = \Apple_Exporter\Theme::get_active_theme_name();
+		if ( ! empty( $active_theme ) ) {
+			return;
+		}
+
+		// Build the theme formatting settings from the base settings array.
+		$theme = new \Apple_Exporter\Theme;
+		$options = $theme->get_options();
+		$wp_settings = get_option( self::$option_name, array() );
+		$theme_settings = array();
+		foreach ( $options as $option_key => $option ) {
+			if ( isset( $wp_settings[ $option_key ] ) ) {
+				$theme_settings[ $option_key ] = $wp_settings[ $option_key ];
+			}
+		}
+
+		// Save the theme and make it active.
+		$theme->load( $theme_settings );
+		$theme->save();
+		$theme->set_active();
 	}
 
 	/**
@@ -371,8 +409,7 @@ class Apple_News {
 	public function migrate_custom_json_to_themes() {
 
 		// Get a list of all themes that need to be updated.
-		$themes = new Admin_Apple_Themes();
-		$all_themes = $themes->list_themes();
+		$all_themes = \Apple_Exporter\Theme::get_registry();
 
 		// Get a list of components that may have customized JSON.
 		$component_factory = new \Apple_Exporter\Component_Factory();
@@ -406,10 +443,14 @@ class Apple_News {
 		}
 
 		// Loop over themes and apply to each.
-		foreach ( $all_themes as $theme ) {
-			$theme_settings = $themes->get_theme( $theme );
-			$theme_settings['json_templates'] = $json_templates;
-			$themes->save_theme( $theme, $theme_settings, true );
+		foreach ( $all_themes as $theme_name ) {
+			$theme = new \Apple_Exporter\Theme;
+			$theme->set_name( $theme_name );
+			$theme->load();
+			$settings = $theme->all_settings();
+			$settings['json_templates'] = $json_templates;
+			$theme->load( $settings );
+			$theme->save();
 		}
 
 		// Remove custom JSON standalone options.
@@ -498,17 +539,53 @@ class Apple_News {
 	}
 
 	/**
+	 * Removes formatting settings from the primary settings object.
+	 *
+	 * @access public
+	 */
+	public function remove_global_formatting_settings() {
+
+		// Loop through formatting settings and remove them from saved settings.
+		$theme = new \Apple_Exporter\Theme;
+		$formatting_settings = array_keys( $theme->get_options() );
+		$wp_settings = get_option( self::$option_name, array() );
+		foreach ( $formatting_settings as $setting_key ) {
+			if ( isset( $wp_settings[ $setting_key ] ) ) {
+				unset( $wp_settings[ $setting_key ] );
+			}
+		}
+
+		// Update the option.
+		update_option( self::$option_name, $wp_settings, false );
+	}
+
+	/**
 	 * Upgrades settings and data formats to be compatible with version 1.3.0.
 	 *
 	 * @access public
 	 */
 	public function upgrade_to_1_3_0() {
-		$this->migrate_settings();
-		$this->migrate_header_settings();
-		$this->migrate_api_settings();
-		$this->migrate_caption_settings();
-		$this->migrate_blockquote_settings();
+
+		// Determine if themes have been created yet.
+		$theme_list = \Apple_Exporter\Theme::get_registry();
+		if ( empty( $theme_list ) ) {
+			$this->migrate_settings();
+			$this->migrate_header_settings();
+			$this->migrate_caption_settings();
+			$this->migrate_blockquote_settings();
+		}
+
+		// Create the default theme, if it does not exist.
+		$this->create_default_theme();
+
+		// Move any custom JSON that might have been defined into the theme(s).
 		$this->migrate_custom_json_to_themes();
+
+		// Migrate API settings.
+		$this->migrate_api_settings();
+
+		// Remove all formatting settings from the primary settings array.
+		$this->remove_global_formatting_settings();
 	}
 
 	/**

@@ -301,8 +301,12 @@ class Exporter {
 	 * @access private
 	 */
 	private function build_article_style() {
+
+		// Get information about the currently used theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		return array(
-			'backgroundColor' => $this->settings->get( 'body_background_color' ),
+			'backgroundColor' => $theme->get_value( 'body_background_color' ),
 		);
 	}
 
