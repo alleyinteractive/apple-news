@@ -106,7 +106,7 @@ class Admin_Apple_Themes extends Apple_News {
 			case 'select':
 
 				// Build the options list.
-				foreach ( $option['type'] as $option_value ) {
+				foreach ( $option['options'] as $option_value ) {
 					$field .= sprintf(
 						'<option value="%s" %s>%s</option>',
 						esc_attr( $option_value ),
