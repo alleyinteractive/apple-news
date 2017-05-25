@@ -101,7 +101,9 @@ class Byline_Test extends Component_TestCase {
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
-		$json = json_decode( $exporter->export(), true );
+		$json = $exporter->export();
+		$this->ensure_tokens_replaced( $json );
+		$json = json_decode( $json, true );
 
 		// Validate byline settings in generated JSON.
 		$this->assertEquals(
