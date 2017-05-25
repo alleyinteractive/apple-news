@@ -250,6 +250,29 @@ HTML;
 	}
 
 	/**
+	 * Ensures all tokens are replaced.
+	 *
+	 * @access public
+	 */
+	public function testTokenReplacement() {
+
+		// Setup.
+		$content = new Exporter_Content(
+			3,
+			'Title',
+			'<p>Lorem ipsum.</p><p>Dolor sit amet.</p>'
+		);
+
+		// Run the export.
+		$exporter = new Exporter( $content, null, $this->settings );
+		$json = $exporter->export();
+
+		// Ensure no tokens are present in the output.
+		preg_match_all( '/"#[^"#]+#"/', $json, $matches );
+		$this->assertEmpty( $matches );
+	}
+
+	/**
 	 * Tests the transformation process from a paragraph to a Body component.
 	 *
 	 * @access public
