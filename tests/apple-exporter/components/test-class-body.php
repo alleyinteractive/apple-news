@@ -268,7 +268,7 @@ HTML;
 		$json = $exporter->export();
 
 		// Ensure no tokens are present in the output.
-		preg_match_all( '/"#[^"#]+#"/', $json, $matches );
+		preg_match( '/"#[^"#]+#"/', $json, $matches );
 		$this->assertEmpty( $matches );
 	}
 
