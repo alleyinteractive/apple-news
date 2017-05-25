@@ -128,7 +128,9 @@ HTML;
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
-		$json = json_decode( $exporter->export(), true );
+		$json = $exporter->export();
+		$this->ensure_tokens_replaced( $json );
+		$json = json_decode( $json, true );
 
 		// Validate list split in generated JSON.
 		$this->assertEquals(
@@ -192,7 +194,9 @@ HTML;
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
-		$json = json_decode( $exporter->export(), true );
+		$json = $exporter->export();
+		$this->ensure_tokens_replaced( $json );
+		$json = json_decode( $json, true );
 
 		// Validate body settings in generated JSON.
 		$this->assertEquals(
@@ -247,29 +251,6 @@ HTML;
 			20,
 			$json['componentTextStyles']['dropcapBodyStyle']['dropCapStyle']['padding']
 		);
-	}
-
-	/**
-	 * Ensures all tokens are replaced.
-	 *
-	 * @access public
-	 */
-	public function testTokenReplacement() {
-
-		// Setup.
-		$content = new Exporter_Content(
-			3,
-			'Title',
-			'<p>Lorem ipsum.</p><p>Dolor sit amet.</p>'
-		);
-
-		// Run the export.
-		$exporter = new Exporter( $content, null, $this->settings );
-		$json = $exporter->export();
-
-		// Ensure no tokens are present in the output.
-		preg_match( '/"#[^"#]+#"/', $json, $matches );
-		$this->assertEmpty( $matches );
 	}
 
 	/**

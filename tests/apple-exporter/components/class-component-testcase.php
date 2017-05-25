@@ -47,4 +47,15 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 		return $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
 	}
 
+	/**
+	 * A function to ensure that tokens are replaced in a JSON string.
+	 *
+	 * @param string $json The JSON to check for unreplaced tokens.
+	 *
+	 * @access protected
+	 */
+	protected function ensure_tokens_replaced( $json ) {
+		preg_match( '/"#[^"#]+#"/', $json, $matches );
+		$this->assertEmpty( $matches );
+	}
 }
