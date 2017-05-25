@@ -127,6 +127,8 @@ class Component_Spec {
 					);
 				} elseif ( isset( $values[ $value ] ) ) {
 					$value = $values[ $value ];
+				} else {
+					$value = null;
 				}
 
 				// Fork for setting the spec or unsetting based on valid values.
