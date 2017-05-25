@@ -254,6 +254,40 @@ HTML;
 	}
 
 	/**
+	 * Tests 0 values in tokens.
+	 *
+	 * @access public
+	 */
+	public function testSettingsZeroValueInToken() {
+
+		// Setup.
+		$content = new Exporter_Content(
+			3,
+			'Title',
+			'<p>Lorem ipsum.</p><p>Dolor sit amet.</p>'
+		);
+
+		// Set body settings.
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['body_line_height'] = 0;
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
+
+		// Run the export.
+		$exporter = new Exporter( $content, null, $this->settings );
+		$json = $exporter->export();
+		$this->ensure_tokens_replaced( $json );
+		$json = json_decode( $json, true );
+
+		// Validate body settings in generated JSON.
+		$this->assertEquals(
+			0,
+			$json['componentTextStyles']['default-body']['lineHeight']
+		);
+	}
+
+	/**
 	 * Tests the transformation process from a paragraph to a Body component.
 	 *
 	 * @access public

@@ -132,7 +132,7 @@ class Component_Spec {
 				}
 
 				// Fork for setting the spec or unsetting based on valid values.
-				if ( ! empty( $value ) ) {
+				if ( ! empty( $value ) || 0 === $value ) {
 					$spec[ $key ] = $value;
 				} else {
 					unset( $spec[ $key ] );
