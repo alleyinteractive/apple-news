@@ -159,14 +159,14 @@ class Admin_Apple_Settings extends Apple_News {
 
 		wp_enqueue_style(
 			'apple-news-select2-css',
-			plugin_dir_url( __FILE__ ) . '../vendor/select2/select2.min.css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/select2.min.css',
 			array(),
 			self::$version
 		);
 
 		wp_enqueue_script(
 			'apple-news-select2-js',
-			plugin_dir_url( __FILE__ ) . '../vendor/select2/select2.full.min.js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/select2.full.min.js',
 			array( 'jquery' ),
 			self::$version
 		);
