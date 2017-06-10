@@ -755,7 +755,7 @@ class Theme {
 					break;
 
 				case 'integer':
-					$this->_values[ $option_key ] = absint( $_POST[ $option_key ] );
+					$this->_values[ $option_key ] = intval( $_POST[ $option_key ] );
 
 					break;
 
@@ -986,7 +986,7 @@ class Theme {
 					break;
 
 				case 'integer':
-					$value = absint( $value );
+					$value = intval( $value );
 
 					break;
 
