@@ -128,7 +128,16 @@ class Component_Spec {
 				} elseif ( isset( $values[ $value ] ) ) {
 					$value = $values[ $value ];
 				} else {
-					$value = null;
+
+					// Finally, check theme settings for the token.
+					$setting_name = trim( $value, '#' );
+					$theme = \Apple_Exporter\Theme::get_used();
+					$settings = $theme->all_settings();
+					if ( isset( $settings[ $setting_name ] ) ) {
+						$value = $settings[ $setting_name ];
+					} else {
+						$value = null;
+					}
 				}
 
 				// Fork for setting the spec or unsetting based on valid values.
@@ -159,18 +168,28 @@ class Component_Spec {
 		$this->find_tokens( $spec, $new_tokens );
 		$this->find_tokens( $this->spec, $default_tokens );
 
-		// Removing tokens is fine, but new tokens cannot be added, except for postmeta.
+		// Tokens can be removed, or added if they are general settings or postmeta.
 		foreach ( $new_tokens as $token ) {
+
+			// Check for standard tokens.
+			if ( in_array( $token, $default_tokens, true ) ) {
+				continue;
+			}
 
 			// If the new token references postmeta, allow it.
 			if ( 0 === strpos( $token, '#postmeta.' ) ) {
 				continue;
 			}
 
-			// Check for standard tokens.
-			if ( ! in_array( $token, $default_tokens, true ) ) {
-				return false;
+			// If the new token references a setting by name, allow it.
+			$setting_name = trim( $token, '#' );
+			$theme = \Apple_Exporter\Theme::get_used();
+			$settings = $theme->all_settings();
+			if ( isset( $settings[ $setting_name ] ) ) {
+				continue;
 			}
+
+			return false;
 		}
 
 		return true;

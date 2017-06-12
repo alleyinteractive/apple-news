@@ -406,7 +406,10 @@ JSON;
 		$json = <<<JSON
 {
     "role": "audio",
-    "URL": "http://someurl.com"
+    "URL": "http://someurl.com",
+    "style": {
+        "backgroundColor": "#body_background_color#"
+    }
 }
 JSON;
 		$nonce = wp_create_nonce( 'apple_news_json' );
@@ -452,7 +455,7 @@ JSON;
     "columnSpan": "#body_column_span#",
     "margin": {
         "top": 50,
-        "bottom": 50
+        "bottom": "#layout_gutter#"
     }
 }
 JSON;
@@ -480,7 +483,7 @@ JSON;
 		$exporter = new Exporter( $content, null, $settings->fetch_settings() );
 		$json = json_decode( $exporter->export(), true );
 		$this->assertEquals(
-			50,
+			20,
 			$json['componentLayouts']['body-layout']['margin']['bottom']
 		);
 		$this->assertEquals(
