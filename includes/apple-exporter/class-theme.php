@@ -567,10 +567,10 @@ class Theme {
 	public function get_body_offset() {
 		switch ( $this->get_value( 'body_orientation' ) ) {
 			case 'right':
-				return $this->get_layout_columns() - $this->get_value( 'body_column_span' );
+				return $this->get_layout_columns() - $this->get_body_column_span();
 			case 'center':
 				return floor(
-					( $this->get_layout_columns() - $this->get_value( 'body_column_span' ) ) / 2
+					( $this->get_layout_columns() - $this->get_body_column_span() ) / 2
 				);
 				break;
 			default:
