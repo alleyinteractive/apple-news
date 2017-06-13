@@ -180,6 +180,17 @@
                     "ignoreDocumentMargin": "#full_bleed_images#"
                 }
             }
+        },
+        "cover": {
+            "headerBelowTextPhotoLayout": {
+                "ignoreDocumentMargin": true,
+                "columnStart": 0,
+                "columnSpan": "#layout_columns#",
+                "margin": {
+                    "top": 30,
+                    "bottom": 60
+                }
+            }
         }
     },
     "layout_gutter": 20,
