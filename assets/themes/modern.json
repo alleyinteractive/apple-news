@@ -10,7 +10,7 @@
     "blockquote_line_height": 24,
     "blockquote_size": 18,
     "blockquote_tracking": 0,
-    "body_background_color": "#e6f7ff",
+    "body_background_color": "#ffffff",
     "body_color": "#000000",
     "body_font": "Optima-Regular",
     "body_line_height": 22,
@@ -70,6 +70,72 @@
     "header6_tracking": -4,
     "initial_dropcap": "no",
     "json_templates": {
+        "quote": {
+            "pullquote-with-border-json": {
+                "role": "container",
+                "components": [
+                    {
+                        "role": "divider",
+                        "stroke": {
+                            "color": "#pullquote_border_color#",
+                            "width": "#pullquote_border_width#"
+                        },
+                        "layout": {
+                            "horizontalContentAlignment": "left",
+                            "maximumContentWidth": 42
+                        }
+                    },
+                    {
+                        "role": "quote",
+                        "text": "#text#",
+                        "format": "#format#",
+                        "layout": "pullquote-layout",
+                        "textStyle": "default-pullquote"
+                    }
+                ],
+                "layout": "pullquote-layout"
+            },
+            "pullquote-without-border-json": {
+                "role": "quote",
+                "text": "#text#",
+                "format": "#format#",
+                "layout": "pullquote-layout",
+                "textStyle": "default-pullquote"
+            }
+        },
+        "title": {
+            "json": {
+                "role": "container",
+                "components": [
+                    {
+                        "role": "divider",
+                        "stroke": {
+                            "color": "#body_link_color#",
+                            "width": 22
+                        },
+                        "layout": {
+                            "ignoreDocumentMargin": true
+                        }
+                    },
+                    {
+                        "role": "title",
+                        "text": "#text#",
+                        "layout": {
+                            "margin": {
+                                "bottom": 30,
+                                "top": 30
+                            }
+                        }
+                    }
+                ]
+            },
+            "title-layout": {
+                "ignoreDocumentMargin": true,
+                "margin": {
+                    "bottom": 30
+                }
+            }
+        },
         "byline": {
             "default-byline": {
                 "textAlignment": "#text_alignment#",
@@ -81,54 +147,43 @@
                 "textTransform": "uppercase"
             }
         },
-        "title": {
-            "title-layout": {
-                "margin": {
-                    "top": 30,
-                    "bottom": 60
-                }
-            },
-            "default-title": {
-                "backgroundColor": "#ffffff",
-                "fontName": "#header1_font#",
-                "fontSize": "#header1_size#",
-                "lineHeight": "#header1_line_height#",
-                "tracking": "#header1_tracking#",
-                "textColor": "#header1_color#",
-                "textAlignment": "#text_alignment#"
-            }
-        },
-        "quote": {
-            "pullquote-with-border-json": {
+        "image": {
+            "json-with-caption": {
                 "role": "container",
                 "components": [
                     {
-                        "role": "divider",
-                        "stroke": {
-                            "color": "#pullquote_border_color#",
-                            "width": "#pullquote_border_width#"
-                        }
+                        "role": "photo",
+                        "URL": "#url#",
+                        "layout": "#layout#",
+                        "caption": "#caption#"
                     },
                     {
-                        "role": "quote",
-                        "text": "#text#",
-                        "format": "#format#",
-                        "layout": "pullquote-layout",
-                        "textStyle": "default-pullquote"
+                        "role": "caption",
+                        "text": "#caption#",
+                        "textStyle": {
+                            "textAlignment": "left",
+                            "fontName": "#caption_font#",
+                            "fontSize": "#caption_size#",
+                            "tracking": "#caption_tracking#",
+                            "lineHeight": "#caption_line_height#",
+                            "textColor": "#caption_color#"
+                        },
+                        "layout": {
+                            "margin": {
+                                "bottom": 20
+                            },
+                            "ignoreDocumentMargin": "#full_bleed_images#"
+                        }
                     }
-                ]
-            },
-            "pullquote-without-border-json": {
-                "role": "quote",
-                "text": "#text#",
-                "format": "#format#",
-                "layout": "pullquote-layout",
-                "textStyle": "default-pullquote"
+                ],
+                "layout": {
+                    "ignoreDocumentMargin": "#full_bleed_images#"
+                }
             }
         }
     },
     "layout_gutter": 20,
-    "layout_margin": 100,
+    "layout_margin": 60,
     "layout_width": 1024,
     "meta_component_order": [
         "title",
