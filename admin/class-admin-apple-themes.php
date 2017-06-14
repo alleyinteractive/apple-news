@@ -402,6 +402,11 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	public function setup_theme_pages() {
 
+		// Don't add the submenu pages if the settings aren't initialized.
+		if ( ! self::is_initialized() ) {
+			return;
+		}
+
 		// Ensure there is at least one theme created.
 		$registry = \Apple_Exporter\Theme::get_registry();
 		if ( empty( $registry ) ) {

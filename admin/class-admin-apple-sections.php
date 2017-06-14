@@ -296,6 +296,12 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @access public
 	 */
 	public function setup_section_page() {
+
+		// Don't add the submenu page if the settings aren't initialized.
+		if ( ! self::is_initialized() ) {
+			return;
+		}
+
 		add_submenu_page(
 			'apple_news_index',
 			__( 'Apple News Sections', 'apple-news' ),
