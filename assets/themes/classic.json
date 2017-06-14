@@ -105,6 +105,40 @@
                     "rangeLength": 10
                 }
             }
+        },
+        "image": {
+            "json-with-caption": {
+                "role": "container",
+                "components": [
+                    {
+                        "role": "photo",
+                        "URL": "#url#",
+                        "layout": "#layout#",
+                        "caption": "#caption#"
+                    },
+                    {
+                        "role": "caption",
+                        "text": "#caption#",
+                        "textStyle": {
+                            "textAlignment": "left",
+                            "fontName": "#caption_font#",
+                            "fontSize": "#caption_size#",
+                            "tracking": "#caption_tracking#",
+                            "lineHeight": "#caption_line_height#",
+                            "textColor": "#caption_color#"
+                        },
+                        "layout": {
+                            "margin": {
+                                "top": 20
+                            },
+                            "ignoreDocumentMargin": "#full_bleed_images#"
+                        }
+                    }
+                ],
+                "layout": {
+                    "ignoreDocumentMargin": "#full_bleed_images#"
+                }
+            }
         }
     },
     "layout_gutter": 20,
