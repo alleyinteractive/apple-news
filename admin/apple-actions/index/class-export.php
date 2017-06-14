@@ -53,6 +53,8 @@ class Export extends Action {
 	 */
 	public function fetch_exporter() {
 
+		global $post;
+
 		do_action( 'apple_news_do_fetch_exporter', $this->id );
 
 		// Fetch WP_Post object, and all required post information to fill up the
@@ -116,7 +118,13 @@ class Export extends Action {
 
 		// Get the author
 		if ( empty( $author ) ) {
-			$author = ucfirst( get_the_author_meta( 'display_name', $post->post_author ) );
+
+			// Try to get the author information from Co-Authors Plus.
+			if ( function_exists( 'coauthors' ) ) {
+				$author = coauthors( null, null, null, null, false );
+			} else {
+				$author = ucfirst( get_the_author_meta( 'display_name', $post->post_author ) );
+			}
 		}
 
 		// Get the date
