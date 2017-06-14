@@ -162,6 +162,22 @@
                     "rangeLength": 10
                 }
             }
+        },
+        "body": {
+            "default-body": {
+                "textAlignment": "left",
+                "fontName": "#body_font#",
+                "fontSize": "#body_size#",
+                "tracking": "#body_tracking#",
+                "lineHeight": "#body_line_height#",
+                "textColor": "#body_color#",
+                "linkStyle": {
+                    "backgroundColor": "#blockquote_background_color#",
+                    "textColor": "#body_link_color#"
+                },
+                "paragraphSpacingBefore": 18,
+                "paragraphSpacingAfter": 18
+            }
         }
     },
     "layout_gutter": 20,
