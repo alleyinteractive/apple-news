@@ -743,7 +743,10 @@ class Theme {
 					if ( is_array( $_POST[ $option_key ] ) ) {
 						$this->_values[ $option_key ] = array_map(
 							'sanitize_text_field',
-							$_POST[ $option_key ]
+							array_map(
+								'wp_unslash',
+								$_POST[ $option_key ]
+							)
 						);
 					}
 
@@ -761,7 +764,9 @@ class Theme {
 
 				default:
 					$this->_values[ $option_key ] = sanitize_text_field(
-						$_POST[ $option_key ]
+						wp_unslash(
+							$_POST[ $option_key ]
+						)
 					);
 
 					break;
