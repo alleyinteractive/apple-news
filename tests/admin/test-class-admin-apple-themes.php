@@ -28,8 +28,12 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$settings = new \Admin_Apple_Settings();
 		$settings->save_settings( $this->settings->all() );
 
-		// Force creation of a default theme.
-		$this->themes->setup_theme_pages();
+		// Force creation of a default theme if it does not exist.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( __( 'Default', 'apple-news' ) );
+		if ( ! $theme->load() ) {
+			$theme->save();
+		}
 	}
 
 	/**
@@ -117,9 +121,12 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 			$vanilla_theme->all_settings(),
 			$default_theme->all_settings()
 		);
-		$this->assertEquals(
-			array( __( 'Default', 'apple-news' ) ),
-			\Apple_Exporter\Theme::get_registry()
+		$this->assertTrue(
+			in_array(
+				__( 'Default', 'apple-news' ),
+				\Apple_Exporter\Theme::get_registry(),
+				true
+			)
 		);
 	}
 
@@ -157,9 +164,19 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$this->createNewTheme( $name );
 
 		// Ensure both themes exist.
-		$this->assertEquals(
-			array( __( 'Default', 'apple-news' ), $name ),
-			\Apple_Exporter\Theme::get_registry()
+		$this->assertTrue(
+			in_array(
+				__( 'Default', 'apple-news' ),
+				\Apple_Exporter\Theme::get_registry(),
+				true
+			)
+		);
+		$this->assertTrue(
+			in_array(
+				$name,
+				\Apple_Exporter\Theme::get_registry(),
+				true
+			)
 		);
 		$default_theme = new \Apple_Exporter\Theme;
 		$default_theme->set_name( __( 'Default', 'apple-news' ) );
@@ -178,10 +195,13 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$_REQUEST['_wpnonce'] = $nonce;
 		$this->themes->action_router();
 
-		// Ensure only the default theme exists after deletion.
-		$this->assertEquals(
-			array( __( 'Default', 'apple-news' ) ),
-			\Apple_Exporter\Theme::get_registry()
+		// Ensure that the test theme does not exist after deletion.
+		$this->assertFalse(
+			in_array(
+				$name,
+				\Apple_Exporter\Theme::get_registry(),
+				true
+			)
 		);
 		$this->assertFalse( $test_theme->load() );
 	}

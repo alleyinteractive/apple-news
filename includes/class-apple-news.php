@@ -230,7 +230,7 @@ class Apple_News {
 			}
 		}
 
-		// Ensure the default theme is created.
+		// Ensure the default themes are created.
 		$this->create_default_theme();
 
 		// Set the database version to the current version in code.
@@ -238,13 +238,13 @@ class Apple_News {
 	}
 
 	/**
-	 * Create the default theme, if it does not exist.
+	 * Create the default themes, if they do not exist.
 	 *
 	 * @access public
 	 */
 	public function create_default_theme() {
 
-		// Determine if a default theme exists.
+		// Determine if an active theme exists.
 		$active_theme = \Apple_Exporter\Theme::get_active_theme_name();
 		if ( ! empty( $active_theme ) ) {
 			return;
@@ -265,6 +265,30 @@ class Apple_News {
 		$theme->load( $theme_settings );
 		$theme->save();
 		$theme->set_active();
+
+		// Load the example themes, if they do not exist.
+		$example_themes = array(
+			'classic' => 'Classic',
+			'colorful' => 'Colorful',
+			'dark' => 'Dark',
+			'modern' => 'Modern',
+			'pastel' => 'Pastel',
+		);
+		foreach ( $example_themes as $slug => $name ) {
+
+			// Determine if the theme already exists.
+			$theme = new \Apple_Exporter\Theme;
+			$theme->set_name( $name );
+			if ( $theme->load() ) {
+				continue;
+			}
+
+			// Load the theme data from the JSON configuration file.
+			$filename = dirname( __DIR__ ) . '/assets/themes/' . $slug . '.json';
+			$options = json_decode( file_get_contents( $filename ), true );
+			$theme->load( $options );
+			$theme->save();
+		}
 	}
 
 	/**
