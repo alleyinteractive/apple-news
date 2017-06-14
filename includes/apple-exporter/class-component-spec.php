@@ -367,13 +367,15 @@ class Component_Spec {
 	/**
 	 * Get the spec for this component as JSON.
 	 *
+	 * @param string $theme_name Optional. The theme for which to fetch a spec.
+	 *
 	 * @access public
 	 * @return array The configuration for the spec.
 	 */
-	public function get_spec() {
+	public function get_spec( $theme_name = '' ) {
 
 		// Determine if there is an override for this spec.
-		$override = $this->get_override();
+		$override = $this->get_override( $theme_name );
 		if ( ! empty( $override ) ) {
 			return $override;
 		}
@@ -395,13 +397,23 @@ class Component_Spec {
 	/**
 	 * Get the override for this component spec.
 	 *
+	 * @param string $theme_name Optional. The theme to look in for an override.
+	 *
 	 * @access public
 	 * @return array|null An array of values if an override is present, else null.
 	 */
-	public function get_override() {
+	public function get_override( $theme_name = '' ) {
+
+		// Negotiate theme.
+		if ( ! empty( $theme_name ) ) {
+			$theme = new \Apple_Exporter\Theme;
+			$theme->set_name( $theme_name );
+			$theme->load();
+		} else {
+			$theme = \Apple_Exporter\Theme::get_used();
+		}
 
 		// Try to get JSON templates.
-		$theme = \Apple_Exporter\Theme::get_used();
 		$json_templates = $theme->get_value( 'json_templates' );
 		if ( empty( $json_templates ) || ! is_array( $json_templates ) ) {
 			return null;
