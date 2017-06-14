@@ -93,7 +93,7 @@ class Cover extends Component {
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
 
-		$this->register_full_width_layout(
+		$this->register_layout(
 			'headerPhotoLayout',
 			'headerPhotoLayout',
 			array(
@@ -101,7 +101,7 @@ class Cover extends Component {
 			)
 		);
 
-		$this->register_full_width_layout(
+		$this->register_layout(
 			'headerBelowTextPhotoLayout',
 			'headerBelowTextPhotoLayout',
 			array(
