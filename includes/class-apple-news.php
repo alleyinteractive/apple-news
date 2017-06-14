@@ -50,6 +50,14 @@ class Apple_News {
 	public static $wordpress_org_support_url = 'https://wordpress.org/support/plugin/publish-to-apple-news';
 
 	/**
+	 * Keeps track of whether the plugin is initialized.
+	 *
+	 * @var bool
+	 * @access private
+	 */
+	private static $_is_initialized;
+
+	/**
 	 * Plugin domain.
 	 *
 	 * @var string
@@ -146,6 +154,26 @@ class Apple_News {
 		}
 
 		return $support_info;
+	}
+
+	/**
+	 * Determines whether the plugin is initialized with the minimum settings.
+	 *
+	 * @access public
+	 * @return bool True if initialized, false if not.
+	 */
+	public static function is_initialized() {
+
+		// Look up required information in plugin settings, if necessary.
+		if ( null === self::$_is_initialized ) {
+			$settings = get_option( self::$option_name );
+			self::$_is_initialized = ( ! empty( $settings['api_channel'] )
+				&& ! empty( $settings['api_key'] )
+				&& ! empty( $settings['api_secret'] )
+			);
+		}
+
+		return self::$_is_initialized;
 	}
 
 	/**

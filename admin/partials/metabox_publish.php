@@ -1,3 +1,14 @@
+<?php if ( ! $is_initalized ): ?>
+	<div id="apple-news-publish">
+		<?php printf(
+			/* translators: First token is opening a tag, second is closing a tag */
+			esc_html__( 'You must enter your API information on the %1$ssettings page%2$s before using Publish to Apple News.', 'apple-news' ),
+			'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-options' ) ) . '">',
+			'</a>'
+		); ?>
+	</div>
+	<?php return; ?>
+<?php endif; ?>
 <div id="apple-news-publish">
 	<?php wp_nonce_field( $publish_action, 'apple_news_nonce' ); ?>
 	<div id="apple-news-metabox-sections" class="apple-news-metabox-section">
