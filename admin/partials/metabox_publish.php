@@ -1,4 +1,4 @@
-<?php if ( ! $is_initalized ) : ?>
+<?php if ( ! \Apple_News::is_initialized() ) : ?>
 	<div id="apple-news-publish">
 		<?php printf(
 			/* translators: First token is opening a tag, second is closing a tag */
