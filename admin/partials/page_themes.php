@@ -80,7 +80,7 @@
 								<?php if ( $theme !== $active_theme ) : ?>
 									<a class="button button-primary apple-news-activate-theme" href="#"><?php esc_html_e( 'Activate', 'apple-news' ); ?></a>
 								<?php endif; ?>
-                                <a class="button" href="<?php echo esc_url( $themes->theme_edit_url( $theme ) ); ?>" data-theme="<?php echo esc_attr( $theme ) ?>"><?php esc_html_e( 'Edit', 'apple-news' ); ?></a>
+								<a class="button" href="<?php echo esc_url( $themes->theme_edit_url( $theme ) ); ?>" data-theme="<?php echo esc_attr( $theme ) ?>"><?php esc_html_e( 'Edit', 'apple-news' ); ?></a>
 								<a class="button apple-news-export-theme" href="#" data-theme="<?php echo esc_attr( $theme ); ?>"><?php esc_html_e( 'Export', 'apple-news' ); ?></a>
 								<?php if ( $theme !== $active_theme ) : ?>
 									<a class="button button-danger apple-news-delete-theme" href="#" data-theme="<?php echo esc_attr( $theme ); ?>"><?php esc_html_e( 'Delete', 'apple-news' ); ?></a>
@@ -91,11 +91,5 @@
 				<?php endif; ?>
 			</div>
 		</div>
-
-		<?php submit_button(
-			__( 'Set Theme', 'apple-news' ),
-			'primary',
-			'apple_news_set_theme'
-		); ?>
 	</form>
 </div>

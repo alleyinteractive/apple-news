@@ -36,9 +36,11 @@
 			appleNewsThemesSubmit( $( this ), 'apple_news_export_theme' );
 		});
 
-		$( '#apple_news_set_theme' ).on( 'click', function( e ) {
+		$( '.apple-news-activate-theme' ).on( 'click', function( e ) {
 			e.preventDefault();
-			appleNewsThemesSubmit( $( this ), 'apple_news_set_theme' );
+			var $this = $( this );
+			$this.siblings( 'input[name="apple_news_active_theme"]' ).prop( 'checked', 'checked' );
+			appleNewsThemesSubmit( $this, 'apple_news_set_theme' );
 		});
 	});
 
