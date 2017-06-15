@@ -483,6 +483,11 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	public function theme_nag() {
 
+		// If the plugin isn't initialized yet, don't nag the user.
+		if ( true !== \Apple_News::is_initialized() ) {
+			return;
+		}
+
 		// If we aren't on one of the Apple News admin pages, don't nag the user.
 		$screen = get_current_screen();
 		if ( false === strpos( $screen->base, 'apple_news' )

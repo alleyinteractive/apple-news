@@ -289,6 +289,12 @@ class Apple_News {
 			}
 		}
 
+		// Negotiate screenshot URL.
+		$theme_settings['screenshot_url'] = plugins_url(
+			'/assets/screenshots/default.png',
+			__DIR__
+		);
+
 		// Save the theme and make it active.
 		$theme->load( $theme_settings );
 		$theme->save();
@@ -314,6 +320,14 @@ class Apple_News {
 			// Load the theme data from the JSON configuration file.
 			$filename = dirname( __DIR__ ) . '/assets/themes/' . $slug . '.json';
 			$options = json_decode( file_get_contents( $filename ), true );
+
+			// Negotiate screenshot URL.
+			$options['screenshot_url'] = plugins_url(
+				'/assets/screenshots/' . $slug . '.png',
+				__DIR__
+			);
+
+			// Save the theme.
 			$theme->load( $options );
 			$theme->save();
 		}
