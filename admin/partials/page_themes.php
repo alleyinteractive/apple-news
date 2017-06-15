@@ -50,10 +50,9 @@
 					<?php foreach ( $all_themes as $theme ) : ?>
 						<?php
 						$active = ( $theme === $active_theme ) ? 'active' : '';
-						$aria_action = 'apple-news-theme-' . $theme . '-action';
 						$aria_name = 'apple-news-theme-' . $theme . '-name';
 						?>
-						<div class="theme <?php echo sanitize_html_class( $active ); ?>" tabindex="0" aria-describedby="<?php echo esc_attr( $aria_action . ' ' . $aria_name ); ?>">
+						<div class="theme <?php echo sanitize_html_class( $active ); ?>" tabindex="0" aria-describedby="<?php echo esc_attr( $aria_name ); ?>">
 							<?php if ( ! empty( $theme_screenshot ) ) : ?>
 								<div class="theme-screenshot">
 									<img src="<?php echo esc_url( $theme_screenshot ); ?>" alt="" />
@@ -61,8 +60,6 @@
 							<?php else : ?>
 								<div class="theme-screenshot blank"></div>
 							<?php endif; ?>
-
-							<span class="more-details" id="<?php echo esc_attr( $aria_action ); ?>"><?php esc_html_e( 'Edit', 'apple-news' ); ?></span>
 
 							<?php if ( ! empty( $active ) ) : ?>
 								<h2 class="theme-name" id="<?php echo esc_attr( $aria_name ); ?>">

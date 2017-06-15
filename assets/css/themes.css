@@ -16,6 +16,10 @@
 	margin-top: 1em;
 }
 
+.apple-news-themes .theme-browser .theme {
+	cursor: auto;
+}
+
 #apple_news_import_theme {
 	margin-bottom: 10px;
 }
