@@ -1245,6 +1245,10 @@ class Theme {
 				'label' => __( 'Component Order', 'apple-news' ),
 				'settings' => array( 'meta_component_order' ),
 			),
+			'screenshot' => array(
+				'label' => __( 'Screenshots', 'apple-news' ),
+				'settings' => array( 'screenshot_url' ),
+			),
 		);
 	}
 
@@ -1730,6 +1734,12 @@ class Theme {
 				'label' => __( 'Pull quote transformation', 'apple-news' ),
 				'options' => array( 'none', 'uppercase' ),
 				'type' => 'select',
+			),
+			'screenshot_url' => array(
+				'default' => '',
+				'description' => __( 'An optional URL to a screenshot of this theme. Should be a 1200x900 PNG.', 'apple-news' ),
+				'label' => __( 'Screenshot URL', 'apple-news' ),
+				'type' => 'text',
 			),
 		);
 	}

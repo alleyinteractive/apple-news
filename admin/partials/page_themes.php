@@ -51,6 +51,10 @@
 						<?php
 						$active = ( $theme === $active_theme ) ? 'active' : '';
 						$aria_name = 'apple-news-theme-' . $theme . '-name';
+						$theme_object = new \Apple_Exporter\Theme;
+						$theme_object->set_name( $theme );
+						$theme_object->load();
+						$theme_screenshot = $theme_object->get_value( 'screenshot_url' );
 						?>
 						<div class="theme <?php echo sanitize_html_class( $active ); ?>" tabindex="0" aria-describedby="<?php echo esc_attr( $aria_name ); ?>">
 							<?php if ( ! empty( $theme_screenshot ) ) : ?>
