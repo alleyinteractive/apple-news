@@ -127,9 +127,14 @@ class Admin_Apple_JSON extends Apple_News {
 		$themes = new Admin_Apple_Themes();
 		$theme_admin_url = $themes->theme_admin_url();
 		$all_themes = \Apple_Exporter\Theme::get_registry();
-		$selected_theme = ( ! empty( $_POST['apple_news_theme'] ) )
-			? sanitize_text_field( $_POST['apple_news_theme'] )
-			: '';
+
+		// Negotiate selected theme.
+		$selected_theme = '';
+		if ( ! empty( $_POST['apple_news_theme'] ) ) {
+			$selected_theme = sanitize_text_field( $_POST['apple_news_theme'] );
+		} elseif ( ! empty( $_GET['theme'] ) ) {
+			$selected_theme = sanitize_text_field( $_GET['theme'] );
+		}
 
 		// Check if there is a valid selected component.
 		$selected_component = ( ! empty( $selected_theme ) )
