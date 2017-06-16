@@ -19,9 +19,16 @@
 					)
 				)
 			) ?></p>
-			<?php // TODO: Add link to full list of settings values for tokens. ?>
 			<p><?php esc_html_e( 'Tokens that will be replaced by dynamic values based on theme or post settings are denoted as #token#. You may remove tokens to suit your custom JSON, or add tokens referencing theme settings or postmeta.', 'apple-news' ) ?></p>
 			<p><?php esc_html_e( 'You can add postmeta values using the syntax #postmeta.meta_field_name# where meta_field_name is the name of the meta field that you want to include. Meta fields must be singular—the plugin does not support multiple values for the same key.', 'apple-news' ); ?></p>
+			<p><?php
+				printf(
+					/* translators: First token is an opening a tag, second is the closing a tag */
+					esc_html__( 'For more information on how to configure custom JSON, including a list of supported settings tokens, please visit our %1$swiki page%2$s.', 'apple-news' ),
+					'<a href="https://github.com/alleyinteractive/apple-news/wiki/customizing-json">',
+					'</a>'
+				)
+			?></p>
 			<p><?php echo wp_kses(
 				sprintf(
 					__( 'For more information on the Apple News format options for each component, please read the <a href="%s">Apple News Format Reference</a>.', 'apple-news' ),
