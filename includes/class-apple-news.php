@@ -302,11 +302,11 @@ class Apple_News {
 
 		// Load the example themes, if they do not exist.
 		$example_themes = array(
-			'classic' => 'Classic',
-			'colorful' => 'Colorful',
-			'dark' => 'Dark',
-			'modern' => 'Modern',
-			'pastel' => 'Pastel',
+			'classic' => __( 'Classic', 'apple-news' ),
+			'colorful' => __( 'Colorful', 'apple-news' ),
+			'dark' => __( 'Dark', 'apple-news' ),
+			'modern' => __( 'Modern', 'apple-news' ),
+			'pastel' => __( 'Pastel', 'apple-news' ),
 		);
 		foreach ( $example_themes as $slug => $name ) {
 
