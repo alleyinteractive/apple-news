@@ -301,36 +301,7 @@ class Apple_News {
 		$theme->set_active();
 
 		// Load the example themes, if they do not exist.
-		$example_themes = array(
-			'classic' => __( 'Classic', 'apple-news' ),
-			'colorful' => __( 'Colorful', 'apple-news' ),
-			'dark' => __( 'Dark', 'apple-news' ),
-			'modern' => __( 'Modern', 'apple-news' ),
-			'pastel' => __( 'Pastel', 'apple-news' ),
-		);
-		foreach ( $example_themes as $slug => $name ) {
-
-			// Determine if the theme already exists.
-			$theme = new \Apple_Exporter\Theme;
-			$theme->set_name( $name );
-			if ( $theme->load() ) {
-				continue;
-			}
-
-			// Load the theme data from the JSON configuration file.
-			$filename = dirname( __DIR__ ) . '/assets/themes/' . $slug . '.json';
-			$options = json_decode( file_get_contents( $filename ), true );
-
-			// Negotiate screenshot URL.
-			$options['screenshot_url'] = plugins_url(
-				'/assets/screenshots/' . $slug . '.png',
-				__DIR__
-			);
-
-			// Save the theme.
-			$theme->load( $options );
-			$theme->save();
-		}
+		$this->load_example_themes();
 	}
 
 	/**
@@ -652,6 +623,48 @@ class Apple_News {
 
 		// Remove all formatting settings from the primary settings array.
 		$this->remove_global_formatting_settings();
+	}
+
+	/**
+	 * Load example themes into the theme list.
+	 *
+	 * @access protected
+	 */
+	protected function load_example_themes() {
+
+		// Set configuration for example themes.
+		$example_themes = array(
+			'classic' => __( 'Classic', 'apple-news' ),
+			'colorful' => __( 'Colorful', 'apple-news' ),
+			'dark' => __( 'Dark', 'apple-news' ),
+			'modern' => __( 'Modern', 'apple-news' ),
+			'pastel' => __( 'Pastel', 'apple-news' ),
+		);
+
+		// Loop over example theme configuration and load each.
+		foreach ( $example_themes as $slug => $name ) {
+
+			// Determine if the theme already exists.
+			$theme = new \Apple_Exporter\Theme;
+			$theme->set_name( $name );
+			if ( $theme->load() ) {
+				continue;
+			}
+
+			// Load the theme data from the JSON configuration file.
+			$filename = dirname( __DIR__ ) . '/assets/themes/' . $slug . '.json';
+			$options = wp_json_decode( file_get_contents( $filename ), true );
+
+			// Negotiate screenshot URL.
+			$options['screenshot_url'] = plugins_url(
+				'/assets/screenshots/' . $slug . '.png',
+				__DIR__
+			);
+
+			// Save the theme.
+			$theme->load( $options );
+			$theme->save();
+		}
 	}
 
 	/**
