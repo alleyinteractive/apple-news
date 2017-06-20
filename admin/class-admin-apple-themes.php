@@ -181,6 +181,10 @@ class Admin_Apple_Themes extends Apple_News {
 				'callback' => array( $this, '_set_theme' ),
 				'nonce' => 'apple_news_themes',
 			),
+			'apple_news_load_example_themes' => array(
+				'callback' => array( $this, 'load_example_themes' ),
+				'nonce' => 'apple_news_themes',
+			),
 		);
 
 		add_action( 'admin_menu', array( $this, 'setup_theme_pages' ), 99 );

@@ -6,6 +6,11 @@
 			appleNewsThemesSubmit( $( this ), 'apple_news_create_theme' );
 		});
 
+		$( '#apple_news_load_example_themes' ).on( 'click', function( e ) {
+			e.preventDefault();
+			appleNewsThemesSubmit( $( this ), 'apple_news_load_example_themes' );
+		});
+
 		$( '#apple_news_start_import' ).on( 'click', function( e ) {
 			e.preventDefault();
 			$( '.apple-news-theme-form' ).hide();

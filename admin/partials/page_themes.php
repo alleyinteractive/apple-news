@@ -2,6 +2,8 @@
 <div class="wrap apple-news-themes">
 	<h1 id="apple_news_themes_title"><?php esc_html_e( 'Manage Themes', 'apple-news' ) ?></h1>
 
+	<p><?php esc_html_e( 'As of version 1.3.0, a number of example themes are available. These example themes come bundled with a fresh installation of the plugin. To add them to an existing installation, or to restore them if they have been deleted, use the Load Example Themes button below.', 'apple-news' ); ?></p>
+
 	<form method="post" action="" id="apple-news-themes-form" enctype="multipart/form-data">
 		<?php wp_nonce_field( 'apple_news_themes' ); ?>
 		<input type="hidden" id="apple_news_action" name="action" value="apple_news_set_theme" />
@@ -12,6 +14,12 @@
 			__( 'Import Theme', 'apple-news' ),
 			'secondary',
 			'apple_news_start_import',
+			false
+		); ?>
+		<?php submit_button(
+			__( 'Load Example Themes', 'apple-news' ),
+			'secondary',
+			'apple_news_load_example_themes',
 			false
 		); ?>
 
