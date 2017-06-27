@@ -424,7 +424,7 @@ class Theme {
 			return array();
 		}
 
-		return $registry;
+		return self::_sort_registry( $registry );
 	}
 
 	/**
@@ -496,6 +496,29 @@ class Theme {
 	 */
 	public static function theme_key( $name ) {
 		return 'apple_news_theme_' . md5( $name );
+	}
+
+	/**
+	 * Sorts a registry array, ensuring that the active theme is first.
+	 *
+	 * @param array $registry The registry to sort.
+	 *
+	 * @return array The sorted registry array.
+	 */
+	private static function _sort_registry( $registry ) {
+
+		// Sort the regsitry.
+		sort( $registry );
+
+		// Ensure the active theme is first.
+		$active_theme = self::get_active_theme_name();
+		$active_theme_key = array_search( $active_theme, $registry, true );
+		if ( ! empty( $active_theme_key ) ) {
+			unset( $registry[ $active_theme_key ] );
+			array_unshift( $registry, $active_theme );
+		}
+
+		return $registry;
 	}
 
 	/**
@@ -1059,6 +1082,9 @@ class Theme {
 
 		// Add the theme from the registry.
 		$registry[] = $name;
+
+		// Sort the registry.
+		$registry = self::_sort_registry( $registry );
 
 		// Update the registry.
 		update_option( self::INDEX_KEY, $registry, false );
@@ -1775,6 +1801,9 @@ class Theme {
 
 		// Remove the theme from the registry.
 		unset( $registry[ $key ] );
+
+		// Sort the registry.
+		$registry = self::_sort_registry( $registry );
 
 		// Update the registry.
 		update_option( self::INDEX_KEY, $registry, false );
