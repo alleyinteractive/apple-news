@@ -144,6 +144,7 @@
                             "color": "#pullquote_border_color#"
                         },
                         "layout": {
+                            "horizontalContentAlignment": "left",
                             "maximumContentWidth": 80
                         }
                     },
@@ -161,6 +162,7 @@
                             "color": "#pullquote_border_color#"
                         },
                         "layout": {
+                            "horizontalContentAlignment": "left",
                             "maximumContentWidth": 80
                         }
                     }

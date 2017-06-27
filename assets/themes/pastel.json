@@ -106,7 +106,7 @@
                 "fontSize": "#blockquote_size#",
                 "textColor": "#blockquote_color#",
                 "lineHeight": "#blockquote_line_height#",
-                "textAlignment": "center",
+                "textAlignment": "left",
                 "tracking": "#blockquote_tracking#"
             },
             "default-pullquote": {
@@ -116,7 +116,7 @@
                 "textColor": "#pullquote_color#",
                 "textTransform": "#pullquote_transform#",
                 "lineHeight": "#pullquote_line_height#",
-                "textAlignment": "center",
+                "textAlignment": "left",
                 "tracking": "#pullquote_tracking#"
             },
             "pullquote-with-border-json": {
@@ -133,6 +133,7 @@
                             "color": "#pullquote_border_color#"
                         },
                         "layout": {
+                            "horizontalContentAlignment": "left",
                             "maximumContentWidth": 175
                         }
                     },
@@ -150,6 +151,7 @@
                             "color": "#pullquote_border_color#"
                         },
                         "layout": {
+                            "horizontalContentAlignment": "left",
                             "maximumContentWidth": 175
                         }
                     }
