@@ -10,7 +10,7 @@
     "blockquote_line_height": 22,
     "blockquote_size": 17,
     "blockquote_tracking": 0,
-    "body_background_color": "#fafeff",
+    "body_background_color": "#e5feff",
     "body_color": "#000000",
     "body_font": "Optima-Regular",
     "body_line_height": 22,
@@ -33,7 +33,7 @@
     "dropcap_color": "#000000",
     "dropcap_font": "HelveticaNeue-CondensedBlack",
     "dropcap_number_of_characters": 1,
-    "dropcap_number_of_lines": 4,
+    "dropcap_number_of_lines": 5,
     "dropcap_number_of_raised_lines": 0,
     "dropcap_padding": 5,
     "enable_advertisement": "yes",
@@ -68,7 +68,7 @@
     "header6_line_height": 22,
     "header6_size": 22,
     "header6_tracking": -3,
-    "initial_dropcap": "no",
+    "initial_dropcap": "yes",
     "json_templates": {
         "title": {
             "default-title": {
