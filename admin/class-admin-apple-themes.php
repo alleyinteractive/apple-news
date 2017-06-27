@@ -500,6 +500,16 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
+		// Inform the user that example themes are available.
+		\Admin_Apple_Notice::info(
+			sprintf(
+				/* translators: First parameter is opening a tag, second is closing a tag */
+				__( 'New in Publish to Apple News version 1.3.0: You can install example themes on the %1$sthemes page%2$s.', 'apple-news' ),
+				'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-themes' ) ) . '">',
+				'</a>'
+			)
+		);
+
 		// If the active theme isn't named "Default", don't nag the user.
 		if ( __( 'Default', 'apple-news' ) !== \Apple_Exporter\Theme::get_active_theme_name() ) {
 			return;
