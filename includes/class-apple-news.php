@@ -637,6 +637,7 @@ class Apple_News {
 			'classic' => __( 'Classic', 'apple-news' ),
 			'colorful' => __( 'Colorful', 'apple-news' ),
 			'dark' => __( 'Dark', 'apple-news' ),
+			'default' => __( 'Default', 'apple-news' ),
 			'modern' => __( 'Modern', 'apple-news' ),
 			'pastel' => __( 'Pastel', 'apple-news' ),
 		);
