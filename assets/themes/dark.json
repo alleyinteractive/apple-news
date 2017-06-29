@@ -15,7 +15,7 @@
     "body_font": "Georgia",
     "body_line_height": 23,
     "body_link_color": "#ffe890",
-    "body_orientation": "center",
+    "body_orientation": "left",
     "body_size": 17,
     "body_tracking": 0,
     "byline_color": "#e2e2e2",
@@ -80,8 +80,6 @@
                 "textAlignment": "center"
             },
             "title-layout": {
-                "columnSpan": 7,
-                "columnStart": 1,
                 "margin": {
                     "top": 30,
                     "bottom": 30
