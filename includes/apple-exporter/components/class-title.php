@@ -15,6 +15,7 @@ class Title extends Component {
 			array(
 				'role' => 'title',
 				'text' => '#text#',
+				'format' => 'html',
 			)
 		);
 

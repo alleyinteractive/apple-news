@@ -205,7 +205,7 @@ class Exporter {
 			'version'    => '1.1',
 			'identifier' => 'post-' . $this->content_id(),
 			'language'   => 'en',
-			'title'      => $this->content_title(),
+			'title'      => wp_strip_all_tags( $this->content_title() ),
 		);
 
 		// Builders
