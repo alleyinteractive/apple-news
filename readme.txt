@@ -53,6 +53,7 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 * Deprecated access of formatting settings using the Settings object.
 * Added a new Theme object to handle all formatting settings.
 * Bugfix: Fixed a bug where themes were not being automatically switched via section mappings.
+* Bugfix: HTML in titles is now supported.
 
 = 1.2.7 =
 * Fixed a bug where HTML tags were being stripped before being sent to the API.
@@ -67,7 +68,7 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 * WP Standards: Replaced all remaining instances of json_encode with wp_json_encode
 * Bugfix: Root-relative URLs for images, audio, and video are now supported
 * Bugfix: Images, audio, and video with blank or invalid URLs are no longer included, avoiding an error with the API
-* Bugfix: Image blocks with multiple src attributes (e.g., when using a lazyload plugin with a raw <img> tag in the <noscript> block) are now intelligently probed
+* Bugfix: Image blocks with multiple src attributes (e.g., when using a lazyload plugin with a raw &lt;img&gt; tag in the &lt;noscript&gt; block) are now intelligently probed
 
 = 1.2.5 =
 * Bugfix: Fixed version of PHPUnit at 5.7.* for PHP 7.* and 4.8.* for PHP 5.* in the Travis configuration to fix a bug with incompatibility with PHPUnit 6
@@ -110,7 +111,7 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 = 1.2.1 =
 * Added an experimental setting to enable HTML format on body elements.
-* Added settings for monospaced fonts, which applies to <pre>, <code>, and <samp> elements in body components when HTML formatting is enabled.
+* Added settings for monospaced fonts, which applies to &lt;pre&gt;, &lt;code&gt;, and &lt;samp&gt; elements in body components when HTML formatting is enabled.
 * Added additional text formatting options, including tracking (letter-spacing) and line height.
 * Split text formatting options for headings to allow full customization per heading level.
 * Modified logic for image alignment so that centered and non-aligned images now appear centered instead of right-aligned.
