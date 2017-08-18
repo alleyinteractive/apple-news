@@ -280,7 +280,7 @@ class Apple_News {
 
 		// Build the theme formatting settings from the base settings array.
 		$theme = new \Apple_Exporter\Theme;
-		$options = $theme->get_options();
+		$options = \Apple_Exporter\Theme::get_options();
 		$wp_settings = get_option( self::$option_name, array() );
 		$theme_settings = array();
 		foreach ( $options as $option_key => $option ) {
@@ -583,8 +583,7 @@ class Apple_News {
 	public function remove_global_formatting_settings() {
 
 		// Loop through formatting settings and remove them from saved settings.
-		$theme = new \Apple_Exporter\Theme;
-		$formatting_settings = array_keys( $theme->get_options() );
+		$formatting_settings = array_keys( \Apple_Exporter\Theme::get_options() );
 		$wp_settings = get_option( self::$option_name, array() );
 		foreach ( $formatting_settings as $setting_key ) {
 			if ( isset( $wp_settings[ $setting_key ] ) ) {

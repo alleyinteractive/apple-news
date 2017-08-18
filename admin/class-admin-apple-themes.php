@@ -53,7 +53,7 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Ensure the option exists.
-		$options = $theme->get_options();
+		$options = \Apple_Exporter\Theme::get_options();
 		if ( ! isset( $options[ $option_name ] ) ) {
 			return '';
 		}
@@ -286,7 +286,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$theme_admin_url = $this->theme_admin_url();
 
 		// Get information about theme options.
-		$theme_options = $theme->get_options();
+		$theme_options = \Apple_Exporter\Theme::get_options();
 
 		// Load the edit page.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_theme_edit.php';
@@ -516,14 +516,12 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Determine if the theme is using the default settings.
-		$default = new \Apple_Exporter\Theme;
 		$theme = new \Apple_Exporter\Theme;
 		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
 		$theme->load();
-		$diff = array_diff_assoc( $default->all_settings(), $theme->all_settings() );
 
 		// If the theme has been customized, don't nag the user.
-		if ( ! empty( $diff ) ) {
+		if ( ! $theme->is_default() ) {
 			return;
 		}
 
