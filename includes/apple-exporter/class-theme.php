@@ -1231,15 +1231,18 @@ class Theme {
 
 		// Loop over loaded values from the database and add to local values.
 		$options = self::get_options();
-		foreach ( $values as $key => $value ) {
+		foreach ( $options as $key => $option_value ) {
 
 			// Skip any keys that don't exist in the options spec.
-			if ( ! isset( $options[ $key ] ) ) {
+			if ( ! isset( $values[ $key ] ) ) {
+				unset( $this->_values[ $key ] );
 				continue;
 			}
 
+			$value = $values[ $key ];
+
 			// Convert the format of the value based on type.
-			switch ( $options[ $key ]['type'] ) {
+			switch ( $option_value['type'] ) {
 				case 'float':
 					$this->_values[ $key ] = (float) $value;
 					break;
