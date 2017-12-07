@@ -18,6 +18,47 @@ use Apple_Exporter\Theme;
 class Theme_Test extends WP_UnitTestCase {
 
 	/**
+	 * Ensure that custom JSON can be deleted.
+	 *
+	 * @see Apple_Exporter\Theme::load()
+	 *
+	 * @access public
+	 */
+	public function testDeleteCustomJSON() {
+
+		// Define custom JSON to be removed.
+		$theme_settings = array(
+			'json_templates' => array(
+				'body' => array(
+					'default-body' => array(
+						'hyphenation' => false,
+					),
+				),
+			),
+		);
+
+		// Create a theme and load the custom settings.
+		$theme = new Theme;
+		$theme->load( $theme_settings );
+
+		// Ensure the custom JSON templates exist within the theme.
+		$this->assertSame(
+			$theme_settings['json_templates'],
+			$theme->get_value( 'json_templates' )
+		);
+
+		// Remove the custom JSON templates and update the theme.
+		unset( $theme_settings['json_templates'] );
+		$theme->load( $theme_settings );
+
+		// Ensure the custom JSON was removed from the theme.
+		$this->assertSame(
+			array(),
+			$theme->get_value( 'json_templates' )
+		);
+	}
+
+	/**
 	 * Tests the functionality of the get_registry function.
 	 *
 	 * @see Apple_Exporter\Theme::get_registry()

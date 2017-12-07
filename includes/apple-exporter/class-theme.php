@@ -1229,7 +1229,7 @@ class Theme {
 			return false;
 		}
 
-		// Loop over loaded values from the database and add to local values.
+		// Loop over loaded values and add to local values.
 		$options = self::get_options();
 		foreach ( $values as $key => $value ) {
 
@@ -1249,6 +1249,13 @@ class Theme {
 				default:
 					$this->_values[ $key ] = $value;
 					break;
+			}
+		}
+
+		// Loop over local values and remove any that aren't present in loaded data.
+		foreach ( $this->_values as $key => $value ) {
+			if ( ! isset( $values[ $key ] ) ) {
+				unset( $this->_values[ $key ] );
 			}
 		}
 
