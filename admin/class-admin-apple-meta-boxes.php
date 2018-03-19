@@ -131,6 +131,13 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 		update_post_meta( $post_id, 'apple_news_is_preview', $is_preview );
 
+		if ( ! empty( $_POST['apple_news_is_hidden'] ) && 1 === intval( $_POST['apple_news_is_hidden'] ) ) {
+			$is_hidden = true;
+		} else {
+			$is_hidden = false;
+		}
+		update_post_meta( $post_id, 'apple_news_is_hidden', $is_hidden );
+
 		if ( ! empty( $_POST['apple_news_is_sponsored'] ) && 1 === intval( $_POST['apple_news_is_sponsored'] ) ) {
 			$is_sponsored = true;
 		} else {
@@ -200,6 +207,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$deleted = get_post_meta( $post->ID, 'apple_news_api_deleted', true );
 		$pending = get_post_meta( $post->ID, 'apple_news_api_pending', true );
 		$is_preview = get_post_meta( $post->ID, 'apple_news_is_preview', true );
+		$is_hidden = get_post_meta( $post->ID, 'apple_news_is_hidden', true );
 		$maturity_rating = get_post_meta( $post->ID, 'apple_news_maturity_rating', true );
 		$is_sponsored = get_post_meta( $post->ID, 'apple_news_is_sponsored', true );
 		$pullquote = get_post_meta( $post->ID, 'apple_news_pullquote', true );
