@@ -34,6 +34,15 @@
 				</td>
 			</tr>
 			<tr>
+				<th scope="row"><?php esc_html_e( 'Hidden?', 'apple-news' ) ?></th>
+				<td>
+					<label for="apple-news-is-hidden">
+						<input id="apple-news-is-hidden" name="apple_news_is_hidden" type="checkbox" value="1" <?php checked( $post_meta['apple_news_is_hidden'][0] ) ?>>
+						<?php esc_html_e( 'Hidden articles are visible to users who have a link to the article, but do not appear in feeds.' , 'apple-news' ) ?>
+					</label>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><?php esc_html_e( 'Sponsored?', 'apple-news' ) ?></th>
 				<td>
 					<label for="apple-news-is-sponsored">
