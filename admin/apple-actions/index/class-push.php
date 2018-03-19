@@ -183,15 +183,15 @@ class Push extends API_Action {
 
 			// Get the isPreview setting
 			$is_preview = (bool) get_post_meta( $this->id, 'apple_news_is_preview', true );
-			if ( true === $is_preview ) {
-				$meta['data']['isPreview'] = $is_preview;
-			}
+			$meta['data']['isPreview'] = $is_preview;
+
+			// Get the isHidden setting
+			$is_hidden = (bool) get_post_meta( $this->id, 'apple_news_is_hidden', true );
+			$meta['data']['isHidden'] = $is_hidden;
 
 			// Get the isSponsored setting
 			$is_sponsored = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
-			if ( true === $is_sponsored ) {
-				$meta['data']['isSponsored'] = $is_sponsored;
-			}
+			$meta['data']['isSponsored'] = $is_sponsored;
 
 			// Get the maturity rating setting
 			$maturity_rating = get_post_meta( $this->id, 'apple_news_maturity_rating', true );
