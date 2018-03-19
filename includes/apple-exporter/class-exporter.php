@@ -202,7 +202,7 @@ class Exporter {
 	private function generate_json() {
 		// Base JSON
 		$json = array(
-			'version'    => '1.1',
+			'version'    => '1.7',
 			'identifier' => 'post-' . $this->content_id(),
 			'language'   => 'en',
 			'title'      => wp_strip_all_tags( $this->content_title() ),
