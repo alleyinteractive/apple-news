@@ -19,11 +19,11 @@
 			<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. Uncheck them all for a standalone article.', 'apple-news' ); ?></p>
 		</div>
 	</div>
-	<div id="apple-news-metabox-is-preview" class="apple-news-metabox-section">
-		<h3><?php esc_html_e( 'Preview?', 'apple-news' ); ?></h3>
-		<label for="apple-news-is-preview">
-			<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ) ?>>
-			<?php esc_html_e( 'Check this to publish the article as a draft.', 'apple-news' ); ?>
+	<div id="apple-news-metabox-is-hidden" class="apple-news-metabox-section">
+		<h3><?php esc_html_e( 'Hidden?', 'apple-news' ); ?></h3>
+		<label for="apple-news-is-hidden">
+			<input id="apple-news-is-hidden" name="apple_news_is_hidden" type="checkbox" value="1" <?php checked( $is_hidden ) ?>>
+			<?php esc_html_e( 'Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news' ); ?>
 		</label>
 	</div>
 	<div id="apple-news-metabox-is-sponsored" class="apple-news-metabox-section">
