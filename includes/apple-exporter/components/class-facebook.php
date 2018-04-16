@@ -61,9 +61,36 @@ class Facebook extends Component {
 	 * @return DOMElement|null The DOMElement on match, false on no match.
 	 */
 	public static function node_matches( $node ) {
-		return ( false !== self::_get_facebook_url( $node->nodeValue ) )
-			? $node
-			: null;
+
+		// Check for element with just facebook url.
+		if ( false !== self::_get_facebook_url( $node->nodeValue ) ) {
+			return $node;
+		}
+
+		// Handling for a rendered facebook embed.
+		if (
+			'div' === $node->nodeName
+			&& (
+				self::node_has_class( $node, 'fb-post' )
+				|| self::node_has_class( $node, 'fb-video' )
+				|| self::node_has_class( $node, 'fb-comment-embed' )
+			)
+		) {
+
+			// Extract facebook url from element's data-href property.
+			$fb_url = $node->getAttribute( 'data-href' );
+
+			// Ensure we have a valid facebook embed url.
+			if (
+				! empty( $fb_url )
+				&& false !== self::_get_facebook_url( $fb_url )
+			) {
+				return $node;
+			}
+		}
+
+		// facebook not found.
+		return null;
 	}
 
 	/**
@@ -74,12 +101,18 @@ class Facebook extends Component {
 	 * @access protected
 	 */
 	protected function build( $html ) {
+
+		// Check for data-href property on rendered <div>.
+		if ( preg_match( '/data-href="([^"]+)"/i', $html, $data_href ) ) {
+			$html = $data_href[1];
+		}
+
 		$this->register_json(
 			'json',
 			array(
 				'#url#' => self::_get_facebook_url( strip_tags( $html ) ),
 			)
-	 );
+		);
 	}
 
 	/**
