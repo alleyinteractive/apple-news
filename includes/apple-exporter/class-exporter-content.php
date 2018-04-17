@@ -102,7 +102,7 @@ class Exporter_Content {
 	}
 
 	/**
-	 * Contstructor.
+	 * Constructor.
 	 *
 	 * @param int $id
 	 * @param string $title
