@@ -70,11 +70,7 @@ class Facebook extends Component {
 		// Handling for a rendered facebook embed.
 		if (
 			'div' === $node->nodeName
-			&& (
-				self::node_has_class( $node, 'fb-post' )
-				|| self::node_has_class( $node, 'fb-video' )
-				|| self::node_has_class( $node, 'fb-comment-embed' )
-			)
+			&& self::node_has_class( $node, 'fb-post' )
 		) {
 
 			// Extract facebook url from element's data-href property.
