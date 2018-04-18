@@ -935,7 +935,7 @@ class Theme {
 				'type' => 'integer',
 			),
 			'meta_component_order' => array(
-				'default' => array( 'cover', 'title', 'byline' ),
+				'default' => array( 'cover', 'title', 'byline', 'intro' ),
 				'callback' => array( get_called_class(), 'render_meta_component_order' ),
 				'type' => 'array',
 			),
