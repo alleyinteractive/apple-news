@@ -178,6 +178,7 @@ class Export extends Action {
 		$content = apply_filters( 'apple_news_exporter_content_pre', $post->post_content, $post->ID );
 		$content = apply_filters( 'the_content', $content );
 		$content = $this->remove_tags( $content );
+		$content = $this->remove_entities( $content );
 		return $content;
 	}
 
@@ -192,6 +193,22 @@ class Export extends Action {
 	private function remove_tags( $html ) {
 		$html = preg_replace( '/<style[^>]*>.*?<\/style>/i', '', $html );
 		return $html;
+	}
+
+	/**
+	 * Filter the content for markdown format.
+	 *
+	 * @param string $content
+	 * @return string
+	 * @access private
+	 */
+	private function remove_entities( $content ) {
+		if ( 'yes' === $this->get_setting( 'html_support' ) ) {
+			return $content;
+		}
+
+		// Correct ampersand output.
+		return str_replace( '&amp;', '&', $content );
 	}
 
 	/**

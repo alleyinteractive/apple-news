@@ -1,8 +1,6 @@
 <?php
 namespace Apple_Exporter;
 
-use Apple_Exporter\Settings as Settings;
-
 /**
  * Export a Exporter_Content instance to Apple format.
  *
@@ -343,24 +341,6 @@ class Exporter {
 	}
 
 	/**
-	 * Filter the content for markdown support.
-	 *
-	 * @param string $content
-	 * @return string
-	 * @access private
-	 */
-	private function ampersands_for_markdown( $content ) {
-		$settings = new Settings();
-
-		if ( 'yes' === $settings->get( 'html_support' ) ) {
-			return $content;
-		}
-
-		// Correct ampersand output.
-		return str_replace( '&amp;', '&', $content );
-	}
-
-	/**
 	 * Cleans up data destined for JSON conversion.
 	 *
 	 * @param mixed $data The data to clean up.
@@ -380,7 +360,6 @@ class Exporter {
 		if ( is_string( $data ) ) {
 			$data = str_replace( $this->separators, ' ', $data );
 			$data = preg_replace( '/\h+/', ' ', $data );
-			$data = $this->ampersands_for_markdown( $data );
 
 			return;
 		}
