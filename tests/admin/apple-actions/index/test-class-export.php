@@ -91,6 +91,37 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$this->assertEquals( 'by #Testuser | Aug 26, 2016 | 12:00 PM', $exporter_content->byline() );
 	}
 
+	public function testRemoveEntities() {
+		$post_id = $this->factory->post->create( array(
+			'post_title' => 'Test Title',
+			'post_content' => '<p>&amp;Lorem ipsum dolor sit amet &amp; consectetur adipiscing elit.&amp;</p>',
+			'post_date' => '2016-08-26 12:00',
+		) );
+
+		// Set HTML content format.
+		$this->settings->html_support = 'yes';
+
+		$export = new Export( $this->settings, $post_id );
+		$exporter = $export->fetch_exporter();
+		$exporter_content = $exporter->get_content();
+
+		$this->assertEquals(
+			'<p>&amp;Lorem ipsum dolor sit amet &amp; consectetur adipiscing elit.&amp;</p>',
+			str_replace( ["\n","\r"], '', $exporter_content->content() )
+		);
+
+		// Set Markdown content format.
+		$this->settings->html_support = 'no';
+
+		$markdown_export = new Export( $this->settings, $post_id );
+		$markdown_exporter = $markdown_export->fetch_exporter();
+		$markdown_exporter_content = $markdown_exporter->get_content();
+		$this->assertEquals(
+			'<p>&Lorem ipsum dolor sit amet & consectetur adipiscing elit.&</p>',
+			str_replace( ["\n","\r"], '', $markdown_exporter_content->content() )
+		);
+	}
+
 	public function testSectionMapping() {
 		// Create a post
 		$title = 'My Title';
