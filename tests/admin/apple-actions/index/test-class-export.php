@@ -107,7 +107,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 
 		$this->assertEquals(
 			'<p>&amp;Lorem ipsum dolor sit amet &amp; consectetur adipiscing elit.&amp;</p>',
-			str_replace( ["\n","\r"], '', $exporter_content->content() )
+			str_replace( array( "\n","\r" ), '', $exporter_content->content() )
 		);
 
 		// Set Markdown content format.
@@ -118,7 +118,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$markdown_exporter_content = $markdown_exporter->get_content();
 		$this->assertEquals(
 			'<p>&Lorem ipsum dolor sit amet & consectetur adipiscing elit.&</p>',
-			str_replace( ["\n","\r"], '', $markdown_exporter_content->content() )
+			str_replace( array( "\n","\r" ), '', $markdown_exporter_content->content() )
 		);
 	}
 
