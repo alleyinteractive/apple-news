@@ -24,7 +24,7 @@ class Jetpack_Tiled_Gallery {
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) ) {
-			self::$instance = new Jetpack_Tiled_Gallery;
+			self::$instance = new Jetpack_Tiled_Gallery();
 			self::$instance->setup();
 		}
 
@@ -33,8 +33,6 @@ class Jetpack_Tiled_Gallery {
 
 	/**
 	 * Setup of the singleton instance.
-	 *
-	 * @return void
 	 */
 	private function setup() {
 		// Only do this on export in Apple News context.
@@ -43,8 +41,6 @@ class Jetpack_Tiled_Gallery {
 
 	/**
 	 * Disable Jetpack's tiled gallery customizations.
-	 *
-	 * @return void
 	 */
 	public function tiled_gallery() {
 		// Condition for admin and Jetpack availability.
