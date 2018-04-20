@@ -151,6 +151,10 @@ class Markdown {
 		 */
 		$url = apply_filters( 'apple_news_markdown_hyperlink', $url );
 
+		if ( empty( $url ) ) {
+			return;
+		}
+
 		return sprintf(
 			'[%s](%s)',
 			$this->parse_nodes( $node->childNodes ),
