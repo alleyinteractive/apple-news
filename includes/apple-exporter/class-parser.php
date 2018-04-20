@@ -166,8 +166,17 @@ class Parser {
 
 				// Now we need to determine if anything further needs to be done
 				if ( 0 === stripos( $href, '#' ) ) {
-					// This is an anchor which is invalid, so just remove it.
-					$html = str_replace( $a_tags[0][ $i ], $a_tags[3][ $i ], $html );
+					global $post;
+
+					$permalink = get_permalink( $post );
+
+					if ( false === $permalink ) {
+						continue;
+					}
+
+					// This is an anchor so prepend the post permalink.
+					// Ensure we update href="#myanchor" and not href="http://mydomain.com/path/#myanchor"
+					$html = str_replace( '="' . $a_tags[2][ $i ], '="' . $permalink . $a_tags[2][ $i ], $html );
 					continue;
 				} else if ( 0 !== stripos( $href, '#' ) && false === filter_var( $href, FILTER_VALIDATE_URL ) ) {
 					// We have to assume this is a local URL.
