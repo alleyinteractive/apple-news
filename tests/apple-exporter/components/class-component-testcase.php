@@ -31,9 +31,9 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 	 */
 	public function tearDown() {
 		$this->prophet->checkPredictions();
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
-		$theme->delete();
+		$theme->save();
 	}
 
 	protected function build_node( $html ) {
