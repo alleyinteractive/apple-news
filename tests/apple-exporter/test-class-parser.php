@@ -28,66 +28,107 @@ class Parser_Test extends WP_UnitTestCase {
 		$this->assertEquals( $markdown, 'A heading<p><strong>This is strong.</strong><br><a href="http://apple.com">This is a link</a></p>The div tags will disappear.' );
 	}
 
+	/**
+	 * Test the anchor cleaning functions of the parser for Markdown.
+	 *
+	 * @see \Apple_Exporter\Parser::parse
+	 * @access public
+	 */
 	public function testCleanHTMLMarkdown() {
 		update_option( 'siteurl', 'http://wp.dev' );
 		update_option( 'home', 'http://wp.dev' );
 
 		// Create a post.
 		global $post;
+		$post_content = <<<HTML
+<a href="https://www.google.com">Absolute link</a>
+
+<a href="/2018/05/03/an-92-test">Root-relative link</a>
+
+<a name="testanchor">Test Anchor</a>
+
+<a href="#testanchor">Anchor Link</a>
+
+<a>Legit empty link</a>
+
+<a href=" ">Link that trims to empty</a>
+
+<a href="thisisntarealurl">Not a real URL</a>
+HTML;
 		$post = $this->factory->post->create_and_get( array(
 			'post_type' => 'article',
 			'post_title' => 'Test Article',
-			'post_content' => '<html><body><a name="anchor"><h2>A heading</h2></a><p><a href="http://avalidurl.com">A valid URL</a><br/><a href="http://someurl.com ">Invalid spaces</a><br/><a href="#anchor">Anchors work!</a><br/><a href="/relative_url">Some relative url</a></p></body></html>',
+			'post_content' => $post_content,
 		) );
+		$permalink = get_permalink( $post );
 
 		// Convert to Markdown
 		$parser = new Parser( 'markdown' );
-		$markdown = $parser->parse( $post->post_content );
+		$markdown = $parser->parse( apply_filters( 'the_content', $post->post_content ) );
 
-		// Verify
+		// Verify.
+		$this->assertEquals(
+			'[Absolute link](https://www.google.com)'
+			. '\n\n[Root-relative link](http://wp.dev/2018/05/03/an-92-test)'
+			. '\n\nTest Anchor'
+			. '\n\n[Anchor Link](' . $permalink . '#testanchor)'
+			. '\n\nLegit empty link'
+			. '\n\nLink that trims to empty'
+			. '\n\nNot a real URL',
+			str_replace( "\n", '', $markdown )
+		);
 		$this->assertEquals( $markdown, "## A heading\n[A valid URL](http://avalidurl.com)\n[Invalid spaces](http://someurl.com)\n[Anchors work\!](" . get_permalink( $post ) . "#anchor)\n[Some relative url](http://wp.dev/relative_url)\n\n" );
-
-		// Anchored link testing.
-		$post = $this->factory->post->create_and_get( array(
-			'post_type' => 'article',
-			'post_title' => 'Test Article',
-			'post_content' => '<a href="#gotomyanchor">Anchor Link</a> <a href="http://mydomain.com#gotomyanchor">Anchor Link with domain</a> <a href="/relative-path#gotomyanchor">Anchor Link with relative path</a>',
-		) );
-
-		$parse_markdown = new Parser( 'markdown' );
-		$parsed_markdown = $parse_markdown->parse( $post->post_content );
-		$this->assertEquals( $parsed_markdown, '[Anchor Link](' . get_permalink( $post ) . '#gotomyanchor) [Anchor Link with domain](http://mydomain.com#gotomyanchor) [Anchor Link with relative path](http://wp.dev/relative-path#gotomyanchor)' );
 	}
 
+	/**
+	 * Test the anchor cleaning functions of the parser for HTML.
+	 *
+	 * @see \Apple_Exporter\Parser::parse
+	 * @access public
+	 */
 	public function testCleanHTML() {
 		update_option( 'siteurl', 'http://wp.dev' );
 		update_option( 'home', 'http://wp.dev' );
 
 		// Create a post.
 		global $post;
+		$post_content = <<<HTML
+<a href="https://www.google.com">Absolute link</a>
+
+<a href="/2018/05/03/an-92-test">Root-relative link</a>
+
+<a name="testanchor">Test Anchor</a>
+
+<a href="#testanchor">Anchor Link</a>
+
+<a>Legit empty link</a>
+
+<a href=" ">Link that trims to empty</a>
+
+<a href="thisisntarealurl">Not a real URL</a>
+HTML;
 		$post = $this->factory->post->create_and_get( array(
 			'post_type' => 'article',
 			'post_title' => 'Test Article',
-			'post_content' => '<a name="anchor"><h2>A heading</h2></a><p><a href="http://avalidurl.com">A valid URL</a><br/><a href="http://someurl.com ">Invalid spaces</a><br/><a href="#anchor">Anchors work!</a><br/><a href="/relative_url">Some relative url</a></p>',
+			'post_content' => $post_content,
 		) );
+		$permalink = get_permalink( $post );
 
 		// Parse the post with HTML content format.
 		$parser = new Parser( 'html' );
-		$parsed_html = $parser->parse( $post->post_content );
+		$parsed_html = $parser->parse( apply_filters( 'the_content', $post->post_content ) );
 
-		// Verify
-		$this->assertEquals( $parsed_html, 'A heading<p><a href="http://avalidurl.com">A valid URL</a><br /><a href="http://someurl.com">Invalid spaces</a><br /><a href="' . get_permalink( $post ) . '#anchor">Anchors work!</a><br /><a href="http://wp.dev/relative_url">Some relative url</a></p>' );
-
-		// Anchored link testing.
-		$post = $this->factory->post->create_and_get( array(
-			'post_type' => 'article',
-			'post_title' => 'Test Article',
-			'post_content' => '<a href="#gotomyanchor">Anchor Link</a> <a href="http://mydomain.com#gotomyanchor">Anchor Link with domain</a> <a href="/relative-path#gotomyanchor">Anchor Link with relative path</a>',
-		) );
-
-		$parser_html = new Parser( 'html' );
-		$parsed_html = $parser_html->parse( $post->post_content );
-		$this->assertEquals( $parsed_html, '<a href="' . get_permalink( $post ) . '#gotomyanchor">Anchor Link</a> <a href="http://mydomain.com#gotomyanchor">Anchor Link with domain</a> <a href="http://wp.dev/relative-path#gotomyanchor">Anchor Link with relative path</a>' );
+		// Verify.
+		$this->assertEquals(
+			'<p><a href="https://www.google.com">Absolute link</a></p>'
+				. '<p><a href="http://wp.dev/2018/05/03/an-92-test">Root-relative link</a></p>'
+				. '<p>Test Anchor</p>'
+				. '<p><a href="' . $permalink . '#testanchor">Anchor Link</a></p>'
+				. '<p>Legit empty link</p>'
+				. '<p>Link that trims to empty</p>'
+				. '<p>Not a real URL</p>',
+			str_replace( "\n", '', $parsed_html )
+		);
 	}
 }
 
