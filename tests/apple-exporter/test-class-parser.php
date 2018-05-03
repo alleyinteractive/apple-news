@@ -69,15 +69,14 @@ HTML;
 		// Verify.
 		$this->assertEquals(
 			'[Absolute link](https://www.google.com)'
-			. '\n\n[Root-relative link](http://wp.dev/2018/05/03/an-92-test)'
-			. '\n\nTest Anchor'
-			. '\n\n[Anchor Link](' . $permalink . '#testanchor)'
-			. '\n\nLegit empty link'
-			. '\n\nLink that trims to empty'
-			. '\n\nNot a real URL',
-			str_replace( "\n", '', $markdown )
+			. '[Root-relative link](http://wp.dev/2018/05/03/an-92-test)'
+			. 'Test Anchor'
+			. '[Anchor Link](' . $permalink . '#testanchor)'
+			. 'Legit empty link'
+			. 'Link that trims to empty'
+			. 'Not a real URL',
+			str_replace( "\n" , '', $markdown )
 		);
-		$this->assertEquals( $markdown, "## A heading\n[A valid URL](http://avalidurl.com)\n[Invalid spaces](http://someurl.com)\n[Anchors work\!](" . get_permalink( $post ) . "#anchor)\n[Some relative url](http://wp.dev/relative_url)\n\n" );
 	}
 
 	/**
