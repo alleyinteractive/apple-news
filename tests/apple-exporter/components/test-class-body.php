@@ -107,6 +107,36 @@ HTML;
 		);
 	}
 
+
+	/**
+	 * Tests the transformation process for an HTML entity (e.g., &amp;).
+	 *
+	 * @access public
+	 */
+	public function testTransformHtmlEntities() {
+
+		// Setup.
+		$body_component = new Body(
+			'<p>my &amp; text</p>',
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$this->assertEquals(
+			array(
+				'text' => "my & text\n\n",
+				'role' => 'body',
+				'format' => 'markdown',
+				'textStyle' => 'dropcapBodyStyle',
+				'layout' => 'body-layout',
+			),
+			$body_component->to_array()
+		);
+	}
+
 	/**
 	 * Tests transformation of lists with nested images.
 	 *

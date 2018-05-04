@@ -420,13 +420,23 @@ abstract class Component {
 	/**
 	 * Whether HTML format is enabled for this component type.
 	 *
-	 * This function is intended to be overridden in child classes.
+	 * This function is intended to be overridden in child classes, but to call
+	 * this parent function with the value it intends to set. This function
+	 * will use the provided value if HTML support is enabled via settings.
+	 *
+	 * @param bool $enabled Optional. Whether to enable HTML for this component. Defaults to false.
 	 *
 	 * @access protected
 	 * @return bool Whether HTML format is enabled for this component type.
 	 */
-	protected function html_enabled() {
-		return false;
+	protected function html_enabled( $enabled = false ) {
+		if ( empty( $this->settings->html_support )
+			|| 'yes' !== $this->settings->html_support
+		) {
+			return false;
+		}
+
+		return $enabled;
 	}
 
 	/**
