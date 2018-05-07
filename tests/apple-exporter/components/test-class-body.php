@@ -34,6 +34,19 @@ class Body_Test extends Component_TestCase {
 	}
 
 	/**
+	 * A filter function to modify the HTML enabled flag for this component.
+	 *
+	 * @param bool $enabled Whether HTML support is enabled for this component.
+	 *
+	 * @access public
+	 * @return bool Whether HTML support is enabled for this component.
+	 */
+	public function filter_apple_news_body_html_enabled( $enabled ) {
+		echo 'RETURNING ' . ( ! $enabled ) . "\n\n";
+		return ! $enabled;
+	}
+
+	/**
 	 * Test the `apple_news_body_json` filter.
 	 *
 	 * @access public
@@ -67,6 +80,66 @@ class Body_Test extends Component_TestCase {
 		remove_filter(
 			'apple_news_body_json',
 			array( $this, 'filter_apple_news_body_json' )
+		);
+	}
+
+	/**
+	 * Test the `apple_news_body_html_enabled` filter.
+	 *
+	 * @access public
+	 */
+	public function testFilterHTML() {
+
+		// Setup.
+		$this->settings->html_support = 'yes';
+
+		// Test before filter.
+		$component = new Body(
+			'<p>my text</p>',
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$this->assertEquals(
+			array(
+				'role'      => 'body',
+				'text'      => '<p>my text</p>',
+				'format'    => 'html',
+				'textStyle' => 'dropcapBodyStyle',
+				'layout'    => 'body-layout',
+			),
+			$component->to_array()
+		);
+
+		// Test after filter.
+		add_filter(
+			'apple_news_body_html_enabled',
+			array( $this, 'filter_apple_news_body_html_enabled' )
+		);
+		$component = new Body(
+			'<p>my text</p>',
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$this->assertEquals(
+			array(
+				'role'      => 'body',
+				'text'      => 'my text' . "\n\n",
+				'format'    => 'markdown',
+				'textStyle' => 'default-body',
+				'layout'    => 'body-layout',
+			),
+			$component->to_array()
+		);
+
+		// Teardown.
+		$this->settings->html_support = 'no';
+		remove_filter(
+			'apple_news_body_html_enabled',
+			array( $this, 'filter_apple_news_body_html_enabled' )
 		);
 	}
 
