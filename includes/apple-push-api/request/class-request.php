@@ -62,8 +62,8 @@ class Request {
 
 		// Set the default WordPress HTTP API args
 		$this->default_args = apply_filters( 'apple_news_request_args', array(
-			'timeout' => 30, // required because we need to package all images
 			'reject_unsafe_urls' => true,
+			'timeout' => 5,
 		) );
 	}
 
@@ -90,6 +90,7 @@ class Request {
 				'Content-Type' => 'multipart/form-data; boundary=' . $this->mime_builder->boundary(),
 			),
 			'body' => $content,
+			'timeout' => 30, // required because we need to package all images
 		);
 
 		// Allow filtering and merge with the default args
