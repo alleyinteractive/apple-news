@@ -439,7 +439,7 @@ abstract class Component {
 		/**
 		 * Lets themes and plugins override HTML settings for a component.
 		 *
-		 * @param bool   $enabled   Whether HTML is enabled for this component.
+		 * @param bool $enabled Whether HTML is enabled for this component.
 		 */
 		return apply_filters(
 			'apple_news_' . $this->get_component_name() . '_html_enabled',

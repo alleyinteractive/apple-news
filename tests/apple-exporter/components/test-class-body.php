@@ -42,7 +42,6 @@ class Body_Test extends Component_TestCase {
 	 * @return bool Whether HTML support is enabled for this component.
 	 */
 	public function filter_apple_news_body_html_enabled( $enabled ) {
-		echo 'RETURNING ' . ( ! $enabled ) . "\n\n";
 		return ! $enabled;
 	}
 
