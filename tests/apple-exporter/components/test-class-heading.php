@@ -65,6 +65,38 @@ class Heading_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Tests image splitting where the image is wrapped in a link.
+	 *
+	 * @access public
+	 */
+	public function testImageSplittingWithLink() {
+
+		// Setup.
+		$content = <<<HTML
+<h2><a href="https://www.google.com/"><img src="/example-image.jpg" /></a></h2>
+HTML;
+		$file = dirname( dirname( __DIR__ ) ) . '/data/test-image.jpg';
+		$cover = $this->factory->attachment->create_upload_object( $file );
+		$content = new Exporter_Content( 3, 'Title', $content, null, $cover );
+
+		// Run the export.
+		$exporter = new Exporter( $content, null, $this->settings );
+		$json = $exporter->export();
+		$this->ensure_tokens_replaced( $json );
+		$json = json_decode( $json, true );
+
+		// Validate image split in generated JSON.
+		$this->assertEquals(
+			array(
+				'role'   => 'photo',
+				'URL'    => 'bundle://example-image.jpg',
+				'layout' => 'full-width-image',
+			),
+			$json['components'][1]['components'][1]
+		);
+	}
+
+	/**
 	 * Ensures that headings are not produced from paragraphs.
 	 *
 	 * @access public

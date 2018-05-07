@@ -137,11 +137,17 @@ class Heading extends Component {
 		// textStyle in headings.
 		$text = wp_strip_all_tags( $matches[2] );
 
+		// Parse and trim the resultant text, and if there is nothing left, bail.
+		$text = trim( $this->parser->parse( $text ) );
+		if ( empty( $text ) ) {
+			return;
+		}
+
 		$this->register_json(
 			'json',
 			array(
 				'#heading_level#' => 'heading' . $level,
-				'#text#' => trim( $this->parser->parse( $text ) ),
+				'#text#' => $text,
 				'#format#' => $this->parser->format,
 			)
 	 	);
