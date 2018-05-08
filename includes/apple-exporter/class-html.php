@@ -62,6 +62,14 @@ class HTML {
 		// Strip out all tags and attributes other than what is allowed.
 		$html = wp_kses( $html, $this->_allowed_html );
 
+		// Replace non-breaking spaces with regular spaces.
+		$html = str_ireplace( '&nbsp;', ' ', $html );
+		$html = str_replace( '&#160;', ' ', $html );
+		$html = str_replace( chr( 160 ), ' ', $html );
+
+		// Replace the "null" character with a blank string.
+		$html = str_replace( chr( 194 ), '', $html );
+
 		// Remove any empty tags.
 		$html = preg_replace( '/<([a-z0-9]+)[^>]*>\s*<\/\1>/', '', $html );
 
