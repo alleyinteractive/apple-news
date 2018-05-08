@@ -132,6 +132,11 @@ class Gallery extends Component {
 			$items[] = $content;
 		}
 
+		// Ensure we got items.
+		if ( empty( $items ) ) {
+			return;
+		}
+
 		// Build the JSON
 		$this->register_json(
 			'json',
@@ -139,7 +144,7 @@ class Gallery extends Component {
 				'#gallery_type#' => $theme->get_value( 'gallery_type' ),
 				'#items#' => $items,
 			)
-	 	);
+		);
 
 		// Set the layout.
 		$this->set_layout();

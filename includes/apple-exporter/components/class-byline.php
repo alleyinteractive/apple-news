@@ -57,12 +57,19 @@ class Byline extends Component {
 	 * @access protected
 	 */
 	protected function build( $text ) {
+
+		// If there is no text for this element, bail.
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return;
+		}
+
 		$this->register_json(
 			'json',
 			array(
 				'#text#' => $text,
 			)
-	 	);
+		);
 
 		$this->set_default_style();
 		$this->set_default_layout();

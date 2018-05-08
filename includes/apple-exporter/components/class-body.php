@@ -213,10 +213,19 @@ class Body extends Component {
 	 * @access protected
 	 */
 	protected function build( $text ) {
+
+		// If there is no text for this element, bail.
+		$text = $this->parser->parse( $text );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return;
+		}
+
+		// Add the JSON for this component.
 		$this->register_json(
 			'json',
 			array(
-				'#text#' => $this->parser->parse( $text ),
+				'#text#' => $text,
 				'#format#' => $this->parser->format,
 			)
 	 	);
@@ -397,13 +406,14 @@ class Body extends Component {
 	 * @return array
 	 */
 	public function to_array() {
-		$sanitized_text = sanitize_text_field( $this->json['text'] );
 
+		// If the text content evaluates to empty, just return an empty array.
+		$sanitized_text = sanitize_text_field( $this->json['text'] );
 		if ( empty( $sanitized_text ) ) {
-			return new \WP_Error( 'invalid', __( 'empty body component', 'apple-news' ) );
-		} else {
-			return parent::to_array();
+			return array();
 		}
+
+		return parent::to_array();
 	}
 }
 

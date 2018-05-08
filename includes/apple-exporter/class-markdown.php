@@ -110,7 +110,15 @@ class Markdown {
 	 * @return string The processed node, converted to a string.
 	 */
 	private function _parse_node_emphasis( $node ) {
-		return '_' . $this->parse_nodes( $node->childNodes ) . '_';
+
+		// If there is no text for this node, bail.
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return '';
+		}
+
+		return '_' . $text . '_';
 	}
 
 	/**
@@ -122,10 +130,18 @@ class Markdown {
 	 * @return string The processed node, converted to a string.
 	 */
 	private function _parse_node_heading( $node ) {
+
+		// If there is no text for this node, bail.
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return '';
+		}
+
 		return sprintf(
 			'%s %s' . "\n",
 			str_repeat( '#', intval( substr( $node->nodeName, 1, 1 ) ) ),
-			$this->parse_nodes( $node->childNodes )
+			$text
 		);
 	}
 
@@ -142,6 +158,9 @@ class Markdown {
 		// Set the URL from the HREF parameter on the tag.
 		$url = $node->getAttribute( 'href' );
 
+		// Set the text from the content of the child nodes.
+		$text = $this->parse_nodes( $node->childNodes );
+
 		/**
 		 * Allows for filtering of the formatted content before return.
 		 *
@@ -151,15 +170,13 @@ class Markdown {
 		 */
 		$url = apply_filters( 'apple_news_markdown_hyperlink', $url );
 
-		if ( empty( $url ) ) {
-			return;
+		// If there is no URL or no text, do not add the link.
+		$check = trim( $text );
+		if ( empty( $url ) || empty( $check ) ) {
+			return '';
 		}
 
-		return sprintf(
-			'[%s](%s)',
-			$this->parse_nodes( $node->childNodes ),
-			esc_url_raw( $url )
-		);
+		return sprintf( '[%s](%s)', $text, esc_url_raw( $url ) );
 	}
 
 	/**
@@ -172,16 +189,23 @@ class Markdown {
 	 */
 	private function _parse_node_list_item( $node ) {
 
+		// If there is no text for this node, bail.
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return '';
+		}
+
 		// Fork for ordered list items.
 		if ( 'ol' === $this->_list_mode ) {
 			return sprintf(
 				'%d. %s',
 				$this->_list_index ++,
-			    $this->parse_nodes( $node->childNodes )
+			    $text
 			);
 		}
 
-		return '- ' . $this->parse_nodes( $node->childNodes );
+		return '- ' . $text;
 	}
 
 	/**
@@ -196,7 +220,14 @@ class Markdown {
 		$this->_list_mode = 'ol';
 		$this->_list_index = 1;
 
-		return $this->parse_nodes( $node->childNodes ) . "\n\n";
+		// If there is no text for this node, bail.
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return '';
+		}
+
+		return $text . "\n\n";
 	}
 
 	/**
@@ -208,7 +239,15 @@ class Markdown {
 	 * @return string The processed node, converted to a string.
 	 */
 	private function _parse_node_paragraph( $node ) {
-		return $this->parse_nodes( $node->childNodes ) . "\n\n";
+
+		// If there is no text for this node, bail.
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return '';
+		}
+
+		return $text . "\n\n";
 	}
 
 	/**
@@ -220,7 +259,15 @@ class Markdown {
 	 * @return string The processed node, converted to a string.
 	 */
 	private function _parse_node_strong( $node ) {
-		return '**' . $this->parse_nodes( $node->childNodes ) . '**';
+
+		// If there is no text for this node, bail.
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return '';
+		}
+
+		return '**' . $text . '**';
 	}
 
 	/**
@@ -246,6 +293,13 @@ class Markdown {
 	private function _parse_node_unordered_list( $node ) {
 		$this->_list_mode = 'ul';
 
-		return $this->parse_nodes( $node->childNodes ) . "\n\n";
+		// If there is no text for this node, bail.
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return '';
+		}
+
+		return $text . "\n\n";
 	}
 }

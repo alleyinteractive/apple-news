@@ -237,6 +237,12 @@ class Quote extends Component {
 		preg_match( '#<blockquote.*?>(.*?)</blockquote>#si', $html, $matches );
 		$text = $matches[1];
 
+		// If there is no text for this element, bail.
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return;
+		}
+
 		// Split for pullquote vs. blockquote.
 		if ( 0 === strpos( $html, '<blockquote class="apple-news-pullquote">' ) ) {
 			$this->_build_pullquote( $text );

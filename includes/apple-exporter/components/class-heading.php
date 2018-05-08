@@ -150,7 +150,7 @@ class Heading extends Component {
 				'#text#' => $text,
 				'#format#' => $this->parser->format,
 			)
-	 	);
+		);
 
 		$this->set_style( $level );
 		$this->set_layout();

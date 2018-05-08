@@ -85,10 +85,9 @@ class Instagram extends Component {
 		$this->register_json(
 			'json',
 			array(
-				// Remove `www.` from URL as AN parser doesn't allow for it.
 				'#url#' => esc_url_raw( $url ),
 			)
-	 	);
+		);
 	}
 
 	/**
