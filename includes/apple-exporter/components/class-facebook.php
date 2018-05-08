@@ -103,10 +103,16 @@ class Facebook extends Component {
 			$html = $data_href[1];
 		}
 
+		// Try to get Facebook URL.
+		$url = self::_get_facebook_url( strip_tags( $html ) );
+		if ( empty( trim( $url ) ) ) {
+			return;
+		}
+
 		$this->register_json(
 			'json',
 			array(
-				'#url#' => self::_get_facebook_url( strip_tags( $html ) ),
+				'#url#' => $url,
 			)
 		);
 	}

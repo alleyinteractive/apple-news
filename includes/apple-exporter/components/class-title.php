@@ -51,12 +51,18 @@ class Title extends Component {
 	 * @access protected
 	 */
 	protected function build( $text ) {
+
+		// If there is no text for this element, bail.
+		if ( empty( trim( $text ) ) ) {
+			return;
+		}
+
 		$this->register_json(
 			'json',
 			array(
 				'#text#' => $text,
 			)
-		 );
+		);
 
 		$this->set_style();
 		$this->set_layout();

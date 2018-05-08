@@ -73,12 +73,19 @@ class Cover extends Component {
 	 * @access protected
 	 */
 	protected function build( $url ) {
+
+		// If we can't get a valid URL, bail.
+		$url = $this->maybe_bundle_source( $url );
+		if ( empty( trim( $url ) ) ) {
+			return;
+		}
+
 		$this->register_json(
 			'json',
 			array(
-				'#url#' => $this->maybe_bundle_source( $url ),
+				'#url#' => $url,
 			)
-	 	);
+		);
 
 		$this->set_default_layout();
 	}

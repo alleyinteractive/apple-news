@@ -63,7 +63,7 @@ class Tweet extends Component {
 	 * @access protected
 	 */
 	protected function build( $text ) {
-		// Find tweeter URL in HTML string
+		// Find Twitter URL in HTML string.
 		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?twitter.com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $text, $matches, PREG_SET_ORDER ) ) {
 			return null;
 		}
