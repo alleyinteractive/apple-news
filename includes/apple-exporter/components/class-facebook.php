@@ -105,7 +105,8 @@ class Facebook extends Component {
 
 		// Try to get Facebook URL.
 		$url = self::_get_facebook_url( strip_tags( $html ) );
-		if ( empty( trim( $url ) ) ) {
+		$check = trim( $url );
+		if ( empty( $check ) ) {
 			return;
 		}
 

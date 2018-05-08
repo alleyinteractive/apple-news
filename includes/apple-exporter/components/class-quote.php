@@ -238,7 +238,8 @@ class Quote extends Component {
 		$text = $matches[1];
 
 		// If there is no text for this element, bail.
-		if ( empty( trim( $text ) ) ) {
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return;
 		}
 

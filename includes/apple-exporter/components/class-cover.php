@@ -76,7 +76,8 @@ class Cover extends Component {
 
 		// If we can't get a valid URL, bail.
 		$url = $this->maybe_bundle_source( $url );
-		if ( empty( trim( $url ) ) ) {
+		$check = trim( $url );
+		if ( empty( $check ) ) {
 			return;
 		}
 

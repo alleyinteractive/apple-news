@@ -112,8 +112,9 @@ class Markdown {
 	private function _parse_node_emphasis( $node ) {
 
 		// If there is no text for this node, bail.
-		$text = $this->parse_nodes( $node->childNodes );
-		if ( empty( trim( $text ) ) ) {
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return '';
 		}
 
@@ -131,8 +132,9 @@ class Markdown {
 	private function _parse_node_heading( $node ) {
 
 		// If there is no text for this node, bail.
-		$text = $this->parse_nodes( $node->childNodes );
-		if ( empty( trim( $text ) ) ) {
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return '';
 		}
 
@@ -169,7 +171,8 @@ class Markdown {
 		$url = apply_filters( 'apple_news_markdown_hyperlink', $url );
 
 		// If there is no URL or no text, do not add the link.
-		if ( empty( $url ) || empty( trim( $text ) ) ) {
+		$check = trim( $text );
+		if ( empty( $url ) || empty( $check ) ) {
 			return '';
 		}
 
@@ -187,8 +190,9 @@ class Markdown {
 	private function _parse_node_list_item( $node ) {
 
 		// If there is no text for this node, bail.
-		$text = $this->parse_nodes( $node->childNodes );
-		if ( empty( trim( $text ) ) ) {
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return '';
 		}
 
@@ -217,8 +221,9 @@ class Markdown {
 		$this->_list_index = 1;
 
 		// If there is no text for this node, bail.
-		$text = $this->parse_nodes( $node->childNodes );
-		if ( empty( trim( $text ) ) ) {
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return '';
 		}
 
@@ -236,8 +241,9 @@ class Markdown {
 	private function _parse_node_paragraph( $node ) {
 
 		// If there is no text for this node, bail.
-		$text = $this->parse_nodes( $node->childNodes );
-		if ( empty( trim( $text ) ) ) {
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return '';
 		}
 
@@ -255,8 +261,9 @@ class Markdown {
 	private function _parse_node_strong( $node ) {
 
 		// If there is no text for this node, bail.
-		$text = $this->parse_nodes( $node->childNodes );
-		if ( empty( trim( $text ) ) ) {
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return '';
 		}
 
@@ -287,8 +294,9 @@ class Markdown {
 		$this->_list_mode = 'ul';
 
 		// If there is no text for this node, bail.
-		$text = $this->parse_nodes( $node->childNodes );
-		if ( empty( trim( $text ) ) ) {
+		$text  = $this->parse_nodes( $node->childNodes );
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return '';
 		}
 

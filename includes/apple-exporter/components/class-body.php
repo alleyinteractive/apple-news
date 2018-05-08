@@ -216,7 +216,8 @@ class Body extends Component {
 
 		// If there is no text for this element, bail.
 		$text = $this->parser->parse( $text );
-		if ( empty( trim( $text ) ) ) {
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return;
 		}
 

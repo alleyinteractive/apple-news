@@ -59,7 +59,8 @@ class Byline extends Component {
 	protected function build( $text ) {
 
 		// If there is no text for this element, bail.
-		if ( empty( trim( $text ) ) ) {
+		$check = trim( $text );
+		if ( empty( $check ) ) {
 			return;
 		}
 
