@@ -201,6 +201,10 @@ class Parser {
 			}
 		}
 
+		// Make nonbreaking spaces actual spaces.
+		$html = str_ireplace( '&nbsp;', ' ', $html );
+		$html = str_replace( '&#160;', ' ', $html );
+
 		// Return the clean HTML.
 		return $html;
 	}

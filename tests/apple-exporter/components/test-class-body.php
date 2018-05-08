@@ -46,6 +46,30 @@ class Body_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Tests handling for empty content.
+	 *
+	 * @access public
+	 */
+	public function testEmptyContent() {
+
+		// Setup.
+		$html = '<p><a href="https://www.apple.com/">&nbsp;</a></p>';
+		$component = new Body(
+			$html,
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$this->assertEquals(
+			array(),
+			$component->to_array()
+		);
+	}
+
+	/**
 	 * Test the `apple_news_body_json` filter.
 	 *
 	 * @access public
@@ -178,7 +202,6 @@ HTML;
 			$component->to_array()
 		);
 	}
-
 
 	/**
 	 * Tests the transformation process for an HTML entity (e.g., &amp;).
