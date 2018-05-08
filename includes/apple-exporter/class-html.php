@@ -58,6 +58,13 @@ class HTML {
 	 * @return string The formatted HTML.
 	 */
 	public function format( $html ) {
-		return wp_kses( $html, $this->_allowed_html );
+
+		// Strip out all tags and attributes other than what is allowed.
+		$html = wp_kses( $html, $this->_allowed_html );
+
+		// Remove any empty tags.
+		$html = preg_replace( '/<([a-z0-9]+)[^>]*>\s*<\/\1>/', '', $html );
+
+		return $html;
 	}
 }

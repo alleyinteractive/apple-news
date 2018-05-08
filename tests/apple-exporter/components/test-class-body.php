@@ -70,6 +70,40 @@ class Body_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Tests handling for empty HTML content.
+	 *
+	 * @access public
+	 */
+	public function testEmptyHTMLContent() {
+
+		// Setup.
+		$this->settings->html_support = 'yes';
+		$html = '<p>a</p><p>&nbsp;</p><p>b</p>';
+		$component = new Body(
+			$html,
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$this->assertEquals(
+			array(
+				'role'      => 'body',
+				'text'      => '<p>a</p><p>b</p>',
+				'format'    => 'html',
+				'textStyle' => 'dropcapBodyStyle',
+				'layout'    => 'body-layout',
+			),
+			$component->to_array()
+		);
+
+		// Teardown.
+		$this->settings->html_support = 'no';
+	}
+
+	/**
 	 * Test the `apple_news_body_json` filter.
 	 *
 	 * @access public
