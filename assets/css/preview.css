@@ -14,6 +14,28 @@
 	clear: both;
 }
 
+.apple-news-settings-left .collapsed td {
+	display: none;
+	visibility: hidden;
+}
+
+.apple-news-settings-left th:before {
+	background: #333;
+	border-radius: 1em;
+	color: #eee;
+	content: '-';
+	display: inline-block;
+	height: 1.5em;
+	line-height: 1.25em;
+	margin-right: 0.5em;
+	text-align: center;
+	width: 1.5em;
+}
+
+.apple-news-settings-left .collapsed th:before {
+	content: '+';
+}
+
 .apple-news-preview {
 	padding-bottom: 50px;
 }

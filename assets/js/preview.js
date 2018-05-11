@@ -3,6 +3,8 @@
 	var componentKey = '';
 
 	$(document).ready(function () {
+		appleNewsSettingsToggleInit();
+
 		$( 'body' ).on( 'apple-news-settings-loaded', function( e ) {
 			appleNewsPreviewInit();
 		} );
@@ -15,6 +17,32 @@
 			e.preventDefault();
 		} );
 	} );
+
+	/**
+	 * Sets up settings toggle by collapsing all settings initially and
+	 * setting up click listeners to hide and show settings.
+	 */
+	function appleNewsSettingsToggleInit() {
+		var tableRows = document
+			.querySelector( '.form-table.apple-news' )
+			.querySelectorAll( 'tr' );
+		for ( var i = 0; i < tableRows.length; i += 1 ) {
+			tableRows[i].classList.add( 'collapsed' );
+			tableRows[i]
+				.querySelector( 'th' )
+				.addEventListener( 'click', appleNewsSettingsToggleVisibility );
+		}
+	}
+
+	/**
+	 * A click handler for a settings visibility toggle event.
+	 * @param {Event} e - The click event.
+	 */
+	function appleNewsSettingsToggleVisibility(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		e.target.parentNode.classList.toggle('collapsed');
+	}
 
 	function appleNewsPreviewInit() {
 		// Do an initial update
