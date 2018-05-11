@@ -53,6 +53,64 @@ class Table extends Component {
 			array(
 				'role' => 'htmltable',
 				'html' => '#html#',
+				'style' => array(
+					'border' => array(
+						'all' => array(
+							'color' => '#table_border_color#',
+							'style' => '#table_border_style#',
+							'width' => '#table_border_width#',
+						),
+					),
+					'tableStyle' => array(
+						'cells' => array(
+							'backgroundColor' => '#table_body_background_color#',
+							'horizontalAlignment' => '#table_body_horizontal_alignment#',
+							'padding' => '#table_body_padding#',
+							'textStyle' => array(
+								'fontName' => '#table_body_font#',
+								'fontSize' => '#table_body_size#',
+								'lineHeight' => '#table_body_line_height#',
+								'textColor' => '#table_body_color#',
+								'tracking' => '#table_body_tracking#',
+							),
+							'verticalAlignment' => '#table_body_vertical_alignment#',
+						),
+						'columns' => array(
+							'divider' => array(
+								'color' => '#table_border_color#',
+								'style' => '#table_border_style#',
+								'width' => '#table_border_width#',
+							),
+						),
+						'headerCells' => array(
+							'backgroundColor' => '#table_header_background_color#',
+							'horizontalAlignment' => '#table_header_horizontal_alignment#',
+							'padding' => '#table_header_padding#',
+							'textStyle' => array(
+								'fontName' => '#table_header_font#',
+								'fontSize' => '#table_header_size#',
+								'lineHeight' => '#table_header_line_height#',
+								'textColor' => '#table_header_color#',
+								'tracking' => '#table_header_tracking#',
+							),
+							'verticalAlignment' => '#table_header_vertical_alignment#',
+						),
+						'headerRows' => array(
+							'divider' => array(
+								'color' => '#table_border_color#',
+								'style' => '#table_border_style#',
+								'width' => '#table_border_width#',
+							),
+						),
+						'rows' => array(
+							'divider' => array(
+								'color' => '#table_border_color#',
+								'style' => '#table_border_style#',
+								'width' => '#table_border_width#',
+							),
+						),
+					),
+				),
 			)
 		);
 	}

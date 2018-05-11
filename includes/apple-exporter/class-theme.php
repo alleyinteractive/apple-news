@@ -1036,22 +1036,6 @@ class Theme {
 				'label' => __( 'Table body font color', 'apple-news' ),
 				'type' => 'color',
 			),
-			'table_body_divider_color' => array(
-				'default' => '#4f4f4f',
-				'label' => __( 'Table body divider color', 'apple-news' ),
-				'type' => 'color',
-			),
-			'table_body_divider_style' => array(
-				'default' => 'solid',
-				'label' => __( 'Table body divider style', 'apple-news' ),
-				'options' => array( 'solid', 'dashed', 'dotted' ),
-				'type' => 'select',
-			),
-			'table_body_divider_width' => array(
-				'default' => 1.0,
-				'label' => __( 'Table body divider width', 'apple-news' ),
-				'type' => 'float',
-			),
 			'table_body_font' => array(
 				'default' => 'AvenirNext-Regular',
 				'label' => __( 'Table body font face', 'apple-news' ),
@@ -1090,6 +1074,22 @@ class Theme {
 				'options' => array( 'top', 'center', 'bottom' ),
 				'type' => 'select',
 			),
+			'table_border_color' => array(
+				'default' => '#4f4f4f',
+				'label' => __( 'Table border color', 'apple-news' ),
+				'type' => 'color',
+			),
+			'table_border_style' => array(
+				'default' => 'solid',
+				'label' => __( 'Table border style', 'apple-news' ),
+				'options' => array( 'solid', 'dashed', 'dotted' ),
+				'type' => 'select',
+			),
+			'table_border_width' => array(
+				'default' => 1.0,
+				'label' => __( 'Table border width', 'apple-news' ),
+				'type' => 'float',
+			),
 			'table_header_background_color' => array(
 				'default' => '#fafafa',
 				'label' => __( 'Table header background color', 'apple-news' ),
@@ -1099,22 +1099,6 @@ class Theme {
 				'default' => '#4f4f4f',
 				'label' => __( 'Table header font color', 'apple-news' ),
 				'type' => 'color',
-			),
-			'table_header_divider_color' => array(
-				'default' => '#4f4f4f',
-				'label' => __( 'Table header divider color', 'apple-news' ),
-				'type' => 'color',
-			),
-			'table_header_divider_style' => array(
-				'default' => 'solid',
-				'label' => __( 'Table header divider style', 'apple-news' ),
-				'options' => array( 'solid', 'dashed', 'dotted' ),
-				'type' => 'select',
-			),
-			'table_header_divider_width' => array(
-				'default' => 1.0,
-				'label' => __( 'Table header divider width', 'apple-news' ),
-				'type' => 'float',
 			),
 			'table_header_font' => array(
 				'default' => 'AvenirNext-Regular',
@@ -1909,11 +1893,11 @@ class Theme {
 			'table' => array(
 				'label' => __( 'Table (requires HTML support)', 'apple-news' ),
 				'settings' => array(
+					'table_border_color',
+					'table_border_style',
+					'table_border_width',
 					'table_body_background_color',
 					'table_body_color',
-					'table_body_divider_color',
-					'table_body_divider_style',
-					'table_body_divider_width',
 					'table_body_font',
 					'table_body_horizontal_alignment',
 					'table_body_line_height',
@@ -1923,9 +1907,6 @@ class Theme {
 					'table_body_vertical_alignment',
 					'table_header_background_color',
 					'table_header_color',
-					'table_header_divider_color',
-					'table_header_divider_style',
-					'table_header_divider_width',
 					'table_header_font',
 					'table_header_horizontal_alignment',
 					'table_header_line_height',
