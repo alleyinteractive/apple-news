@@ -39,6 +39,12 @@ class Admin_Apple_Preview extends Apple_News {
 		$admin_settings = new Admin_Apple_Settings();
 		$settings = $admin_settings->fetch_settings();
 
+		// Determine if HTML support is enabled.
+		$settings = get_option( self::$option_name );
+		$html_support = ( isset( $settings['html_support'] )
+			&& 'yes' === $settings['html_support']
+		);
+
 		?>
 		<div class="apple-news-preview">
 			<?php
@@ -95,6 +101,30 @@ class Admin_Apple_Preview extends Apple_News {
   white-space: pre;
 }
 			</pre>
+			<?php if ( $html_support ) : ?>
+				<table>
+					<thead>
+					<tr>
+						<th>Column 1</th>
+						<th>Column 2</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>Cell 1</td>
+						<td>Cell 2</td>
+					</tr>
+					<tr>
+						<td>Cell 3</td>
+						<td>Cell 4</td>
+					</tr>
+					</tbody>
+				</table>
+			<?php else : ?>
+				<p><em>
+					<?php esc_html_e( 'Support for tables requires HTML support to be turned on in Settings.', 'apple-news' ); ?>
+				</em></p>
+			<?php endif; ?>
 			</div>
 		</div>
 		<?php
