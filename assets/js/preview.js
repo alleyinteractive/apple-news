@@ -235,6 +235,38 @@
 		appleNewsSetCSS( '.apple-news-preview pre', 'monospaced_line_height', 'line-height', 'px', null );
 		appleNewsSetCSS( '.apple-news-preview pre', 'monospaced_line_height', 'margin-bottom', 'px', null );
 
+		// Tables
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_background_color', 'background-color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_border_color', 'border-color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_border_style', 'border-style', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_border_width', 'border-width', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_color', 'color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_font', 'font-family', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_horizontal_alignment', 'text-align', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_line_height', 'line-height', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_padding', 'padding-bottom', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_padding', 'padding-left', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_padding', 'padding-right', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_padding', 'padding-top', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_size', 'font-size', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_tracking', 'letter-spacing', 'px', $( '#table_body_size' ).val() / 100 );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_vertical_alignment', 'vertical-align', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_background_color', 'background-color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_border_color', 'border-color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_border_style', 'border-style', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_border_width', 'border-width', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_color', 'color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_font', 'font-family', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_horizontal_alignment', 'text-align', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_line_height', 'line-height', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_padding', 'padding-bottom', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_padding', 'padding-left', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_padding', 'padding-right', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_padding', 'padding-top', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_size', 'font-size', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_tracking', 'letter-spacing', 'px', $( '#table_header_size' ).val() / 100 );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_vertical_alignment', 'vertical-align', null, null );
+
 		// Component order
 		// This can either be defined as a sortable form element or a simple hidden element
 		var componentOrder;

@@ -19,6 +19,10 @@
 	visibility: hidden;
 }
 
+.apple-news-settings-left th:hover {
+	cursor: pointer;
+}
+
 .apple-news-settings-left th:before {
 	background: #333;
 	border-radius: 1em;
@@ -38,6 +42,10 @@
 
 .apple-news-preview {
 	padding-bottom: 50px;
+}
+
+.apple-news-preview table {
+	border-collapse: collapse;
 }
 
 .apple-news-cover,
