@@ -1541,6 +1541,30 @@ class Theme {
 	}
 
 	/**
+	 * Sets a value for a theme option for this theme.
+	 *
+	 * @param string $option The option name for which to set a value.
+	 * @param string $value The value to set.
+	 *
+	 * @access public
+	 * @return bool True if successful, false if not.
+	 */
+	public function set_value( $option, $value ) {
+
+		// Attempt to change the value.
+		$starting_values = $this->_values;
+		$this->_values[ $option ] = $value;
+		if ( $this->validate() ) {
+			return true;
+		}
+
+		// Change was unsuccessful, so revert to old values.
+		$this->_values = $starting_values;
+
+		return false;
+	}
+
+	/**
 	 * Sets this theme as the theme to be used during current execution.
 	 *
 	 * @access public

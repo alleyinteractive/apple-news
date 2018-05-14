@@ -39,7 +39,7 @@ class Apple_News {
 	 * @var string
 	 * @access public
 	 */
-	public static $version = '1.3.0';
+	public static $version = '1.4.0';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.
@@ -255,6 +255,11 @@ class Apple_News {
 			// Handle upgrade to version 1.3.0.
 			if ( version_compare( $current_version, '1.3.0', '<' ) ) {
 				$this->upgrade_to_1_3_0();
+			}
+
+			// Handle upgrade to version 1.4.0.
+			if ( version_compare( $current_version, '1.4.0', '<' ) ) {
+				$this->upgrade_to_1_4_0();
 			}
 		}
 
@@ -596,6 +601,49 @@ class Apple_News {
 	}
 
 	/**
+	 * Migrates table settings for a theme, using other settings in the
+	 * theme to inform sensible defaults.
+	 * @param string $theme_name The theme name for which settings should be migrated.
+	 */
+	public function migrate_table_settings( $theme_name ) {
+
+		// Load the theme settings from the database.
+		$theme = new \Apple_Exporter\Theme();
+		$theme->set_name( $theme_name );
+		$theme->load();
+
+		// Establish mapping between old settings and new.
+		$settings_map = array(
+			'table_border_color' => 'blockquote_border_color',
+			'table_border_style' => 'blockquote_border_style',
+			'table_border_width' => 'blockquote_border_width',
+			'table_body_background_color' => 'body_background_color',
+			'table_body_color' => 'body_color',
+			'table_body_font' => 'body_font',
+			'table_body_line_height' => 'body_line_height',
+			'table_body_size' => 'body_size',
+			'table_body_tracking' => 'body_tracking',
+			'table_header_background_color' => 'blockquote_background_color',
+			'table_header_color' => 'blockquote_color',
+			'table_header_font' => 'blockquote_font',
+			'table_header_line_height' => 'blockquote_line_height',
+			'table_header_size' => 'blockquote_size',
+			'table_header_tracking' => 'blockquote_tracking',
+		);
+
+		// Set the new values based on the old.
+		foreach ( $settings_map as $table_setting => $reference_setting ) {
+			$theme->set_value(
+				$table_setting,
+				$theme->get_value( $reference_setting )
+			);
+		}
+
+		// Save changes to this theme.
+		$theme->save();
+	}
+
+	/**
 	 * Upgrades settings and data formats to be compatible with version 1.3.0.
 	 *
 	 * @access public
@@ -622,6 +670,22 @@ class Apple_News {
 
 		// Remove all formatting settings from the primary settings array.
 		$this->remove_global_formatting_settings();
+	}
+
+	/**
+	 * Upgrades settings and data formats to be compatible with version 1.4.0.
+	 *
+	 * @access public
+	 */
+	public function upgrade_to_1_4_0() {
+
+		// Set intelligent defaults for table styles in all themes.
+		$theme_list = \Apple_Exporter\Theme::get_registry();
+		if ( ! empty( $theme_list ) && is_array( $theme_list ) ) {
+			foreach ( $theme_list as $theme ) {
+				$this->migrate_table_settings( $theme );
+			}
+		}
 	}
 
 	/**

@@ -53,6 +53,11 @@ class Table extends Component {
 			array(
 				'role' => 'htmltable',
 				'html' => '#html#',
+				'layout' => array(
+					'margin' => array(
+						'bottom' => '#table_body_line_height#',
+					),
+				),
 				'style' => array(
 					'border' => array(
 						'all' => array(
