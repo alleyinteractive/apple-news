@@ -74,7 +74,9 @@ class Admin_Apple_Preview extends Apple_News {
 					$meta_component_order = array();
 				}
 				foreach ( $meta_component_order as $component ) {
-					echo wp_kses( $$component, Admin_Apple_Settings_Section::$allowed_html );
+					if ( isset( $$component ) ) {
+						echo wp_kses( $$component, Admin_Apple_Settings_Section::$allowed_html );
+					}
 				}
 			?>
 			<div class="apple-news-component">

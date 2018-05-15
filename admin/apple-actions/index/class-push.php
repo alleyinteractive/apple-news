@@ -178,6 +178,7 @@ class Push extends API_Action {
 
 			// Set sections.
 			if ( ! empty( $this->sections ) ) {
+				sort( $this->sections );
 				$meta['data']['links'] = array( 'sections' => $this->sections );
 			}
 

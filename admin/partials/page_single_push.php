@@ -57,7 +57,7 @@
 					<select id="apple-news-maturity-rating" name="apple_news_maturity_rating">
 						<option value=""></option>
 						<?php foreach ( \Apple_News::$maturity_ratings as $rating ) : ?>
-							<option value="<?php echo esc_attr( $rating ) ?>" <?php selected( $post_meta['apple_news_maturity_rating'][0], $rating ) ?>><?php echo esc_html( ucwords( strtolower( $rating ) ) ) ?></option>
+							<option value="<?php echo esc_attr( $rating ) ?>" <?php selected( isset( $post_meta['apple_news_maturity_rating'][0] ) ? $post_meta['apple_news_maturity_rating'][0] : '', $rating ) ?>><?php echo esc_html( ucwords( strtolower( $rating ) ) ) ?></option>
 						<?php endforeach; ?>
 					</select>
 					<p class="description"><?php esc_html_e( 'Select the optional maturity rating for this post.' , 'apple-news' ) ?></p>

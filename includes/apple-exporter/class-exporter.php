@@ -200,11 +200,25 @@ class Exporter {
 	 * @access private
 	 */
 	private function generate_json() {
+		/**
+		 * Allows the exporter language to be filtered.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param string $language The language value to be filtered.
+		 * @param int    $post_id  The ID of the post being exported.
+		 */
+		$language = apply_filters(
+			'apple_news_exporter_language',
+			get_bloginfo( 'language' ),
+			$this->content_id()
+		);
+
 		// Base JSON
 		$json = array(
 			'version'    => '1.7',
 			'identifier' => 'post-' . $this->content_id(),
-			'language'   => apply_filters( 'apple_news_exporter_language', get_bloginfo( 'language' ), $this->content_id() ),
+			'language'   => $language,
 			'title'      => wp_strip_all_tags( $this->content_title() ),
 		);
 
