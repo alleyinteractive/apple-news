@@ -275,6 +275,8 @@ class Request {
 
 			if ( ! empty( $messages ) ) {
 				$message = implode( ', ', $messages );
+			} else {
+				$message = __( 'Unable to fetch information for the specified article. Was it deleted?', 'apple-news' );
 			}
 
 			throw new Request_Exception( $message );
