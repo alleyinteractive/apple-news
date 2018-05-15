@@ -38,7 +38,7 @@ class Admin_Apple_Notice {
 	 * @return bool True if the user has notices, false otherwise.
 	 */
 	public static function has_notice() {
-		$messages = self::get_user_meta( get_current_user_id(), self::KEY );
+		$messages = self::get_user_meta( get_current_user_id() );
 		return ! empty( $messages );
 	}
 
@@ -75,7 +75,7 @@ class Admin_Apple_Notice {
 		$type    = sanitize_text_field( $type );
 
 		// Pull usermeta and see if the message already exists.
-		$messages = self::get_user_meta( $user_id, self::KEY );
+		$messages = self::get_user_meta( $user_id );
 		if ( ! empty( $messages ) && is_array( $messages ) ) {
 			foreach ( $messages as $message_check ) {
 				if ( ! empty( $message_check['message'] )
@@ -91,7 +91,6 @@ class Admin_Apple_Notice {
 		// Add the message to usermeta for later display.
 		self::add_user_meta(
 			$user_id,
-			self::KEY,
 			array(
 				'dismissable' => $dismissable,
 				'dismissed'   => false,
@@ -109,7 +108,7 @@ class Admin_Apple_Notice {
 	public static function show() {
 
 		// Check for notices.
-		$notices = self::get_user_meta( get_current_user_id(), self::KEY );
+		$notices = self::get_user_meta( get_current_user_id() );
 		if ( empty( $notices ) || ! is_array( $notices ) ) {
 			return;
 		}
@@ -142,8 +141,8 @@ class Admin_Apple_Notice {
 		// Update the notices in the DB if they have changed.
 		$diff = array_diff( $notices, $updated_notices );
 		if ( ! empty( $diff ) ) {
-			self::delete_user_meta( get_current_user_id(), self::KEY );
-			self::add_user_meta( get_current_user_id(), self::KEY, $updated_notices );
+			self::delete_user_meta( get_current_user_id() );
+			self::add_user_meta( get_current_user_id(), $updated_notices );
 		}
 	}
 
