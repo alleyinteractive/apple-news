@@ -437,11 +437,7 @@ class Admin_Apple_Sections extends Apple_News {
 				// Loop over terms and convert to term IDs for save.
 				$values = array_map( 'sanitize_text_field', $_POST[ $taxonomy_key ] );
 				foreach ( $values as $value ) {
-					if ( function_exists( 'wpcom_vip_get_term_by' ) ) {
-						$term = wpcom_vip_get_term_by( 'name', $value, $taxonomy->name );
-					} else {
-						$term = get_term_by( 'name', $value, $taxonomy->name );
-					}
+					$term = get_term_by( 'name', $value, $taxonomy->name );
 					if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
 						$taxonomy_mappings[ $section_id ][] = $term->term_id;
 						$taxonomy_mappings[ $section_id ] = array_unique( $taxonomy_mappings[ $section_id ] );
