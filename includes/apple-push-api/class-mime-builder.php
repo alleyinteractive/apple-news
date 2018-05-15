@@ -33,7 +33,6 @@ class MIME_Builder {
 	 * Valid MIME types for Apple News bundles.
 	 *
 	 * @var array
-	 * @static
 	 * @access private
 	 */
 	private static $valid_mime_types = array (
@@ -77,7 +76,7 @@ class MIME_Builder {
 		$attachment  = '--' . $this->boundary . $this->eol;
 		$attachment .= 'Content-Type: application/json' . $this->eol;
 		$attachment .= 'Content-Disposition: form-data; name=metadata' . $this->eol . $this->eol;
-		$attachment .= json_encode( $meta ) . $this->eol;
+		$attachment .= wp_json_encode( $meta ) . $this->eol;
 
 		$this->debug_content .= $attachment;
 
@@ -242,7 +241,7 @@ class MIME_Builder {
 	 * @access private
 	 */
 	private function is_valid_mime_type( $type ) {
-		return in_array( $type, self::$valid_mime_types );
+		return in_array( $type, self::$valid_mime_types, true );
 	}
 
 	/**

@@ -11,6 +11,7 @@
 
 namespace Apple_Exporter\Components;
 
+use \Apple_Exporter\Exporter_Content;
 use \DOMElement;
 
 /**
@@ -39,6 +40,23 @@ class Video extends Component {
 	}
 
 	/**
+	 * Register all specs for the component.
+	 *
+	 * @access public
+	 */
+	public function register_specs() {
+		$this->register_spec(
+			'json',
+			__( 'JSON', 'apple-news' ),
+			array(
+				'role' => 'video',
+				'URL' => '#url#',
+				'stillURL' => '#still_url#',
+			)
+		);
+	}
+
+	/**
 	 * Build the component.
 	 *
 	 * @param string $html The HTML to parse into text for processing.
@@ -52,15 +70,28 @@ class Video extends Component {
 			return;
 		}
 
-		// Build initial JSON.
-		$this->json = array(
-			'role' => 'video',
-			'URL' => $matches[1],
+		// Ensure the source URL is valid.
+		$url = Exporter_Content::format_src_url( $matches[1] );
+		if ( empty( $url ) ) {
+			return;
+		}
+
+		// Set values.
+		$values = array(
+			'#url#' => esc_url_raw( $url ),
 		);
 
 		// Add poster frame, if defined.
 		if ( preg_match( '/poster="([^"]+)"/', $html, $poster ) ) {
-			$this->json['stillURL'] = $this->maybe_bundle_source( $poster[1] );
+			$still_url = Exporter_Content::format_src_url( $poster[1] );
+			if ( ! empty( $still_url ) ) {
+				$values['#still_url#'] = $this->maybe_bundle_source( $poster[1] );
+			}
 		}
+
+		$this->register_json(
+			'json',
+			$values
+		);
 	}
 }

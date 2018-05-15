@@ -3,7 +3,9 @@ namespace Apple_Exporter\Components;
 
 require_once __DIR__ . '/../class-markdown.php';
 
-use Apple_Exporter\Parser;
+use \Apple_Exporter\Component_Spec;
+use \Apple_Exporter\Exporter_Content;
+use \Apple_Exporter\Parser;
 
 /**
  * Base component class. All components must inherit from this class and
@@ -133,6 +135,47 @@ abstract class Component {
 	private $uid;
 
 	/**
+	 * Specs for this component.
+	 *
+	 * @since 1.2.4
+	 * @var array
+	 * @access public
+	 */
+	public $specs;
+
+	/**
+	 * Allowed HTML tags for components that support it.
+	 *
+	 * @since 1.2.7
+	 * @var array
+	 * @access public
+	 */
+	public $allowed_html = array(
+		'p' => array(),
+		'strong' => array(),
+		'b' => array(),
+		'em' => array(),
+		'i' => array(),
+		'a' => array(
+			'href' => array(),
+		),
+		'ul' => array(),
+		'ol' => array(),
+		'li' => array(),
+		'br' => array(),
+		'sub' => array(),
+		'sup' => array(),
+		'del' => array(),
+		's' => array(),
+		'pre' => array(),
+		'code' => array(),
+		'samp' => array(),
+		'footer' => array(),
+		'aside' => array(),
+		'blockquote' => array(),
+	);
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $text
@@ -142,7 +185,16 @@ abstract class Component {
 	 * @param Component_Layouts $layouts
 	 * @param Parser $parser
 	 */
-	function __construct( $text, $workspace, $settings, $styles, $layouts, $parser = null ) {
+	function __construct( $text = null, $workspace = null, $settings = null, $styles = null, $layouts = null, $parser = null ) {
+		// Register specs for this component
+		$this->register_specs();
+
+		// If all params are null, then this was just used to get spec data.
+		// Exit.
+		if ( 0 === func_num_args() ) {
+			return;
+		}
+
 		$this->workspace = $workspace;
 		$this->settings  = $settings;
 		$this->styles    = $styles;
@@ -213,6 +265,11 @@ abstract class Component {
 	 * @access public
 	 */
 	public function to_array() {
+		// If HTML support is enabled, provide an extra level of validation for supported tags.
+		if ( ! empty( $this->json['text'] ) && $this->html_enabled() ) {
+			$this->json['text'] = wp_kses( $this->json['text'], $this->allowed_html );
+		}
+
 		return apply_filters( 'apple_news_' . $this->get_component_name() . '_json', $this->json );
 	}
 
@@ -224,7 +281,9 @@ abstract class Component {
 	 * @access public
 	 */
 	public function set_json( $name, $value ) {
-		$this->json[ $name ] = $value;
+		if ( ! empty( $name ) ) {
+			$this->json[ $name ] = $value;
+		}
 	}
 
 	/**
@@ -235,6 +294,7 @@ abstract class Component {
 	 * @access public
 	 */
 	public function get_json( $name ) {
+		// TODO - how is this used?
 		return ( isset( $this->json[ $name ] ) ) ? $this->json[ $name ] : null;
 	}
 
@@ -360,13 +420,31 @@ abstract class Component {
 	/**
 	 * Whether HTML format is enabled for this component type.
 	 *
-	 * This function is intended to be overridden in child classes.
+	 * This function is intended to be overridden in child classes, but to call
+	 * this parent function with the value it intends to set. This function
+	 * will use the provided value if HTML support is enabled via settings.
+	 *
+	 * @param bool $enabled Optional. Whether to enable HTML for this component. Defaults to false.
 	 *
 	 * @access protected
 	 * @return bool Whether HTML format is enabled for this component type.
 	 */
-	protected function html_enabled() {
-		return false;
+	protected function html_enabled( $enabled = false ) {
+		if ( empty( $this->settings->html_support )
+			|| 'yes' !== $this->settings->html_support
+		) {
+			return false;
+		}
+
+		/**
+		 * Lets themes and plugins override HTML settings for a component.
+		 *
+		 * @param bool $enabled Whether HTML is enabled for this component.
+		 */
+		return apply_filters(
+			'apple_news_' . $this->get_component_name() . '_html_enabled',
+			$enabled
+		);
 	}
 
 	/**
@@ -379,31 +457,100 @@ abstract class Component {
 	 * @access protected
 	 */
 	protected function set_setting( $name, $value ) {
+		// TODO - how is this used?
 		return $this->settings->set( $name, $value );
+	}
+
+	/**
+	 * Store specs that can be used for managing component JSON using an admin screen.
+	 *
+	 * @since 1.2.4
+	 * @param string $name
+	 * @param string $label
+	 * @param array $spec
+	 * @access protected
+	 */
+	protected function register_spec( $name, $label, $spec ) {
+		// Store as a multidimensional array with the label and spec, indexed by name
+		$this->specs[ $name ] = new Component_Spec( $this->get_component_name(), $name, $label, $spec );
+	}
+
+	/**
+	 * Get a spec to use for creating component JSON.
+	 *
+	 * @since 1.2.4
+	 * @param string $spec_name
+	 * @return array
+	 * @access protected
+	 */
+	protected function get_spec( $spec_name ) {
+		if ( ! isset( $this->specs[ $spec_name ] ) ) {
+			return null;
+		}
+
+		return $this->specs[ $spec_name ];
+	}
+
+	/**
+	 * Set the JSON for the component.
+	 *
+	 * @since 1.2.4
+	 * @param string $spec_name The spec to use for defining the JSON
+	 * @param array $values Values to substitute for placeholders in the spec
+	 * @access protected
+	 */
+	protected function register_json( $spec_name, $values = array() ) {
+		$component_spec = $this->get_spec( $spec_name );
+		if ( ! empty( $component_spec ) ) {
+			$post_id = ( ! empty( $this->workspace->content_id ) )
+				? $this->workspace->content_id
+				: 0;
+			$this->json = $component_spec->substitute_values( $values, $post_id );
+		}
 	}
 
 	/**
 	 * Using the style service, register a new style.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @param array $spec
+	 * @param string $name The name of the style
+	 * @param string $spec_name The spec to use for defining the JSON
+	 * @param array $values Values to substitute for placeholders in the spec
+	 * @param array $property The JSON property to set with the style
 	 * @access protected
 	 */
-	protected function register_style( $name, $spec ) {
-		$this->styles->register_style( $name, $spec );
+	protected function register_style( $name, $spec_name, $values = array(), $property = null ) {
+		$component_spec = $this->get_spec( $spec_name );
+		if ( ! empty( $component_spec ) ) {
+			$post_id = ( ! empty( $this->workspace->content_id ) )
+				? $this->workspace->content_id
+				: 0;
+			$json = $component_spec->substitute_values( $values, $post_id );
+			$this->styles->register_style( $name, $json );
+			$this->set_json( $property, $name );
+		}
 	}
 
 	/**
 	 * Using the layouts service, register a new layout.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @param array $spec
+	 * @param string $name The name of the layout
+	 * @param string $spec_name The spec to use for defining the JSON
+	 * @param array $values Values to substitute for placeholders in the spec
+	 * @param array $property The JSON property to set with the layout
 	 * @access protected
 	 */
-	protected function register_layout( $name, $spec ) {
-		$this->layouts->register_layout( $name, $spec );
+	protected function register_layout( $name, $spec_name, $values = array(), $property = null ) {
+		$component_spec = $this->get_spec( $spec_name );
+		if ( ! empty( $component_spec ) ) {
+			$post_id = ( ! empty( $this->workspace->content_id ) )
+				? $this->workspace->content_id
+				: 0;
+			$json = $component_spec->substitute_values( $values, $post_id );
+			$this->layouts->register_layout( $name, $json );
+			$this->set_json( $property, $name );
+		}
 	}
 
 	/**
@@ -412,29 +559,43 @@ abstract class Component {
 	 * because when the body is centered, the full-width layout spans the same
 	 * columns as the body.
 	 *
-	 * @param string $name
-	 * @param array $spec
+	 * @param string $name The name of the layout
+	 * @param string $spec_name The spec to use for defining the JSON
+	 * @param array $values Values to substitute for placeholders in the spec
+	 * @param array $property The JSON property to set with the layout
 	 * @access protected
 	 */
-	protected function register_full_width_layout( $name, $spec ) {
+	protected function register_full_width_layout( $name, $spec_name, $values = array(), $property = null ) {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Initial colStart and colSpan
 		$col_start = 0;
-		$col_span  = $this->get_setting( 'layout_columns' );
+		$col_span  = $theme->get_layout_columns();
 
-		// If the body is centered, don't span the full width, but the same with of
-		// the body.
-		if ( 'center' == $this->get_setting( 'body_orientation' ) ) {
-			$col_start = floor( ( $this->get_setting( 'layout_columns' ) - $this->get_setting( 'body_column_span' ) ) / 2 );
-			$col_span  = $this->get_setting( 'body_column_span' );
+		// If the body is centered, don't span the full width, but the same width of the body.
+		if ( 'center' === $theme->get_value( 'body_orientation' ) ) {
+			$col_start = floor( ( $theme->get_layout_columns() - $theme->get_body_column_span() ) / 2 );
+			$col_span = $theme->get_body_column_span();
 		}
 
-		$this->register_layout( $name, array_merge(
-			array(
-				'columnStart' => $col_start,
-				'columnSpan'  => $col_span,
-			),
-			$spec
-		) );
+		// Merge this into the existing spec.
+		// These values just get hardcoded in the spec since the above logic
+		// would make them impossible to override manually.
+		// Changes to this should really be handled by the above plugin settings.
+		if ( isset( $this->specs[ $spec_name ] ) ) {
+			$this->specs[ $spec_name ]->spec = array_merge(
+				$this->specs[ $spec_name ]->spec,
+				array(
+					'columnStart' => $col_start,
+					'columnSpan'  => $col_span,
+				)
+			);
+		}
+
+		// Register the layout as normal
+		$this->register_layout( $name, $spec_name, $values, $property );
 	}
 
 	/**
@@ -458,7 +619,6 @@ abstract class Component {
 	 * @param DomNode $node
 	 * @param string $classname
 	 * @return boolean
-	 * @static
 	 * @access protected
 	 */
 	protected static function node_has_class( $node, $classname ) {
@@ -480,9 +640,27 @@ abstract class Component {
 	 * valid array.
 	 *
 	 * @param string $text
-	 * @abstract
+	 * @access protected
 	 */
 	abstract protected function build( $text );
+
+	/**
+	 * Register all specs used by this component.
+	 *
+	 * @abstract
+	 * @access public
+	 */
+	abstract public function register_specs();
+
+	/**
+	 * Get all specs used by this component.
+	 *
+	 * @return array
+	 * @access public
+	 */
+	public function get_specs() {
+		return $this->specs;
+	}
 
 	/**
 	 * Gets the name of this component from the class name.
@@ -501,37 +679,58 @@ abstract class Component {
 	 *
 	 * @param DomNode $node
 	 * @return boolean
-	 * @static
 	 * @access protected
 	 */
 	protected static function remote_file_exists( $node ) {
+
+		// Try to get a URL from the src attribute of the HTML.
 		$html = $node->ownerDocument->saveXML( $node );
-		preg_match( '/src="([^"]*?)"/im', $html, $matches );
-		$path = $matches[1];
-
-		// Is it a URL? Check the headers in case of 404
-		if ( false !== filter_var( $path, FILTER_VALIDATE_URL ) ) {
-			if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
-				$result = vip_safe_wp_remote_get( $path );
-			} else {
-				$result = wp_safe_remote_get( $path );
-			}
-
-			if ( is_wp_error( $result ) || empty( $result['response']['code'] ) || 404 == $result['response']['code'] ) {
-				return false;
-			} else {
-				return true;
-			}
+		$path = self::url_from_src( $html );
+		if ( empty( $path ) ) {
+			return false;
 		}
 
-		// This could be a local file path.
-		// Check that, except on WordPress VIP where this is not possible.
-		if ( ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV ) {
-			return file_exists( $path );
+		// Fork for method of retrieval if running on VIP.
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+			$result = vip_safe_wp_remote_get( $path );
+		} else {
+			$result = wp_safe_remote_get( $path );
 		}
 
-		// Nothing was found or no further validation is possible.
-		return false;
+		// Check the headers in case of an error.
+		return ( ! is_wp_error( $result )
+			&& ! empty( $result['response']['code'] )
+			&& $result['response']['code'] < 400
+		);
 	}
 
+	/**
+	 * Returns a full URL from the first `src` parameter in the provided HTML that
+	 * has content.
+	 *
+	 * @param string $html The HTML to examine for `src` parameters.
+	 *
+	 * @return string A URL on success, or a blank string on failure.
+	 */
+	protected static function url_from_src( $html ) {
+
+		// Try to find src values in the provided HTML.
+		if ( ! preg_match_all( '/src=[\'"]([^\'"]+)[\'"]/im', $html, $matches ) ) {
+			return '';
+		}
+
+		// Loop through matches, returning the first valid URL found.
+		foreach ( $matches[1] as $url ) {
+
+			// Run the URL through the formatter.
+			$url = Exporter_Content::format_src_url( $url );
+
+			// If the URL passes validation, return it.
+			if ( ! empty( $url ) ) {
+				return $url;
+			}
+		}
+
+		return '';
+	}
 }

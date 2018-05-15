@@ -72,7 +72,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 	public function testCreateWithSections() {
 		// Create post
 		$post_id = $this->factory->post->create();
-		update_post_meta( $post_id, 'apple_news_sections', array( 'http://news-api.apple.com/sections/123' ) );
+		update_post_meta( $post_id, 'apple_news_sections', array( 'https://news-api.apple.com/sections/123' ) );
 
 		// Prophesize the action
 		$response = $this->dummy_response();
@@ -85,9 +85,49 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 				'data' => array(
 					'links' => array(
 						'sections' => array(
-							'http://news-api.apple.com/sections/123',
+							'https://news-api.apple.com/sections/123',
 						),
 					),
+					'isHidden' => false,
+					'isPreview' => false,
+					'isSponsored' => false,
+				)
+			),
+			$post_id
+		)
+			->willReturn( $response )
+			->shouldBeCalled();
+
+		// Perform the action
+		$action = new Push( $this->settings, $post_id );
+		$action->set_api( $api->reveal() );
+		$action->perform();
+
+		// Check the response
+		$this->assertEquals( $response->data->id, get_post_meta( $post_id, 'apple_news_api_id', true ) );
+		$this->assertEquals( $response->data->createdAt, get_post_meta( $post_id, 'apple_news_api_created_at', true ) );
+		$this->assertEquals( $response->data->modifiedAt, get_post_meta( $post_id, 'apple_news_api_modified_at', true ) );
+		$this->assertEquals( $response->data->shareUrl, get_post_meta( $post_id, 'apple_news_api_share_url', true ) );
+		$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_deleted', true ) );
+	}
+
+	public function testCreateIsHidden() {
+		// Create post
+		$post_id = $this->factory->post->create();
+		update_post_meta( $post_id, 'apple_news_is_hidden', true );
+
+		// Prophesize the action
+		$response = $this->dummy_response();
+		$api = $this->prophet->prophesize( '\Apple_Push_API\API' );
+		$api->post_article_to_channel(
+			Argument::Any(),
+			Argument::Any(),
+			Argument::Any(),
+			array(
+				'data' => array(
+					'isHidden' => true,
+					'isPreview' => false,
+					'isSponsored' => false,
 				)
 			),
 			$post_id
@@ -122,7 +162,9 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			Argument::Any(),
 			array(
 				'data' => array(
-					'isPreview' => true
+					'isHidden' => false,
+					'isPreview' => true,
+					'isSponsored' => false,
 				)
 			),
 			$post_id
@@ -157,7 +199,9 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			Argument::Any(),
 			array(
 				'data' => array(
-					'isSponsored' => true
+					'isHidden' => false,
+					'isPreview' => false,
+					'isSponsored' => true,
 				)
 			),
 			$post_id
@@ -192,6 +236,9 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			Argument::Any(),
 			array(
 				'data' => array(
+					'isHidden' => false,
+					'isPreview' => false,
+					'isSponsored' => false,
 					'maturityRating' => 'MATURE'
 				)
 			),
@@ -227,7 +274,11 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			Argument::Any(),
 			array(),
 			array(
-				'data' => array(),
+				'data' => array(
+					'isHidden' => false,
+					'isPreview' => false,
+					'isSponsored' => false,
+				),
 			),
 			$post_id
 		)

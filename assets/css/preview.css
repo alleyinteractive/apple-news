@@ -14,8 +14,38 @@
 	clear: both;
 }
 
+.apple-news-settings-left .collapsed td {
+	display: none;
+	visibility: hidden;
+}
+
+.apple-news-settings-left th:hover {
+	cursor: pointer;
+}
+
+.apple-news-settings-left th:before {
+	background: #333;
+	border-radius: 1em;
+	color: #eee;
+	content: '-';
+	display: inline-block;
+	height: 1.5em;
+	line-height: 1.25em;
+	margin-right: 0.5em;
+	text-align: center;
+	width: 1.5em;
+}
+
+.apple-news-settings-left .collapsed th:before {
+	content: '+';
+}
+
 .apple-news-preview {
 	padding-bottom: 50px;
+}
+
+.apple-news-preview table {
+	border-collapse: collapse;
 }
 
 .apple-news-cover,
@@ -31,6 +61,7 @@
 	width: 320px;
 	height: 240px;
 	line-height: 240px;
+	margin-bottom: 20px;
 }
 
 .apple-news-image {
@@ -45,11 +76,10 @@
 	margin: 0px;
 }
 
-.apple-news-dropcap-enabled {
+.apple-news-dropcap {
 	float: left;
-	padding-top: 7px;
-	padding-right: 10px;
-	padding-left: 5px;
+	margin-right: 5px;
+	position: relative;
 }
 
 .wrap .apple-news-title {
@@ -63,6 +93,17 @@
 .apple-news-preview div.apple-news-pull-quote {
 	margin: 20px 0px;
 	padding: 10px 0px;
+}
+
+.apple-news-preview div.apple-news-pull-quote.hanging-punctuation:after {
+	content: "”";
+}
+
+.apple-news-preview div.apple-news-pull-quote.hanging-punctuation:before {
+	content: "“";
+	display: block;
+	margin-left: -.5em;
+	position: absolute;
 }
 
 .apple-news-title.title-cover-byline,

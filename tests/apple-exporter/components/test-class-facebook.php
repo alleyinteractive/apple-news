@@ -112,5 +112,18 @@ class Facebook_Test extends Component_TestCase {
 			),
 			$component->to_array()
 		);
+
+		// Test the node - correct css class and fb url.
+		$node = self::build_node( sprintf( '<div class="fb-post" data-href="%s"></div>', esc_url( $url ) ) );
+
+		$this->assertEquals(
+			$component->node_matches( $node ),
+			$node
+		);
+
+		// Test the node - *incorrect* css class and fb url.
+		$node_failure = self::build_node( sprintf( '<div class="invalid-fb-post" data-href="%s"></div>', esc_url( $url ) ) );
+
+		$this->assertEmpty( $component->node_matches( $node_failure ) );
 	}
 }

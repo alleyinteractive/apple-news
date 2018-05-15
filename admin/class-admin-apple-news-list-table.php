@@ -401,7 +401,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 */
 	protected function extra_tablenav( $which ) {
 		// Only display on the top of the table
-		if ( 'top' != $which ) {
+		if ( 'top' !== $which ) {
 			return;
 		}
 		?>

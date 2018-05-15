@@ -3,6 +3,8 @@
 	var componentKey = '';
 
 	$(document).ready(function () {
+		appleNewsSettingsToggleInit();
+
 		$( 'body' ).on( 'apple-news-settings-loaded', function( e ) {
 			appleNewsPreviewInit();
 		} );
@@ -15,6 +17,32 @@
 			e.preventDefault();
 		} );
 	} );
+
+	/**
+	 * Sets up settings toggle by collapsing all settings initially and
+	 * setting up click listeners to hide and show settings.
+	 */
+	function appleNewsSettingsToggleInit() {
+		var tableRows = document
+			.querySelector( '.form-table.apple-news' )
+			.querySelectorAll( 'tr' );
+		for ( var i = 0; i < tableRows.length; i += 1 ) {
+			tableRows[i].classList.add( 'collapsed' );
+			tableRows[i]
+				.querySelector( 'th' )
+				.addEventListener( 'click', appleNewsSettingsToggleVisibility );
+		}
+	}
+
+	/**
+	 * A click handler for a settings visibility toggle event.
+	 * @param {Event} e - The click event.
+	 */
+	function appleNewsSettingsToggleVisibility(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		e.target.parentNode.classList.toggle('collapsed');
+	}
 
 	function appleNewsPreviewInit() {
 		// Do an initial update
@@ -54,22 +82,72 @@
 		appleNewsSetCSS( '.apple-news-image', 'body_line_height', 'margin-bottom', 'px', null );
 
 		// Dropcap
-		appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_color', 'color', null, null );
-		appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_font', 'font-family', null, null );
-		var bodySize = $( '#body_size' ).val();
-		var bodyLineHeight = $( '#body_line_height' ).val();
-		var dropcapSize = bodySize;
-		var dropcapLineHeight = bodyLineHeight;
+		var bodyLineHeight = $( '#body_line_height' ).val(),
+			dropcapCharacters = parseInt( $( '#dropcap_number_of_characters' ).val() ),
+			dropcapNumberOfLines = parseInt( $( '#dropcap_number_of_lines' ).val() ),
+			dropcapNumberOfRaisedLines = parseInt( $( '#dropcap_number_of_raised_lines' ).val() ),
+			dropcapPadding = parseInt( $( '#dropcap_padding' ).val() ),
+			dropcapParagraph = $( '.apple-news-component p' ).first();
 
-		if ( 'yes' === $( '#initial_dropcap' ).val() ) {
-			dropcapSize = bodySize * 5;
-			dropcapLineHeight = bodySize * 3.5;
-			$( '.apple-news-preview .apple-news-dropcap' ).addClass( 'apple-news-dropcap-enabled' );
-		} else {
-			$( '.apple-news-preview .apple-news-dropcap' ).removeClass( 'apple-news-dropcap-enabled' );
+		// Adjust number of lines to remain within tolerance.
+		if ( dropcapNumberOfLines < 2 ) {
+			dropcapNumberOfLines = 2;
+			$( '#dropcap_number_of_lines' ).val( 2 )
+		} else if ( dropcapNumberOfLines > 10 ) {
+			dropcapNumberOfLines = 10;
+			$( '#dropcap_number_of_lines' ).val( 10 )
 		}
-		$( '.apple-news-preview .apple-news-dropcap' ).css( 'font-size', dropcapSize + 'px' );
-		$( '.apple-news-preview .apple-news-dropcap' ).css( 'line-height', dropcapLineHeight + 'px' );
+
+		// Adjust number of raised lines to remain within tolerance.
+		if ( dropcapNumberOfRaisedLines < 0 ) {
+			dropcapNumberOfRaisedLines = 0;
+			$( '#dropcap_number_of_raised_lines' ).val( 0 )
+		} else if ( dropcapNumberOfRaisedLines >= dropcapNumberOfLines ) {
+			dropcapNumberOfRaisedLines = dropcapNumberOfLines - 1;
+			$( '#dropcap_number_of_raised_lines' ).val( dropcapNumberOfRaisedLines )
+		}
+
+		// Remove existing dropcap.
+		dropcapParagraph.html(
+			dropcapParagraph.html().replace( /<span[^>]*>([^<]+)<\/span>/, '$1' )
+		);
+
+		// If enabled, add it back.
+		if ( 'yes' === $( '#initial_dropcap' ).val() ) {
+
+			// Create the dropcap span with the specified number of characters.
+			dropcapParagraph.html(
+				'<span class="apple-news-dropcap">' +
+				dropcapParagraph.html().substr( 0, dropcapCharacters ) +
+				'</span>' +
+				dropcapParagraph.html().substr( dropcapCharacters )
+			);
+
+			// Set the size based on the specified number of lines.
+			// There is not an actual 1:1 relationship between this setting and
+			// what renders in Apple News, so we need to adjust this by a coefficient
+			// to roughly match the actual behavior.
+			var targetLines = Math.ceil( dropcapNumberOfLines * 0.56 );
+			dropcapSize = bodyLineHeight * targetLines * 1.2 - dropcapPadding * 2;
+			dropcapLineHeight = dropcapSize;
+
+			// Compute the adjusted number of target lines based on raised lines.
+			var adjustedLines = Math.round( - 0.6 * dropcapNumberOfRaisedLines + targetLines );
+			dropcapParagraph.css( 'margin-top', ( 20 + bodyLineHeight * ( targetLines - adjustedLines ) / 2 ) + 'px' );
+
+			// Apply computed styles.
+			$( '.apple-news-preview .apple-news-dropcap' )
+				.css( 'font-size', dropcapSize + 'px' )
+				.css( 'line-height', ( dropcapLineHeight * .66 ) + 'px' )
+				.css( 'margin-bottom', ( - 1 * bodyLineHeight * .33 ) + 'px' )
+				.css( 'margin-top', ( - 1 * bodyLineHeight * ( targetLines - adjustedLines ) * .9 + bodyLineHeight * .33 ) + 'px' )
+				.css( 'padding', ( 5 + dropcapPadding ) + 'px ' + ( 10 + dropcapPadding ) + 'px ' + dropcapPadding + 'px ' + ( 5 + dropcapPadding ) + 'px' );
+
+			// Apply direct styles.
+			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_background_color', 'background', null, null );
+			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_color', 'color', null, null );
+			appleNewsSetCSS( '.apple-news-preview .apple-news-dropcap', 'dropcap_font', 'font-family', null, null );
+		}
 
 		// Byline
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-byline', 'byline_font', 'font-family', null, null );
@@ -132,6 +210,11 @@
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-pull-quote', 'pullquote_border_style', 'border-bottom-style', null, null );
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-pull-quote', 'pullquote_border_width', 'border-bottom-width', 'px', null );
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-pull-quote', 'pullquote_line_height', 'line-height', 'px', .75 );
+		if ( 'yes' === $( '#pullquote_hanging_punctuation' ).val() ) {
+			$( '.apple-news-preview div.apple-news-pull-quote' ).addClass( 'hanging-punctuation' );
+		} else {
+			$( '.apple-news-preview div.apple-news-pull-quote' ).removeClass( 'hanging-punctuation' );
+		}
 
 		// Blockquote
 		appleNewsSetCSS( '.apple-news-preview blockquote', 'blockquote_font', 'font-family', null, null );
@@ -152,6 +235,38 @@
 		appleNewsSetCSS( '.apple-news-preview pre', 'monospaced_line_height', 'line-height', 'px', null );
 		appleNewsSetCSS( '.apple-news-preview pre', 'monospaced_line_height', 'margin-bottom', 'px', null );
 
+		// Tables
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_background_color', 'background-color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_border_color', 'border-color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_border_style', 'border-style', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_border_width', 'border-width', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_color', 'color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_font', 'font-family', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_horizontal_alignment', 'text-align', null, null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_line_height', 'line-height', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_padding', 'padding-bottom', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_padding', 'padding-left', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_padding', 'padding-right', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_padding', 'padding-top', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_size', 'font-size', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_tracking', 'letter-spacing', 'px', $( '#table_body_size' ).val() / 100 );
+		appleNewsSetCSS( '.apple-news-preview table tbody td', 'table_body_vertical_alignment', 'vertical-align', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_background_color', 'background-color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_border_color', 'border-color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_border_style', 'border-style', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_border_width', 'border-width', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_color', 'color', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_font', 'font-family', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_horizontal_alignment', 'text-align', null, null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_line_height', 'line-height', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_padding', 'padding-bottom', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_padding', 'padding-left', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_padding', 'padding-right', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_padding', 'padding-top', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_size', 'font-size', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_tracking', 'letter-spacing', 'px', $( '#table_header_size' ).val() / 100 );
+		appleNewsSetCSS( '.apple-news-preview table thead th', 'table_header_vertical_alignment', 'vertical-align', null, null );
+
 		// Component order
 		// This can either be defined as a sortable form element or a simple hidden element
 		var componentOrder;
@@ -163,25 +278,43 @@
 				$( '.apple-news-meta-component' ).removeClass( componentKey );
 				componentKey = '';
 			}
-		} else {
-			return;
 		}
 
-		$.each( componentOrder.reverse(), function( index, value ) {
-			// Remove the component
-			var $detached = $( '.apple-news-' + value ).detach();
+		if ( componentOrder.length ) {
+			$.each( componentOrder.reverse(), function( index, value ) {
+				// Remove the component
+				var $detached = $( '.apple-news-' + value ).detach();
 
-			// Build the component key.
-			// Used for targeting certain styles in the preview that differ on component order.
-			componentKey = value + '-' + componentKey;
+				// Build the component key.
+				// Used for targeting certain styles in the preview that differ on component order.
+				componentKey = value + '-' + componentKey;
 
-			// Add back at the beginning
-			$( '.apple-news-preview' ).prepend( $detached );
-		} );
+				// Add back at the beginning
+				$( '.apple-news-preview' ).prepend( $detached );
 
-		if ( '' !== componentKey ) {
-			componentKey = componentKey.substring( 0, componentKey.length - 1 );
-			$( '.apple-news-meta-component' ).addClass( componentKey );
+				// Ensure element is visible.
+				$detached.show();
+			} );
+
+			if ( '' !== componentKey ) {
+				componentKey = componentKey.substring( 0, componentKey.length - 1 );
+				$( '.apple-news-meta-component' ).addClass( componentKey );
+			}
+		}
+
+		// Get the inactive components and ensure they are hidden.
+		var removedElements;
+		if ( 0 === $( '#meta-component-inactive' ).length && $( '#meta_component_inactive' ).length > 0 ) {
+			removedElements = $( '#meta_component_inactive' ).val().split( ',' );
+		} else if ( $( '#meta-component-inactive' ).length ) {
+			removedElements = $( '#meta-component-inactive' ).sortable( 'toArray' );
+		}
+
+		// Loop over removed elements and hide them.
+		if ( removedElements.length ) {
+			$.each( removedElements, function( index, value ) {
+				$( '.apple-news-' + value ).hide();
+			} );
 		}
 	}
 

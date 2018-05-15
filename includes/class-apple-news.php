@@ -39,7 +39,7 @@ class Apple_News {
 	 * @var string
 	 * @access public
 	 */
-	public static $version = '1.2.3';
+	public static $version = '1.4.0';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.
@@ -48,6 +48,14 @@ class Apple_News {
 	 * @access public
 	 */
 	public static $wordpress_org_support_url = 'https://wordpress.org/support/plugin/publish-to-apple-news';
+
+	/**
+	 * Keeps track of whether the plugin is initialized.
+	 *
+	 * @var bool
+	 * @access private
+	 */
+	private static $_is_initialized;
 
 	/**
 	 * Plugin domain.
@@ -82,7 +90,6 @@ class Apple_News {
 	 *
 	 * @var string
 	 * @access public
-	 * @static
 	 */
 	public static $maturity_ratings = array( 'KIDS', 'MATURE', 'GENERAL' );
 
@@ -150,6 +157,26 @@ class Apple_News {
 	}
 
 	/**
+	 * Determines whether the plugin is initialized with the minimum settings.
+	 *
+	 * @access public
+	 * @return bool True if initialized, false if not.
+	 */
+	public static function is_initialized() {
+
+		// Look up required information in plugin settings, if necessary.
+		if ( null === self::$_is_initialized ) {
+			$settings = get_option( self::$option_name );
+			self::$_is_initialized = ( ! empty( $settings['api_channel'] )
+				&& ! empty( $settings['api_key'] )
+				&& ! empty( $settings['api_secret'] )
+			);
+		}
+
+		return self::$_is_initialized;
+	}
+
+	/**
 	 * Constructor. Registers action hooks.
 	 *
 	 * @access public
@@ -158,6 +185,10 @@ class Apple_News {
 		add_action(
 			'admin_enqueue_scripts',
 			array( $this, 'action_admin_enqueue_scripts' )
+		);
+		add_action(
+			'plugins_loaded',
+			array( $this, 'action_plugins_loaded' )
 		);
 	}
 
@@ -181,7 +212,9 @@ class Apple_News {
 		// Enqueue styles.
 		wp_enqueue_style(
 			$this->plugin_slug . '_cover_art_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/cover-art.css'
+			plugin_dir_url( __FILE__ ) .  '../assets/css/cover-art.css',
+			array(),
+			self::$version
 		);
 
 		// Enqueue scripts.
@@ -195,46 +228,114 @@ class Apple_News {
 
 		// Localize scripts.
 		wp_localize_script( $this->plugin_slug . '_cover_art_js', 'apple_news_cover_art', array(
-			'image_sizes' => Admin_Apple_News::$image_sizes,
-			'image_too_small' => esc_html__( 'You must select an image that is at least the minimum height and width specified above.', 'apple-news' ),
+			'image_sizes' => Admin_Apple_News::get_image_sizes(),
+			'image_too_small' => esc_html__( 'You must select an image that is at least the height and width specified above.', 'apple-news' ),
 			'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
 			'media_modal_title' => esc_html__( 'Choose an image', 'apple-news' ),
 		) );
 	}
 
 	/**
-	 * Initialize the value of api_autosync_delete if not set.
+	 * Action hook callback for plugins_loaded.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
+	 * @since 1.3.0
+	 */
+	public function action_plugins_loaded() {
+
+		// Determine if the database version and code version are the same.
+		$current_version = get_option( 'apple_news_version' );
+		if ( version_compare( $current_version, self::$version, '>=' ) ) {
+			return;
+		}
+
+		// Determine if this is a clean install (no settings set yet).
+		$settings = get_option( self::$option_name );
+		if ( ! empty( $settings ) ) {
+
+			// Handle upgrade to version 1.3.0.
+			if ( version_compare( $current_version, '1.3.0', '<' ) ) {
+				$this->upgrade_to_1_3_0();
+			}
+
+			// Handle upgrade to version 1.4.0.
+			if ( version_compare( $current_version, '1.4.0', '<' ) ) {
+				$this->upgrade_to_1_4_0();
+			}
+		}
+
+		// Ensure the default themes are created.
+		$this->create_default_theme();
+
+		// Set the database version to the current version in code.
+		update_option( 'apple_news_version', self::$version );
+	}
+
+	/**
+	 * Create the default themes, if they do not exist.
 	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_api_settings( $wp_settings ) {
+	public function create_default_theme() {
+
+		// Determine if an active theme exists.
+		$active_theme = \Apple_Exporter\Theme::get_active_theme_name();
+		if ( ! empty( $active_theme ) ) {
+			return;
+		}
+
+		// Build the theme formatting settings from the base settings array.
+		$theme = new \Apple_Exporter\Theme;
+		$options = \Apple_Exporter\Theme::get_options();
+		$wp_settings = get_option( self::$option_name, array() );
+		$theme_settings = array();
+		foreach ( $options as $option_key => $option ) {
+			if ( isset( $wp_settings[ $option_key ] ) ) {
+				$theme_settings[ $option_key ] = $wp_settings[ $option_key ];
+			}
+		}
+
+		// Negotiate screenshot URL.
+		$theme_settings['screenshot_url'] = plugins_url(
+			'/assets/screenshots/default.png',
+			__DIR__
+		);
+
+		// Save the theme and make it active.
+		$theme->load( $theme_settings );
+		$theme->save();
+		$theme->set_active();
+
+		// Load the example themes, if they do not exist.
+		$this->load_example_themes();
+	}
+
+	/**
+	 * Initialize the value of api_autosync_delete if not set.
+	 *
+	 * @access public
+	 */
+	public function migrate_api_settings() {
 
 		// Use the value of api_autosync_update for api_autosync_delete if not set
 		// since that was the previous value used to determine this behavior.
+		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['api_autosync_delete'] )
 		     && ! empty( $wp_settings['api_autosync_update'] )
 		) {
 			$wp_settings['api_autosync_delete'] = $wp_settings['api_autosync_update'];
 			update_option( self::$option_name, $wp_settings, 'no' );
 		}
-
-		return $wp_settings;
 	}
 
 	/**
 	 * Migrate legacy blockquote settings to new format.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_blockquote_settings( $wp_settings ) {
+	public function migrate_blockquote_settings() {
 
 		// Check for the presence of blockquote-specific settings.
+		$wp_settings = get_option( self::$option_name );
 		if ( $this->_all_keys_exist( $wp_settings, array(
 			'blockquote_background_color',
 			'blockquote_border_color',
@@ -246,7 +347,7 @@ class Apple_News {
 			'blockquote_size',
 			'blockquote_tracking',
 		) ) ) {
-			return $wp_settings;
+			return;
 		}
 
 		// Set the background color to 90% of the body background.
@@ -298,21 +399,17 @@ class Apple_News {
 
 		// Store the updated option to save the new setting names.
 		update_option( self::$option_name, $wp_settings, 'no' );
-
-		return $wp_settings;
 	}
 
 	/**
 	 * Migrate legacy caption settings to new format.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_caption_settings( $wp_settings ) {
+	public function migrate_caption_settings() {
 
 		// Check for the presence of caption-specific settings.
+		$wp_settings = get_option( self::$option_name );
 		if ( $this->_all_keys_exist( $wp_settings, array(
 			'caption_color',
 			'caption_font',
@@ -320,7 +417,7 @@ class Apple_News {
 			'caption_size',
 			'caption_tracking',
 		) ) ) {
-			return $wp_settings;
+			return;
 		}
 
 		// Clone and modify font size, if necessary.
@@ -344,26 +441,81 @@ class Apple_News {
 
 		// Store the updated option to save the new setting names.
 		update_option( self::$option_name, $wp_settings, 'no' );
+	}
 
-		return $wp_settings;
+	/**
+	 * Migrates standalone customized JSON to each installed theme.
+	 *
+	 * @access public
+	 */
+	public function migrate_custom_json_to_themes() {
+
+		// Get a list of all themes that need to be updated.
+		$all_themes = \Apple_Exporter\Theme::get_registry();
+
+		// Get a list of components that may have customized JSON.
+		$component_factory = new \Apple_Exporter\Component_Factory();
+		$component_factory->initialize();
+		$components = $component_factory::get_components();
+
+		// Iterate over components and look for customized JSON for each.
+		$json_templates = array();
+		foreach ( $components as $component_class ) {
+
+			// Negotiate the component key.
+			$component = new $component_class;
+			$component_key = $component->get_component_name();
+
+			// Try to get the custom JSON for this component.
+			$custom_json = get_option( 'apple_news_json_' . $component_key );
+			if ( empty( $custom_json ) || ! is_array( $custom_json ) ) {
+				continue;
+			}
+
+			// Loop over custom JSON and add each.
+			foreach ( $custom_json as $legacy_key => $values ) {
+				$new_key = str_replace( 'apple_news_json_', '', $legacy_key );
+				$json_templates[ $component_key ][ $new_key ] = $values;
+			}
+		}
+
+		// Ensure there is custom JSON to save.
+		if ( empty( $json_templates ) ) {
+			return;
+		}
+
+		// Loop over themes and apply to each.
+		foreach ( $all_themes as $theme_name ) {
+			$theme = new \Apple_Exporter\Theme;
+			$theme->set_name( $theme_name );
+			$theme->load();
+			$settings = $theme->all_settings();
+			$settings['json_templates'] = $json_templates;
+			$theme->load( $settings );
+			$theme->save();
+		}
+
+		// Remove custom JSON standalone options.
+		$component_keys = array_keys( $json_templates );
+		foreach ( $component_keys as $component_key ) {
+			delete_option( 'apple_news_json_' . $component_key );
+		}
 	}
 
 	/**
 	 * Migrate legacy header settings to new format.
 	 *
-	 * @param array $wp_settings An array of settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_header_settings( $wp_settings ) {
+	public function migrate_header_settings() {
 
 		// Check for presence of any legacy header setting.
+		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['header_font'] )
 		     && empty( $wp_settings['header_color'] )
 		     && empty( $wp_settings['header_line_height'] )
 		) {
-			return $wp_settings;
+			return;
 		}
 
 		// Clone settings, as necessary.
@@ -395,77 +547,188 @@ class Apple_News {
 
 		// Store the updated option to remove the legacy setting names.
 		update_option( self::$option_name, $wp_settings, 'no' );
-
-		return $wp_settings;
 	}
 
 	/**
 	 * Attempt to migrate settings from an older version of this plugin.
 	 *
-	 * @param array|object $wp_settings Settings loaded from WP options.
-	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function migrate_settings( $wp_settings ) {
+	public function migrate_settings() {
 
-		// If we are not given an object to update to an array, bail.
-		if ( ! is_object( $wp_settings ) ) {
-			return $wp_settings;
-		}
-
-		// Try to get all settings as an array to be merged.
-		$all_settings = $wp_settings->all();
-		if ( empty( $all_settings ) || ! is_array( $all_settings ) ) {
-			return $wp_settings;
+		// Attempt to load settings from the option.
+		$wp_settings = get_option( self::$option_name );
+		if ( false !== $wp_settings ) {
+			return;
 		}
 
 		// For each potential value, see if the WordPress option exists.
 		// If so, migrate its value into the new array format.
 		// If it doesn't exist, just use the default value.
+		$settings = new \Apple_Exporter\Settings();
+		$all_settings = $settings->all();
 		$migrated_settings = array();
 		foreach ( $all_settings as $key => $default ) {
 			$value = get_option( $key, $default );
 			$migrated_settings[ $key ] = $value;
 		}
 
-		// Store these settings
+		// Store these settings.
 		update_option( self::$option_name, $migrated_settings, 'no' );
 
-		// Delete the options to clean up
+		// Delete the options to clean up.
 		array_map( 'delete_option', array_keys( $migrated_settings ) );
-
-		return $migrated_settings;
 	}
 
 	/**
-	 * Validate settings and see if any updates need to be performed.
-	 *
-	 * @param array|object $wp_settings Settings loaded from WP options.
+	 * Removes formatting settings from the primary settings object.
 	 *
 	 * @access public
-	 * @return array The modified settings array.
 	 */
-	public function validate_settings( $wp_settings ) {
+	public function remove_global_formatting_settings() {
 
-		// If this option doesn't exist, either the site has never installed
-		// this plugin or they may be using an old version with individual
-		// options. To be safe, attempt to migrate values. This will happen only
-		// once.
-		if ( false === $wp_settings ) {
-			$wp_settings = $this->migrate_settings( $wp_settings );
+		// Loop through formatting settings and remove them from saved settings.
+		$formatting_settings = array_keys( \Apple_Exporter\Theme::get_options() );
+		$wp_settings = get_option( self::$option_name, array() );
+		foreach ( $formatting_settings as $setting_key ) {
+			if ( isset( $wp_settings[ $setting_key ] ) ) {
+				unset( $wp_settings[ $setting_key ] );
+			}
 		}
 
-		// Check for presence of legacy header settings and migrate to new.
-		$wp_settings = $this->migrate_header_settings( $wp_settings );
+		// Update the option.
+		update_option( self::$option_name, $wp_settings, false );
+	}
 
-		// Check for presence of legacy API settings and migrate to new.
-		$wp_settings = $this->migrate_api_settings( $wp_settings );
+	/**
+	 * Migrates table settings for a theme, using other settings in the
+	 * theme to inform sensible defaults.
+	 * @param string $theme_name The theme name for which settings should be migrated.
+	 */
+	public function migrate_table_settings( $theme_name ) {
 
-		// Ensure caption settings are set properly.
-		$wp_settings = $this->migrate_caption_settings( $wp_settings );
+		// Load the theme settings from the database.
+		$theme = new \Apple_Exporter\Theme();
+		$theme->set_name( $theme_name );
+		$theme->load();
 
-		return $wp_settings;
+		// Establish mapping between old settings and new.
+		$settings_map = array(
+			'table_border_color' => 'blockquote_border_color',
+			'table_border_style' => 'blockquote_border_style',
+			'table_border_width' => 'blockquote_border_width',
+			'table_body_background_color' => 'body_background_color',
+			'table_body_color' => 'body_color',
+			'table_body_font' => 'body_font',
+			'table_body_line_height' => 'body_line_height',
+			'table_body_size' => 'body_size',
+			'table_body_tracking' => 'body_tracking',
+			'table_header_background_color' => 'blockquote_background_color',
+			'table_header_color' => 'blockquote_color',
+			'table_header_font' => 'blockquote_font',
+			'table_header_line_height' => 'blockquote_line_height',
+			'table_header_size' => 'blockquote_size',
+			'table_header_tracking' => 'blockquote_tracking',
+		);
+
+		// Set the new values based on the old.
+		foreach ( $settings_map as $table_setting => $reference_setting ) {
+			$theme->set_value(
+				$table_setting,
+				$theme->get_value( $reference_setting )
+			);
+		}
+
+		// Save changes to this theme.
+		$theme->save();
+	}
+
+	/**
+	 * Upgrades settings and data formats to be compatible with version 1.3.0.
+	 *
+	 * @access public
+	 */
+	public function upgrade_to_1_3_0() {
+
+		// Determine if themes have been created yet.
+		$theme_list = \Apple_Exporter\Theme::get_registry();
+		if ( empty( $theme_list ) ) {
+			$this->migrate_settings();
+			$this->migrate_header_settings();
+			$this->migrate_caption_settings();
+			$this->migrate_blockquote_settings();
+		}
+
+		// Create the default theme, if it does not exist.
+		$this->create_default_theme();
+
+		// Move any custom JSON that might have been defined into the theme(s).
+		$this->migrate_custom_json_to_themes();
+
+		// Migrate API settings.
+		$this->migrate_api_settings();
+
+		// Remove all formatting settings from the primary settings array.
+		$this->remove_global_formatting_settings();
+	}
+
+	/**
+	 * Upgrades settings and data formats to be compatible with version 1.4.0.
+	 *
+	 * @access public
+	 */
+	public function upgrade_to_1_4_0() {
+
+		// Set intelligent defaults for table styles in all themes.
+		$theme_list = \Apple_Exporter\Theme::get_registry();
+		if ( ! empty( $theme_list ) && is_array( $theme_list ) ) {
+			foreach ( $theme_list as $theme ) {
+				$this->migrate_table_settings( $theme );
+			}
+		}
+	}
+
+	/**
+	 * Load example themes into the theme list.
+	 *
+	 * @access protected
+	 */
+	protected function load_example_themes() {
+
+		// Set configuration for example themes.
+		$example_themes = array(
+			'classic' => __( 'Classic', 'apple-news' ),
+			'colorful' => __( 'Colorful', 'apple-news' ),
+			'dark' => __( 'Dark', 'apple-news' ),
+			'default' => __( 'Default', 'apple-news' ),
+			'modern' => __( 'Modern', 'apple-news' ),
+			'pastel' => __( 'Pastel', 'apple-news' ),
+		);
+
+		// Loop over example theme configuration and load each.
+		foreach ( $example_themes as $slug => $name ) {
+
+			// Determine if the theme already exists.
+			$theme = new \Apple_Exporter\Theme;
+			$theme->set_name( $name );
+			if ( $theme->load() ) {
+				continue;
+			}
+
+			// Load the theme data from the JSON configuration file.
+			$filename = dirname( __DIR__ ) . '/assets/themes/' . $slug . '.json';
+			$options = json_decode( file_get_contents( $filename ), true );
+
+			// Negotiate screenshot URL.
+			$options['screenshot_url'] = plugins_url(
+				'/assets/screenshots/' . $slug . '.png',
+				__DIR__
+			);
+
+			// Save the theme.
+			$theme->load( $options );
+			$theme->save();
+		}
 	}
 
 	/**

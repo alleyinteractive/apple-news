@@ -25,28 +25,36 @@ class HTML {
 	 * @var array
 	 */
 	private $_allowed_html = array(
-		'a' => array(
+		'a'          => array(
 			'href' => true,
 		),
-		'aside' => array(),
-		'b' => array(),
+		'aside'      => array(),
+		'b'          => array(),
 		'blockquote' => array(),
-		'br' => array(),
-		'code' => array(),
-		'del' => array(),
-		'em' => array(),
-		'footer' => array(),
-		'i' => array(),
-		'li' => array(),
-		'ol' => array(),
-		'p' => array(),
-		'pre' => array(),
-		's' => array(),
-		'samp' => array(),
-		'strong' => array(),
-		'sub' => array(),
-		'sup' => array(),
-		'ul' => array(),
+		'br'         => array(),
+		'caption'    => array(),
+		'code'       => array(),
+		'del'        => array(),
+		'em'         => array(),
+		'footer'     => array(),
+		'i'          => array(),
+		'li'         => array(),
+		'ol'         => array(),
+		'p'          => array(),
+		'pre'        => array(),
+		's'          => array(),
+		'samp'       => array(),
+		'strong'     => array(),
+		'sub'        => array(),
+		'sup'        => array(),
+		'table'      => array(),
+		'td'         => array(),
+		'th'         => array(),
+		'tr'         => array(),
+		'tbody'      => array(),
+		'thead'      => array(),
+		'tfoot'      => array(),
+		'ul'         => array(),
 	);
 
 	/**
@@ -58,6 +66,21 @@ class HTML {
 	 * @return string The formatted HTML.
 	 */
 	public function format( $html ) {
-		return wp_kses( $html, $this->_allowed_html );
+
+		// Strip out all tags and attributes other than what is allowed.
+		$html = wp_kses( $html, $this->_allowed_html );
+
+		// Replace non-breaking spaces with regular spaces.
+		$html = str_ireplace( '&nbsp;', ' ', $html );
+		$html = str_replace( '&#160;', ' ', $html );
+		$html = str_replace( chr( 160 ), ' ', $html );
+
+		// Replace the "null" character with a blank string.
+		$html = str_replace( chr( 194 ), '', $html );
+
+		// Remove any empty tags.
+		$html = preg_replace( '/<([a-z0-9]+)[^>]*>\s*<\/\1>/', '', $html );
+
+		return $html;
 	}
 }

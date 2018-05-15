@@ -11,15 +11,64 @@ use \Apple_Exporter\Exporter as Exporter;
 class Byline extends Component {
 
 	/**
+	 * Register all specs for the component.
+	 *
+	 * @access public
+	 */
+	public function register_specs() {
+		$this->register_spec(
+			'json',
+			__( 'JSON', 'apple-news' ),
+			array(
+				'role' => 'byline',
+				'text' => '#text#',
+			)
+		);
+
+		$this->register_spec(
+			'default-byline',
+			__( 'Style', 'apple-news' ),
+			array(
+				'textAlignment' => '#text_alignment#',
+				'fontName' => '#byline_font#',
+				'fontSize' => '#byline_size#',
+				'lineHeight' => '#byline_line_height#',
+				'tracking' => '#byline_tracking#',
+				'textColor' => '#byline_color#',
+			)
+		);
+
+		$this->register_spec(
+			'byline-layout',
+			__( 'Layout', 'apple-news' ),
+			array(
+				'margin' => array(
+					'top' => 10,
+					'bottom' => 10,
+				),
+			)
+		);
+	}
+
+	/**
 	 * Build the component.
 	 *
 	 * @param string $text
 	 * @access protected
 	 */
 	protected function build( $text ) {
-		$this->json = array(
-			'role' => 'byline',
-			'text' => $text,
+
+		// If there is no text for this element, bail.
+		$check = trim( $text );
+		if ( empty( $check ) ) {
+			return;
+		}
+
+		$this->register_json(
+			'json',
+			array(
+				'#text#' => $text,
+			)
 		);
 
 		$this->set_default_style();
@@ -32,15 +81,23 @@ class Byline extends Component {
 	 * @access private
 	 */
 	private function set_default_style() {
-		$this->json[ 'textStyle' ] = 'default-byline';
-		$this->register_style( 'default-byline', array(
-			'textAlignment' => $this->find_text_alignment(),
-			'fontName' => $this->get_setting( 'byline_font' ),
-			'fontSize' => intval( $this->get_setting( 'byline_size' ) ),
-			'lineHeight' => intval( $this->get_setting( 'byline_line_height' ) ),
-			'tracking' => intval( $this->get_setting( 'byline_tracking' ) ) / 100,
-			'textColor' => $this->get_setting( 'byline_color' ),
-		) );
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
+		$this->register_style(
+			'default-byline',
+			'default-byline',
+			array(
+				'#text_alignment#' => $this->find_text_alignment(),
+				'#byline_font#' => $theme->get_value( 'byline_font' ),
+				'#byline_size#' => intval( $theme->get_value( 'byline_size' ) ),
+				'#byline_line_height#' => intval( $theme->get_value( 'byline_line_height' ) ),
+				'#byline_tracking#' => intval( $theme->get_value( 'byline_tracking' ) ) / 100,
+				'#byline_color#' => $theme->get_value( 'byline_color' ),
+			),
+			'textStyle'
+		);
 	}
 
 	/**
@@ -49,13 +106,12 @@ class Byline extends Component {
 	 * @access private
 	 */
 	private function set_default_layout() {
-		$this->json[ 'layout' ] = 'byline-layout';
-		$this->register_full_width_layout( 'byline-layout', array(
-			'margin' => array(
-				'top' => 10,
-				'bottom' => 10,
-			),
-		) );
+		$this->register_full_width_layout(
+			'byline-layout',
+			'byline-layout',
+			array(),
+			'layout'
+		);
 	}
 
 }

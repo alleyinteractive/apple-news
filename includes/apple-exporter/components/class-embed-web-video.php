@@ -20,7 +20,6 @@ class Embed_Web_Video extends Component {
 	 *
 	 * @param DomNode $node
 	 * @return mixed
-	 * @static
 	 * @access public
 	 */
 	public static function node_matches( $node ) {
@@ -34,18 +33,34 @@ class Embed_Web_Video extends Component {
 	}
 
 	/**
+	 * Register all specs for the component.
+	 *
+	 * @access public
+	 */
+	public function register_specs() {
+		$this->register_spec(
+			'json',
+			__( 'JSON', 'apple-news' ),
+			array(
+				'role' => 'embedwebvideo',
+				'aspectRatio' => '#aspect_ratio#',
+				'URL' => '#url#',
+			)
+		);
+	}
+
+	/**
 	 * Test if this node is a match based on the node type and URL format.
 	 *
 	 * @param DomNode $node
 	 * @param string $pattern
 	 * @return boolean
-	 * @static
 	 * @access public
 	 */
 	public static function is_embed_web_video( $node, $pattern ) {
 		return (
-			( 'p' == $node->nodeName && preg_match( $pattern, trim( $node->nodeValue ) ) )
-			|| ( 'iframe' == $node->nodeName && preg_match( $pattern, trim( $node->getAttribute( 'src' ) ) ) )
+			( 'p' === $node->nodeName && preg_match( $pattern, trim( $node->nodeValue ) ) )
+			|| ( 'iframe' === $node->nodeName && preg_match( $pattern, trim( $node->getAttribute( 'src' ) ) ) )
 		);
 	}
 
@@ -78,11 +93,13 @@ class Embed_Web_Video extends Component {
 			}
 		}
 
-		$this->json = array(
-			'role'        => 'embedwebvideo',
-			'aspectRatio' => round( floatval( $aspect_ratio ), 3 ),
-			'URL'         => $src,
-		);
+		$this->register_json(
+			'json',
+			array(
+				'#aspect_ratio#' => round( floatval( $aspect_ratio ), 3 ),
+				'#url#' => $src,
+			)
+	 );
 	}
 
 }

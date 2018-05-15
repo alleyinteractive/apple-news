@@ -110,7 +110,7 @@ class Workspace {
 	public function get_json() {
 		$json = get_post_meta( $this->content_id, self::JSON_META_KEY, true );
 		if ( ! empty( $json ) ) {
-			$json = json_encode( $json );
+			$json = wp_json_encode( $json );
 		}
 		return apply_filters( 'apple_news_get_json', $json, $this->content_id );
 	}

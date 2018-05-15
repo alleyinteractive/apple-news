@@ -21,7 +21,6 @@ class Admin_Apple_Notice {
 	 *
 	 * @var array
 	 * @access private
-	 * @static
 	 */
 	private static $settings;
 
@@ -40,7 +39,6 @@ class Admin_Apple_Notice {
 	 * @param string $message
 	 * @param string $type
 	 * @param int $user_id
-	 * @static
 	 * @access public
 	 */
 	public static function message( $message, $type, $user_id = null ) {
@@ -59,7 +57,6 @@ class Admin_Apple_Notice {
 	 *
 	 * @param string $message
 	 * @param int $user_id
-	 * @static
 	 * @access public
 	 */
 	public static function info( $message, $user_id = null ) {
@@ -71,7 +68,6 @@ class Admin_Apple_Notice {
 	 *
 	 * @param string $message
 	 * @param int $user_id
-	 * @static
 	 * @access public
 	 */
 	public static function success( $message, $user_id = null ) {
@@ -83,7 +79,6 @@ class Admin_Apple_Notice {
 	 *
 	 * @param string $message
 	 * @param int $user_id
-	 * @static
 	 * @access public
 	 */
 	public static function error( $message, $user_id = null ) {
@@ -95,7 +90,6 @@ class Admin_Apple_Notice {
 	 *
 	 * @param string $message
 	 * @param string $type
-	 * @static
 	 * @access public
 	 */
 	public static function has_notice() {
@@ -106,7 +100,6 @@ class Admin_Apple_Notice {
 	/**
 	 * Show the admin notice.
 	 *
-	 * @static
 	 * @access public
 	 */
 	public static function show() {
@@ -133,7 +126,6 @@ class Admin_Apple_Notice {
 	 *
 	 * @param string $message
 	 * @param string $type
-	 * @static
 	 * @access private
 	 */
 	private static function show_notice( $message, $type ) {
@@ -172,7 +164,6 @@ class Admin_Apple_Notice {
 	 * @param int $user_id
 	 * @param string $key
 	 * @param mixed $value
-	 * @static
 	 * @access private
 	 */
 	private static function add_user_meta( $user_id, $key, $value ) {
@@ -199,7 +190,6 @@ class Admin_Apple_Notice {
 	 *
 	 * @param int $user_id
 	 * @param string $key
-	 * @static
 	 * @return mixed
 	 * @access private
 	 */
@@ -216,7 +206,6 @@ class Admin_Apple_Notice {
 	 *
 	 * @param int $user_id
 	 * @param string $key
-	 * @static
 	 * @access private
 	 */
 	private static function delete_user_meta( $user_id, $key ) {

@@ -1,0 +1,202 @@
+{
+    "ad_frequency": 1,
+    "ad_margin": 15,
+    "blockquote_background_color": "",
+    "blockquote_border_color": "#ffe890",
+    "blockquote_border_style": "solid",
+    "blockquote_border_width": 1,
+    "blockquote_color": "#e2e2e2",
+    "blockquote_font": "Georgia",
+    "blockquote_line_height": 23,
+    "blockquote_size": 17,
+    "blockquote_tracking": 0,
+    "body_background_color": "#1c1c1c",
+    "body_color": "#e2e2e2",
+    "body_font": "Georgia",
+    "body_line_height": 23,
+    "body_link_color": "#ffe890",
+    "body_orientation": "left",
+    "body_size": 17,
+    "body_tracking": 0,
+    "byline_color": "#e2e2e2",
+    "byline_font": "Helvetica-Bold",
+    "byline_format": "by #author# #F j \\a\\t g:i A#",
+    "byline_line_height": 19,
+    "byline_size": 14,
+    "byline_tracking": -1,
+    "caption_color": "#999999",
+    "caption_font": "Helvetica-Light",
+    "caption_line_height": 19,
+    "caption_size": 14,
+    "caption_tracking": -1,
+    "dropcap_background_color": "",
+    "dropcap_color": "#e2e2e2",
+    "dropcap_font": "HelveticaNeue-CondensedBold",
+    "dropcap_number_of_characters": 1,
+    "dropcap_number_of_lines": 5,
+    "dropcap_number_of_raised_lines": 0,
+    "dropcap_padding": 5,
+    "enable_advertisement": "yes",
+    "gallery_type": "gallery",
+    "header1_color": "#ffffff",
+    "header1_font": "HelveticaNeue-CondensedBold",
+    "header1_line_height": 58,
+    "header1_size": 58,
+    "header1_tracking": -1,
+    "header2_color": "#ffffff",
+    "header2_font": "HelveticaNeue-Thin",
+    "header2_line_height": 33,
+    "header2_size": 29,
+    "header2_tracking": 0,
+    "header3_color": "#ffffff",
+    "header3_font": "HelveticaNeue-Thin",
+    "header3_line_height": 31,
+    "header3_size": 27,
+    "header3_tracking": 0,
+    "header4_color": "#ffffff",
+    "header4_font": "HelveticaNeue-Thin",
+    "header4_line_height": 28,
+    "header4_size": 25,
+    "header4_tracking": 0,
+    "header5_color": "#ffffff",
+    "header5_font": "HelveticaNeue-Thin",
+    "header5_line_height": 26,
+    "header5_size": 23,
+    "header5_tracking": 0,
+    "header6_color": "#ffffff",
+    "header6_font": "HelveticaNeue-Thin",
+    "header6_line_height": 24,
+    "header6_size": 21,
+    "header6_tracking": 0,
+    "initial_dropcap": "yes",
+    "json_templates": {
+        "title": {
+            "default-title": {
+                "fontName": "#header1_font#",
+                "fontSize": "#header1_size#",
+                "lineHeight": "#header1_line_height#",
+                "tracking": "#header1_tracking#",
+                "textColor": "#header1_color#",
+                "textAlignment": "center"
+            },
+            "title-layout": {
+                "margin": {
+                    "top": 30,
+                    "bottom": 30
+                }
+            }
+        },
+        "byline": {
+            "default-byline": {
+                "textAlignment": "center",
+                "fontName": "#byline_font#",
+                "fontSize": "#byline_size#",
+                "lineHeight": "#byline_line_height#",
+                "tracking": "#byline_tracking#",
+                "textColor": "#byline_color#"
+            }
+        },
+        "image": {
+            "json-with-caption": {
+                "role": "container",
+                "components": [
+                    {
+                        "role": "photo",
+                        "URL": "#url#",
+                        "layout": "#layout#",
+                        "caption": "#caption#"
+                    },
+                    {
+                        "role": "caption",
+                        "text": "#caption#",
+                        "textStyle": {
+                            "textAlignment": "center",
+                            "fontName": "#caption_font#",
+                            "fontSize": "#caption_size#",
+                            "tracking": "#caption_tracking#",
+                            "lineHeight": "#caption_line_height#",
+                            "textColor": "#caption_color#"
+                        },
+                        "layout": {
+                            "ignoreDocumentMargin": "#full_bleed_images#"
+                        }
+                    }
+                ],
+                "layout": {
+                    "ignoreDocumentMargin": "#full_bleed_images#"
+                }
+            }
+        },
+        "quote": {
+            "pullquote-with-border-json": {
+                "role": "container",
+                "layout": {
+                    "columnStart": 3,
+                    "columnSpan": 4
+                },
+                "components": [
+                    {
+                        "role": "divider",
+                        "stroke": {
+                            "width": "#pullquote_border_width#",
+                            "color": "#pullquote_border_color#"
+                        },
+                        "layout": {
+                            "horizontalContentAlignment": "left",
+                            "maximumContentWidth": 80
+                        }
+                    },
+                    {
+                        "role": "quote",
+                        "text": "#text#",
+                        "format": "#format#",
+                        "layout": "pullquote-layout",
+                        "textStyle": "default-pullquote"
+                    },
+                    {
+                        "role": "divider",
+                        "stroke": {
+                            "width": "#pullquote_border_width#",
+                            "color": "#pullquote_border_color#"
+                        },
+                        "layout": {
+                            "horizontalContentAlignment": "left",
+                            "maximumContentWidth": 80
+                        }
+                    }
+                ],
+                "anchor": {
+                    "targetComponentIdentifier": "pullquoteAnchor",
+                    "originAnchorPosition": "top",
+                    "targetAnchorPosition": "top",
+                    "rangeStart": 0,
+                    "rangeLength": 10
+                }
+            }
+        }
+    },
+    "layout_gutter": 20,
+    "layout_margin": 100,
+    "layout_width": 1024,
+    "meta_component_order": [
+        "cover",
+        "title",
+        "byline"
+    ],
+    "monospaced_color": "#4f4f4f",
+    "monospaced_font": "Menlo-Regular",
+    "monospaced_line_height": 20,
+    "monospaced_size": 16,
+    "monospaced_tracking": 0,
+    "pullquote_border_color": "#ffe890",
+    "pullquote_border_style": "solid",
+    "pullquote_border_width": 1,
+    "pullquote_color": "#ffffff",
+    "pullquote_font": "HelveticaNeue-CondensedBold",
+    "pullquote_hanging_punctuation": "yes",
+    "pullquote_line_height": 35,
+    "pullquote_size": 29,
+    "pullquote_tracking": -2,
+    "pullquote_transform": "none",
+    "theme_name": "Dark"
+}

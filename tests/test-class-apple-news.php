@@ -53,7 +53,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 		unset( $legacy_settings['api_autosync_delete'] );
 		$apple_news = new Apple_News();
 		update_option( $apple_news::$option_name, $legacy_settings );
-		$apple_news->migrate_api_settings( $legacy_settings );
+		$apple_news->migrate_api_settings();
 
 		// Ensure the defaults did not overwrite the migrated legacy data.
 		$expected_settings = $legacy_settings;
@@ -93,7 +93,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 		unset( $legacy_settings['blockquote_tracking'] );
 		$apple_news = new Apple_News();
 		update_option( $apple_news::$option_name, $legacy_settings );
-		$apple_news->migrate_blockquote_settings( $legacy_settings );
+		$apple_news->migrate_blockquote_settings();
 
 		// Ensure the defaults did not overwrite the migrated legacy data.
 		$expected_settings = $legacy_settings;
@@ -133,7 +133,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 		unset( $legacy_settings['caption_tracking'] );
 		$apple_news = new Apple_News();
 		update_option( $apple_news::$option_name, $legacy_settings );
-		$apple_news->migrate_caption_settings( $legacy_settings );
+		$apple_news->migrate_caption_settings();
 
 		// Ensure the defaults did not overwrite the migrated legacy data.
 		$expected_settings = $legacy_settings;
@@ -219,10 +219,11 @@ class Apple_News_Test extends WP_UnitTestCase {
 	public function testMigrateSettings() {
 
 		// Setup.
+		$apple_news = new Apple_News();
+		delete_option( $apple_news::$option_name );
 		update_option( 'use_remote_images', 'yes' );
 		$default_settings = $this->settings->all();
-		$apple_news = new Apple_News();
-		$apple_news->migrate_settings( $this->settings );
+		$apple_news->migrate_settings();
 
 		// Ensure the defaults did not overwrite the migrated legacy data.
 		$migrated_settings = get_option( $apple_news::$option_name );

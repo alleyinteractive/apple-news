@@ -3,8 +3,8 @@ Contributors: potatomaster, kevinfodness, alleyinteractive, beezwaxbuzz, gosukiw
 Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 4.0
-Tested up to: 4.7
-Stable tag: 1.2.3
+Tested up to: 4.7.4
+Stable tag: 1.3.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -45,6 +45,47 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
+= 1.3.0 =
+* Moved JSON customizations to themes so that JSON can be customized on a per-theme basis.
+* Enabled access to postmeta in custom JSON so that values from postmeta fields can be inserted into customized JSON.
+* Removed all formatting settings from the settings option in favor of storing them in themes. This is a potentially breaking change if you are using custom code that relies on formatting settings stored in the settings option.
+* Removed the option for JSON customization in favor of moving those settings to themes. This is a potentailly breaking change if you are accessing the custom JSON option directly.
+* Deprecated access of formatting settings using the Settings object.
+* Added a new Theme object to handle all formatting settings.
+* Bugfix: Fixed a bug where themes were not being automatically switched via section mappings.
+* Bugfix: HTML in titles is now supported.
+
+= 1.2.7 =
+* Fixed a bug where HTML tags were being stripped before being sent to the API.
+* Fixed a bug where older theme files couldn't be imported if new formatting settings were added.
+
+= 1.2.6 =
+* WP Standards: Ensured all instances of in_array use the strict parameter
+* WP Standards: Replaced all remaining instances of == with ===
+* WP Standards: Replaced all remaining instances of != with !==
+* WP Standards: Ensured all calls to wp_die with translated strings were escaped
+* WP Standards: Added escaping in a few additional places
+* WP Standards: Replaced all remaining instances of json_encode with wp_json_encode
+* Bugfix: Root-relative URLs for images, audio, and video are now supported
+* Bugfix: Images, audio, and video with blank or invalid URLs are no longer included, avoiding an error with the API
+* Bugfix: Image blocks with multiple src attributes (e.g., when using a lazyload plugin with a raw &lt;img&gt; tag in the &lt;noscript&gt; block) are now intelligently probed
+
+= 1.2.5 =
+* Bugfix: Fixed version of PHPUnit at 5.7.* for PHP 7.* and 4.8.* for PHP 5.* in the Travis configuration to fix a bug with incompatibility with PHPUnit 6
+* Bugfix: Set the base URL for the Apple News API to https://news-api.apple.com everywhere for better adherence to official guidance in the API docs (props to ffffelix for providing the initial PR)
+* Bugfix: Made the administrator email on the settings screen no longer required if debug mode is set to "no"
+* Bugfix: Converted the error that occurs when a list of sections cannot be retrieved from the API to a non-fatal to fix a problem where the content of the editor would appear white-on-white
+* Bugfix: Resolved an error that occurs on some systems during plugin activation on the Add New screen due to a duplicated root plugin file in the WordPress.org version of the plugin
+
+= 1.2.4 =
+* Added an interface for customizing of component JSON
+* Added support for making certain components inactive
+* Added hanging punctuation option for pull quotes
+* Added additional styling options for drop caps
+* Added support for nested images in lists
+* Added support for Instagram oEmbeds
+* Updated the interface and workflow for customizing cover art
+
 = 1.2.3 =
 * Allowed mapping themes to Apple News sections
 * Added support for videos in feed
@@ -70,7 +111,7 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 = 1.2.1 =
 * Added an experimental setting to enable HTML format on body elements.
-* Added settings for monospaced fonts, which applies to <pre>, <code>, and <samp> elements in body components when HTML formatting is enabled.
+* Added settings for monospaced fonts, which applies to &lt;pre&gt;, &lt;code&gt;, and &lt;samp&gt; elements in body components when HTML formatting is enabled.
 * Added additional text formatting options, including tracking (letter-spacing) and line height.
 * Split text formatting options for headings to allow full customization per heading level.
 * Modified logic for image alignment so that centered and non-aligned images now appear centered instead of right-aligned.

@@ -146,44 +146,66 @@ class Parser {
 	private function _clean_html( $html ) {
 		// Match all <a> tags via regex.
 		// We can't use DOMDocument here because some tags will be removed entirely.
-		preg_match_all( '/<a(?:.*?)(href|name)=(?:"|\')(.*?)(?:"|\')(?:.*?)>(.*?)<\/a>/m', $html, $a_tags );
+		preg_match_all( '/<a.*?>(.*?)<\/a>/m', $html, $a_tags );
 
-		// Check if we got matches
-		if ( empty( $a_tags ) ){
+		// Check if we got matches.
+		if ( empty( $a_tags ) ) {
 			return $html;
 		}
 
-		// Iterate over the matches and see what we need to do
-		foreach ( $a_tags[1] as $i => $tag_type ) {
-			// First, if this is an anchor, those aren't supported so just remove it.
-			if ( 'name' === $tag_type ) {
-				$html = str_replace( $a_tags[0][ $i ], $a_tags[3][ $i ], $html );
+		// Iterate over the matches and see what we need to do.
+		foreach ( $a_tags[0] as $i => $a_tag ) {
+			// If the <a> tag doesn't have content, dump it.
+			$content = trim( $a_tags[1][ $i ] );
+			if ( empty( $content ) ) {
+				$html = str_replace( $a_tag, '', $html );
 				continue;
-			} else {
-				// This is an href and we need to figure out if it's OK.
-				// First we need to trim the href to be safe.
-				$href = trim( $a_tags[2][ $i ] );
+			}
 
-				// Now we need to determine if anything further needs to be done
-				if ( 0 === stripos( $href, '#' ) ) {
-					// This is an anchor which is invalid, so just remove it.
-					$html = str_replace( $a_tags[0][ $i ], $a_tags[3][ $i ], $html );
+			// If there isn't an href that has content, strip the anchor tag.
+			if ( ! preg_match( '/<a[^>]+href="([^"]+)"[^>]*>.*?<\/a>/m', $a_tag, $matches ) ) {
+				$html = str_replace( $a_tag, $content, $html );
+				continue;
+			}
+
+			// If the href value trims to nil, strip the anchor tag.
+			$href = trim( $matches[1] );
+			if ( empty( $href ) ) {
+				$html = str_replace( $a_tag, $a_tags[1][ $i ], $html );
+			}
+
+			// Handle anchor links.
+			if ( 0 === strpos( $href, '#' ) ) {
+				global $post;
+
+				$permalink = get_permalink( $post );
+
+				if ( false === $permalink ) {
 					continue;
-				} else if ( 0 !== stripos( $href, '#' ) && false === filter_var( $href, FILTER_VALIDATE_URL ) ) {
-					// We have to assume this is a local URL.
-					// Prepend it with the site's home URL.
-					$href = home_url( $href );
 				}
 
-				// If the href changed as a result, update it
-				if ( $href !== $a_tags[2][ $i ] ) {
-					$updated_tag = str_replace( $a_tags[2][ $i ], $href, $a_tags[0][ $i ] );
-					$html = str_replace( $a_tags[0][ $i ], $updated_tag, $html );
-				}
+				$html = str_replace( 'href="' . $href, 'href="' . $permalink . $href, $html );
+				continue;
+			}
+
+			// Handle root relative URLs.
+			if ( 0 === strpos( $href, '/' ) && false === strpos( $href, '//' ) ) {
+				$html = str_replace( 'href="' . $href, 'href="' . get_site_url() . $href, $html );
+				continue;
+			}
+
+			// Ensure that the resulting URL is fully-formed.
+			if ( ! preg_match( '/^https?:\/\/[^.]+\.[^.]+/', $href ) ) {
+				$html = str_replace( $a_tag, $content, $html );
+				continue;
 			}
 		}
 
-		// Return the clean HTML
+		// Make nonbreaking spaces actual spaces.
+		$html = str_ireplace( '&nbsp;', ' ', $html );
+		$html = str_replace( '&#160;', ' ', $html );
+
+		// Return the clean HTML.
 		return $html;
 	}
 }

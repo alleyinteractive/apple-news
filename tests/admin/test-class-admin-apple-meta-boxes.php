@@ -20,7 +20,7 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 
 		// Create post data
 		$_POST['post_ID'] = $post_id;
-		$_POST['apple_news_sections'] = array( 'https://u48r14.digitalhub.com/sections/1234567890' );
+		$_POST['apple_news_sections'] = array( 'https://news-api.apple.com/sections/1234567890' );
 		$_POST['apple_news_is_preview'] = 0;
 		$_POST['apple_news_is_sponsored'] = 0;
 		$_POST['apple_news_maturity_rating'] = 'MATURE';
@@ -31,12 +31,12 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 
 		// Create the meta box class and simulate a save
 		$meta_box = new Admin_Apple_Meta_Boxes( $this->settings );
-		if ( 'yes' == $this->settings->get( 'show_metabox' ) ) {
+		if ( 'yes' === $this->settings->get( 'show_metabox' ) ) {
 			$meta_box->do_publish( $post_id, get_post( $post_id ) );
 		}
 
 		// Check the meta values
-		$this->assertEquals( array( 'https://u48r14.digitalhub.com/sections/1234567890' ), get_post_meta( $post_id, 'apple_news_sections', true ) );
+		$this->assertEquals( array( 'https://news-api.apple.com/sections/1234567890' ), get_post_meta( $post_id, 'apple_news_sections', true ) );
 		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_is_preview', true ) );
 		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_is_sponsored', true ) );
 		$this->assertEquals( 'MATURE', get_post_meta( $post_id, 'apple_news_maturity_rating', true ) );
@@ -54,7 +54,7 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 
 		// Create post data
 		$_POST['post_ID'] = $post_id;
-		$_POST['apple_news_sections'] = array( 'https://u48r14.digitalhub.com/sections/1234567890' );
+		$_POST['apple_news_sections'] = array( 'https://news-api.apple.com/sections/1234567890' );
 		$_POST['apple_news_is_preview'] = 0;
 		$_POST['apple_news_is_sponsored'] = 0;
 		$_POST['apple_news_maturity_rating'] = 'MATURE';
@@ -65,12 +65,12 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 
 		// Create the meta box class and simulate a save
 		$meta_box = new Admin_Apple_Meta_Boxes( $this->settings );
-		if ( 'yes' == $this->settings->get( 'show_metabox' ) ) {
+		if ( 'yes' === $this->settings->get( 'show_metabox' ) ) {
 			$meta_box->do_publish( $post_id, get_post( $post_id ) );
 		}
 
 		// Check the meta values
-		$this->assertEquals( array( 'https://u48r14.digitalhub.com/sections/1234567890' ), get_post_meta( $post_id, 'apple_news_sections', true ) );
+		$this->assertEquals( array( 'https://news-api.apple.com/sections/1234567890' ), get_post_meta( $post_id, 'apple_news_sections', true ) );
 		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_is_preview', true ) );
 		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_is_sponsored', true ) );
 		$this->assertEquals( 'MATURE', get_post_meta( $post_id, 'apple_news_maturity_rating', true ) );

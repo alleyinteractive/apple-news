@@ -66,7 +66,43 @@ class Exporter_Content {
 	private $settings;
 
 	/**
-	 * Contstructor.
+	 * Formats a URL from a `src` parameter to be compatible with remote sources.
+	 *
+	 * Will return a blank string if the URL is invalid.
+	 *
+	 * @param string $url The URL to format.
+	 *
+	 * @access protected
+	 * @return string The formatted URL on success, or a blank string on failure.
+	 */
+	public static function format_src_url( $url ) {
+
+		// If this is a root-relative path, make absolute.
+		if ( 0 === strpos( $url, '/' ) ) {
+			$url = site_url( $url );
+		}
+
+		// Escape the URL and ensure it is valid.
+		$url = esc_url_raw( $url );
+		if ( empty( $url ) ) {
+			return '';
+		}
+
+		// Ensure the URL begins with http.
+		if ( 0 !== strpos( $url, 'http' ) ) {
+			return '';
+		}
+
+		// Ensure the URL passes filter_var checks.
+		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+			return '';
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Constructor.
 	 *
 	 * @param int $id
 	 * @param string $title

@@ -7,18 +7,28 @@
 	margin-top: 10px;
 }
 
-.apple-news-row-action {
-	margin-right: 10px;
+.apple-news-themes .button-danger:hover {
+	background-color: #dc3232;
+	color: white;
+}
+
+.apple-news-themes .theme-browser {
+	margin-top: 1em;
+}
+
+.apple-news-themes .theme-browser .theme {
+	cursor: auto;
 }
 
 #apple_news_import_theme {
 	margin-bottom: 10px;
 }
 
-.wp-list-table {
-	margin-top: 10px;
-}
-
 h1#apple_news_themes_title {
 	margin-bottom: 20px;
+}
+
+input[name="apple_news_active_theme"] {
+	display: none;
+	visibility: hidden;
 }

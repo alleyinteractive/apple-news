@@ -77,6 +77,10 @@ class Component_Layouts extends Builder {
 	 * @access public
 	 */
 	public function set_anchor_layout_for( $component ) {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Are we anchoring left or right?
 		$position = null;
 		switch ( $component->get_anchor_position() ) {
@@ -92,7 +96,7 @@ class Component_Layouts extends Builder {
 			// The alignment position is the opposite of the body_orientation
 			// setting. In the case of centered body orientation, use left alignment.
 			// This behaviour was chosen by design.
-			if ( 'left' == $this->get_setting( 'body_orientation' ) ) {
+			if ( 'left' === $theme->get_value( 'body_orientation' ) ) {
 				$position = 'right';
 			} else {
 				$position = 'left';
@@ -105,11 +109,11 @@ class Component_Layouts extends Builder {
 		if ( ! $this->layout_exists( $layout_name ) ) {
 
 			// Cache settings.
-			$body_orientation = $this->get_setting( 'body_orientation' );
-			$body_offset = $this->get_setting( 'body_offset' );
-			$alignment_offset = $this->get_setting( 'alignment_offset' );
-			$body_column_span = $this->get_setting( 'body_column_span' );
-			$layout_columns = $this->get_setting( 'layout_columns' );
+			$body_orientation = $theme->get_value( 'body_orientation' );
+			$body_offset = $theme->get_body_offset();
+			$alignment_offset = $theme->get_alignment_offset();
+			$body_column_span = $theme->get_body_column_span();
+			$layout_columns = $theme->get_layout_columns();
 
 			// Find out the starting column. This is easy enough if we are anchoring
 			// left, but for right side alignment, we have to make some math :)

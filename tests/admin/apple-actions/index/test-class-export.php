@@ -9,28 +9,6 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$this->settings = new Settings();
 	}
 
-	/**
-	 * Gets formatting settings for themes.
-	 *
-	 * @access private
-	 */
-	private function getFormattingSettings( $all_settings ) {
-		// Get only formatting settings
-		$formatting = new Admin_Apple_Settings_Section_Formatting( '' );
-		$formatting_settings = $formatting->get_settings();
-
-		$formatting_settings_keys = array_keys( $formatting_settings );
-		$filtered_settings = array();
-
-		foreach ( $formatting_settings_keys as $key ) {
-			if ( isset( $all_settings[ $key ] ) ) {
-				$filtered_settings[ $key ] = $all_settings[ $key ];
-			}
-		}
-
-		return $filtered_settings;
-	}
-
 	public function testAutoExcerpt() {
 		$title = 'My Title';
 		$content = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tristique quis justo sit amet eleifend. Praesent id metus semper, fermentum nibh at, malesuada enim. Mauris eget faucibus lectus. Vivamus iaculis eget urna non porttitor. Donec in dignissim neque. Vivamus ut ornare magna. Nulla eros nisi, maximus nec neque at, condimentum lobortis leo. Fusce in augue arcu. Curabitur lacus elit, venenatis a laoreet sit amet, imperdiet ac lorem. Curabitur sed leo sed ligula tempor feugiat. Cras in tellus et elit volutpat.</p>';
@@ -113,6 +91,37 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$this->assertEquals( 'by #Testuser | Aug 26, 2016 | 12:00 PM', $exporter_content->byline() );
 	}
 
+	public function testRemoveEntities() {
+		$post_id = $this->factory->post->create( array(
+			'post_title' => 'Test Title',
+			'post_content' => '<p>&amp;Lorem ipsum dolor sit amet &amp; consectetur adipiscing elit.&amp;</p>',
+			'post_date' => '2016-08-26 12:00',
+		) );
+
+		// Set HTML content format.
+		$this->settings->html_support = 'yes';
+
+		$export = new Export( $this->settings, $post_id );
+		$exporter = $export->fetch_exporter();
+		$exporter_content = $exporter->get_content();
+
+		$this->assertEquals(
+			'<p>&amp;Lorem ipsum dolor sit amet &amp; consectetur adipiscing elit.&amp;</p>',
+			str_replace( array( "\n","\r" ), '', $exporter_content->content() )
+		);
+
+		// Set Markdown content format.
+		$this->settings->html_support = 'no';
+
+		$markdown_export = new Export( $this->settings, $post_id );
+		$markdown_exporter = $markdown_export->fetch_exporter();
+		$markdown_exporter_content = $markdown_exporter->get_content();
+		$this->assertEquals(
+			'<p>&Lorem ipsum dolor sit amet & consectetur adipiscing elit.&</p>',
+			str_replace( array( "\n","\r" ), '', $markdown_exporter_content->content() )
+		);
+	}
+
 	public function testSectionMapping() {
 		// Create a post
 		$title = 'My Title';
@@ -136,7 +145,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		) );
 
 		// Cache as a transient to bypass the API call
-		$self = 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a';
+		$self = 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a';
 		set_transient(
 			'apple_news_sections',
 			array(
@@ -145,7 +154,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 					'id' => 'abcdef01-2345-6789-abcd-ef012356789a',
 					'isDefault' => true,
 					'links' => (object) array(
-						'channel' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
+						'channel' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
 						'self' => $self,
 					),
 					'modifiedAt' => '2017-01-01T00:00:00Z',
@@ -171,16 +180,21 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 	}
 
 	public function testThemeMapping() {
-		$themes = new \Admin_Apple_Themes();
-		$defaults = $this->getFormattingSettings( $this->settings->all() );
-		update_option( $themes->theme_key_from_name( 'Default' ), $defaults );
 
-		// Make the settings different for this theme to differentiate
-		$new_theme = $defaults;
-		$new_theme['body_color'] = '#123456';
-		update_option( $themes->theme_key_from_name( 'Test Theme' ), $new_theme );
+		// Create a default theme.
+		$default_theme = new \Apple_Exporter\Theme;
+		$default_theme->set_name( 'Default' );
+		$this->assertTrue( $default_theme->save() );
 
-		// Create a post
+		// Create a test theme with different settings to differentiate.
+		$test_theme = new \Apple_Exporter\Theme;
+		$test_theme->set_name( 'Test Theme' );
+		$test_settings = $test_theme->all_settings();
+		$test_settings['body_color'] = '#123456';
+		$test_theme->load( $test_settings );
+		$this->assertTrue( $test_theme->save() );
+
+		// Create a post.
 		$title = 'My Title';
 		$content = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tristique quis justo sit amet eleifend. Praesent id metus semper, fermentum nibh at, malesuada enim. Mauris eget faucibus lectus. Vivamus iaculis eget urna non porttitor. Donec in dignissim neque. Vivamus ut ornare magna. Nulla eros nisi, maximus nec neque at, condimentum lobortis leo. Fusce in augue arcu. Curabitur lacus elit, venenatis a laoreet sit amet, imperdiet ac lorem. Curabitur sed leo sed ligula tempor feugiat. Cras in tellus et elit volutpat.</p>';
 
@@ -189,15 +203,43 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 			'post_content' => $content,
 		) );
 
-		// Set it to a fake section
-		$section_id = 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a';
-		update_post_meta( $post_id, 'apple_news_sections', array( $section_id ) );
+		// Create a term and add it to the post.
+		$term_id = $this->factory->term->create( array(
+			'taxonomy' => 'category',
+			'name' => 'entertainment',
+		) );
+		wp_set_post_terms( $post_id, array( $term_id ), 'category' );
 
-		// Create a mapping from that section to the test theme
+		// Create a taxonomy map.
+		update_option( \Admin_Apple_Sections::TAXONOMY_MAPPING_KEY, array(
+			'abcdef01-2345-6789-abcd-ef012356789a' => array( $term_id ),
+		) );
 		update_option( \Admin_Apple_Sections::THEME_MAPPING_KEY, array(
-			basename( $section_id ) => 'Test Theme',
+			'abcdef01-2345-6789-abcd-ef012356789a' => 'Test Theme',
 		) );
 
+		// Cache as a transient to bypass the API call.
+		$self = 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a';
+		set_transient(
+			'apple_news_sections',
+			array(
+				(object) array(
+					'createdAt' => '2017-01-01T00:00:00Z',
+					'id' => 'abcdef01-2345-6789-abcd-ef012356789a',
+					'isDefault' => true,
+					'links' => (object) array(
+						'channel' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
+						'self' => $self,
+					),
+					'modifiedAt' => '2017-01-01T00:00:00Z',
+					'name' => 'Main',
+					'shareUrl' => 'https://apple.news/AbCdEfGhIj-KlMnOpQrStUv',
+					'type' => 'section',
+				),
+			)
+		);
+
+		// Get sections for the post.
 		$sections = \Admin_Apple_Sections::get_sections_for_post( $post_id );
 		$export = new Export( $this->settings, $post_id, $sections );
 		$exporter = $export->fetch_exporter();
@@ -205,13 +247,15 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$json = $exporter->get_json();
 		$settings = json_decode( $json );
 
-		$this->assertEquals( $settings->componentTextStyles->dropcapBodyStyle->textColor, $new_theme['body_color'] );
+		$this->assertEquals(
+			$settings->componentTextStyles->dropcapBodyStyle->textColor,
+			$test_settings['body_color']
+		);
 
-		// Clean up
-		delete_option( $themes->theme_key_from_name( 'Default' ) );
-		delete_option( $themes->theme_key_from_name( 'Test Theme' ) );
-
+		// Clean up.
+		$default_theme->delete();
+		$test_theme->delete();
+		delete_option( \Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+		delete_transient( 'apple_news_sections' );
 	}
-
 }
-

@@ -9,15 +9,29 @@ namespace Apple_Exporter\Components;
 class Heading extends Component {
 
 	/**
+	 * Supported heading levels
+	 *
+	 * @var array
+	 * @access public
+	 */
+	public static $levels = array( 1, 2, 3, 4, 5, 6 );
+
+	/**
 	 * Look for node matches for this component.
 	 *
 	 * @param DomNode $node
 	 * @return mixed
-	 * @static
 	 * @access public
 	 */
 	public static function node_matches( $node ) {
-		if ( ! preg_match( '#h[1-6]#', $node->nodeName ) ) {
+		$regex = sprintf(
+			'#h[%s-%s]#',
+			current( self::$levels ),
+			end( self::$levels )
+		);
+		reset( self::$levels );
+
+		if ( ! preg_match( $regex, $node->nodeName ) ) {
 			return null;
 		}
 
@@ -27,6 +41,54 @@ class Heading extends Component {
 		}
 
 		return $node;
+	}
+
+	/**
+	 * Register all specs for the component.
+	 *
+	 * @access public
+	 */
+	public function register_specs() {
+		$this->register_spec(
+			'json',
+			__( 'JSON', 'apple-news' ),
+			array(
+				'role' => '#heading_level#',
+				'text' => '#text#',
+				'format' => '#format#',
+			)
+		);
+
+		$this->register_spec(
+			'heading-layout',
+			__( 'Layout', 'apple-news' ),
+			array(
+				'columnStart' => '#body_offset#',
+				'columnSpan' => '#body_column_span#',
+				'margin' => array(
+					'bottom' => 15,
+					'top' => 15,
+				),
+			)
+		);
+
+		foreach ( self::$levels as $level ) {
+			$this->register_spec(
+				'default-heading-' . $level,
+				sprintf(
+					__( 'Level %s Style', 'apple-news' ),
+					$level
+				),
+				array(
+					'fontName' => '#header' . $level . '_font#',
+					'fontSize' => '#header' . $level . '_size#',
+					'lineHeight' => '#header' . $level . '_line_height#',
+					'textColor' => '#header' . $level . '_color#',
+					'textAlignment' => '#text_alignment#',
+					'tracking' => '#header' . $level . '_tracking#',
+				)
+			);
+		}
 	}
 
 	/**
@@ -75,10 +137,19 @@ class Heading extends Component {
 		// textStyle in headings.
 		$text = wp_strip_all_tags( $matches[2] );
 
-		$this->json = array(
-			'role'   => 'heading' . $level,
-			'text'   => trim( $this->parser->parse( $text ) ),
-			'format' => $this->parser->format,
+		// Parse and trim the resultant text, and if there is nothing left, bail.
+		$text = trim( $this->parser->parse( $text ) );
+		if ( empty( $text ) ) {
+			return;
+		}
+
+		$this->register_json(
+			'json',
+			array(
+				'#heading_level#' => 'heading' . $level,
+				'#text#' => $text,
+				'#format#' => $this->parser->format,
+			)
 		);
 
 		$this->set_style( $level );
@@ -91,15 +162,19 @@ class Heading extends Component {
 	 * @access private
 	 */
 	private function set_layout() {
-		$this->json['layout'] = 'heading-layout';
-		$this->register_layout( 'heading-layout', array(
-			'columnStart' => $this->get_setting( 'body_offset' ),
-			'columnSpan' => $this->get_setting( 'body_column_span' ),
-			'margin' => array(
-				'bottom' => 15,
-				'top' => 15,
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
+		$this->register_layout(
+			'heading-layout',
+			'heading-layout',
+			array(
+				'#body_offset#' => $theme->get_body_offset(),
+				'#body_column_span#' => $theme->get_body_column_span(),
 			),
-		) );
+			'layout'
+		);
 	}
 
 	/**
@@ -108,15 +183,23 @@ class Heading extends Component {
 	 * @access private
 	 */
 	private function set_style( $level ) {
-		$this->json[ 'textStyle' ] = 'default-heading-' . $level;
-		$this->register_style( 'default-heading-' . $level, array(
-			'fontName' => $this->get_setting( 'header' . $level . '_font' ),
-			'fontSize' => intval( $this->get_setting( 'header' . $level . '_size' ) ),
-			'lineHeight' => intval( $this->get_setting( 'header' . $level . '_line_height' ) ),
-			'textColor' => $this->get_setting( 'header' . $level . '_color' ),
-			'textAlignment' => $this->find_text_alignment(),
-			'tracking' => intval( $this->get_setting( 'header' . $level . '_tracking' ) ) / 100,
-		) );
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
+		$this->register_style(
+			'default-heading-' . $level,
+			'default-heading-' . $level,
+			array(
+				'#header' . $level . '_font#' => $theme->get_value( 'header' . $level . '_font' ),
+				'#header' . $level . '_size#'  => intval( $theme->get_value( 'header' . $level . '_size' ) ),
+				'#header' . $level . '_line_height#' => intval( $theme->get_value( 'header' . $level . '_line_height' ) ),
+				'#header' . $level . '_color#' => $theme->get_value( 'header' . $level . '_color' ),
+				'#text_alignment#' => $this->find_text_alignment(),
+				'#header' . $level . '_tracking#' => intval( $theme->get_value( 'header' . $level . '_tracking' ) ) / 100,
+			),
+			'textStyle'
+		);
 	}
 
 }

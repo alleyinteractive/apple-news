@@ -9,7 +9,14 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 
 	protected $prophet;
 
+	/**
+	 * Actions to be run before every test.
+	 *
+	 * @access public
+	 */
 	public function setup() {
+		$themes = new Admin_Apple_Themes;
+		$themes->setup_theme_pages();
 		$this->prophet  = new \Prophecy\Prophet;
 		$this->settings = new Settings();
 		$this->content  = new Exporter_Content( 1, __( 'My Title', 'apple-news' ), '<p>' . __( 'Hello, World!', 'apple-news' ) . '</p>' );
@@ -17,8 +24,16 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 		$this->layouts  = new Component_Layouts( $this->content, $this->settings );
 	}
 
+	/**
+	 * Actions to be run after every test.
+	 *
+	 * @access public
+	 */
 	public function tearDown() {
 		$this->prophet->checkPredictions();
+		$theme = new \Apple_Exporter\Theme();
+		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+		$theme->save();
 	}
 
 	protected function build_node( $html ) {
@@ -32,4 +47,15 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 		return $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
 	}
 
+	/**
+	 * A function to ensure that tokens are replaced in a JSON string.
+	 *
+	 * @param string $json The JSON to check for unreplaced tokens.
+	 *
+	 * @access protected
+	 */
+	protected function ensure_tokens_replaced( $json ) {
+		preg_match( '/"#[^"#]+#"/', $json, $matches );
+		$this->assertEmpty( $matches );
+	}
 }

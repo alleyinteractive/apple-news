@@ -1,0 +1,9 @@
+.apple-news-json label {
+	margin-top: 25px;
+	font-weight: bold;
+	display: block;
+}
+
+.apple-news-json input[type="submit"] {
+	margin-right: 1em;
+}

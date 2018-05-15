@@ -90,7 +90,10 @@ class Admin_Apple_Sections extends Apple_News {
 		$section_api = new Section( $admin_settings->fetch_settings() );
 		$sections = $section_api->get_sections();
 		if ( empty( $sections ) || ! is_array( $sections ) ) {
-			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
+			$sections = array();
+			Admin_Apple_News::show_error(
+				__( 'Unable to fetch a list of sections.', 'apple-news' )
+			);
 		}
 
 		return $sections;
@@ -148,7 +151,7 @@ class Admin_Apple_Sections extends Apple_News {
 		// Try to get configured taxonomy.
 		$taxonomy = self::get_mapping_taxonomy();
 		if ( empty( $taxonomy ) || is_wp_error( $taxonomy ) ) {
-			wp_die( __( 'Unable to get a valid mapping taxonomy.', 'apple-news' ) );
+			wp_die( esc_html__( 'Unable to get a valid mapping taxonomy.', 'apple-news' ) );
 		}
 
 		// Try to get terms for the post.
@@ -186,17 +189,17 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @param string $section_id The Apple News section ID
 	 *
 	 * @access public
-	 * @return array The theme settings, if set
+	 * @return string The name of the theme, or null if not found.
 	 */
 	public static function get_theme_for_section( $section_id ) {
+
+		// Try to get the theme mapping for this section ID.
 		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
 		if ( ! isset( $theme_mappings[ $section_id ] ) ) {
 			return null;
 		}
 
-		$theme = $theme_mappings[ $section_id ];
-		$theme_obj = new Admin_Apple_Themes();
-		return $theme_obj->get_theme( $theme_mappings[ $section_id ] );
+		return $theme_mappings[ $section_id ];
 	}
 
 	/**
@@ -254,14 +257,14 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Determine if we have anything to search for.
 		if ( empty( $_GET['term'] ) ) {
-			echo json_encode( array() );
+			echo wp_json_encode( array() );
 			exit;
 		}
 
 		// Try to get the taxonomy in use.
 		$taxonomy = self::get_mapping_taxonomy();
 		if ( empty( $taxonomy->name ) ) {
-			echo json_encode( array() );
+			echo wp_json_encode( array() );
 			exit;
 		}
 
@@ -278,12 +281,12 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// See if we got anything.
 		if ( empty( $terms ) || is_wp_error( $terms ) ) {
-			echo json_encode( array() );
+			echo wp_json_encode( array() );
 			exit;
 		}
 
 		// Encode results and bail.
-		echo json_encode( $terms );
+		echo wp_json_encode( $terms );
 		exit();
 	}
 
@@ -293,6 +296,12 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @access public
 	 */
 	public function setup_section_page() {
+
+		// Don't add the submenu page if the settings aren't initialized.
+		if ( ! self::is_initialized() ) {
+			return;
+		}
+
 		add_submenu_page(
 			'apple_news_index',
 			__( 'Apple News Sections', 'apple-news' ),
@@ -312,20 +321,20 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Don't allow access to this page if the user does not have permission.
 		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
-			wp_die( __( 'You do not have permissions to access this page.', 'apple-news' ) );
+			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
 		// Negotiate the taxonomy name.
 		$taxonomy = self::get_mapping_taxonomy();
 		if ( empty( $taxonomy->label ) ) {
-			wp_die( __( 'You specified an invalid mapping taxonomy.', 'apple-news' ) );
+			wp_die( esc_html__( 'You specified an invalid mapping taxonomy.', 'apple-news' ) );
 		}
 
 		// Try to get a list of sections.
 		$section_api = new Section( $this->settings );
 		$sections_raw = $section_api->get_sections();
 		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
-			wp_die( __( 'Unable to fetch a list of sections.', 'apple-news' ) );
+			wp_die( esc_html__( 'Unable to fetch a list of sections.', 'apple-news' ) );
 		}
 
 		// Convert sections returned from the API into a key/value pair of id/name.
@@ -353,7 +362,7 @@ class Admin_Apple_Sections extends Apple_News {
 		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
 		$theme_obj = new Admin_Apple_Themes();
 		$theme_admin_url = add_query_arg( 'page', $theme_obj->theme_page_name, admin_url( 'admin.php' ) );
-		$themes = $theme_obj->list_themes();
+		$themes = \Apple_Exporter\Theme::get_registry();
 
 		// Load the partial with the form.
 		include plugin_dir_path( __FILE__ ) . 'partials/page_sections.php';
@@ -382,14 +391,17 @@ class Admin_Apple_Sections extends Apple_News {
 		);
 		wp_enqueue_style(
 			'apple-news-sections-css',
-			plugin_dir_url( __FILE__ ) . '../assets/css/sections.css'
+			plugin_dir_url( __FILE__ ) . '../assets/css/sections.css',
+			array(),
+			self::$version
 		);
 
 		// Enqueue scripts for this page.
 		wp_enqueue_script(
 			'apple-news-sections-js',
 			plugin_dir_url( __FILE__ ) . '../assets/js/sections.js',
-			array( 'jquery', 'jquery-ui-autocomplete' )
+			array( 'jquery', 'jquery-ui-autocomplete' ),
+			self::$version
 		);
 	}
 

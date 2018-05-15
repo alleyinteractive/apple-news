@@ -1,7 +1,15 @@
 <?php
+/**
+ * Publish to Apple News Admin Settings: Admin_Apple_Settings_Section_Developer_Tools class
+ *
+ * Contains a class which is used to handle settings in the developer tools section.
+ *
+ * @package Apple_News
+ * @since 0.6.0
+ */
 
 /**
- * Describes a WordPress setting section
+ * A class which is used to handle settings in the developer tools section.
  *
  * @since 0.6.0
  */
@@ -18,29 +26,34 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 	/**
 	 * Constructor.
 	 *
-	 * @param string $page
+	 * @param string $page The name of the submenu page that this section is part of.
 	 */
 	function __construct( $page ) {
-		// Set the name
-		$this->name =  __( 'Developer Tools', 'apple-news' );
 
-		// Add the settings
+		// Set the name.
+		$this->name = __( 'Developer Tools', 'apple-news' );
+
+		// Add the settings.
 		$this->settings = array(
 			'apple_news_enable_debugging' => array(
-				'label'   => __( 'Enable Debugging', 'apple-news' ),
-				'type'    => array( 'no', 'yes' ),
+				'label' => __( 'Enable Debugging', 'apple-news' ),
+				'type' => array( 'no', 'yes' ),
 			),
 			'apple_news_admin_email' => array(
-				'label'    		=> __( 'Administrator Email', 'apple-news' ),
-				'type'     		=> 'text',
+				'label' => __( 'Administrator Email', 'apple-news' ),
+				'required' => false,
+				'type' => 'string',
 			),
 		);
 
-		// Add the groups
+		// Add the groups.
 		$this->groups = array(
 			'debugging_settings' => array(
-				'label'       => __( 'Debugging Settings', 'apple-news' ),
-				'settings'    => array( 'apple_news_enable_debugging', 'apple_news_admin_email' ),
+				'label' => __( 'Debugging Settings', 'apple-news' ),
+				'settings' => array(
+					'apple_news_enable_debugging',
+					'apple_news_admin_email',
+				),
 			),
 		);
 
@@ -54,6 +67,9 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 	 * @access public
 	 */
 	public function get_section_info() {
-		return __( 'If debugging is enabled, emails will be sent to an administrator for every publish, update or delete action with a detailed API response.', 'apple-news' );
+		return __(
+			'If debugging is enabled, emails will be sent to an administrator for every publish, update or delete action with a detailed API response.',
+			'apple-news'
+		);
 	}
 }

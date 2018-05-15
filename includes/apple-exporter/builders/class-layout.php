@@ -17,11 +17,15 @@ class Layout extends Builder {
 	 * @access protected
 	 */
 	protected function build() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		return apply_filters( 'apple_news_layout', array(
-			'columns' => intval( $this->get_setting( 'layout_columns' ) ),
-			'width'   => intval( $this->get_setting( 'layout_width' ) ),
-			'margin'  => intval( $this->get_setting( 'layout_margin' ) ),  // Defaults to 100
-			'gutter'  => intval( $this->get_setting( 'layout_gutter' ) ),  // Defaults to 20
+			'columns' => intval( $theme->get_layout_columns() ),
+			'width' => intval( $theme->get_value( 'layout_width' ) ),
+			'margin' => intval( $theme->get_value( 'layout_margin' ) ),  // Defaults to 100
+			'gutter' => intval( $theme->get_value( 'layout_gutter' ) ),  // Defaults to 20
 		), $this->content_id() );
 	}
 

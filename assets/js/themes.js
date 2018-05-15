@@ -6,6 +6,11 @@
 			appleNewsThemesSubmit( $( this ), 'apple_news_create_theme' );
 		});
 
+		$( '#apple_news_load_example_themes' ).on( 'click', function( e ) {
+			e.preventDefault();
+			appleNewsThemesSubmit( $( this ), 'apple_news_load_example_themes' );
+		});
+
 		$( '#apple_news_start_import' ).on( 'click', function( e ) {
 			e.preventDefault();
 			$( '.apple-news-theme-form' ).hide();
@@ -36,9 +41,11 @@
 			appleNewsThemesSubmit( $( this ), 'apple_news_export_theme' );
 		});
 
-		$( '#apple_news_set_theme' ).on( 'click', function( e ) {
+		$( '.apple-news-activate-theme' ).on( 'click', function( e ) {
 			e.preventDefault();
-			appleNewsThemesSubmit( $( this ), 'apple_news_set_theme' );
+			var $this = $( this );
+			$this.siblings( 'input[name="apple_news_active_theme"]' ).prop( 'checked', 'checked' );
+			appleNewsThemesSubmit( $this, 'apple_news_set_theme' );
 		});
 	});
 

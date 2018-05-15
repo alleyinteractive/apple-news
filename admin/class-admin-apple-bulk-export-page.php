@@ -106,7 +106,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 
 		// Check capabilities
 		if ( ! current_user_can( apply_filters( 'apple_news_publish_capability', 'manage_options' ) ) ) {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => __( 'You do not have permission to publish to Apple News', 'apple-news' ),
 			) );
@@ -119,15 +119,15 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Ensure the post exists and that it's published
 		$post = get_post( $id );
 		if ( empty( $post ) ) {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => __( 'This post no longer exists.', 'apple-news' ),
 			) );
 			wp_die();
 		}
 
-		if ( 'publish' != $post->post_status ) {
-			echo json_encode( array(
+		if ( 'publish' !== $post->post_status ) {
+			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => sprintf(
 					__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
@@ -145,12 +145,12 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		}
 
 		if ( $errors ) {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => $errors,
 			) );
 		} else {
-			echo json_encode( array(
+			echo wp_json_encode( array(
 				'success' => true,
 			) );
 		}
@@ -166,14 +166,22 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
-		if ( 'admin_page_apple_news_bulk_export' != $hook ) {
+		if ( 'admin_page_apple_news_bulk_export' !== $hook ) {
 			return;
 		}
 
-		wp_enqueue_style( $this->plugin_slug . '_bulk_export_css', plugin_dir_url(
-			__FILE__ ) .  '../assets/css/bulk-export.css' );
-		wp_enqueue_script( $this->plugin_slug . '_bulk_export_js', plugin_dir_url(
-			__FILE__ ) .  '../assets/js/bulk-export.js', array( 'jquery' ),
-			self::$version, true );
+		wp_enqueue_style(
+			$this->plugin_slug . '_bulk_export_css',
+			plugin_dir_url( __FILE__ ) .  '../assets/css/bulk-export.css',
+			array(),
+			self::$version
+		);
+		wp_enqueue_script(
+			$this->plugin_slug . '_bulk_export_js',
+			plugin_dir_url( __FILE__ ) .  '../assets/js/bulk-export.js',
+			array( 'jquery' ),
+			self::$version,
+			true
+		);
 	}
 }

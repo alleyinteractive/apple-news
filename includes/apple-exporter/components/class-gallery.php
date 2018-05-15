@@ -11,6 +11,7 @@
 
 namespace Apple_Exporter\Components;
 
+use \Apple_Exporter\Exporter_Content;
 use \DOMDocument;
 use \DOMElement;
 
@@ -38,6 +39,33 @@ class Gallery extends Component {
 	}
 
 	/**
+	 * Register all specs for the component.
+	 *
+	 * @access public
+	 */
+	public function register_specs() {
+		$this->register_spec(
+			'json',
+			__( 'JSON', 'apple-news' ),
+			array(
+				'role' => '#gallery_type#',
+				'items' => '#items#',
+			)
+		);
+
+		$this->register_spec(
+			'gallery-layout',
+			__( 'Layout', 'apple-news' ),
+			array(
+				'margin' => array(
+					'bottom' => 25,
+					'top' => 25,
+				),
+			)
+		);
+	}
+
+	/**
 	 * Build the component.
 	 *
 	 * @param string $text The HTML to parse.
@@ -60,6 +88,7 @@ class Gallery extends Component {
 		}
 
 		// Loop through items and construct slides.
+		$theme = \Apple_Exporter\Theme::get_used();
 		$items = array();
 		foreach ( $nodes->item( 0 )->childNodes as $item ) {
 
@@ -71,9 +100,15 @@ class Gallery extends Component {
 				continue;
 			}
 
+			// Ensure the URL is valid.
+			$url = Exporter_Content::format_src_url( $matches[1] );
+			if ( empty( $url ) ) {
+				continue;
+			}
+
 			// Start building the item.
 			$content = array(
-				'URL' => $this->maybe_bundle_source( $matches[1] ),
+				'URL' => $this->maybe_bundle_source( esc_url_raw( $url ) ),
 			);
 
 			// Try to add the caption.
@@ -97,14 +132,22 @@ class Gallery extends Component {
 			$items[] = $content;
 		}
 
-		// Build the JSON.
-		$this->json = array(
-			'role' => $this->get_setting( 'gallery_type' ),
-			'items' => $items,
+		// Ensure we got items.
+		if ( empty( $items ) ) {
+			return;
+		}
+
+		// Build the JSON
+		$this->register_json(
+			'json',
+			array(
+				'#gallery_type#' => $theme->get_value( 'gallery_type' ),
+				'#items#' => $items,
+			)
 		);
 
 		// Set the layout.
-		$this->_set_layout();
+		$this->set_layout();
 	}
 
 	/**
@@ -112,16 +155,12 @@ class Gallery extends Component {
 	 *
 	 * @access private
 	 */
-	private function _set_layout() {
-		$this->json['layout'] = 'gallery-layout';
+	private function set_layout() {
 		$this->register_full_width_layout(
 			'gallery-layout',
-			array(
-				'margin' => array(
-					'bottom' => 25,
-					'top' => 25,
-				),
-			)
+			'gallery-layout',
+			array(),
+			'layout'
 		);
 	}
 }

@@ -35,6 +35,29 @@ class Image_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Test empty src attribute.
+	 *
+	 * @access public
+	 */
+	public function testEmptySrc() {
+
+		// Setup.
+		$this->settings->set( 'use_remote_images', 'yes' );
+		$workspace = new \Apple_Exporter\Workspace( 1 );
+		$component = new Image(
+			'<img src="" alt="Example" align="left" />',
+			$workspace,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$result = $component->to_array();
+
+		// Test.
+		$this->assertEmpty( $result );
+	}
+
+	/**
 	 * Test the `apple_news_image_json` filter.
 	 *
 	 * @access public
@@ -69,6 +92,29 @@ class Image_Test extends Component_TestCase {
 			'apple_news_image_json',
 			array( $this, 'filter_apple_news_image_json' )
 		);
+	}
+
+	/**
+	 * Test src attribute that is just a fragment.
+	 *
+	 * @access public
+	 */
+	public function testFragmentSrc() {
+
+		// Setup.
+		$this->settings->set( 'use_remote_images', 'yes' );
+		$workspace = new \Apple_Exporter\Workspace( 1 );
+		$component = new Image(
+			'<img src="#fragment" alt="Example" align="left" />',
+			$workspace,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$result = $component->to_array();
+
+		// Test.
+		$this->assertEmpty( $result );
 	}
 
 	/**
@@ -130,6 +176,31 @@ class Image_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Test relative src attribute.
+	 *
+	 * @access public
+	 */
+	public function testRelativeSrc() {
+
+		// Setup.
+		$this->settings->set( 'use_remote_images', 'yes' );
+		$workspace = new \Apple_Exporter\Workspace( 1 );
+		$component = new Image(
+			'<img src="/relative/path/to/image.jpg" alt="Example" align="left" />',
+			$workspace,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+		$result = $component->to_array();
+
+		// Test.
+		$this->assertEquals( 'photo', $result['role'] );
+		$this->assertEquals( 'http://example.org/relative/path/to/image.jpg', $result['URL'] );
+		$this->assertEquals( 'anchored-image', $result['layout'] );
+	}
+
+	/**
 	 * Tests image and image caption settings.
 	 *
 	 * @access public
@@ -137,12 +208,16 @@ class Image_Test extends Component_TestCase {
 	public function testSettings() {
 
 		// Setup.
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
 		$this->settings->full_bleed_images = 'yes';
-		$this->settings->caption_color = '#abcdef';
-		$this->settings->caption_font = 'TestFontName';
-		$this->settings->caption_line_height = 28;
-		$this->settings->caption_size = 20;
-		$this->settings->caption_tracking = 50;
+		$settings['caption_color'] = '#abcdef';
+		$settings['caption_font'] = 'AmericanTypewriter';
+		$settings['caption_line_height'] = 28;
+		$settings['caption_size'] = 20;
+		$settings['caption_tracking'] = 50;
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
 		$html = <<<HTML
 <figure>
 	<img src="http://someurl.com/filename.jpg" alt="Example">
@@ -165,7 +240,7 @@ HTML;
 			$result['components'][1]['textStyle']['textColor']
 		);
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$result['components'][1]['textStyle']['fontName']
 		);
 		$this->assertEquals(

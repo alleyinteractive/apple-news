@@ -1,3 +1,14 @@
+<?php if ( ! \Apple_News::is_initialized() ) : ?>
+	<div id="apple-news-publish">
+		<?php printf(
+			/* translators: First token is opening a tag, second is closing a tag */
+			esc_html__( 'You must enter your API information on the %1$ssettings page%2$s before using Publish to Apple News.', 'apple-news' ),
+			'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-options' ) ) . '">',
+			'</a>'
+		); ?>
+	</div>
+	<?php return; ?>
+<?php endif; ?>
 <div id="apple-news-publish">
 	<?php wp_nonce_field( $publish_action, 'apple_news_nonce' ); ?>
 	<div id="apple-news-metabox-sections" class="apple-news-metabox-section">
@@ -13,6 +24,13 @@
 		<label for="apple-news-is-preview">
 			<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ) ?>>
 			<?php esc_html_e( 'Check this to publish the article as a draft.', 'apple-news' ); ?>
+		</label>
+	</div>
+	<div id="apple-news-metabox-is-hidden" class="apple-news-metabox-section">
+		<h3><?php esc_html_e( 'Hidden?', 'apple-news' ); ?></h3>
+		<label for="apple-news-is-hidden">
+			<input id="apple-news-is-hidden" name="apple_news_is_hidden" type="checkbox" value="1" <?php checked( $is_hidden ) ?>>
+			<?php esc_html_e( 'Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news' ); ?>
 		</label>
 	</div>
 	<div id="apple-news-metabox-is-sponsored" class="apple-news-metabox-section">

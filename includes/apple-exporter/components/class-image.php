@@ -15,13 +15,12 @@ class Image extends Component {
 	 *
 	 * @param DomNode $node
 	 * @return mixed
-	 * @static
 	 * @access public
 	 */
 	public static function node_matches( $node ) {
 		// Is this an image node?
 		if (
-		 	( 'img' == $node->nodeName || 'figure' == $node->nodeName )
+		 	( 'img' === $node->nodeName || 'figure' === $node->nodeName )
 			&& self::remote_file_exists( $node )
 		) {
 			return $node;
@@ -31,19 +30,124 @@ class Image extends Component {
 	}
 
 	/**
+	 * Register all specs for the component.
+	 *
+	 * @access public
+	 */
+	public function register_specs() {
+		$this->register_spec(
+			'json-without-caption',
+			__( 'JSON without caption', 'apple-news' ),
+			array(
+				'role' => 'photo',
+				'URL'  => '#url#',
+				'layout' => '#layout#',
+			)
+		);
+
+		$this->register_spec(
+			'json-with-caption',
+			__( 'JSON with caption', 'apple-news' ),
+			array(
+				'role' => 'container',
+				'components' => array(
+					array(
+						'role' => 'photo',
+						'URL'  => '#url#',
+						'layout' => '#layout#',
+						'caption' => '#caption#',
+					),
+					array(
+						'role' => 'caption',
+						'text' => '#caption#',
+						'textStyle' => array(
+							'textAlignment' => '#text_alignment#',
+							'fontName' => '#caption_font#',
+							'fontSize' => '#caption_size#',
+							'tracking' => '#caption_tracking#',
+							'lineHeight' => '#caption_line_height#',
+							'textColor' => '#caption_color#',
+						),
+						'layout' => array(
+							'margin' => array(
+								'top' => 20,
+							),
+							'ignoreDocumentMargin' => '#full_bleed_images#',
+						),
+					),
+				),
+				'layout' => array(
+					'ignoreDocumentMargin' => '#full_bleed_images#',
+				),
+			)
+		);
+
+		$this->register_spec(
+			'anchored-image',
+			__( 'Anchored Layout', 'apple-news' ),
+			array(
+				'margin' => array(
+					'bottom' => 25,
+					'top' => 25,
+				),
+			)
+		);
+
+		$this->register_spec(
+			'non-anchored-image',
+			__( 'Non Anchored Layout', 'apple-news' ),
+			array(
+				'margin' => array(
+					'bottom' => 25,
+					'top' => 25,
+				),
+				'columnSpan' => '#layout_columns_minus_4#',
+				'columnStart' => 2,
+			)
+		);
+
+		$this->register_spec(
+			'non-anchored-full-bleed-image',
+			__( 'Non Anchored with Full Bleed Images Layout', 'apple-news' ),
+			array(
+				'margin' => array(
+					'bottom' => 25,
+					'top' => 25,
+				),
+				'ignoreDocumentMargin' => true,
+			)
+		);
+	}
+
+	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $text The text to convert into a component.
+	 *
 	 * @access protected
 	 */
 	protected function build( $text ) {
-		preg_match( '/src="([^"]*?)"/im', $text, $matches );
-		$url      = esc_url_raw( apply_filters( 'apple_news_build_image_src', $matches[1], $text ) );
-		$filename = preg_replace( '/\\?.*/', '', \Apple_News::get_filename( $url ) );
 
-		$this->json = array(
-			'role' => 'photo',
-			'URL'  => $this->maybe_bundle_source( $url, $filename ),
+		// Extract the URL from the text.
+		$url = self::url_from_src( $text );
+
+		/**
+		 * Allows for an image src value to be filtered before being applied.
+		 *
+		 * @param string $url The URL to be filtered.
+		 * @param string $text The raw text that was parsed for the URL.
+		 */
+		$url = esc_url_raw( apply_filters( 'apple_news_build_image_src', $url, $text ) );
+
+		// If we don't have a valid URL at this point, bail.
+		if ( empty( $url ) ) {
+			return;
+		}
+
+		// Add the URL as a parameter for replacement.
+		$filename = preg_replace( '/\\?.*/', '', \Apple_News::get_filename( $url ) );
+		$values = array(
+			'#url#'  => $this->maybe_bundle_source( $url, $filename ),
 		);
 
 		// Determine image alignment.
@@ -59,62 +163,77 @@ class Image extends Component {
 			$this->set_anchor_position( Component::ANCHOR_NONE );
 		}
 
-		// Full width images have top margin
-		if ( Component::ANCHOR_NONE == $this->get_anchor_position() ) {
-			$this->register_non_anchor_layout();
-		} else {
-			$this->register_anchor_layout();
-		}
-
 		// Check for caption
 		if ( preg_match( '#<figcaption.*?>(.*?)</figcaption>#m', $text, $matches ) ) {
 			$caption = trim( $matches[1] );
-			$this->json['caption'] = $caption;
-			$this->group_component( $caption );
+			$values['#caption#'] = $caption;
+			$values = $this->group_component( $caption, $values );
+			$spec_name = 'json-with-caption';
+		} else {
+			$spec_name = 'json-without-caption';
 		}
+
+		// Full width images have top margin
+		// We can't use the standard layout registration due to grouping components
+		// with images so instead, send it through as a value.
+		if ( Component::ANCHOR_NONE === $this->get_anchor_position() ) {
+			$values = $this->register_non_anchor_layout( $values );
+		} else {
+			$values = $this->register_anchor_layout( $values );
+		}
+
+		// Register the JSON
+		$this->register_json( $spec_name, $values );
 	}
 
 	/**
 	 * Register the anchor layout.
 	 *
+	 * @param array $values
+	 * @return array
 	 * @access private
 	 */
-	private function register_anchor_layout() {
-		$this->json['layout'] = 'anchored-image';
-		$this->register_layout( 'anchored-image', array(
-			'margin' => array(
-				'bottom' => 25,
-				'top' => 25,
-			),
-		) );
+	private function register_anchor_layout( $values ) {
+		$this->register_layout(
+			'anchored-image',
+			'anchored-image'
+		);
+
+		$values['#layout#'] = 'anchored-image';
+		return $values;
 	}
 
 	/**
 	 * Register the non-anchor layout.
 	 *
+	 * @param array $values
+	 * @return array
 	 * @access private
 	 */
-	private function register_non_anchor_layout() {
+	private function register_non_anchor_layout( $values ) {
 
-		// Set base layout settings.
-		$layout = array(
-			'margin' => array(
-				'bottom' => 25,
-				'top' => 25,
-			),
-		);
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
 
-		// Add full bleed image option.
+		// Set values to merge into the spec
+		$layout_values = array();
+
 		if ( 'yes' === $this->get_setting( 'full_bleed_images' ) ) {
-			$layout['ignoreDocumentMargin'] = true;
+			$spec_name = 'non-anchored-full-bleed-image';
 		} else {
-			$layout['columnSpan'] = $this->get_setting( 'layout_columns' ) - 4;
-			$layout['columnStart'] = 2;
+			$layout_values['#layout_columns_minus_4#'] = $theme->get_layout_columns() - 4;
+			$spec_name = 'non-anchored-image';
 		}
 
 		// Register the layout.
-		$this->json['layout'] = 'full-width-image';
-		$this->register_full_width_layout( 'full-width-image', $layout );
+		$this->register_full_width_layout(
+			'full-width-image',
+			$spec_name,
+			$layout_values
+		);
+
+		$values['#layout#'] = 'full-width-image';
+		return $values;
 	}
 
 	/**
@@ -124,8 +243,12 @@ class Image extends Component {
 	 * @access private
 	 */
 	private function find_caption_alignment() {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$text_alignment = null;
-		if ( Component::ANCHOR_NONE == $this->get_anchor_position() ) {
+		if ( Component::ANCHOR_NONE === $this->get_anchor_position() ) {
 			return 'center';
 		}
 
@@ -133,7 +256,7 @@ class Image extends Component {
 			case Component::ANCHOR_LEFT:
 				return 'left';
 			case Component::ANCHOR_AUTO:
-				if ( 'left' == $this->get_setting( 'body_orientation' ) ) {
+				if ( 'left' === $theme->get_value( 'body_orientation' ) ) {
 					return 'right';
 				}
 		}
@@ -143,40 +266,33 @@ class Image extends Component {
 
 	/**
 	 * If the image has a caption, we have to also show a caption component.
-	 * Let's instead, return the JSON as a Container instead of an Image.
+	 * Let's instead, return the values as a Container instead of an Image.
 	 *
 	 * @param string $caption
+	 * @param array $values
+	 * @return array
 	 * @access private
 	 */
-	private function group_component( $caption ) {
+	private function group_component( $caption, $values ) {
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
 
 		// Roll up the image component into a container.
-		$image_component = $this->json;
-		$this->json = array(
-			'role' => 'container',
-			'components' => array(
-				$image_component,
-				array(
-					'role' => 'caption',
-					'text' => $caption,
-					'textStyle' => array(
-						'textAlignment' => $this->find_caption_alignment(),
-						'fontName' => $this->get_setting( 'caption_font' ),
-						'fontSize' => intval( $this->get_setting( 'caption_size' ) ),
-						'tracking' => intval( $this->get_setting( 'caption_tracking' ) ) / 100,
-						'lineHeight' => intval( $this->get_setting( 'caption_line_height' ) ),
-						'textColor' => $this->get_setting( 'caption_color' ),
-					),
-					'layout' => array(
-						'margin' => array( 'top' => 20 ),
-					),
-				),
-			),
+		$values = array_merge(
+			$values,
+			array(
+				'#caption#' => $caption,
+				'#text_alignment#' => $this->find_caption_alignment(),
+				'#caption_font#' => $theme->get_value( 'caption_font' ),
+				'#caption_size#' => intval( $theme->get_value( 'caption_size' ) ),
+				'#caption_tracking#' => intval( $theme->get_value( 'caption_tracking' ) ) / 100,
+				'#caption_line_height#' => intval( $theme->get_value( 'caption_line_height' ) ),
+				'#caption_color#' => $theme->get_value( 'caption_color' ),
+				'#full_bleed_images#' => ( 'yes' === $this->get_setting( 'full_bleed_images' ) ),
+			)
 		);
 
-		// Add full bleed image option.
-		if ( 'yes' === $this->get_setting( 'full_bleed_images' ) ) {
-			$this->json['layout']['ignoreDocumentMargin'] = true;
-		}
+		return $values;
 	}
 }

@@ -14,12 +14,11 @@ class Tweet extends Component {
 	 *
 	 * @param DomNode $node
 	 * @return mixed
-	 * @static
 	 * @access public
 	 */
 	public static function node_matches( $node ) {
 		// Check if the body of a node is solely a tweet URL
-		$is_twitter_url = $node->nodeName == 'p' && preg_match(
+		$is_twitter_url = $node->nodeName === 'p' && preg_match(
 			'#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i',
 			trim( $node->nodeValue ) );
 
@@ -31,13 +30,40 @@ class Tweet extends Component {
 	}
 
 	/**
+	 * Register all specs for the component.
+	 *
+	 * @access public
+	 */
+	public function register_specs() {
+		$this->register_spec(
+			'json',
+			__( 'JSON', 'apple-news' ),
+			array(
+				'role' => 'tweet',
+				'URL' => '#url#',
+			)
+		);
+
+		$this->register_spec(
+			'tweet-layout',
+			__( 'Layout', 'apple-news' ),
+			array(
+				'margin' => array(
+					'top' => 30,
+					'bottom' => 30,
+				)
+			)
+		);
+	}
+
+	/**
 	 * Build the component.
 	 *
 	 * @param string $text
 	 * @access protected
 	 */
 	protected function build( $text ) {
-		// Find tweeter URL in HTML string
+		// Find Twitter URL in HTML string.
 		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?twitter.com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $text, $matches, PREG_SET_ORDER ) ) {
 			return null;
 		}
@@ -45,9 +71,12 @@ class Tweet extends Component {
 		$matches = array_pop( $matches );
 
 		$url = 'https://twitter.com/' . $matches[1] . '/status/' . $matches[2];
-		$this->json = array(
-			'role' => 'tweet',
-			'URL'  => $url,
+
+		$this->register_json(
+			'json',
+			array(
+				'#url#' => $url,
+			)
 		);
 
 		$this->set_layout();
@@ -59,10 +88,12 @@ class Tweet extends Component {
 	 * @access private
 	 */
 	private function set_layout() {
-		$this->json['layout'] = 'tweet-layout';
-		$this->register_full_width_layout( 'tweet-layout', array(
-			'margin' => array( 'top' => 30, 'bottom' => 30 )
-		) );
+		$this->register_full_width_layout(
+			'tweet-layout',
+			'tweet-layout',
+			array(),
+			'layout'
+		);
 	}
 
 }

@@ -72,55 +72,86 @@ class Metadata_Test extends WP_UnitTestCase {
 			'post_date' => '2016-04-01 00:00:00',
 		) );
 
-		// Create dummy attachments.
+		// Create dummy attachment.
 		$file = dirname( dirname( __DIR__ ) ) . '/data/test-image.jpg';
-		$landscape = $this->factory->attachment->create_upload_object( $file, $post_id );
-		update_post_meta( $landscape, '_wp_attachment_image_alt', 'Landscape alt' );
-		$portrait = $this->factory->attachment->create_upload_object( $file, $post_id );
-		update_post_meta( $portrait, '_wp_attachment_image_alt', 'Portrait alt' );
-		$square = $this->factory->attachment->create_upload_object( $file, $post_id );
-		update_post_meta( $square, '_wp_attachment_image_alt', 'Square alt' );
+		$image = $this->factory->attachment->create_upload_object( $file, $post_id );
+		update_post_meta( $image, '_wp_attachment_image_alt', 'Cover art' );
 
-		// Add meta for the three cover art sizes to the post.
-		update_post_meta( $post_id, 'apple_news_coverart_landscape', $landscape );
-		update_post_meta( $post_id, 'apple_news_coverart_portrait', $portrait );
-		update_post_meta( $post_id, 'apple_news_coverart_square', $square );
+		// Add cover art meta.
+		update_post_meta(
+			$post_id,
+			'apple_news_coverart',
+			array(
+				'orientation' => 'landscape',
+				'apple_news_ca_landscape_12_9' => $image,
+				'apple_news_ca_landscape_9_7' => $image,
+				'apple_news_ca_landscape_5_5' => $image,
+				'apple_news_ca_landscape_4_7' => $image,
+				'apple_news_ca_landscape_4_0' => $image,
+			)
+		);
 
 		// Run the exporter to get the JSON from the metadata.
 		$content = new Exporter_Content( $post_id, $title, $content );
 		$builder = new Metadata( $content, $this->settings );
 		$result = $builder->to_array();
 
-		// Ensure primary cover art properties were set properly for each orientation.
+		// Ensure cover art properties were set properly.
 		$this->assertEquals(
-			'Landscape alt',
+			'Cover art',
 			$result['coverArt'][0]['accessibilityCaption']
 		);
 		$this->assertEquals(
 			'image',
 			$result['coverArt'][0]['type']
 		);
+		$this->assertNotFalse(
+			strpos( $result['coverArt'][0]['URL'], '1832x1374.jpg' )
+		);
 		$this->assertEquals(
-			'Portrait alt',
+			'Cover art',
 			$result['coverArt'][1]['accessibilityCaption']
 		);
 		$this->assertEquals(
 			'image',
 			$result['coverArt'][1]['type']
 		);
+		$this->assertNotFalse(
+			strpos( $result['coverArt'][1]['URL'], '1376x1032.jpg' )
+		);
 		$this->assertEquals(
-			'Square alt',
+			'Cover art',
 			$result['coverArt'][2]['accessibilityCaption']
 		);
 		$this->assertEquals(
 			'image',
 			$result['coverArt'][2]['type']
 		);
-
-		// Ensure dimensions were set properly for each orientation.
-		$this->assertNotFalse( strpos( $result['coverArt'][0]['URL'], '1832x1374.jpg' ) );
-		$this->assertNotFalse( strpos( $result['coverArt'][1]['URL'], '1122x1496.jpg' ) );
-		$this->assertNotFalse( strpos( $result['coverArt'][2]['URL'], '1472x1472.jpg' ) );
+		$this->assertNotFalse(
+			strpos( $result['coverArt'][2]['URL'], '1044x783.jpg' )
+		);
+		$this->assertEquals(
+			'Cover art',
+			$result['coverArt'][3]['accessibilityCaption']
+		);
+		$this->assertEquals(
+			'image',
+			$result['coverArt'][3]['type']
+		);
+		$this->assertNotFalse(
+			strpos( $result['coverArt'][3]['URL'], '632x474.jpg' )
+		);
+		$this->assertEquals(
+			'Cover art',
+			$result['coverArt'][4]['accessibilityCaption']
+		);
+		$this->assertEquals(
+			'image',
+			$result['coverArt'][4]['type']
+		);
+		$this->assertNotFalse(
+			strpos( $result['coverArt'][4]['URL'], '536x402.jpg' )
+		);
 	}
 
 	/**

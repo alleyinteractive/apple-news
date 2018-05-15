@@ -202,10 +202,10 @@ class Exporter {
 	private function generate_json() {
 		// Base JSON
 		$json = array(
-			'version'    => '1.1',
+			'version'    => '1.7',
 			'identifier' => 'post-' . $this->content_id(),
 			'language'   => apply_filters( 'apple_news_exporter_language', get_bloginfo( 'language' ), $this->content_id() ),
-			'title'      => $this->content_title(),
+			'title'      => wp_strip_all_tags( $this->content_title() ),
 		);
 
 		// Builders
@@ -221,7 +221,7 @@ class Exporter {
 
 		// Clean up the data array and convert to JSON format.
 		$this->prepare_for_encoding( $json );
-		$json = json_encode( $json );
+		$json = wp_json_encode( $json );
 
 		// Check the JSON for unicode errors.
 		// For now, we'll assume that multiple unicode characters in sequence
@@ -301,8 +301,12 @@ class Exporter {
 	 * @access private
 	 */
 	private function build_article_style() {
+
+		// Get information about the currently used theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		return array(
-			'backgroundColor' => $this->settings->get( 'body_background_color' ),
+			'backgroundColor' => $theme->get_value( 'body_background_color' ),
 		);
 	}
 

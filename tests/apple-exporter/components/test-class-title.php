@@ -14,6 +14,7 @@ class Title_Test extends Component_TestCase {
 			array(
 				'role' => 'title',
 				'text' => 'Example Title',
+				'format' => 'html',
 				'textStyle' => 'default-title',
 				'layout' => 'title-layout',
 		 	),
@@ -34,6 +35,7 @@ class Title_Test extends Component_TestCase {
 			array(
 				'role' => 'title',
 				'text' => 'Example Title',
+				'format' => 'html',
 				'textStyle' => 'fancy-title',
 				'layout' => 'title-layout',
 		 	),

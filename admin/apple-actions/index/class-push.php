@@ -154,11 +154,8 @@ class Push extends API_Action {
 		// Process errors
 		$this->process_errors( $errors );
 
-		// Validate the data before using since it's filterable.
-		// JSON should just be a string.
-		// Apple News format is complex and has too many options to validate otherwise.
-		// Let's just make sure it's not doing anything bad and is the right data type.
-		$json = sanitize_text_field( $json );
+		// Sanitize the data before using since it's filterable.
+		$json = $this->sanitize_json( $json );
 
 		// Bundles should be an array of URLs
 		if ( ! empty( $bundles ) && is_array( $bundles ) ) {
@@ -186,15 +183,15 @@ class Push extends API_Action {
 
 			// Get the isPreview setting
 			$is_preview = (bool) get_post_meta( $this->id, 'apple_news_is_preview', true );
-			if ( true === $is_preview ) {
-				$meta['data']['isPreview'] = $is_preview;
-			}
+			$meta['data']['isPreview'] = $is_preview;
+
+			// Get the isHidden setting
+			$is_hidden = (bool) get_post_meta( $this->id, 'apple_news_is_hidden', true );
+			$meta['data']['isHidden'] = $is_hidden;
 
 			// Get the isSponsored setting
 			$is_sponsored = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
-			if ( true === $is_sponsored ) {
-				$meta['data']['isSponsored'] = $is_sponsored;
-			}
+			$meta['data']['isSponsored'] = $is_sponsored;
 
 			// Get the maturity rating setting
 			$maturity_rating = get_post_meta( $this->id, 'apple_news_maturity_rating', true );
@@ -385,5 +382,24 @@ class Push extends API_Action {
 		$this->exporter->generate();
 
 		return array( $this->exporter->get_json(), $this->exporter->get_bundles(), $this->exporter->get_errors() );
+	}
+
+	/**
+	 * Sanitize the JSON output based on whether HTML or markdown is used.
+	 *
+	 * @access private
+	 * @param string $json
+	 * @return string
+	 * @since 1.2.7
+	 */
+	private function sanitize_json( $json ) {
+		// Apple News format is complex and has too many options to validate otherwise.
+		// Let's just make sure the JSON is valid
+		$decoded = json_decode( $json );
+		if ( ! $decoded ) {
+			 throw new \Apple_Actions\Action_Exception( __( 'The Apple News JSON is invalid and cannot be published.', 'apple-news' ) );
+		} else {
+			 return wp_json_encode( $decoded );
+		}
 	}
 }

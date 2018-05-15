@@ -41,8 +41,8 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 					'id' => 'abcdef01-2345-6789-abcd-ef012356789a',
 					'isDefault' => true,
 					'links' => (object) array(
-						'channel' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
-						'self' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
+						'channel' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
+						'self' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
 					),
 					'modifiedAt' => '2017-01-01T00:00:00Z',
 					'name' => 'Main',
@@ -54,8 +54,8 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 					'id' => 'abcdef01-2345-6789-abcd-ef012356789b',
 					'isDefault' => false,
 					'links' => (object) array(
-						'channel' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
-						'self' => 'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
+						'channel' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef0123567890',
+						'self' => 'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
 					),
 					'modifiedAt' => '2017-01-01T00:00:00Z',
 					'name' => 'Secondary Section',
@@ -99,32 +99,18 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 	 * @access private
 	 */
 	private function createThemes() {
-		$themes = new \Admin_Apple_Themes();
-		$defaults = $this->getFormattingSettings( $this->settings->all() );
-		update_option( $themes->theme_key_from_name( 'Default' ), $defaults );
-		update_option( $themes->theme_key_from_name( 'Test Theme' ), $defaults );
-	}
 
-	/**
-	 * Gets formatting settings for themes.
-	 *
-	 * @access private
-	 */
-	private function getFormattingSettings( $all_settings ) {
-		// Get only formatting settings
-		$formatting = new Admin_Apple_Settings_Section_Formatting( '' );
-		$formatting_settings = $formatting->get_settings();
+		// Create the default theme.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( 'Default' );
+		$this->assertTrue( $theme->save() );
+		unset( $theme );
 
-		$formatting_settings_keys = array_keys( $formatting_settings );
-		$filtered_settings = array();
-
-		foreach ( $formatting_settings_keys as $key ) {
-			if ( isset( $all_settings[ $key ] ) ) {
-				$filtered_settings[ $key ] = $all_settings[ $key ];
-			}
-		}
-
-		return $filtered_settings;
+		// Create a test theme.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( 'Test Theme' );
+		$this->assertTrue( $theme->save() );
+		unset( $theme );
 	}
 
 	/**
@@ -142,7 +128,7 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 		// Validate automatic section assignment.
 		$this->assertEquals(
 			array(
-				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
+				'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789b',
 			),
 			Admin_Apple_Sections::get_sections_for_post( $post_id )
 		);
@@ -186,14 +172,14 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 			$post_id,
 			'apple_news_sections',
 			array(
-				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
+				'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
 			)
 		);
 
 		// Validate manual section assignment.
 		$this->assertEquals(
 			array(
-				'https://u48r14.digitalhub.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
+				'https://news-api.apple.com/channels/abcdef01-2345-6789-abcd-ef012356789a',
 			),
 			Admin_Apple_Sections::get_sections_for_post( $post_id )
 		);

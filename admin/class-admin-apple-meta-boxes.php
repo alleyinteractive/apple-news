@@ -33,7 +33,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$this->settings = $settings;
 
 		// Register hooks if enabled
-		if ( 'yes' == $settings->get( 'show_metabox' ) ) {
+		if ( 'yes' === $settings->get( 'show_metabox' ) ) {
 			// Handle a publish action and saving fields
 			add_action( 'save_post', array( $this, 'do_publish' ), 10, 2 );
 
@@ -77,10 +77,10 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		self::save_post_meta( $post_id );
 
 		// If this is set to autosync or no action is set, we're done here
-		if ( 'yes' == $this->settings->get( 'api_autosync' )
-			|| 'publish' != $post->post_status
+		if ( 'yes' === $this->settings->get( 'api_autosync' )
+			|| 'publish' !== $post->post_status
 			|| empty( $_POST['apple_news_publish_action'] )
-			|| $this->publish_action != $_POST['apple_news_publish_action'] ) {
+			|| $this->publish_action !== $_POST['apple_news_publish_action'] ) {
 			return;
 		}
 
@@ -105,7 +105,6 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 *
 	 * @param int $post_id
 	 * @access public
-	 * @static
 	 */
 	public static function save_post_meta( $post_id ) {
 
@@ -132,6 +131,13 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 		update_post_meta( $post_id, 'apple_news_is_preview', $is_preview );
 
+		if ( ! empty( $_POST['apple_news_is_hidden'] ) && 1 === intval( $_POST['apple_news_is_hidden'] ) ) {
+			$is_hidden = true;
+		} else {
+			$is_hidden = false;
+		}
+		update_post_meta( $post_id, 'apple_news_is_hidden', $is_hidden );
+
 		if ( ! empty( $_POST['apple_news_is_sponsored'] ) && 1 === intval( $_POST['apple_news_is_sponsored'] ) ) {
 			$is_sponsored = true;
 		} else {
@@ -141,7 +147,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		if ( ! empty( $_POST['apple_news_maturity_rating'] ) ) {
 			$maturity_rating = sanitize_text_field( $_POST['apple_news_maturity_rating'] );
-			if ( ! in_array( $maturity_rating, self::$maturity_ratings ) ) {
+			if ( ! in_array( $maturity_rating, self::$maturity_ratings, true ) ) {
 				$maturity_rating = '';
 			}
 		}
@@ -163,10 +169,8 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 		update_post_meta( $post_id, 'apple_news_pullquote_position', $pullquote_position );
 
-		// Save each cover art image.
-		self::_save_coverart_meta( $post_id, 'apple_news_coverart_landscape' );
-		self::_save_coverart_meta( $post_id, 'apple_news_coverart_portrait' );
-		self::_save_coverart_meta( $post_id, 'apple_news_coverart_square' );
+		// Save cover art.
+		self::_save_coverart_meta( $post_id );
 	}
 
 	/**
@@ -203,6 +207,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$deleted = get_post_meta( $post->ID, 'apple_news_api_deleted', true );
 		$pending = get_post_meta( $post->ID, 'apple_news_api_pending', true );
 		$is_preview = get_post_meta( $post->ID, 'apple_news_is_preview', true );
+		$is_hidden = get_post_meta( $post->ID, 'apple_news_is_hidden', true );
 		$maturity_rating = get_post_meta( $post->ID, 'apple_news_maturity_rating', true );
 		$is_sponsored = get_post_meta( $post->ID, 'apple_news_is_sponsored', true );
 		$pullquote = get_post_meta( $post->ID, 'apple_news_pullquote', true );
@@ -285,24 +290,22 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	}
 
 	/**
-	 * Determine if a section is checked
+	 * Determine if a section is checked.
 	 *
-	 * @param array $sections
-	 * @param int $section_id
-	 * @param int $is_default
+	 * @param array $sections The list of sections applied to a particular post.
+	 * @param int $section_id The ID of the section to check.
+	 * @param bool $is_default Whether this section is the default section.
+	 *
 	 * @access public
-	 * @static
+	 * @return bool True if the section should be checked, false otherwise.
 	 */
 	public static function section_is_checked( $sections, $section_id, $is_default ) {
 		// If no sections exist, return true if this is the default.
 		// If sections is an empty array, this is intentional though and nothing should be checked.
 		// If sections are provided, then only use those for matching.
-		if ( ( empty( $sections ) && ! is_array( $sections ) && 1 == $is_default )
-			|| ( ! empty( $sections ) && is_array( $sections ) && in_array( $section_id, $sections ) ) ) {
-			return true;
-		} else {
-			return false;
-		}
+		return ( ( empty( $sections ) && ! is_array( $sections ) && $is_default )
+			|| ( ! empty( $sections ) && is_array( $sections ) && in_array( $section_id, $sections, true ) )
+		);
 	}
 
 	/**
@@ -322,7 +325,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Enqueue metabox stylesheet.
 		wp_enqueue_style(
 			$this->plugin_slug . '_meta_boxes_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/meta-boxes.css'
+			plugin_dir_url( __FILE__ ) .  '../assets/css/meta-boxes.css',
+			array(),
+			self::$version
 		);
 
 		// Enqueue metabox script.
@@ -341,25 +346,48 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	}
 
 	/**
-	 * Saves a cover art image to meta, given a post ID and a field name.
+	 * Saves a cover art image(s) to meta, given a post ID.
 	 *
 	 * @param int $post_id The post ID to update meta for.
-	 * @param string $field_name The field name to use in POST and meta_key.
 	 *
 	 * @access private
 	 */
-	private static function _save_coverart_meta( $post_id, $field_name ) {
+	private static function _save_coverart_meta( $post_id ) {
 
-		// Determine if there is postdata for this key.
-		if ( empty( $_POST[ $field_name ] )
-			|| ! is_numeric( $_POST[ $field_name ] )
-		) {
-			delete_post_meta( $post_id, $field_name );
-
+		// Ensure there is an orientation.
+		if ( empty( $_POST['apple-news-coverart-orientation'] ) ) {
 			return;
 		}
 
+		// Start building cover art meta using the orientation.
+		$meta_value = array(
+			'orientation' => sanitize_text_field( $_POST['apple-news-coverart-orientation'] ),
+		);
+
+		// Iterate through image sizes and add each that is set for the orientation.
+		$image_sizes = Admin_Apple_News::get_image_sizes();
+		foreach ( $image_sizes as $key => $data ) {
+
+			// Skip any defined image sizes that are not intended for cover art.
+			if ( 'coverArt' !== $data['type'] ) {
+				continue;
+			}
+
+			// Ensure the orientation is a match.
+			if ( $meta_value['orientation'] !== $data['orientation'] ) {
+				continue;
+			}
+
+			// Determine if there was an image ID provided for this size.
+			if ( empty( $_POST[ $key ] ) ) {
+				continue;
+			}
+
+			// Save this image ID to the cover art postmeta.
+			$meta_value[ $key ] = absint( $_POST[ $key ] );
+		}
+
 		// Save post meta for this key.
-		update_post_meta( $post_id, $field_name, absint( $_POST[ $field_name ] ) );
+		update_post_meta( $post_id, 'apple_news_coverart', $meta_value );
 	}
 }

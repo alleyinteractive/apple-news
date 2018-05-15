@@ -20,6 +20,36 @@ use Apple_Exporter\Exporter_Content;
 class Quote_Test extends Component_TestCase {
 
 	/**
+	 * A data provider for the testTransformPullquote function.
+	 *
+	 * @see self::testTransformPullquote()
+	 *
+	 * @access public
+	 * @return array Parameters to use when calling testTransformPullquote.
+	 */
+	public function dataTransformPullquote() {
+		return array(
+			array( 'my text', 'my text' . "\n\n", 'no' ),
+			array( 'my text', '“my text”' . "\n\n", 'yes' ),
+			array( '"my text"', '“my text”' . "\n\n", 'yes' ),
+			array( '“my text”', '“my text”' . "\n\n", 'yes' ),
+		);
+	}
+
+	/**
+	 * A filter function to modify the hanging punctuation text.
+	 *
+	 * @param string $modified_text The modified text to be filtered.
+	 * @param string $text The original text for the quote.
+	 *
+	 * @access public
+	 * @return string The modified text.
+	 */
+	public function filter_apple_news_apply_hanging_punctuation( $modified_text, $text ) {
+		return '«' . trim( $modified_text, '“”' ) . '»';
+	}
+
+	/**
 	 * A filter function to modify the text style in the generated JSON.
 	 *
 	 * @param array $json The JSON array to modify.
@@ -34,11 +64,52 @@ class Quote_Test extends Component_TestCase {
 	}
 
 	/**
+	 * Test the `apple_news_apply_hanging_punctuation` filter.
+	 *
+	 * @access public
+	 */
+	public function testFilterHangingPunctuation() {
+
+		// Setup.
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['pullquote_hanging_punctuation'] = 'yes';
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
+		add_filter(
+			'apple_news_apply_hanging_punctuation',
+			array( $this, 'filter_apple_news_apply_hanging_punctuation' ),
+			10,
+			2
+		);
+		$component = new Quote(
+			'<blockquote class="apple-news-pullquote"><p>my quote</p></blockquote>',
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$result = $component->to_array();
+		$this->assertEquals(
+			'«my quote»' . "\n\n",
+			$result['components'][0]['text']
+		);
+
+		// Teardown.
+		remove_filter(
+			'apple_news_apply_hanging_punctuation',
+			array( $this, 'filter_apple_news_apply_hanging_punctuation' )
+		);
+	}
+
+	/**
 	 * Test the `apple_news_quote_json` filter.
 	 *
 	 * @access public
 	 */
-	public function testFilter() {
+	public function testFilterJSON() {
 
 		// Setup.
 		$component = new Quote(
@@ -79,23 +150,29 @@ class Quote_Test extends Component_TestCase {
 		);
 
 		// Set quote settings.
-		$this->settings->blockquote_font = 'TestFontName';
-		$this->settings->blockquote_size = 20;
-		$this->settings->blockquote_color = '#abcdef';
-		$this->settings->blockquote_line_height = 28;
-		$this->settings->blockquote_tracking = 50;
-		$this->settings->blockquote_background_color = '#fedcba';
-		$this->settings->blockquote_border_color = '#012345';
-		$this->settings->blockquote_border_style = 'dashed';
-		$this->settings->blockquote_border_width = 10;
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['blockquote_font'] = 'AmericanTypewriter';
+		$settings['blockquote_size'] = 20;
+		$settings['blockquote_color'] = '#abcdef';
+		$settings['blockquote_line_height'] = 28;
+		$settings['blockquote_tracking'] = 50;
+		$settings['blockquote_background_color'] = '#fedcba';
+		$settings['blockquote_border_color'] = '#012345';
+		$settings['blockquote_border_style'] = 'dashed';
+		$settings['blockquote_border_width'] = 10;
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
-		$json = json_decode( $exporter->export(), true );
+		$json = $exporter->export();
+		$this->ensure_tokens_replaced( $json );
+		$json = json_decode( $json, true );
 
 		// Validate body settings in generated JSON.
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$json['componentTextStyles']['default-blockquote']['fontName']
 		);
 		$this->assertEquals(
@@ -147,25 +224,35 @@ class Quote_Test extends Component_TestCase {
 		);
 
 		// Set quote settings.
-		$this->settings->pullquote_font = 'TestFontName';
-		$this->settings->pullquote_size = 20;
-		$this->settings->pullquote_color = '#abcdef';
-		$this->settings->pullquote_line_height = 28;
-		$this->settings->pullquote_tracking = 50;
-		$this->settings->pullquote_transform = 'uppercase';
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['pullquote_font'] = 'AmericanTypewriter';
+		$settings['pullquote_size'] = 20;
+		$settings['pullquote_color'] = '#abcdef';
+		$settings['pullquote_hanging_punctuation'] = 'yes';
+		$settings['pullquote_line_height'] = 28;
+		$settings['pullquote_tracking'] = 50;
+		$settings['pullquote_transform'] = 'uppercase';
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );
-		$json = json_decode( $exporter->export(), true );
+		$json = $exporter->export();
+		$this->ensure_tokens_replaced( $json );
+		$json = json_decode( $json, true );
 
 		// Validate body settings in generated JSON.
 		$this->assertEquals(
-			'TestFontName',
+			'AmericanTypewriter',
 			$json['componentTextStyles']['default-pullquote']['fontName']
 		);
 		$this->assertEquals(
 			20,
 			$json['componentTextStyles']['default-pullquote']['fontSize']
+		);
+		$this->assertTrue(
+			$json['componentTextStyles']['default-pullquote']['hangingPunctuation']
 		);
 		$this->assertEquals(
 			'#abcdef',
@@ -215,13 +302,24 @@ class Quote_Test extends Component_TestCase {
 	/**
 	 * Tests the transformation process from a pullquote to a Quote component.
 	 *
+	 * @dataProvider dataTransformPullquote
+	 *
+	 * @param string $text The text to use in the blockquote element.
+	 * @param string $expected The expected text node value after compilation.
+	 * @param string $hanging_punctuation The setting value for hanging punctuation.
+	 *
 	 * @access public
 	 */
-	public function testTransformPullquote() {
+	public function testTransformPullquote( $text, $expected, $hanging_punctuation ) {
 
 		// Setup.
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['pullquote_hanging_punctuation'] = $hanging_punctuation;
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
 		$component = new Quote(
-			'<blockquote class="apple-news-pullquote"><p>my quote</p></blockquote>',
+			'<blockquote class="apple-news-pullquote"><p>' . $text . '</p></blockquote>',
 			null,
 			$this->settings,
 			$this->styles,
@@ -233,7 +331,7 @@ class Quote_Test extends Component_TestCase {
 		// Test.
 		$this->assertEquals( 'container', $result_wrapper['role'] );
 		$this->assertEquals( 'quote', $result['role'] );
-		$this->assertEquals( "my quote\n\n", $result['text'] );
+		$this->assertEquals( $expected, $result['text'] );
 		$this->assertEquals( 'markdown', $result['format'] );
 		$this->assertEquals( 'default-pullquote', $result['textStyle'] );
 		$this->assertEquals( 'pullquote-layout', $result['layout'] );

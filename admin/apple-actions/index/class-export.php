@@ -10,6 +10,7 @@ use Apple_Actions\Action as Action;
 use Apple_Exporter\Exporter as Exporter;
 use Apple_Exporter\Exporter_Content as Exporter_Content;
 use Apple_Exporter\Exporter_Content_Settings as Exporter_Content_Settings;
+use Apple_Exporter\Third_Party\Jetpack_Tiled_Gallery as Jetpack_Tiled_Gallery;
 use \Admin_Apple_Sections;
 
 class Export extends Action {
@@ -29,8 +30,12 @@ class Export extends Action {
 	 * @param int $id
 	 */
 	function __construct( $settings, $id = null, $sections = null ) {
-		parent::__construct( $this->set_theme( $settings, $sections ) );
+		parent::__construct( $settings );
+		$this->set_theme( $sections );
 		$this->id = $id;
+
+		// Assign instance of an active Jetpack tiled gallery installation.
+		$jetpack_tiled_gallery = Jetpack_Tiled_Gallery::instance();
 	}
 
 	/**
@@ -52,6 +57,8 @@ class Export extends Action {
 	 */
 	public function fetch_exporter() {
 
+		global $post;
+
 		do_action( 'apple_news_do_fetch_exporter', $this->id );
 
 		// Fetch WP_Post object, and all required post information to fill up the
@@ -60,9 +67,9 @@ class Export extends Action {
 
 		// Build the excerpt if required
 		if ( empty( $post->post_excerpt ) ) {
-			$excerpt = wp_trim_words( strip_tags( strip_shortcodes( $post->post_content ) ), 55, '...' );
+			$excerpt = wp_trim_words( wp_strip_all_tags( $this->remove_tags( strip_shortcodes( $post->post_content ) ) ), 55, '...' );
 		} else {
-			$excerpt = strip_tags( $post->post_excerpt );
+			$excerpt = wp_strip_all_tags( $post->post_excerpt );
 		}
 
 		// Get the post thumbnail
@@ -71,17 +78,14 @@ class Export extends Action {
 		// Build the byline
 		$byline = $this->format_byline( $post );
 
+		// Get the content
+		$content = $this->get_content( $post );
+
 		// Filter each of our items before passing into the exporter class.
 		$title      = apply_filters( 'apple_news_exporter_title', $post->post_title, $post->ID );
 		$excerpt    = apply_filters( 'apple_news_exporter_excerpt', $excerpt, $post->ID );
 		$post_thumb = apply_filters( 'apple_news_exporter_post_thumb', $post_thumb, $post->ID );
 		$byline     = apply_filters( 'apple_news_exporter_byline', $byline, $post->ID );
-
-		// The post_content is not raw HTML, as WordPress editor cleans up
-		// paragraphs and new lines, so we need to transform the content to
-		// HTML. We use 'the_content' filter for that.
-		$content    = apply_filters( 'apple_news_exporter_content_pre', $post->post_content, $post->ID );
-		$content    = apply_filters( 'the_content', $content );
 		$content    = apply_filters( 'apple_news_exporter_content', $content, $post->ID );
 
 		// Now pass all the variables into the Exporter_Content array.
@@ -109,9 +113,19 @@ class Export extends Action {
 	 * @access public
 	 */
 	public function format_byline( $post, $author = '', $date = '' ) {
+
+		// Get information about the currently used theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		// Get the author
 		if ( empty( $author ) ) {
-			$author = ucfirst( get_the_author_meta( 'display_name', $post->post_author ) );
+
+			// Try to get the author information from Co-Authors Plus.
+			if ( function_exists( 'coauthors' ) ) {
+				$author = coauthors( null, null, null, null, false );
+			} else {
+				$author = ucfirst( get_the_author_meta( 'display_name', $post->post_author ) );
+			}
 		}
 
 		// Get the date
@@ -123,7 +137,7 @@ class Export extends Action {
 		$date_format = 'M j, Y | g:i A';
 
 		// Check for a custom byline format
-		$byline_format = $this->get_setting( 'byline_format' );
+		$byline_format = $theme->get_value( 'byline_format' );
 		if ( ! empty( $byline_format ) ) {
 			// Find and replace the author format placeholder name with a temporary placeholder
 			// This is because some bylines could contain hashtags!
@@ -154,6 +168,54 @@ class Export extends Action {
 	}
 
 	/**
+	 * Gets the content
+	 *
+	 * @since 1.4.0
+	 * @param WP_Post $post
+	 * @return string
+	 * @access private
+	 */
+	private function get_content( $post ) {
+		// The post_content is not raw HTML, as WordPress editor cleans up
+		// paragraphs and new lines, so we need to transform the content to
+		// HTML. We use 'the_content' filter for that.
+		$content = apply_filters( 'apple_news_exporter_content_pre', $post->post_content, $post->ID );
+		$content = apply_filters( 'the_content', $content );
+		$content = $this->remove_tags( $content );
+		$content = $this->remove_entities( $content );
+		return $content;
+	}
+
+	/**
+	 * Remove tags incompatible with Apple News format.
+	 *
+	 * @since 1.4.0
+	 * @param string $html
+	 * @return string
+	 * @access private
+	 */
+	private function remove_tags( $html ) {
+		$html = preg_replace( '/<style[^>]*>.*?<\/style>/i', '', $html );
+		return $html;
+	}
+
+	/**
+	 * Filter the content for markdown format.
+	 *
+	 * @param string $content
+	 * @return string
+	 * @access private
+	 */
+	private function remove_entities( $content ) {
+		if ( 'yes' === $this->get_setting( 'html_support' ) ) {
+			return $content;
+		}
+
+		// Correct ampersand output.
+		return str_replace( '&amp;', '&', $content );
+	}
+
+	/**
 	 * Loads settings for the Exporter_Content from the WordPress post metadata.
 	 *
 	 * @since 0.4.0
@@ -173,33 +235,38 @@ class Export extends Action {
 	}
 
 	/**
-	 * Overrides settings if a theme is explicitly mapped to the section for this post.
+	 * Sets the active theme for this session if explicitly set or mapped.
 	 *
 	 * @since 1.2.3
-	 * @param Settings $settings
-	 * @param array $sections
-	 * @return Settings
+	 *
+	 * @param array $sections Explicit sections mapped for this post.
+	 *
 	 * @access private
 	 */
-	private function set_theme( $settings, $sections ) {
-		// This can only work if there is explicitly one section
+	private function set_theme( $sections ) {
+
+		// This can only work if there is explicitly one section.
 		if ( ! is_array( $sections ) || 1 !== count( $sections ) ) {
-			return $settings;
+			return;
 		}
 
-		// Check if there is a custom theme mapping
-		$theme_settings = Admin_Apple_Sections::get_theme_for_section( basename( $sections[0] ) );
-		if ( empty( $theme_settings ) || ! is_array( $theme_settings ) ) {
-			return $settings;
+		// Check if there is a custom theme mapping.
+		$theme_name = Admin_Apple_Sections::get_theme_for_section( basename( $sections[0] ) );
+		if ( empty( $theme_name ) ) {
+			return;
 		}
 
-		// Replace all settings with the theme settings
-		foreach ( $theme_settings as $key => $value ) {
-			$settings->$key = $value;
+		// Try to get theme settings.
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $theme_name );
+		if ( ! $theme->load() ) {
+
+			// Fall back to the active theme.
+			$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+			$theme->load();
 		}
 
-		return $settings;
+		// Set theme as active for this session.
+		$theme->use_this();
 	}
-
 }
-

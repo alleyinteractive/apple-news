@@ -1,95 +1,49 @@
 <?php
 /**
- * This class is in charge of handling Apple News previews
+ * Publish to Apple News Admin: Admin_Apple_Preview class
+ *
+ * Contains a class which is used to generate a theme preview.
+ *
+ * @package Apple_News
+ */
+
+/**
+ * A class which is used to generate a theme preview.
  */
 class Admin_Apple_Preview extends Apple_News {
+
 	/**
 	 * Constructor.
+	 *
+	 * @access public
 	 */
-	function __construct() {
+	public function __construct() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 	}
 
 	/**
-	 * Register assets for the options page.
+	 * Outputs the HTML used for preview.
 	 *
-	 * @param string $hook
+	 * @param \Apple_Exporter\Theme $theme Optional. The theme to render.
+	 *
 	 * @access public
 	 */
-	public function register_assets( $hook ) {
-		if ( 'admin_page_apple-news-theme-edit' !== $hook ) {
-			return;
+	public function get_preview_html( $theme = null ) {
+
+		// Load a default theme, if the theme was not provided.
+		if ( ! $theme instanceof \Apple_Exporter\Theme ) {
+			$theme = new \Apple_Exporter\Theme;
 		}
 
-		wp_enqueue_style( 'apple-news-preview-css', plugin_dir_url( __FILE__ ) .
-		'../assets/css/preview.css', array() );
-
-		wp_enqueue_script( 'apple-news-preview-js', plugin_dir_url( __FILE__ ) .
-			'../assets/js/preview.js', array( 'jquery' )
-		);
-	}
-
-	/**
-	 * Outputs the HTML used for preview.
-	 * Uses either current settings or a theme name, if provided.
-	 *
-	 * @param string $theme
-	 * @param boolean $add_settings
-	 * @access public
-	 */
-	public function get_preview_html( $theme = null, $add_settings = false ) {
-		// Load current settings
+		// Merge plugin-level settings with theme-level settings.
 		$admin_settings = new Admin_Apple_Settings();
 		$settings = $admin_settings->fetch_settings();
 
-		// If a theme name is provided, replace formatting settings with those from the theme.
-		if ( ! empty( $theme ) ) {
-			$themes = new Admin_Apple_Themes();
-			$theme_settings = $themes->get_theme( $theme );
-			if ( empty( $theme_settings ) || ! is_array( $theme_settings ) ) {
-				?>
-				<p class="error-message"><?php echo sprintf(
-					__( 'The theme %s does not exist', 'apple-news' ),
-					$theme
-				) ?></p>
-				<?php
-				return;
-			}
-
-			// If true, add hidden form fields for the settings.
-			// This is used for theme preview.
-			if ( $add_settings ) :
-			?>
-				<form id="apple-news-settings-form">
-			<?php
-			endif;
-
-			// Replace all the formatting settings
-			foreach ( $theme_settings as $key => $value ) {
-				$settings->set( $key, $value );
-
-				// If desired, also add these as hidden form elements
-				if ( $add_settings && 'meta_component_order' !== $key ) {
-					echo sprintf(
-						'<input type="hidden" id="%s" name="%s" value="%s" />',
-						esc_attr( $key ),
-						esc_attr( $key ),
-						esc_attr( $value )
-					);
-				} elseif ( $add_settings && 'meta_component_order' === $key && is_array( $value ) ) {
-					echo sprintf(
-						'<input type="hidden" id="meta_component_order" name="meta_component_order" value="%s" />',
-						esc_attr( implode( ',', $value ) )
-					);
-				}
-			}
-
-			if ( $add_settings ) :
-				?>
-				</form>
-				<?php
-			endif;
-		}
+		// Determine if HTML support is enabled.
+		$settings = get_option( self::$option_name );
+		$html_support = ( isset( $settings['html_support'] )
+			&& 'yes' === $settings['html_support']
+		);
 
 		?>
 		<div class="apple-news-preview">
@@ -105,7 +59,7 @@ class Admin_Apple_Preview extends Apple_News {
 					__( 'Cover', 'apple-news' )
 				);
 
-				// Build the byline
+				// Build the byline.
 				$author = __( 'John Doe', 'apple-news' );
 				$date = date( 'M j, Y g:i A' );
 				$export = new Apple_Actions\Index\Export( $settings );
@@ -114,25 +68,26 @@ class Admin_Apple_Preview extends Apple_News {
 					$export->format_byline( null, $author, $date )
 				);
 
-				// Get the order of the top components
-				$component_order = $settings->get( 'meta_component_order' );
-				foreach ( $component_order as $component ) {
+				// Get the order of the top components.
+				$meta_component_order = $theme->get_value( 'meta_component_order' );
+				if ( ! is_array( $meta_component_order ) ) {
+					$meta_component_order = array();
+				}
+				foreach ( $meta_component_order as $component ) {
 					echo wp_kses( $$component, Admin_Apple_Settings_Section::$allowed_html );
 				}
 			?>
 			<div class="apple-news-component">
-			<p><span class="apple-news-dropcap">L</span>orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sagittis, <a href="#">augue vitae iaculis euismod</a>, libero nulla pellentesque quam, non venenatis massa odio id dolor.</p>
-			<p>Praesent eget odio vel sapien scelerisque euismod. Phasellus eros sapien, rutrum ac nibh nec, tristique commodo neque.</p>
+			<p><span class="apple-news-dropcap">L</span>orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sagittis, libero nulla pellentesque quam, non venenatis massa odio id dolor.</p>
+			<p>Praesent eget odio vel sapien scelerisque euismod. Phasellus eros sapien, <a href="#">augue vitae iaculis euismod</a>, rutrum ac nibh nec, tristique commodo neque.</p>
 			<?php printf(
-					'<div class="apple-news-image">%s</div>',
-					esc_html__( 'Image', 'apple-news' )
-				);
-			?>
+				'<div class="apple-news-image">%s</div>',
+				esc_html__( 'Image', 'apple-news' )
+			); ?>
 			<?php printf(
-					'<div class="apple-news-image-caption">%s</div>',
-					esc_html__( 'Image caption', 'apple-news' )
-				);
-			?>
+				'<div class="apple-news-image-caption">%s</div>',
+				esc_html__( 'Image caption', 'apple-news' )
+			); ?>
 			<p>Maecenas tortor dui, pellentesque ac ullamcorper quis, malesuada sit amet turpis. Nunc in tellus et justo dapibus sollicitudin.</p>
 			<h2>Quisque efficitur</h2>
 			<p>Quisque efficitur sit amet ex et venenatis. Morbi nisi nisi, ornare id iaculis eget, pulvinar ac dolor.</p>
@@ -146,8 +101,63 @@ class Admin_Apple_Preview extends Apple_News {
   white-space: pre;
 }
 			</pre>
+			<?php if ( $html_support ) : ?>
+				<table>
+					<thead>
+					<tr>
+						<th>Column 1</th>
+						<th>Column 2</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>Cell 1</td>
+						<td>Cell 2</td>
+					</tr>
+					<tr>
+						<td>Cell 3</td>
+						<td>Cell 4</td>
+					</tr>
+					</tbody>
+				</table>
+			<?php else : ?>
+				<p><em>
+					<?php esc_html_e( 'Support for tables requires HTML support to be turned on in Settings.', 'apple-news' ); ?>
+				</em></p>
+			<?php endif; ?>
 			</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Register assets for the options page.
+	 *
+	 * @param string $hook The hook that is firing in the current context.
+	 *
+	 * @access public
+	 */
+	public function register_assets( $hook ) {
+
+		// Only fire on the theme edit page.
+		if ( 'admin_page_apple-news-theme-edit' !== $hook ) {
+			return;
+		}
+
+		// Add the theme preview stylesheet.
+		wp_enqueue_style(
+			'apple-news-preview-css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/preview.css',
+			array(),
+			self::$version
+		);
+
+		// Add the theme preview script.
+		wp_enqueue_script(
+			'apple-news-preview-js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/preview.js',
+			array( 'jquery' ),
+			self::$version
+		);
 	}
 }

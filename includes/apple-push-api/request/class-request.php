@@ -62,8 +62,8 @@ class Request {
 
 		// Set the default WordPress HTTP API args
 		$this->default_args = apply_filters( 'apple_news_request_args', array(
-			'timeout' => 30, // required because we need to package all images
 			'reject_unsafe_urls' => true,
+			'timeout' => 5,
 		) );
 	}
 
@@ -90,6 +90,7 @@ class Request {
 				'Content-Type' => 'multipart/form-data; boundary=' . $this->mime_builder->boundary(),
 			),
 			'body' => $content,
+			'timeout' => 30, // required because we need to package all images
 		);
 
 		// Allow filtering and merge with the default args
@@ -186,7 +187,7 @@ class Request {
 		if ( ! empty( $settings['apple_news_enable_debugging'] )
 			&& ! empty( $settings['apple_news_admin_email'] )
 			&& 'yes' === $settings['apple_news_enable_debugging']
-			&& 'get' != $type ) {
+			&& 'get' !== $type ) {
 
 			// Get the admin email
 			$admin_email = filter_var( $settings['apple_news_admin_email'], FILTER_VALIDATE_EMAIL );
@@ -328,7 +329,7 @@ class Request {
 		$current_date = date( 'c' );
 
 		$request_info = $verb . $url . $current_date;
-		if ( 'POST' == $verb ) {
+		if ( 'POST' === $verb ) {
 			$content_type = 'multipart/form-data; boundary=' . $this->mime_builder->boundary();
 			$request_info .= $content_type . $content;
 		}
