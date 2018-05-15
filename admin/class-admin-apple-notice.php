@@ -155,11 +155,10 @@ class Admin_Apple_Notice {
 			}
 		}
 
-		// Update the notices in the DB if they have changed.
+		// Delete the notices in the DB if they have changed.
 		$diff = array_diff( $notices, $updated_notices );
 		if ( ! empty( $diff ) ) {
-			self::delete_user_meta( get_current_user_id() );
-			self::add_user_meta( get_current_user_id(), $updated_notices );
+			self::update_user_meta( get_current_user_id(), $updated_notices );
 		}
 	}
 
@@ -179,12 +178,40 @@ class Admin_Apple_Notice {
 	 * A WP-AJAX handler for a click on a dismiss notice button.
 	 */
 	public static function wp_ajax_dismiss_notice() {
-		// TODO: Get nonce
-		$message = $_POST['message'];
-		$type = $_POST['type'];
-		// TODO: Validate and sanitize before using
-		// TODO: Pull current messages, add dismissed flag, save.
-		return;
+
+		// Verify nonce.
+		if ( ! isset( $_POST['nonce'] )
+			|| ! wp_verify_nonce( $_POST['nonce'], 'apple_news_dismiss_notice' )
+		) {
+			return;
+		}
+
+		// Safely extract message and type for comparison.
+		$message = isset( $_POST['message'] )
+			? wp_kses_post( wp_unslash( $_POST['message'] ) )
+			: '';
+		$type    = isset( $_POST['type'] )
+			? wp_kses_post( wp_unslash( $_POST['type'] ) )
+			: '';
+
+		// Pull the list of notices for this user.
+		$update  = false;
+		$notices = self::get_user_meta( get_current_user_id() );
+		foreach ( $notices as &$notice ) {
+			if ( isset( $notice['message'] )
+				&& $message === $notice['message']
+				&& isset( $notice['type'] )
+				&& $type === $notice['type']
+			) {
+				$notice['dismissed'] = true;
+				$update              = true;
+			}
+		}
+
+		// Save the updated notice config to the database.
+		if ( $update ) {
+			self::update_user_meta( get_current_user_id(), $notices );
+		}
 	}
 
 	/**
@@ -293,5 +320,31 @@ class Admin_Apple_Notice {
 
 		// Load the partial for the notice.
 		include plugin_dir_path( __FILE__ ) . 'partials/notice.php';
+	}
+
+	/**
+	 * Handle updating user meta across potential hosting platforms.
+	 *
+	 * @param int   $user_id The user ID to use when updating meta.
+	 * @param array $values  The new values to use.
+	 * @access private
+	 * @return int|bool Meta ID if new, true on update, false otherwise.
+	 */
+	private static function update_user_meta( $user_id, $values ) {
+
+		// Delete existing user meta.
+		self::delete_user_meta( $user_id );
+
+		// Only add meta back if new values were provided.
+		if ( ! empty( $values ) ) {
+			// Save using the appropriate method.
+			if ( defined( 'WPCOM_IS_VIP_ENV' ) && true === WPCOM_IS_VIP_ENV ) {
+				return update_user_attribute( $user_id, self::KEY, $values );
+			} else {
+				return update_user_meta( $user_id, self::KEY, $values );
+			}
+		}
+
+		return true;
 	}
 }

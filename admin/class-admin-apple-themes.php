@@ -507,7 +507,9 @@ class Admin_Apple_Themes extends Apple_News {
 				__( 'New in Publish to Apple News version 1.3.0: You can install example themes on the %1$sthemes page%2$s.', 'apple-news' ),
 				'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-themes' ) ) . '">',
 				'</a>'
-			)
+			),
+			get_current_user_id(),
+			true
 		);
 
 		// If the active theme isn't named "Default", don't nag the user.

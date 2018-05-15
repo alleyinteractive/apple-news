@@ -16,25 +16,16 @@
 	function handleDismiss( event ) {
 		var notice = event.target.parentNode;
 		var message = notice.getAttribute('data-message');
+		var nonce = notice.getAttribute('data-nonce');
 		var type = notice.getAttribute('data-type');
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', ajaxurl);
 		xhr.responseType = 'json';
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		xhr.onreadystatechange = function () {
-			if (
-				XMLHttpRequest.DONE === xhr.readyState &&
-				200 === xhr.status &&
-				xhr.response.success
-			) {
-				console.log('sent!');
-			} else {
-				console.log(xhr);
-			}
-		};
 		xhr.send(
 			'action=apple_news_dismiss_notice' +
 			'&message=' + encodeURIComponent(message) +
+			'&nonce=' + encodeURIComponent(nonce) +
 			'&type=' + encodeURIComponent(type)
 		);
 	}
