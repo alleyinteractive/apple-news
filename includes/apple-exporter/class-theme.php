@@ -1082,7 +1082,7 @@ class Theme {
 			'table_border_style' => array(
 				'default' => 'solid',
 				'label' => __( 'Table border style', 'apple-news' ),
-				'options' => array( 'solid', 'dashed', 'dotted' ),
+				'options' => array( 'solid', 'dashed', 'dotted', 'none' ),
 				'type' => 'select',
 			),
 			'table_border_width' => array(
