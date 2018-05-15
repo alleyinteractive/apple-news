@@ -45,7 +45,7 @@ class Admin_Apple_News extends Apple_News {
 		self::$settings = $admin_settings->fetch_settings();
 
 		// Initialize notice messaging utility
-		new Admin_Apple_Notice( self::$settings );
+		add_action( 'admin_notices', 'Admin_Apple_Notice::show' );
 
 		// Set up main page
 		new Admin_Apple_Index_Page( self::$settings );
