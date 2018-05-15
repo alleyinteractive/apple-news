@@ -101,6 +101,23 @@ class Admin_Apple_Notice {
 	}
 
 	/**
+	 * Registers assets used by meta boxes.
+	 *
+	 * @access public
+	 */
+	public static function register_assets() {
+
+		// Enqueue notice script.
+		wp_enqueue_script(
+			'apple_news_notices_js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/notices.js',
+			array(),
+			Apple_News::$version,
+			true
+		);
+	}
+
+	/**
 	 * Show the admin notice(s).
 	 *
 	 * @access public
@@ -156,6 +173,18 @@ class Admin_Apple_Notice {
 	 */
 	public static function success( $message, $user_id = null, $dismissable = false ) {
 		self::message( $message, 'success', $user_id, $dismissable );
+	}
+
+	/**
+	 * A WP-AJAX handler for a click on a dismiss notice button.
+	 */
+	public static function wp_ajax_dismiss_notice() {
+		// TODO: Get nonce
+		$message = $_POST['message'];
+		$type = $_POST['type'];
+		// TODO: Validate and sanitize before using
+		// TODO: Pull current messages, add dismissed flag, save.
+		return;
 	}
 
 	/**

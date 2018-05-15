@@ -45,7 +45,9 @@ class Admin_Apple_News extends Apple_News {
 		self::$settings = $admin_settings->fetch_settings();
 
 		// Initialize notice messaging utility
+		add_action( 'admin_enqueue_scripts', 'Admin_Apple_Notice::register_assets' );
 		add_action( 'admin_notices', 'Admin_Apple_Notice::show' );
+		add_action( 'wp_ajax_apple_news_dismiss_notice', 'Admin_Apple_Notice::wp_ajax_dismiss_notice' );
 
 		// Set up main page
 		new Admin_Apple_Index_Page( self::$settings );
