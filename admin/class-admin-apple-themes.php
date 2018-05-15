@@ -481,7 +481,7 @@ class Admin_Apple_Themes extends Apple_News {
 	}
 
 	/**
-	 * Nags the user about using an uncustomized default theme.
+	 * Nags the user about using Markdown.
 	 *
 	 * @access public
 	 */
@@ -500,17 +500,20 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
-		// Inform the user that example themes are available.
-		\Admin_Apple_Notice::info(
-			sprintf(
-				/* translators: First parameter is opening a tag, second is closing a tag */
-				__( 'New in Publish to Apple News version 1.3.0: You can install example themes on the %1$sthemes page%2$s.', 'apple-news' ),
-				'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-themes' ) ) . '">',
-				'</a>'
-			),
-			get_current_user_id(),
-			true
-		);
+		// If HTML support is not enabled, nag the user.
+		$options = get_option( self::$option_name );
+		if ( ! isset( $options['html_support'] ) || 'yes' !== $options['html_support'] ) {
+			\Admin_Apple_Notice::info(
+				sprintf(
+					/* translators: First parameter is opening a tag, second is closing a tag */
+					__( 'As of Publish to Apple News version 1.4.0, HTML format is the preferred output format. We noticed that you are still using Markdown. You can update this setting on the %1$ssettings page%2$s.', 'apple-news' ),
+					'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-options' ) ) . '">',
+					'</a>'
+				),
+				get_current_user_id(),
+				true
+			);
+		}
 
 		// If the active theme isn't named "Default", don't nag the user.
 		if ( __( 'Default', 'apple-news' ) !== \Apple_Exporter\Theme::get_active_theme_name() ) {
