@@ -133,12 +133,24 @@ class Push extends API_Action {
 		 * Default is false, but filterable.
 		 */
 		if ( apply_filters( 'apple_news_skip_push', false, $this->id ) ) {
-			return;
+			throw new \Apple_Actions\Action_Exception(
+				sprintf(
+					// Translators: Placeholder is a post ID.
+					__( 'Skipped push of article %d due to the apple_news_skip_push filter.', 'apple-news' ),
+					$this->id
+				)
+			);
 		}
 
 		// Ignore if the post is already in sync
 		if ( $this->is_post_in_sync() ) {
-			return;
+			throw new \Apple_Actions\Action_Exception(
+				sprintf(
+					// Translators: Placeholder is a post ID.
+					__( 'Skipped push of article %d because it is already in sync.', 'apple-news' ),
+					$this->id
+				)
+			);
 		}
 
 		// generate_article uses Exporter->generate, so we MUST clean the workspace
