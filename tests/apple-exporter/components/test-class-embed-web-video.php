@@ -197,4 +197,24 @@ class Embed_Web_Video_Test extends Component_TestCase {
 			$component->to_array()
 		);
 	}
+
+	/**
+	 * Tests an unsupported video provider.
+	 *
+	 * @access public
+	 */
+	public function testTransformUnsupportedProvider() {
+
+		// Setup.
+		$component = new Embed_Web_Video(
+			'<iframe src="//player.notvimeo.com/video/12819723" width="560" height="315" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$this->assertNull( $component->to_array() );
+	}
 }
