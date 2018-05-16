@@ -11,8 +11,6 @@
 require_once __DIR__ . '/class-component-testcase.php';
 
 use Apple_Exporter\Components\Table;
-use Apple_Exporter\Exporter;
-use Apple_Exporter\Exporter_Content;
 
 /**
  * A class which is used to test the Apple_Exporter\Components\Table class.
@@ -62,7 +60,70 @@ HTML;
 		$this->assertEquals(
 			array(
 				'html' => $html,
+				'layout' => array(
+					'margin' => array(
+						'bottom' => 20.0,
+					),
+				),
 				'role' => 'htmltable',
+				'style' => array(
+					'border' => array(
+						'all' => array(
+							'color' => '#4f4f4f',
+							'style' => 'solid',
+							'width' => 1.0,
+						),
+					),
+					'tableStyle' => array(
+						'cells' => array(
+							'backgroundColor' => '#fafafa',
+							'horizontalAlignment' => 'left',
+							'padding' => 5.0,
+							'textStyle' => array(
+								'fontName' => 'AvenirNext-Regular',
+								'fontSize' => 16,
+								'lineHeight' => 20.0,
+								'textColor' => '#4f4f4f',
+								'tracking' => 0,
+							),
+							'verticalAlignment' => 'center',
+						),
+						'columns' => array(
+							'divider' => array(
+								'color' => '#4f4f4f',
+								'style' => 'solid',
+								'width' => 1.0,
+							),
+						),
+						'headerCells' => array(
+							'backgroundColor' => '#fafafa',
+							'horizontalAlignment' => 'center',
+							'padding' => 10.0,
+							'textStyle' => array(
+								'fontName' => 'AvenirNext-Regular',
+								'fontSize' => 16,
+								'lineHeight' => 20.0,
+								'textColor' => '#4f4f4f',
+								'tracking' => 0,
+							),
+							'verticalAlignment' => 'center',
+						),
+						'headerRows' => array(
+							'divider' => array(
+								'color' => '#4f4f4f',
+								'style' => 'solid',
+								'width' => 1.0,
+							),
+						),
+						'rows' => array(
+							'divider' => array(
+								'color' => '#4f4f4f',
+								'style' => 'solid',
+								'width' => 1.0,
+							),
+						),
+					),
+				),
 			),
 			$component->to_array()
 		);

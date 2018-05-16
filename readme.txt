@@ -4,7 +4,7 @@ Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 4.0
 Tested up to: 4.7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -44,6 +44,9 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 1.4.0 =
+* TBD
 
 = 1.3.0 =
 * Moved JSON customizations to themes so that JSON can be customized on a per-theme basis.
