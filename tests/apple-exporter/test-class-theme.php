@@ -18,6 +18,18 @@ use Apple_Exporter\Theme;
 class Theme_Test extends WP_UnitTestCase {
 
 	/**
+	 * An example filter for the font list.
+	 *
+	 * @param array $fonts An array of fonts to include.
+	 * @access public
+	 * @return array The modified font array.
+	 */
+	public function filter_apple_news_fonts_list( $fonts ) {
+		$fonts[] = 'ExampleFont';
+		return $fonts;
+	}
+
+	/**
 	 * Ensure that custom JSON can be deleted.
 	 *
 	 * @see Apple_Exporter\Theme::load()
@@ -55,6 +67,40 @@ class Theme_Test extends WP_UnitTestCase {
 		$this->assertSame(
 			array(),
 			$theme->get_value( 'json_templates' )
+		);
+	}
+
+	/**
+	 * Tests the 'apple_news_fonts_list' filter.
+	 *
+	 * @access public
+	 */
+	public function testFontFilter() {
+
+		// Test before filter.
+		$this->assertFalse( in_array(
+			'ExampleFont',
+			\Apple_Exporter\Theme::get_fonts(),
+			true
+		) );
+
+		// Add the filter.
+		add_filter(
+			'apple_news_fonts_list',
+			array( $this, 'filter_apple_news_fonts_list' )
+		);
+
+		// Test.
+		$this->assertTrue( in_array(
+			'ExampleFont',
+			\Apple_Exporter\Theme::get_fonts(),
+			true
+		) );
+
+		// Teardown.
+		remove_filter(
+			'apple_news_fonts_list',
+			array( $this, 'filter_apple_news_fonts_list' )
 		);
 	}
 

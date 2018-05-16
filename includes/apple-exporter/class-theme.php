@@ -407,7 +407,16 @@ class Theme {
 	 * @return array The list of iOS fonts.
 	 */
 	public static function get_fonts() {
-		return self::$_fonts;
+		/**
+		 * Allows the font list to be filtered, so that any custom
+		 * fonts that have been approved by Apple and added to your
+		 * channel will be able to be added to the list for selection.
+		 *
+		 * @since 1.4.0
+		 *
+		 * @param array $fonts An array of TrueType font names.
+		 */
+		return apply_filters( 'apple_news_fonts_list', self::$_fonts );
 	}
 
 	/**
@@ -1668,7 +1677,7 @@ class Theme {
 					$value = sanitize_text_field( $value );
 
 					// Ensure the named font is part of the whitelist.
-					if ( ! in_array( $value, self::$_fonts, true ) ) {
+					if ( ! in_array( $value, self::get_fonts(), true ) ) {
 						$this->_log_error( sprintf(
 							__(
 								'Invalid font value %1$s specified for setting %2$s',
