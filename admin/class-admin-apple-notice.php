@@ -156,8 +156,7 @@ class Admin_Apple_Notice {
 		}
 
 		// Delete the notices in the DB if they have changed.
-		$diff = array_diff( $notices, $updated_notices );
-		if ( ! empty( $diff ) ) {
+		if ( $notices !== $updated_notices ) {
 			self::update_user_meta( get_current_user_id(), $updated_notices );
 		}
 	}
