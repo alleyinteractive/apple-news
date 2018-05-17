@@ -215,7 +215,6 @@ class Admin_Apple_News extends Apple_News {
 	public function action_init() {
 
 		// Register custom image crops.
-		$test = self::$settings->enable_cover_art;
 		if ( 'yes' === self::$settings->enable_cover_art ) {
 			$image_sizes = self::get_image_sizes();
 			foreach ( $image_sizes as $name => $data ) {
