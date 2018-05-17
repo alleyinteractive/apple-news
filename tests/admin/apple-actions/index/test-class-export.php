@@ -9,6 +9,16 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$this->settings = new Settings();
 	}
 
+	/**
+	 * A filter to ensure that the is_exporting flag is set during export.
+	 *
+	 * @access public
+	 * @return string The filtered content.
+	 */
+	public function filterTheContentTestIsExporting() {
+		return apple_news_is_exporting() ? 'is exporting' : 'is not exporting';
+	}
+
 	public function testAutoExcerpt() {
 		$title = 'My Title';
 		$content = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tristique quis justo sit amet eleifend. Praesent id metus semper, fermentum nibh at, malesuada enim. Mauris eget faucibus lectus. Vivamus iaculis eget urna non porttitor. Donec in dignissim neque. Vivamus ut ornare magna. Nulla eros nisi, maximus nec neque at, condimentum lobortis leo. Fusce in augue arcu. Curabitur lacus elit, venenatis a laoreet sit amet, imperdiet ac lorem. Curabitur sed leo sed ligula tempor feugiat. Cras in tellus et elit volutpat.</p>';
@@ -257,5 +267,52 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$test_theme->delete();
 		delete_option( \Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
 		delete_transient( 'apple_news_sections' );
+	}
+
+	/**
+	 * Tests the behavior of the apple_news_is_exporting() function.
+	 *
+	 * @access public
+	 */
+	public function testIsExporting() {
+
+		// Setup.
+		$title = 'My Title';
+		$content = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tristique quis justo sit amet eleifend. Praesent id metus semper, fermentum nibh at, malesuada enim. Mauris eget faucibus lectus. Vivamus iaculis eget urna non porttitor. Donec in dignissim neque. Vivamus ut ornare magna. Nulla eros nisi, maximus nec neque at, condimentum lobortis leo. Fusce in augue arcu. Curabitur lacus elit, venenatis a laoreet sit amet, imperdiet ac lorem. Curabitur sed leo sed ligula tempor feugiat. Cras in tellus et elit volutpat.</p>';
+		$post_id = $this->factory->post->create( array(
+			'post_title' => $title,
+			'post_content' => $content,
+		) );
+		add_filter(
+			'the_content',
+			array( $this, 'filterTheContentTestIsExporting' )
+		);
+
+		// Ensure is_exporting returns false before exporting.
+		$this->assertEquals(
+			'is not exporting',
+			apply_filters( 'the_content', 'Lorem ipsum dolor sit amet' )
+		);
+
+		// Get sections for the post.
+		$sections = \Admin_Apple_Sections::get_sections_for_post( $post_id );
+		$export = new Export( $this->settings, $post_id, $sections );
+		$json = json_decode( $export->perform() );
+		$this->assertEquals(
+			'is exporting',
+			$json->components[3]->text
+		);
+
+		// Ensure is_exporting returns false after exporting.
+		$this->assertEquals(
+			'is not exporting',
+			apply_filters( 'the_content', 'Lorem ipsum dolor sit amet' )
+		);
+
+		// Teardown.
+		remove_filter(
+			'the_content',
+			array( $this, 'filterTheContentTestIsExporting' )
+		);
 	}
 }
