@@ -48,6 +48,22 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 		return $user_id;
 	}
 
+	/**
+	 * A filter callback to simulate a JSON error.
+	 *
+	 * @access public
+	 * @return array An array containing a JSON error.
+	 */
+	public function filterAppleNewsGetErrors() {
+		return array(
+			array(
+				'json_errors' => array(
+					'Test JSON error.',
+				),
+			),
+		);
+	}
+
 	public function testCreate() {
 		$response = $this->dummy_response();
 		$api = $this->prophet->prophesize( '\Apple_Push_API\API' );
@@ -425,8 +441,14 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 
 		// Create post
 		$post_id = $this->factory->post->create( array(
-			'post_content' => 'ÂÂîî',
+			'post_content' => 'Test post content',
 		) );
+
+		// Manually add a JSON error to the postmeta via a filter.
+		add_filter(
+			'apple_news_get_errors',
+			array( $this, 'filterAppleNewsGetErrors' )
+		);
 
 		$action = new Push( $this->settings, $post_id );
 		$action->set_api( $api->reveal() );
@@ -434,11 +456,12 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 
 		// An admin error notice was created
 		$notices = get_user_meta( $user_id, 'apple_news_notice', true );
-		$this->assertNotEmpty( $notices );
-
-		array_pop( $notices );
-		$component_notice = end( $notices );
-		$this->assertEquals( 'The following JSON errors were detected: Invalid unicode character sequences were found that could cause display issues on Apple News: ÂÂîî', $component_notice['message'] );
+		$notice_messages = wp_list_pluck( $notices, 'message' );
+		$this->assertTrue( in_array(
+			'The following JSON errors were detected: Test JSON error.',
+			$notice_messages,
+			true
+		) );
 
 		// The post was still sent to Apple News
 		$this->assertEquals( $response->data->id, get_post_meta( $post_id, 'apple_news_api_id', true ) );
@@ -446,6 +469,12 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 		$this->assertEquals( $response->data->modifiedAt, get_post_meta( $post_id, 'apple_news_api_modified_at', true ) );
 		$this->assertEquals( $response->data->shareUrl, get_post_meta( $post_id, 'apple_news_api_share_url', true ) );
 		$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_deleted', true ) );
+
+		// Remove the filter.
+		remove_filter(
+			'apple_news_get_errors',
+			array( $this, 'filterAppleNewsGetErrors' )
+		);
 	}
 
 	public function testJSONErrorsFail() {
@@ -463,8 +492,14 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 
 		// Create post
 		$post_id = $this->factory->post->create( array(
-			'post_content' => 'ÂÂîî',
+			'post_content' => 'Test post content.',
 		) );
+
+		// Manually add a JSON error to the postmeta via a filter.
+		add_filter(
+			'apple_news_get_errors',
+			array( $this, 'filterAppleNewsGetErrors' )
+		);
 
 		$action = new Push( $this->settings, $post_id );
 		$action->set_api( $api->reveal() );
@@ -472,12 +507,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 		try {
 			$action->perform();
 		} catch ( Action_Exception $e ) {
-			// An admin error notice was created
-			$notices = get_user_meta( $user_id, 'apple_news_notice', true );
-			$this->assertNotEmpty( $notices );
-
-			$component_notice = end( $notices );
-			$this->assertEquals( 'The following JSON errors were detected and prevented publishing: Invalid unicode character sequences were found that could cause display issues on Apple News: ÂÂîî', $e->getMessage() );
+			$this->assertEquals( 'The following JSON errors were detected and prevented publishing: Test JSON error.', $e->getMessage() );
 
 			// The post was not sent to Apple News
 			$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_id', true ) );
@@ -486,7 +516,11 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_share_url', true ) );
 			$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_deleted', true ) );
 		}
+
+		// Remove the filter.
+		remove_filter(
+			'apple_news_get_errors',
+			array( $this, 'filterAppleNewsGetErrors' )
+		);
 	}
-
 }
-
