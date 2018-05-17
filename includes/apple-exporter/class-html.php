@@ -67,6 +67,9 @@ class HTML {
 	 */
 	public function format( $html ) {
 
+		// Since wp_kses has an issue with some <script> tags, proactively strip them.
+		$html = preg_replace( '/<script[^>]*?>.*?<\/script>/', '', $html );
+
 		// Strip out all tags and attributes other than what is allowed.
 		$html = wp_kses( $html, $this->_allowed_html );
 

@@ -238,6 +238,39 @@ HTML;
 	}
 
 	/**
+	 * Tests the removal of script tags.
+	 *
+	 * @access public
+	 */
+	public function testRemoveScriptTags() {
+
+		// Setup.
+		$this->settings->html_support = 'yes';
+		$html = <<<HTML
+<p><strong>Lorem ipsum dolor sit amet<script>if (1 > 0) { console.log('something'); }</script></strong></p>
+HTML;
+		$component = new Body(
+			$html,
+			null,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Test.
+		$this->assertEquals(
+			array(
+				'text'      => '<p><strong>Lorem ipsum dolor sit amet</strong></p>',
+				'role'      => 'body',
+				'format'    => 'html',
+				'textStyle' => 'dropcapBodyStyle',
+				'layout'    => 'body-layout',
+			),
+			$component->to_array()
+		);
+	}
+
+	/**
 	 * Tests the transformation process for an HTML entity (e.g., &amp;).
 	 *
 	 * @access public
