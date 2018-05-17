@@ -96,6 +96,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 
 				$post = get_post( $id );
 				$post_meta = get_post_meta( $id );
+				$enable_cover_art = ( 'yes' === $this->settings->enable_cover_art );
 				include plugin_dir_path( __FILE__ ) . 'partials/page_single_push.php';
 				break;
 			default:

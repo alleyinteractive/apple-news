@@ -85,7 +85,18 @@
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Cover art', 'apple-news' ) ?></th>
 				<td>
-					<?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
+					<?php if ( $enable_cover_art ) : ?>
+						<?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
+					<?php else : ?>
+						<?php
+							printf(
+								/* translators: First token is opening a tag, second is closing a tag */
+								esc_html__( 'Cover Art must be enabled on the %1$ssettings page%2$s.', 'apple-news' ),
+								'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-options' ) ) . '">',
+								'</a>'
+							);
+						?>
+					<?php endif; ?>
 				</td>
 			</tr>
 		</table>
