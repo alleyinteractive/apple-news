@@ -106,7 +106,7 @@ class Apple_News {
 
 		return ! empty( $post_type_object->cap->{$capability} )
 			? $post_type_object->cap->{$capability}
-			: '';
+			: 'do_not_allow';
 	}
 
 	/**
