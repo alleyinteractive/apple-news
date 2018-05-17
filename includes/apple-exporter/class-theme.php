@@ -1450,6 +1450,13 @@ class Theme {
 					break;
 			}
 		}
+
+		// Handle empty meta_component_order.
+		if ( ! isset( $_POST['meta_component_order'] )
+			&& ! empty( $_POST['meta_component_inactive'] )
+		) {
+			$this->_values['meta_component_order'] = array();
+		}
 	}
 
 	/**
