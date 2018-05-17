@@ -702,6 +702,11 @@ class Apple_News {
 				$this->migrate_table_settings( $theme );
 			}
 		}
+
+		// Default cover art to on for existing installations.
+		$wp_settings = get_option( self::$option_name );
+		$wp_settings['enable_cover_art'] = 'yes';
+		update_option( self::$option_name, $wp_settings, 'no' );
 	}
 
 	/**
