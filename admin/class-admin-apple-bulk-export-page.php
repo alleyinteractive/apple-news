@@ -104,8 +104,6 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Check the nonce
 		check_ajax_referer( self::ACTION );
 
-		get_post_type_capabilities();
-
 		// Sanitize input data
 		$id = absint( $_GET['id'] );
 
