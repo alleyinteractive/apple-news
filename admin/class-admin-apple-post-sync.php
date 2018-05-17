@@ -58,7 +58,7 @@ class Admin_Apple_Post_Sync {
 	public function do_publish( $id, $post ) {
 		if ( 'publish' !== $post->post_status
 			|| ! in_array( $post->post_type, $this->settings->post_types, true )
-			|| ( ! current_user_can( apply_filters( 'apple_news_publish_capability', 'publish_posts' ) )
+			|| ( ! current_user_can( apply_filters( 'apple_news_publish_capability', Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) )
 				&& ! ( defined( 'DOING_CRON' ) && DOING_CRON ) ) ) {
 			return;
 		}
@@ -93,7 +93,10 @@ class Admin_Apple_Post_Sync {
 	 * @access public
 	 */
 	public function do_delete( $id ) {
-		if ( ! current_user_can( apply_filters( 'apple_news_delete_capability', 'delete_posts' ) ) ) {
+		$post = get_post( $id );
+		if ( empty( $post->post_type )
+			|| ! current_user_can( apply_filters( 'apple_news_delete_capability', Apple_News::get_capability_for_post_type( 'delete_posts', $post->post_type ) ) )
+		) {
 			return;
 		}
 

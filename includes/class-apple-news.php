@@ -94,6 +94,22 @@ class Apple_News {
 	public static $maturity_ratings = array( 'KIDS', 'MATURE', 'GENERAL' );
 
 	/**
+	 * Maps a capability to a specific post type, with support for
+	 * custom post types.
+	 *
+	 * @param string $capability The capability to map.
+	 * @param string $post_type  The post type to map against.
+	 * @return string The mapped capability.
+	 */
+	public static function get_capability_for_post_type( $capability, $post_type ) {
+		$post_type_object = get_post_type_object( $post_type );
+
+		return ! empty( $post_type_object->cap->{$capability} )
+			? $post_type_object->cap->{$capability}
+			: '';
+	}
+
+	/**
 	 * Extracts the filename for bundling an asset.
 	 *
 	 * This functionality is used in a number of classes that do not have a common

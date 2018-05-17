@@ -104,14 +104,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Check the nonce
 		check_ajax_referer( self::ACTION );
 
-		// Check capabilities
-		if ( ! current_user_can( apply_filters( 'apple_news_publish_capability', 'publish_posts' ) ) ) {
-			echo wp_json_encode( array(
-				'success' => false,
-				'error'   => __( 'You do not have permission to publish to Apple News', 'apple-news' ),
-			) );
-			wp_die();
-		}
+		get_post_type_capabilities();
 
 		// Sanitize input data
 		$id = absint( $_GET['id'] );
@@ -122,6 +115,15 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			echo wp_json_encode( array(
 				'success' => false,
 				'error'   => __( 'This post no longer exists.', 'apple-news' ),
+			) );
+			wp_die();
+		}
+
+		// Check capabilities.
+		if ( ! current_user_can( apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) ) ) {
+			echo wp_json_encode( array(
+				'success' => false,
+				'error'   => __( 'You do not have permission to publish to Apple News', 'apple-news' ),
 			) );
 			wp_die();
 		}
