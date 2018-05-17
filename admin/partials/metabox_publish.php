@@ -70,7 +70,7 @@
 		<?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
 	</div>
 	<?php if ( 'yes' !== $this->settings->get( 'api_autosync' )
-		 && current_user_can( apply_filters( 'apple_news_publish_capability', 'manage_options' ) )
+		 && current_user_can( apply_filters( 'apple_news_publish_capability', 'publish_posts' ) )
 		 && 'publish' === $post->post_status
 		 && empty( $api_id )
 		 && empty( $deleted )
