@@ -46,6 +46,11 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'type' => array( 'yes', 'no' ),
 				'description' => __( 'If set to yes, images that are centered or have no alignment will span edge-to-edge rather than being constrained within the body margins.', 'apple-news' ),
 			),
+			'enable_cover_art' => array(
+				'description' => __( 'Enables the <a href="https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html">cover art</a> feature, which requires additional image sizes to be created. To avoid adding a significant number of additional image crops to your uploads folder, we recommend using an on-demand image resizing service such as <a href="https://jetpack.com/support/photon/">Jetpack\'s Image CDN</a>.', 'apple-news' ),
+				'label'       => __( 'Use Cover Art?', 'apple-news' ),
+				'type'        => array( 'yes', 'no' ),
+			),
 			'html_support' => array(
 				'label' => __( 'Enable HTML support?', 'apple-news' ),
 				'type' => array( 'yes', 'no' ),
@@ -67,7 +72,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 			),
 			'images' => array(
 				'label'       => __( 'Image Settings', 'apple-news' ),
-				'settings'    => array( 'use_remote_images', 'full_bleed_images' ),
+				'settings'    => array( 'use_remote_images', 'full_bleed_images', 'enable_cover_art' ),
 			),
 			'format' => array(
 				'label'       => __( 'Format Settings', 'apple-news' ),
