@@ -67,7 +67,20 @@
 	</div>
 	<div id="apple-news-metabox-coverart" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
 		<h3><?php esc_html_e( 'Cover art', 'apple-news' ) ?></h3>
-		<?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
+		<?php if ( 'yes' === $this->settings->get( 'enable_cover_art' ) ) : ?>
+			<?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
+		<?php else : ?>
+			<p>
+			<?php
+				printf(
+					/* translators: First token is opening a tag, second is closing a tag */
+					esc_html__( 'Cover Art must be enabled on the %1$ssettings page%2$s.', 'apple-news' ),
+					'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-options' ) ) . '">',
+					'</a>'
+				);
+			?>
+			</p>
+		<?php endif; ?>
 	</div>
 	<?php if ( 'yes' !== $this->settings->get( 'api_autosync' )
 		 && current_user_can( apply_filters( 'apple_news_publish_capability', Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) )
