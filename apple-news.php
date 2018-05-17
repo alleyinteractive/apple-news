@@ -83,3 +83,13 @@ function apple_news_get_plugin_data() {
 }
 
 new Admin_Apple_News();
+
+/**
+ * Reports whether an export is currently happening.
+ *
+ * @return bool True if exporting, false if not.
+ * @since 1.4.0
+ */
+function apple_news_is_exporting() {
+	return Apple_Actions\Index\Export::is_exporting();
+}

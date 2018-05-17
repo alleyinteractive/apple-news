@@ -16,6 +16,14 @@ use \Admin_Apple_Sections;
 class Export extends Action {
 
 	/**
+	 * A variable to keep track of whether we are in the middle of an export.
+	 *
+	 * @var bool
+	 * @access private
+	 */
+	private static $exporting = false;
+
+	/**
 	 * ID of the post being exported.
 	 *
 	 * @var int
@@ -39,14 +47,28 @@ class Export extends Action {
 	}
 
 	/**
+	 * A function to determine whether an export is currently in progress.
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	public static function is_exporting() {
+		return self::$exporting;
+	}
+
+	/**
 	 * Perform the export and return the results.
 	 *
 	 * @return string The JSON data
 	 * @access public
 	 */
 	public function perform() {
-		$exporter = $this->fetch_exporter();
-		return $exporter->export();
+		self::$exporting = true;
+		$exporter        = $this->fetch_exporter();
+		$json            = $exporter->export();
+		self::$exporting = false;
+
+		return $json;
 	}
 
 	/**
