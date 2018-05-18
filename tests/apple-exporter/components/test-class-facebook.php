@@ -121,6 +121,14 @@ class Facebook_Test extends Component_TestCase {
 			$node
 		);
 
+		// Test the node - WordPress.com embed syntax.
+		$node = self::build_node( '<p><fb:post href="' . esc_url( $url ) . '" data-width="552" class=" fb_iframe_widget" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=249643311490&amp;container_width=0&amp;href=https%3A%2F%2Fwww.facebook.com%2FWordPresscom%2Fposts%2F10156452969778980&amp;locale=en_US&amp;sdk=joey&amp;width=552"><span style="vertical-align: bottom; width: 552px; height: 504px;"><iframe name="f1d6c220128422" width="552px" height="1000px" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" title="fb:post Facebook Social Plugin" src="https://www.facebook.com/v2.3/plugins/post.php?app_id=249643311490&amp;channel=https%3A%2F%2Fstaticxx.facebook.com%2Fconnect%2Fxd_arbiter%2Fr%2FRQ7NiRXMcYA.js%3Fversion%3D42%23cb%3Df31851b8eec581%26domain%3Dexample.wordpress.com%26origin%3Dhttps%253A%252F%252Fexample.wordpress.com%252Ff59b6814ddce14%26relation%3Dparent.parent&amp;container_width=0&amp;href=https%3A%2F%2Fwww.facebook.com%2FWordPresscom%2Fposts%2F10156452969778980&amp;locale=en_US&amp;sdk=joey&amp;width=552" style="border: none; visibility: visible; width: 552px; height: 504px;" class=""></iframe></span></fb:post></p>' );
+
+		$this->assertEquals(
+			$component->node_matches( $node ),
+			$node
+		);
+
 		// Test the node - *incorrect* css class and fb url.
 		$node_failure = self::build_node( sprintf( '<div class="invalid-fb-post" data-href="%s"></div>', esc_url( $url ) ) );
 
