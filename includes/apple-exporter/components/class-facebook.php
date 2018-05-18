@@ -44,7 +44,7 @@ class Facebook extends Component {
 	 */
 	private static $_url_signatures = array(
 		'/data-href="([^"]+)"/i',
-		'/<fb:post\s.*?href="([^"]+)"/i',
+		'/<(?:fb:)?post\s.*?href="([^"]+)"/i',
 	);
 
 	/**
