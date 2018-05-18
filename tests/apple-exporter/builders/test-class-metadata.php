@@ -63,6 +63,15 @@ class Metadata_Test extends WP_UnitTestCase {
 	 */
 	public function testCoverArt() {
 
+		/**
+		 * Due to how the cover art setting is processed, we need to
+		 * manually register the image sizes here.
+		 */
+		$image_sizes = Admin_Apple_News::get_image_sizes();
+		foreach ( $image_sizes as $name => $data ) {
+			add_image_size( $name, $data['width'], $data['height'], true );
+		}
+
 		// Create dummy content.
 		$title = 'My Title';
 		$content = '<p>Hello, World!</p>';
