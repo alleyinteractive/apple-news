@@ -37,6 +37,17 @@ class Facebook extends Component {
 	);
 
 	/**
+	 * Regular expressions for extracting post URLs from HTML markup.
+	 *
+	 * @access private
+	 * @var array
+	 */
+	private static $_url_signatures = array(
+		'/data-href="([^"]+)"/i',
+		'/<fb:post\s.*?href="([^"]+)"/i',
+	);
+
+	/**
 	 * Register all specs for the component.
 	 *
 	 * @access public
@@ -113,9 +124,12 @@ class Facebook extends Component {
 	 */
 	protected function build( $html ) {
 
-		// Check for data-href property on rendered <div>.
-		if ( preg_match( '/data-href="([^"]+)"/i', $html, $data_href ) ) {
-			$html = $data_href[1];
+		// Check for href properties on rendered embeds.
+		foreach ( self::$_url_signatures as $signature ) {
+			if ( preg_match( $signature, $html, $matches ) ) {
+				$html = $matches[1];
+				break;
+			}
 		}
 
 		// Try to get Facebook URL.
