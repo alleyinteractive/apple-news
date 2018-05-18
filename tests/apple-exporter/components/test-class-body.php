@@ -53,6 +53,7 @@ class Body_Test extends Component_TestCase {
 	public function testEmptyContent() {
 
 		// Setup.
+		$this->settings->html_support = 'no';
 		$html = '<p><a href="https://www.apple.com/">&nbsp;</a></p>';
 		$component = new Body(
 			$html,
@@ -67,6 +68,9 @@ class Body_Test extends Component_TestCase {
 			array(),
 			$component->to_array()
 		);
+
+		// Teardown.
+		$this->settings->html_support = 'yes';
 	}
 
 	/**
@@ -77,7 +81,6 @@ class Body_Test extends Component_TestCase {
 	public function testEmptyHTMLContent() {
 
 		// Setup.
-		$this->settings->html_support = 'yes';
 		$html = '<p>a</p><p>&nbsp;</p><p>b</p>';
 		$component = new Body(
 			$html,
@@ -98,9 +101,6 @@ class Body_Test extends Component_TestCase {
 			),
 			$component->to_array()
 		);
-
-		// Teardown.
-		$this->settings->html_support = 'no';
 	}
 
 	/**
@@ -111,6 +111,7 @@ class Body_Test extends Component_TestCase {
 	public function testFilter() {
 
 		// Setup.
+		$this->settings->html_support = 'no';
 		$theme = new \Apple_Exporter\Theme;
 		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
 		$theme->load();
@@ -138,6 +139,7 @@ class Body_Test extends Component_TestCase {
 			'apple_news_body_json',
 			array( $this, 'filter_apple_news_body_json' )
 		);
+		$this->settings->html_support = 'yes';
 	}
 
 	/**
@@ -146,9 +148,6 @@ class Body_Test extends Component_TestCase {
 	 * @access public
 	 */
 	public function testFilterHTML() {
-
-		// Setup.
-		$this->settings->html_support = 'yes';
 
 		// Test before filter.
 		$component = new Body(
@@ -193,7 +192,6 @@ class Body_Test extends Component_TestCase {
 		);
 
 		// Teardown.
-		$this->settings->html_support = 'no';
 		remove_filter(
 			'apple_news_body_html_enabled',
 			array( $this, 'filter_apple_news_body_html_enabled' )
@@ -208,7 +206,6 @@ class Body_Test extends Component_TestCase {
 	public function testHTML() {
 
 		// Setup.
-		$this->settings->html_support = 'yes';
 		$html = <<<HTML
 <p>Lorem ipsum. <a href="https://wordpress.org">Dolor sit amet</a>.</p>
 <pre>
@@ -245,7 +242,6 @@ HTML;
 	public function testRemoveScriptTags() {
 
 		// Setup.
-		$this->settings->html_support = 'yes';
 		$html = <<<HTML
 <p><strong>Lorem ipsum dolor sit amet<script>if (1 > 0) { console.log('something'); }</script></strong></p>
 HTML;
@@ -278,6 +274,7 @@ HTML;
 	public function testTransformHtmlEntities() {
 
 		// Setup.
+		$this->settings->html_support = 'no';
 		$body_component = new Body(
 			'<p>my &amp; text</p>',
 			null,
@@ -297,6 +294,9 @@ HTML;
 			),
 			$body_component->to_array()
 		);
+
+		// Teardown.
+		$this->settings->html_support = 'yes';
 	}
 
 	/**
@@ -307,6 +307,7 @@ HTML;
 	public function testLists() {
 
 		// Setup.
+		$this->settings->html_support = 'no';
 		$content = <<<HTML
 <ul>
 <li>item 1</li>
@@ -349,6 +350,9 @@ HTML;
 			'- item 2' . "\n" . '- item 3',
 			$json['components'][1]['components'][3]['text']
 		);
+
+		// Teardown.
+		$this->settings->html_support = 'yes';
 	}
 
 	/**
@@ -487,6 +491,7 @@ HTML;
 	public function testTransform() {
 
 		// Setup.
+		$this->settings->html_support = 'no';
 		$component = new Body(
 			'<p>my text</p>',
 			null,
@@ -506,6 +511,9 @@ HTML;
 			),
 			$component->to_array()
 		);
+
+		// Teardown.
+		$this->settings->html_support = 'yes';
 	}
 
 	/**
@@ -516,6 +524,7 @@ HTML;
 	public function testWithoutDropcap() {
 
 		// Setup.
+		$this->settings->html_support = 'no';
 		$theme = \Apple_Exporter\Theme::get_used();
 		$settings = $theme->all_settings();
 		$settings['initial_dropcap'] = 'no';
@@ -540,5 +549,8 @@ HTML;
 			),
 			$body_component->to_array()
 		);
+
+		// Teardown.
+		$this->settings->html_support = 'yes';
 	}
 }
