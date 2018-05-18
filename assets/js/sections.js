@@ -54,12 +54,26 @@
 				},
 
 				/**
+				 * A function to set up a listener for a reset action.
+				 */
+				listen_for_reset: function () {
+					document
+						.getElementById('apple_news_refresh_section_list')
+						.addEventListener('click', function () {
+							document.getElementById('apple-news-section-form')
+								.querySelector('input[name="action"]')
+								.value = 'apple_news_refresh_section_list';
+						})
+				},
+
+				/**
 				 * A function that initializes functionality on the Settings admin screen.
 				 */
 				init: function () {
 					this.enable_autocomplete();
 					this.listen_for_additions();
 					this.listen_for_deletions();
+					this.listen_for_reset();
 				}
 			};
 

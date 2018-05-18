@@ -215,6 +215,7 @@ class Admin_Apple_Sections extends Apple_News {
 		// Set up admin action callbacks for form submissions.
 		$this->valid_actions = array(
 			'apple_news_set_section_mappings' => array( $this, 'set_section_mappings' ),
+			'apple_news_refresh_section_list' => array( $this, 'refresh_section_list' ),
 		);
 
 		// Set up action hooks.
@@ -403,6 +404,16 @@ class Admin_Apple_Sections extends Apple_News {
 			array( 'jquery', 'jquery-ui-autocomplete' ),
 			self::$version
 		);
+	}
+
+	/**
+	 * A function that busts the cache of sections and re-fetches it
+	 * from the Apple News API.
+	 *
+	 * @access public
+	 */
+	private function refresh_section_list() {
+		delete_transient( 'apple_news_sections' );
 	}
 
 	/**

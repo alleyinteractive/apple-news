@@ -67,10 +67,23 @@
 			<?php endforeach; ?>
 			</tbody>
 		</table>
-		<?php submit_button(
-			__( 'Save Changes', 'apple-news' ),
-			'primary',
-			'apple_news_set_section_mappings'
-		); ?>
+		<p>
+			<?php
+				submit_button(
+					__( 'Save Changes', 'apple-news' ),
+					'primary',
+					'apple_news_set_section_mappings',
+					false
+				);
+			?>
+			<?php
+				submit_button(
+					__( 'Refresh Section List', 'apple-news' ),
+					'secondary',
+					'apple_news_refresh_section_list',
+					false
+				);
+			?>
+		</p>
 	</form>
 </div>
