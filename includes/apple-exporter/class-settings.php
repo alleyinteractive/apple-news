@@ -42,7 +42,7 @@ class Settings {
 		'component_alerts' => 'none',
 		'enable_cover_art' => 'no',
 		'full_bleed_images' => 'no',
-		'html_support' => 'no',
+		'html_support' => 'yes',
 		'json_alerts' => 'warn',
 		'post_types' => array( 'post' ),
 		'show_metabox' => 'yes',

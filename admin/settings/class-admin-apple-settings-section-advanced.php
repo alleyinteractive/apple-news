@@ -55,12 +55,11 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'label' => __( 'Enable HTML support?', 'apple-news' ),
 				'type' => array( 'yes', 'no' ),
 				'description' => sprintf(
-					'%s <a href="%s" target="_blank">%s</a> %s',
-					__( 'Experimental. If set to yes, certain text fields will use', 'apple-news' ),
-					__( 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/HTMLMarkupforAppleNewsFormat.html', 'apple-news' ),
-					__( 'Apple News HTML format', 'apple-news' ),
-					__( 'instead of Markdown, allowing for proper display of certain HTML tags in content.', 'apple-news' )
-				)
+					// Translators: Placeholder 1 is an opening <a> tag, placeholder 2 is </a>.
+					__( 'If set to no, certain text fields will use Markdown instead of %1$sApple News HTML format%2$s. As of version 1.4.0, HTML format is the preferred output format. Support for Markdown may be removed in the future.', 'apple-news' ),
+					'<a href="' . esc_url( 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/HTMLMarkupforAppleNewsFormat.html' ) . '">',
+					'</a>'
+				),
 			),
 		);
 
