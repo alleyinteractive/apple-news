@@ -142,7 +142,17 @@ class Metadata extends Builder {
 				|| $data['width'] !== $image['sizes'][ $key ]['width']
 				|| $data['height'] !== $image['sizes'][ $key ]['height']
 			) {
-				continue;
+				/**
+				 * If the full size of the image is *exactly* the requested
+				 * dimensions, a crop won't be generated, but we don't want
+				 * to fail it either. So we need to check the height and
+				 * width of the original also.
+				 */
+				if ( $data['width'] !== $image['width']
+					|| $data['height'] !== $image['height']
+				) {
+					continue;
+				}
 			}
 
 			// Bundle source, if necessary.
