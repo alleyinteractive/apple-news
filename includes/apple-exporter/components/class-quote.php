@@ -276,6 +276,10 @@ class Quote extends Component {
 		// Trim the fat before beginning.
 		$text = trim( $text );
 
+		// If using HTML format, also strip the beginning and ending paragraph tags.
+		$text = preg_replace( '/^<p>/i', '', $text );
+		$text = preg_replace( '/<\/p>$/i', '', $text );
+
 		// Strip any double quotes already present.
 		$modified_text = trim( $text, '"“”' );
 
@@ -296,8 +300,12 @@ class Quote extends Component {
 			$text
 		);
 
-		// Re-add the line breaks.
-		$modified_text .= "\n\n";
+		// Re-add removed elements depending on format.
+		if ( 'yes' === $this->settings->html_support ) {
+			$modified_text = '<p>' . $modified_text . '</p>';
+		} else {
+			$modified_text .= "\n\n";
+		}
 
 		return $modified_text;
 	}

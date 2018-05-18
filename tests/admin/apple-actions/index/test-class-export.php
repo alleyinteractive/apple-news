@@ -299,7 +299,7 @@ class Admin_Action_Index_Export_Test extends WP_UnitTestCase {
 		$export = new Export( $this->settings, $post_id, $sections );
 		$json = json_decode( $export->perform() );
 		$this->assertEquals(
-			'is exporting',
+			'<p>is exporting</p>',
 			$json->components[3]->text
 		);
 

@@ -29,10 +29,10 @@ class Quote_Test extends Component_TestCase {
 	 */
 	public function dataTransformPullquote() {
 		return array(
-			array( 'my text', 'my text' . "\n\n", 'no' ),
-			array( 'my text', '“my text”' . "\n\n", 'yes' ),
-			array( '"my text"', '“my text”' . "\n\n", 'yes' ),
-			array( '“my text”', '“my text”' . "\n\n", 'yes' ),
+			array( 'my text', '<p>my text</p>', 'no' ),
+			array( 'my text', '<p>“my text”</p>', 'yes' ),
+			array( '"my text"', '<p>“my text”</p>', 'yes' ),
+			array( '“my text”', '<p>“my text”</p>', 'yes' ),
 		);
 	}
 
@@ -93,7 +93,7 @@ class Quote_Test extends Component_TestCase {
 		// Test.
 		$result = $component->to_array();
 		$this->assertEquals(
-			'«my quote»' . "\n\n",
+			'<p>«my quote»</p>',
 			$result['components'][0]['text']
 		);
 
@@ -293,8 +293,8 @@ class Quote_Test extends Component_TestCase {
 		// Test.
 		$this->assertEquals( 'container', $result_wrapper['role'] );
 		$this->assertEquals( 'quote', $result['role'] );
-		$this->assertEquals( "my quote\n\n", $result['text'] );
-		$this->assertEquals( 'markdown', $result['format'] );
+		$this->assertEquals( '<p>my quote</p>', $result['text'] );
+		$this->assertEquals( 'html', $result['format'] );
 		$this->assertEquals( 'default-blockquote', $result['textStyle'] );
 		$this->assertEquals( 'blockquote-layout', $result['layout'] );
 	}
@@ -332,7 +332,7 @@ class Quote_Test extends Component_TestCase {
 		$this->assertEquals( 'container', $result_wrapper['role'] );
 		$this->assertEquals( 'quote', $result['role'] );
 		$this->assertEquals( $expected, $result['text'] );
-		$this->assertEquals( 'markdown', $result['format'] );
+		$this->assertEquals( 'html', $result['format'] );
 		$this->assertEquals( 'default-pullquote', $result['textStyle'] );
 		$this->assertEquals( 'pullquote-layout', $result['layout'] );
 	}

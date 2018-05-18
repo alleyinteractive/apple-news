@@ -510,6 +510,6 @@ HTML;
 		// Test.
 		$this->assertEquals( 'heading1', $json['role'] );
 		$this->assertEquals( 'This is a heading', $json['text'] );
-		$this->assertEquals( 'markdown', $json['format'] );
+		$this->assertEquals( 'html', $json['format'] );
 	}
 }
