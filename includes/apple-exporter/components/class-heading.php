@@ -92,6 +92,18 @@ class Heading extends Component {
 	}
 
 	/**
+	 * Whether HTML format is enabled for this component type.
+	 *
+	 * @param bool $enabled Optional. Whether to enable HTML support for this component. Defaults to true.
+	 *
+	 * @access protected
+	 * @return bool Whether HTML format is enabled for this component type.
+	 */
+	protected function html_enabled( $enabled = true ) {
+		return parent::html_enabled( $enabled );
+	}
+
+	/**
 	 * Split the image parts.
 	 *
 	 * @param string $html

@@ -252,6 +252,18 @@ class Quote extends Component {
 	}
 
 	/**
+	 * Whether HTML format is enabled for this component type.
+	 *
+	 * @param bool $enabled Optional. Whether to enable HTML support for this component. Defaults to true.
+	 *
+	 * @access protected
+	 * @return bool Whether HTML format is enabled for this component type.
+	 */
+	protected function html_enabled( $enabled = true ) {
+		return parent::html_enabled( $enabled );
+	}
+
+	/**
 	 * Processes given text to apply smart quotes on either end of provided text.
 	 *
 	 * @param string $text The text to process.
