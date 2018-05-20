@@ -7,11 +7,21 @@
 	convertWarningsToExceptions="true"
 	>
 	<php>
-  	<const name="APPLE_NEWS_UNIT_TESTS" value="1" />
-  </php>
+		<const name="APPLE_NEWS_UNIT_TESTS" value="1" />
+	</php>
 	<testsuites>
 		<testsuite>
 			<directory prefix="test-" suffix=".php">./tests/</directory>
 		</testsuite>
 	</testsuites>
+	<filter>
+			<whitelist processUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">./</directory>
+			<exclude>
+				<directory suffix=".php">./tests/</directory>
+				<directory suffix=".php">./bin/</directory>
+				<file>./inc/cli.php</file>
+			</exclude>
+		</whitelist>
+	</filter>
 </phpunit>
