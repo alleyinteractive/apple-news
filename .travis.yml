@@ -84,16 +84,6 @@ before_script:
   # Create WordPress database.
   - mysql -e 'CREATE DATABASE wordpress_test;' -uroot
 
-  # Set up phpcs
-  - |
-    if [[ "$WP_PHPCS" == "1" ]]; then
-      cd $og_dir
-      composer install
-      export PATH=$PATH:${og_dir}/vendor/bin/
-      # After CodeSniffer install you should refresh your path.
-      phpenv rehash
-    fi
-
   # Set up the plugin.
   - cd $og_dir
   - mkdir -p "${WP_CORE_DIR}wp-content/plugins/apple-news"
@@ -101,6 +91,11 @@ before_script:
 
   # Hop into plugin's directory.
   - cd ${WP_CORE_DIR}wp-content/plugins/apple-news/
+
+  # Install Composer dependencies.
+  - composer install
+  - export PATH=$PATH:${WP_CORE_DIR}wp-content/plugins/apple-news/vendor/bin/
+  - phpenv rehash
 
   # For debugging.
   - which phpunit
