@@ -95,12 +95,12 @@ before_script:
     fi
 
   # Set up the plugin.
-    - cd $og_dir
-    - mkdir -p "${WP_CORE_DIR}wp-content/plugins/apple-news"
-    - cp -R . "${WP_CORE_DIR}wp-content/plugins/apple-news/"
+  - cd $og_dir
+  - mkdir -p "${WP_CORE_DIR}wp-content/plugins/apple-news"
+  - cp -R . "${WP_CORE_DIR}wp-content/plugins/apple-news/"
 
   # Hop into plugin's directory.
-    - cd ${WP_CORE_DIR}wp-content/plugins/apple-news/
+  - cd ${WP_CORE_DIR}wp-content/plugins/apple-news/
 
   # For debugging.
   - which phpunit
