@@ -94,6 +94,14 @@ before_script:
       phpenv rehash
     fi
 
+  # Set up the plugin.
+    - cd $og_dir
+    - mkdir -p "${WP_CORE_DIR}wp-content/plugins/apple-news"
+    - cp -R . "${WP_CORE_DIR}wp-content/plugins/apple-news/"
+
+  # Hop into plugin's directory.
+    - cd ${WP_CORE_DIR}wp-content/plugins/apple-news/
+
   # For debugging.
   - which phpunit
   - phpunit --version
@@ -116,7 +124,7 @@ script:
     # @link http://pear.php.net/package/PHP_CodeSniffer/
     - if [[ "$WP_PHPCS" == "1" ]]; then phpcs -v; fi
 
-    # Test the theme's unit tests
+    # Test the plugin's unit tests
     - phpunit
     - phpunit -c multisite.xml
 
