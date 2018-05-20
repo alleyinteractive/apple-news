@@ -109,7 +109,7 @@ script:
     # Search for PHP syntax errors.
     #
     # Only need to run this once per PHP version.
-    - if [[ "$PHP_LINT" == "1" ]]; then find . -type "f" -iname "*.php" | xargs -L "1" php -l; fi
+    - if [[ "$PHP_LINT" == "1" ]]; then find . -type "f" -iname "*.php" -not -path "./vendor/*" | xargs -L "1" php -l; fi
 
     # WordPress Coding Standards.
     #
