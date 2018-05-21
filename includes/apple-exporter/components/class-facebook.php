@@ -97,15 +97,12 @@ class Facebook extends Component {
 		}
 
 		// Handling for a rendered WordPress.com Facebook embed.
-		$fb_post = $node->getElementsByTagName( 'post' );
-		if ( ! empty( $fb_post->length ) && 1 === $fb_post->length ) {
+		$html = $node->ownerDocument->saveXML( $node );
+		if ( preg_match( '/<(?:fb:)?post\s.*?href="([^"]+)"/i', $html, $matches ) ) {
 
-			// Extract Facebook URL from element's href property.
-			$fb_url = $fb_post[0]->getAttribute( 'href' );
-
-			// Ensure we have a valid Facebook embed url.
-			if ( ! empty( $fb_url )
-				&& false !== self::_get_facebook_url( $fb_url )
+			// Ensure we have a valid Facebook embed URL.
+			if ( ! empty( $matches[1] )
+				&& false !== self::_get_facebook_url( $matches[1] )
 			) {
 				return $node;
 			}
