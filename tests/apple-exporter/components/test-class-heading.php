@@ -85,8 +85,6 @@ HTML;
 		$this->ensure_tokens_replaced( $json );
 		$json = json_decode( $json, true );
 
-		print_r( $json );
-
 		// Validate image split in generated JSON.
 		$this->assertEquals(
 			array(
