@@ -71,6 +71,8 @@ class Heading_Test extends Component_TestCase {
 	 */
 	public function testImageSplittingWithLink() {
 
+		echo 'START testImageSplittingWithLink' . "\n\n";
+
 		// Setup.
 		$content = <<<HTML
 <h2><a href="https://www.google.com/"><img src="/example-image.jpg" /></a></h2>
