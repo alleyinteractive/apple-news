@@ -24,6 +24,7 @@ class Heading extends Component {
 	 * @access public
 	 */
 	public static function node_matches( $node ) {
+		echo 'Starting node match for heading' . "\n\n";
 		$regex = sprintf(
 			'#h[%s-%s]#',
 			current( self::$levels ),
@@ -32,10 +33,10 @@ class Heading extends Component {
 		reset( self::$levels );
 
 		if ( ! preg_match( $regex, $node->nodeName ) ) {
+			echo 'Regex found no match for heading, bailing' . "\n\n";
 			return null;
 		}
 
-		echo 'Starting node match for heading' . "\n\n";
 		$html = $node->ownerDocument->saveXML( $node );
 		echo 'Got HTML ' . $html . "\n\n";
 		if ( preg_match( '#<img.*?>#si', $html ) ) {
