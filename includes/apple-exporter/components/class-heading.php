@@ -37,9 +37,12 @@ class Heading extends Component {
 
 		$html = $node->ownerDocument->saveXML( $node );
 		if ( preg_match( '#<img.*?>#si', $html ) ) {
+			echo 'Splitting image' . "\n\n";
 			return self::split_image( $html );
 		}
 
+		echo 'Not splitting image' . "\n\n";
+		echo 'HTML: ' . $html . "\n\n";
 		return $node;
 	}
 
@@ -112,6 +115,7 @@ class Heading extends Component {
 	 */
 	private static function split_image( $html ) {
 		if ( empty( $html ) ) {
+			echo 'HTML is empty, returning' . "\n\n";
 			return array();
 		}
 
