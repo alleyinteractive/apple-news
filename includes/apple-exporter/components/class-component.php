@@ -254,7 +254,6 @@ abstract class Component {
 		// Find the first-level nodes of the body tag.
 		$element = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
 		$html    = $dom->saveHTML( $element );
-		echo $html . "\n\n";
 		return preg_replace( '#<[^/>][^>]*></[^>]+>#', '', $html );
 	}
 

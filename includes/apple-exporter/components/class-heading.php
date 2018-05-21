@@ -35,10 +35,15 @@ class Heading extends Component {
 			return null;
 		}
 
+		echo 'Starting node match for heading' . "\n\n";
 		$html = $node->ownerDocument->saveXML( $node );
+		echo 'Got HTML ' . $html . "\n\n";
 		if ( preg_match( '#<img.*?>#si', $html ) ) {
+			echo 'Found image, splitting' . "\n\n";
 			return self::split_image( $html );
 		}
+
+		echo 'No image found, returning node' . "\n\n";
 
 		return $node;
 	}
@@ -115,16 +120,21 @@ class Heading extends Component {
 			return array();
 		}
 
+		echo 'Starting image split' . "\n\n";
 		// Find the first image inside
 		preg_match( '#<img.*?>#si', $html, $matches );
 
 		if ( ! $matches ) {
+			echo 'No match found, bailing' . "\n\n";
 			return array( array( 'name' => 'heading', 'value' => $html ) );
 		}
 
 		$image_html   = $matches[0];
 		$heading_html = str_replace( $image_html, '', $html );
 
+		echo 'Found image HTML: ' . $image_html . "\n\n";
+		echo 'Found heading HTML: ' . $heading_html . "\n\n";
+		echo 'Clean heading HTML: ' . self::clean_html( $heading_html ) . "\n\n";
 		return array(
 			array( 'name'  => 'heading', 'value' => self::clean_html( $heading_html ) ),
 			array( 'name'  => 'img'    , 'value' => $image_html ),
@@ -142,16 +152,21 @@ class Heading extends Component {
 			return;
 		}
 
+		echo 'Starting heading build' . "\n\n";
 		$level = intval( $matches[1] );
+		echo 'Got heading level ' . $level . "\n\n";
 		// We won't be using markdown*, so we ignore all HTML tags, just fetch the
 		// contents.
 		// *: No markdown because the apple format doesn't support markdown with
 		// textStyle in headings.
 		$text = wp_strip_all_tags( $matches[2] );
+		echo 'Got text ' . $text . "\n\n";
 
 		// Parse and trim the resultant text, and if there is nothing left, bail.
 		$text = trim( $this->parser->parse( $text ) );
+		echo 'Parser returned ' . $text . "\n\n";
 		if ( empty( $text ) ) {
+			echo 'Empty text, bailing' . "\n\n";
 			return;
 		}
 
