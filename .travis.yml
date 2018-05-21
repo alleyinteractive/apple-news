@@ -16,9 +16,6 @@ git:
 
 matrix:
   include:
-    - php: 5.3
-      env: WP_VERSION=4.9.6 PHP_LINT=1
-      dist: precise
     - php: 5.6
       env: WP_VERSION=4.9.6 PHP_LINT=1
     - php: 7.0
@@ -46,17 +43,13 @@ before_script:
   # Couple the PHPUnit version to the PHP version.
   - |
     case "$TRAVIS_PHP_VERSION" in
-      7.2|7.1|7.0)
+      7.*)
         echo "Using PHPUnit 6.1"
         composer global require "phpunit/phpunit=6.1.*"
         ;;
-      5.6|5.3)
+      *)
         echo "Using PHPUnit 4.8"
         composer global require "phpunit/phpunit=4.8.*"
-        ;;
-      *)
-        echo "No PHPUnit version handling for PHP version $TRAVIS_PHP_VERSION"
-        exit 1
         ;;
     esac
 
