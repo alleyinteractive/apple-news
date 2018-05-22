@@ -75,6 +75,7 @@ before_script:
         ;;
       nightly)
         git clone --depth=1 --branch="master" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
+        ;;
       *)
         git clone --depth=1 --branch="$WP_VERSION" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
         ;;
