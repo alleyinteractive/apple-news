@@ -24,12 +24,11 @@ matrix:
       env: WP_VERSION=latest PHP_LINT=1
     - php: 7.2
       env: WP_VERSION=latest PHP_LINT=1 WP_PHPCS=1
+    - php: 7.2
+      env: WP_VERSION=nightly
   fast_finish: true
-
-# Use this to prepare the system to install prerequisites or dependencies.
-# e.g. sudo apt-get update.
-# Failures in this section will result in build status 'errored'.
-before_install:
+  allow_failures:
+    - env: WP_VERSION=nightly
 
 # Use this to prepare your build for testing.
 # e.g. copy database configurations, environment variables, etc.
@@ -74,6 +73,8 @@ before_script:
         fi
         git clone --depth=1 --branch="$LATEST_VERSION" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
         ;;
+      nightly)
+        git clone --depth=1 --branch="master" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
       *)
         git clone --depth=1 --branch="$WP_VERSION" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
         ;;
@@ -86,21 +87,13 @@ before_script:
   - sed -i "s/youremptytestdbnamehere/wordpress_test/" wp-tests-config.php
   - sed -i "s/yourusernamehere/root/" wp-tests-config.php
   - sed -i "s/yourpasswordhere//" wp-tests-config.php
-  - echo "define( 'JETPACK_DEV_DEBUG', true );" >> wp-tests-config.php
   - cat wp-tests-config.php
 
   # Create WordPress database.
   - mysql -e 'CREATE DATABASE wordpress_test;' -uroot
 
-  # Set up the plugin.
-  - cd $og_dir
-  - mkdir -p "${WP_CORE_DIR}wp-content/plugins/apple-news"
-  - cp -R . "${WP_CORE_DIR}wp-content/plugins/apple-news/"
-
-  # Hop into plugin's directory.
-  - cd ${WP_CORE_DIR}wp-content/plugins/apple-news/
-
   # Install Composer dependencies.
+  - cd $og_dir
   - composer install
   - export PATH=$PATH:${WP_CORE_DIR}wp-content/plugins/apple-news/vendor/bin/
   - phpenv rehash
