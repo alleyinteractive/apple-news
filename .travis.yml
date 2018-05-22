@@ -96,7 +96,7 @@ before_script:
   # Install Composer dependencies.
   - cd $og_dir
   - composer install
-  - export PATH=$PATH:${og_dir}wp-content/plugins/apple-news/vendor/bin/
+  - export PATH=$PATH:${og_dir}/vendor/bin/
   - phpenv rehash
 
   # For debugging.
