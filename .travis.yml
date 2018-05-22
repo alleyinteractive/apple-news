@@ -17,13 +17,13 @@ git:
 matrix:
   include:
     - php: 5.6
-      env: WP_VERSION=4.9.6 PHP_LINT=1
+      env: WP_VERSION=latest PHP_LINT=1
     - php: 7.0
-      env: WP_VERSION=4.9.6 PHP_LINT=1
+      env: WP_VERSION=latest PHP_LINT=1
     - php: 7.1
-      env: WP_VERSION=4.9.6 PHP_LINT=1
+      env: WP_VERSION=latest PHP_LINT=1
     - php: 7.2
-      env: WP_VERSION=4.9.6 PHP_LINT=1 WP_PHPCS=1
+      env: WP_VERSION=latest PHP_LINT=1 WP_PHPCS=1
   fast_finish: true
 
 # Use this to prepare the system to install prerequisites or dependencies.
@@ -62,7 +62,22 @@ before_script:
   - mkdir -p $WP_DEVELOP_DIR
 
   # Use the Git mirror of WordPress.
-  - git clone --depth=1 --branch="$WP_VERSION" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
+  - |
+    case "$WP_VERSION" in
+      latest)
+        curl -s http://api.wordpress.org/core/version-check/1.7/ > /tmp/wp-latest.json
+        grep '[0-9]+\.[0-9]+(\.[0-9]+)?' /tmp/wp-latest.json
+        LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
+        if [[ -z "$LATEST_VERSION" ]]; then
+          echo "Latest WordPress version could not be found."
+          exit 1
+        fi
+        git clone --depth=1 --branch="$LATEST_VERSION" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
+        ;;
+      *)
+        git clone --depth=1 --branch="$WP_VERSION" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
+        ;;
+    esac
 
   # Set up WordPress configuration.
   - cd $WP_DEVELOP_DIR
