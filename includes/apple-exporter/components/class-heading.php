@@ -26,10 +26,9 @@ class Heading extends Component {
 	public static function node_matches( $node ) {
 		$regex = sprintf(
 			'#h[%s-%s]#',
-			current( self::$levels ),
-			end( self::$levels )
+			self::$levels[0],
+			self::$levels[ count( self::$levels ) - 1 ]
 		);
-		reset( self::$levels );
 
 		if ( ! preg_match( $regex, $node->nodeName ) ) {
 			return null;
@@ -37,12 +36,9 @@ class Heading extends Component {
 
 		$html = $node->ownerDocument->saveXML( $node );
 		if ( preg_match( '#<img.*?>#si', $html ) ) {
-			echo 'Splitting image' . "\n\n";
 			return self::split_image( $html );
 		}
 
-		echo 'Not splitting image' . "\n\n";
-		echo 'HTML: ' . $html . "\n\n";
 		return $node;
 	}
 
@@ -115,25 +111,19 @@ class Heading extends Component {
 	 */
 	private static function split_image( $html ) {
 		if ( empty( $html ) ) {
-			echo 'HTML is empty, returning' . "\n\n";
 			return array();
 		}
 
-		echo 'Starting image split' . "\n\n";
 		// Find the first image inside
 		preg_match( '#<img.*?>#si', $html, $matches );
 
 		if ( ! $matches ) {
-			echo 'No match found, bailing' . "\n\n";
 			return array( array( 'name' => 'heading', 'value' => $html ) );
 		}
 
 		$image_html   = $matches[0];
 		$heading_html = str_replace( $image_html, '', $html );
 
-		echo 'Found image HTML: ' . $image_html . "\n\n";
-		echo 'Found heading HTML: ' . $heading_html . "\n\n";
-		echo 'Clean heading HTML: ' . self::clean_html( $heading_html ) . "\n\n";
 		return array(
 			array( 'name'  => 'heading', 'value' => self::clean_html( $heading_html ) ),
 			array( 'name'  => 'img'    , 'value' => $image_html ),
@@ -151,21 +141,16 @@ class Heading extends Component {
 			return;
 		}
 
-		echo 'Starting heading build' . "\n\n";
 		$level = intval( $matches[1] );
-		echo 'Got heading level ' . $level . "\n\n";
 		// We won't be using markdown*, so we ignore all HTML tags, just fetch the
 		// contents.
 		// *: No markdown because the apple format doesn't support markdown with
 		// textStyle in headings.
 		$text = wp_strip_all_tags( $matches[2] );
-		echo 'Got text ' . $text . "\n\n";
 
 		// Parse and trim the resultant text, and if there is nothing left, bail.
 		$text = trim( $this->parser->parse( $text ) );
-		echo 'Parser returned ' . $text . "\n\n";
 		if ( empty( $text ) ) {
-			echo 'Empty text, bailing' . "\n\n";
 			return;
 		}
 
