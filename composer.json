@@ -11,5 +11,9 @@
     "phpspec/prophecy": "~1.0",
     "squizlabs/php_codesniffer": "3.*",
     "wp-coding-standards/wpcs": "dev-master"
+  },
+  "scripts": {
+    "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths $PWD/vendor/wp-coding-standards/wpcs",
+    "post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths $PWD/vendor/wp-coding-standards/wpcs"
   }
 }
