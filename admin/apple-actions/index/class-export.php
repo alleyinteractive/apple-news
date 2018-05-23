@@ -34,10 +34,12 @@ class Export extends Action {
 	/**
 	 * Constructor.
 	 *
-	 * @param Settings $settings
-	 * @param int $id
+	 * @param \Apple_Exporter\Settings $settings Settings in use during the current run.
+	 * @param int|null                 $id       Optional. The ID of the content to export.
+	 * @param array|null               $sections Optional. Sections to map for this post.
+	 * @access public
 	 */
-	function __construct( $settings, $id = null, $sections = null ) {
+	public function __construct( $settings, $id = null, $sections = null ) {
 		parent::__construct( $settings );
 		$this->set_theme( $sections );
 		$this->id = $id;
@@ -128,11 +130,12 @@ class Export extends Action {
 	 * Formats the byline
 	 *
 	 * @since 1.2.0
-	 * @param WP_Post $post
-	 * @param string $author
-	 * @param string $date
-	 * @return string
+	 *
+	 * @param \WP_Post $post   The post to use.
+	 * @param string   $author Optional. Overrides author information. Defaults to author of the post.
+	 * @param string   $date   Optional. Overrides the date. Defaults to the date of the post.
 	 * @access public
+	 * @return string
 	 */
 	public function format_byline( $post, $author = '', $date = '' ) {
 
@@ -193,9 +196,10 @@ class Export extends Action {
 	 * Gets the content
 	 *
 	 * @since 1.4.0
-	 * @param WP_Post $post
-	 * @return string
+	 *
+	 * @param \WP_Post $post The post object to extract content from.
 	 * @access private
+	 * @return string
 	 */
 	private function get_content( $post ) {
 		// The post_content is not raw HTML, as WordPress editor cleans up
@@ -212,9 +216,10 @@ class Export extends Action {
 	 * Remove tags incompatible with Apple News format.
 	 *
 	 * @since 1.4.0
-	 * @param string $html
-	 * @return string
+	 *
+	 * @param string $html The HTML to be filtered.
 	 * @access private
+	 * @return string
 	 */
 	private function remove_tags( $html ) {
 		$html = preg_replace( '/<style[^>]*>.*?<\/style>/i', '', $html );
@@ -224,9 +229,9 @@ class Export extends Action {
 	/**
 	 * Filter the content for markdown format.
 	 *
-	 * @param string $content
-	 * @return string
+	 * @param string $content The content to be filtered.
 	 * @access private
+	 * @return string
 	 */
 	private function remove_entities( $content ) {
 		if ( 'yes' === $this->get_setting( 'html_support' ) ) {

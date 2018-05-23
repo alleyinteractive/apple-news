@@ -71,12 +71,11 @@ class Admin_Apple_JSON extends Apple_News {
 	/**
 	 * Fix the title since WordPress doesn't set one.
 	 *
-	 * @param string $admin_title
-	 * @param string $title
+	 * @param string $admin_title The title to be filtered.
 	 * @return string
 	 * @access public
 	 */
-	public function set_title( $admin_title, $title ) {
+	public function set_title( $admin_title ) {
 		$screen = get_current_screen();
 		if ( 'admin_page_' . $this->json_page_name === $screen->base ) {
 			$admin_title = sprintf(
@@ -153,7 +152,7 @@ class Admin_Apple_JSON extends Apple_News {
 	/**
 	 * Register assets for the options page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The hook context.
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
@@ -301,7 +300,7 @@ class Admin_Apple_JSON extends Apple_News {
 	/**
 	 * Loads the JSON specs that can be customized for the component
 	 *
-	 * @param string $component
+	 * @param string $component The component to get specs for.
 	 * @return array
 	 * @access private
 	 */
