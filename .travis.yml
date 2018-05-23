@@ -51,7 +51,7 @@ before_script:
     esac
 
   # Set up WordPress installation.
-  bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
 
   # Install Composer dependencies.
   - composer install
