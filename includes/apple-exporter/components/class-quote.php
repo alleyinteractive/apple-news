@@ -379,7 +379,7 @@ class Quote extends Component {
 			$spec_name = 'pullquote-without-border-json';
 		}
 
-		// Register the JSON
+		// Register the JSON.
 		$this->register_json( $spec_name, $values );
 
 		// Set component attributes.

@@ -114,7 +114,7 @@ class Heading extends Component {
 			return array();
 		}
 
-		// Find the first image inside
+		// Find the first image inside.
 		preg_match( '#<img.*?>#si', $html, $matches );
 
 		if ( ! $matches ) {
@@ -142,10 +142,12 @@ class Heading extends Component {
 		}
 
 		$level = intval( $matches[1] );
-		// We won't be using markdown*, so we ignore all HTML tags, just fetch the
-		// contents.
-		// *: No markdown because the apple format doesn't support markdown with
-		// textStyle in headings.
+		/**
+		 * We won't be using markdown*, so we ignore all HTML tags, just fetch the
+		 * contents.
+		 * *: No markdown because the apple format doesn't support markdown with
+		 * textStyle in headings.
+		 */
 		$text = wp_strip_all_tags( $matches[2] );
 
 		// Parse and trim the resultant text, and if there is nothing left, bail.

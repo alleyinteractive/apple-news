@@ -35,7 +35,7 @@ class Section extends API_Action {
 	 * @access public
 	 */
 	public function perform() {
-		// Get the section from the API
+		// Get the section from the API.
 		$section = $this->get_api()->get_section( $this->section_id );
 		if ( empty( $section->data ) ) {
 			return null;

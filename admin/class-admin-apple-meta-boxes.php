@@ -32,12 +32,12 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	    parent::__construct();
 		$this->settings = $settings;
 
-		// Register hooks if enabled
+		// Register hooks if enabled.
 		if ( 'yes' === $settings->get( 'show_metabox' ) ) {
-			// Handle a publish action and saving fields
+			// Handle a publish action and saving fields.
 			add_action( 'save_post', array( $this, 'do_publish' ), 10, 2 );
 
-			// Add the custom meta boxes to each post type
+			// Add the custom meta boxes to each post type.
 			$post_types = $settings->get( 'post_types' );
 			if ( ! is_array( $post_types ) ) {
 				$post_types = array( $post_types );
@@ -47,7 +47,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 				add_action( 'add_meta_boxes_' . $post_type, array( $this, 'add_meta_boxes' ) );
 			}
 
-			// Register assets used by the meta box
+			// Register assets used by the meta box.
 			add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 		}
 	}
@@ -67,16 +67,16 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			return;
 		}
 
-		// Check the nonce
+		// Check the nonce.
 		if ( ! wp_verify_nonce( $_POST['apple_news_nonce'], $this->publish_action ) ) {
 			return;
 		}
 
-		// Save meta box fields
+		// Save meta box fields.
 		$post_id = absint( $_POST['post_ID'] );
 		self::save_post_meta( $post_id );
 
-		// If this is set to autosync or no action is set, we're done here
+		// If this is set to autosync or no action is set, we're done here.
 		if ( 'yes' === $this->settings->get( 'api_autosync' )
 			|| 'publish' !== $post->post_status
 			|| empty( $_POST['apple_news_publish_action'] )
@@ -84,12 +84,12 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			return;
 		}
 
-		// Proceed with the push
+		// Proceed with the push.
 		$action = new Apple_Actions\Index\Push( $this->settings, $post_id );
 		try {
 			$action->perform();
 
-			// In async mode, success or failure will be displayed later
+			// In async mode, success or failure will be displayed later.
 			if ( 'yes' !== $this->settings->get( 'api_async' ) ) {
 				Admin_Apple_Notice::success( __( 'Your article has been pushed successfully to Apple News!', 'apple-news' ) );
 			} else {
@@ -181,7 +181,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @access public
 	 */
 	public function add_meta_boxes( $post ) {
-		// Add the publish meta box
+		// Add the publish meta box.
 		add_meta_box(
 			'apple_news_publish',
 			__( 'Apple News', 'apple-news' ),

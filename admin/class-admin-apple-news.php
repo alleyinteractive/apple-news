@@ -34,46 +34,48 @@ class Admin_Apple_News extends Apple_News {
 	 * Constructor.
 	 */
 	function __construct() {
-		// Register hooks
+		// Register hooks.
 		add_action( 'admin_print_styles-toplevel_page_apple_news_index', array( $this, 'plugin_styles' ) );
 		add_action( 'init', array( $this, 'action_init' ) );
 
-		// Admin_Settings builds the settings page for the plugin. Besides setting
-		// it up, let's get the settings getter and setter object and save it into
-		// $settings.
+		/**
+		 * Admin_Settings builds the settings page for the plugin. Besides setting
+		 * it up, let's get the settings getter and setter object and save it into
+		 * $settings.
+		 */
 		$admin_settings = new Admin_Apple_Settings;
 		self::$settings = $admin_settings->fetch_settings();
 
-		// Initialize notice messaging utility
+		// Initialize notice messaging utility.
 		add_action( 'admin_enqueue_scripts', 'Admin_Apple_Notice::register_assets' );
 		add_action( 'admin_notices', 'Admin_Apple_Notice::show' );
 		add_action( 'wp_ajax_apple_news_dismiss_notice', 'Admin_Apple_Notice::wp_ajax_dismiss_notice' );
 
-		// Set up main page
+		// Set up main page.
 		new Admin_Apple_Index_Page( self::$settings );
 
-		// Set up all sub pages
+		// Set up all sub pages.
 		new Admin_Apple_Bulk_Export_Page( self::$settings );
 
-		// Set up posts syncing if enabled in the settings
+		// Set up posts syncing if enabled in the settings.
 		new Admin_Apple_Post_Sync( self::$settings );
 
-		// Set up the publish meta box if enabled in the settings
+		// Set up the publish meta box if enabled in the settings.
 		new Admin_Apple_Meta_Boxes( self::$settings );
 
-		// Set up asynchronous publishing features
+		// Set up asynchronous publishing features.
 		new Admin_Apple_Async( self::$settings );
 
-		// Add section support
+		// Add section support.
 		new Admin_Apple_Sections( self::$settings );
 
-		// Add theme support
+		// Add theme support.
 		new Admin_Apple_Themes();
 
-		// Add preview support
+		// Add preview support.
 		new Admin_Apple_Preview();
 
-		// Add JSON customization support
+		// Add JSON customization support.
 		new Admin_Apple_JSON();
 	}
 
@@ -233,7 +235,7 @@ class Admin_Apple_News extends Apple_News {
 		echo '<style type="text/css">';
 		echo '.wp-list-table .column-sync { width: 15%; }';
 		echo '.wp-list-table .column-updated_at { width: 15%; }';
-		// Clipboard fix
+		// Clipboard fix.
 		echo '.row-actions.is-active { visibility: visible }';
 		echo '</style>';
 	}

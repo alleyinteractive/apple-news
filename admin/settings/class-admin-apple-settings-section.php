@@ -168,7 +168,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		$this->groups = apply_filters( 'apple_news_section_groups', $this->groups, $page );
 		$this->hidden = $hidden;
 
-		// Save settings if necessary
+		// Save settings if necessary.
 		$this->save_settings();
 	}
 
@@ -239,24 +239,26 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		$value = self::get_value( $name, self::$loaded_settings );
 		$field = null;
 
-		// Get the field size
+		// Get the field size.
 		$size = $this->get_size_for( $name );
 
-		// FIXME: A cleaner object-oriented solution would create Input objects
-		// and instantiate them according to their type.
+		/**
+		 * TODO: A cleaner object-oriented solution would create Input objects
+		 * and instantiate them according to their type.
+		 */
 		if ( is_array( $type ) ) {
-			// Check if this is a multiple select
+			// Check if this is a multiple select.
 			$multiple_name = $multiple_attr = '';
 			if ( $this->is_multiple( $name ) ) {
 				$multiple_name = '[]';
 				$multiple_attr = 'multiple="multiple"';
 			}
 
-			// Check if we're using names as values
+			// Check if we're using names as values.
 			$keys = array_keys( $type );
 			$use_name_as_value = ( array_keys( $keys ) === $keys );
 
-			// Use select2 only when there is a considerable ammount of options available
+			// Use select2 only when there is a considerable amount of options available.
 			if ( count( $type ) > 10 ) {
 				$field = '<select class="select2 standard" id="%s" name="%s' . $multiple_name . '" ' . $multiple_attr . '>';
 			} else {
@@ -291,7 +293,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			$field .= apply_filters( 'apple_news_field_description_output_html', '<br/><i>' . $description . '</i>', $name );
 		}
 
-		// Use the proper template to build the field
+		// Use the proper template to build the field.
 		if ( is_array( $type ) ) {
 			return sprintf(
 				$field,
@@ -478,22 +480,24 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * since only it knows the nature of the fields and sanitization methods.
 	 */
 	public function save_settings() {
-		// Check if we're saving options and that there are settings to save
+		// Check if we're saving options and that there are settings to save.
 		if ( empty( $_POST['action'] )
 			|| $this->save_action !== $_POST['action']
 			|| empty( $this->settings ) ) {
 			return;
 		}
 
-		// Form nonce check
+		// Form nonce check.
 		check_admin_referer( $this->save_action );
 
-		// Get the current Apple News settings
+		// Get the current Apple News settings.
 		$settings = get_option( self::$section_option_name, array() );
 
-		// Iterate over the settings and save each value.
-		// Settings can't be empty unless allowed, so if no value is found
-		// use the default value to be safe.
+		/**
+		 * Iterate over the settings and save each value.
+		 * Settings can't be empty unless allowed, so if no value is found
+		 * use the default value to be safe.
+		 */
 		$default_settings = new Settings();
 		foreach ( $this->settings as $key => $attributes ) {
 			if ( ! empty( $_POST[ $key ] )
@@ -501,22 +505,22 @@ class Admin_Apple_Settings_Section extends Apple_News {
 					&& in_array( $_POST[ $key ], array( 0, '0' ), true )
 				)
 			) {
-				// Sanitize the value
+				// Sanitize the value.
 				$sanitize = ( empty( $attributes['sanitize'] ) || ! is_callable( $attributes['sanitize'] ) ) ? 'sanitize_text_field' : $attributes['sanitize'];
 				$value = call_user_func( $sanitize, $_POST[ $key ] );
 			} else {
-				// Use the default value
+				// Use the default value.
 				$value = $default_settings->$key;
 			}
 
-			// Add to the array
+			// Add to the array.
 			$settings[ $key ] = $value;
 		}
 
-		// Clear certain caches
+		// Clear certain caches.
 		delete_transient( 'apple_news_sections' );
 
-		// Save to options
+		// Save to options.
 		update_option( self::$section_option_name, $settings, 'no' );
 	}
 }

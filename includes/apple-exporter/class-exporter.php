@@ -214,7 +214,7 @@ class Exporter {
 			$this->content_id()
 		);
 
-		// Base JSON
+		// Base JSON.
 		$json = array(
 			'version'    => '1.7',
 			'identifier' => 'post-' . $this->content_id(),
@@ -222,7 +222,7 @@ class Exporter {
 			'title'      => wp_strip_all_tags( $this->content_title() ),
 		);
 
-		// Builders
+		// Builders.
 		$json['documentStyle'] = $this->build_article_style();
 		foreach ( $this->builders as $name => $builder ) {
 			$arr = $builder->to_array();

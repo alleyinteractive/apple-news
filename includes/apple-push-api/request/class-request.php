@@ -60,7 +60,7 @@ class Request {
 		$this->debug        = $debug;
 		$this->mime_builder = $mime_builder ?: new MIME_Builder();
 
-		// Set the default WordPress HTTP API args
+		// Set the default WordPress HTTP API args.
 		$this->default_args = apply_filters( 'apple_news_request_args', array(
 			'reject_unsafe_urls' => true,
 			'timeout' => 5,
@@ -79,10 +79,10 @@ class Request {
 	 * @since 0.2.0
 	 */
 	public function post( $url, $article, $bundles = array(), $meta = null, $post_id = null ) {
-		// Assemble the content to send
+		// Assemble the content to send.
 		$content = $this->build_content( $article, $bundles, $meta, $post_id );
 
-		// Build the post request args
+		// Build the post request args.
 		$args = array(
 			'headers' => array(
 				'Authorization' => $this->sign( $url, 'POST', $content ),
@@ -90,19 +90,19 @@ class Request {
 				'Content-Type' => 'multipart/form-data; boundary=' . $this->mime_builder->boundary(),
 			),
 			'body' => $content,
-			'timeout' => 30, // required because we need to package all images
+			'timeout' => 30, // Required because we need to package all images.
 		);
 
-		// Allow filtering and merge with the default args
+		// Allow filtering and merge with the default args.
 		$args = apply_filters( 'apple_news_post_args', wp_parse_args( $args, $this->default_args ), $post_id );
 
-		// Perform the request
+		// Perform the request.
 		$response = wp_safe_remote_post( esc_url_raw( $url ), $args );
 
-		// Build a debug version of the MIME content for the debug email
+		// Build a debug version of the MIME content for the debug email.
 		$debug_mime_request = $this->mime_builder->get_debug_content( $args );
 
-		// Parse and return the response
+		// Parse and return the response.
 		return $this->parse_response( $response, true, 'post', $meta, $bundles, $article, $debug_mime_request );
 	}
 
@@ -114,7 +114,7 @@ class Request {
 	 * @since 0.2.0
 	 */
 	public function delete( $url ) {
-		// Build the delete request args
+		// Build the delete request args.
 		$args = array(
 			'headers' => array(
 				'Authorization' => $this->sign( $url, 'DELETE' ),
@@ -122,18 +122,18 @@ class Request {
 			'method' => 'DELETE',
 		);
 
-		// Allow filtering and merge with the default args
+		// Allow filtering and merge with the default args.
 		$args = apply_filters( 'apple_news_delete_args', wp_parse_args( $args, $this->default_args ) );
 
-		// Perform the delete
+		// Perform the delete.
 		$response = wp_safe_remote_request( esc_url_raw( $url ), $args );
 
-		// NULL is a valid response for DELETE
+		// NULL is a valid response for DELETE.
 		if ( is_null( $response ) ) {
 			return null;
 		}
 
-		// Parse and return the response
+		// Parse and return the response.
 		return $this->parse_response( $response, true, 'delete' );
 	}
 
@@ -145,20 +145,20 @@ class Request {
 	 * @since 0.2.0
 	 */
 	public function get( $url ) {
-		// Build the get request args
+		// Build the get request args.
 		$args = array(
 			'headers' => array(
 				'Authorization' => $this->sign( $url, 'GET' ),
 			),
 		);
 
-		// Allow filtering and merge with the default args
+		// Allow filtering and merge with the default args.
 		$args = apply_filters( 'apple_news_get_args', wp_parse_args( $args, $this->default_args ) );
 
-		// Perform the get
+		// Perform the get.
 		$response = wp_safe_remote_get( esc_url_raw( $url ), $args );
 
-		// Parse and return the response
+		// Parse and return the response.
 		return $this->parse_response( $response, true, 'get' );
 	}
 
@@ -176,12 +176,12 @@ class Request {
 	 * @since 0.2.0
 	 */
 	private function parse_response( $response, $json = true, $type = 'post', $meta = null, $bundles = null, $article = '', $debug_mime_request = '' ) {
-		// Ensure we have an expected response type
+		// Ensure we have an expected response type.
 		if ( ( ! is_array( $response ) || ! isset( $response['body'] ) ) && ! is_wp_error( $response ) ) {
 			throw new Request_Exception( __( 'Invalid response:', 'apple-news' ) . $response );
 		}
 
-		// If debugging mode is enabled, send an email
+		// If debugging mode is enabled, send an email.
 		$settings = get_option( 'apple_news_settings' );
 
 		if ( ! empty( $settings['apple_news_enable_debugging'] )
@@ -189,22 +189,22 @@ class Request {
 			&& 'yes' === $settings['apple_news_enable_debugging']
 			&& 'get' !== $type ) {
 
-			// Get the admin email
+			// Get the admin email.
 			$admin_email = filter_var( $settings['apple_news_admin_email'], FILTER_VALIDATE_EMAIL );
 			if ( empty( $admin_email ) ) {
 				return;
 			}
 
-			// Add the API response
+			// Add the API response.
 			$body = esc_html__( 'API Response', 'apple-news' ) . ":\n";
 			$body .= print_r( $response, true );
 
-			// Add the meta sent with the API request, if set
+			// Add the meta sent with the API request, if set.
 			if ( ! empty( $meta ) ) {
 				$body .= "\n\n" . esc_html__( 'Request Meta', 'apple-news' ) . ":\n\n" . print_r( $meta, true );
 			}
 
-			// Note image settings
+			// Note image settings.
 			$body .= "\n\n"  . esc_html__( 'Image Settings', 'apple-news' ) . ":\n";
 			if ( 'yes' === $settings['use_remote_images'] ) {
 				$body .= esc_html__( 'Use Remote images enabled ', 'apple-news' );
@@ -217,13 +217,13 @@ class Request {
 				}
 			}
 
-			// Add the JSON for the post
+			// Add the JSON for the post.
 			$body .= "\n\n" . esc_html__( 'JSON', 'apple-news' ) . ":\n" . $article . "\n";
 
-			// Add the MIME request
+			// Add the MIME request.
 			$body .= "\n\n" . esc_html__( 'MIME request', 'apple-news' ) . ":\n" . $debug_mime_request . "\n";
 
-			// Send the email
+			// Send the email.
 			if ( ! empty( $body ) ) {
 				wp_mail(
 					$admin_email,
@@ -233,7 +233,7 @@ class Request {
 			}
 		}
 
-		// Check for errors with the request itself
+		// Check for errors with the request itself.
 		if ( is_wp_error( $response ) ) {
 			$string_errors = '';
 			$error_messages = $response->get_error_messages();
@@ -243,13 +243,13 @@ class Request {
 			throw new Request_Exception( __( 'There has been an error with your request:', 'apple-news' ) . " $string_errors" );
 		}
 
-		// Check for errors from the API
+		// Check for errors from the API.
 		$response_decoded = json_decode( $response['body'] );
 		if ( ! empty( $response_decoded->errors ) && is_array( $response_decoded->errors ) ) {
 			$message = '';
 			$messages = array();
 			foreach ( $response_decoded->errors as $error ) {
-				// If there is a keyPath, build it into a string
+				// If there is a keyPath, build it into a string.
 				$key_path = '';
 				if ( ! empty( $error->keyPath ) && is_array( $error->keyPath ) ) {
 					foreach ( $error->keyPath as $i => $path ) {
@@ -263,7 +263,7 @@ class Request {
 					$key_path = " (keyPath $key_path)";
 				}
 
-				// Add the code, message and keyPath
+				// Add the code, message and keyPath.
 				$messages[] = sprintf(
 					'%s%s%s%s',
 					$error->code,
@@ -282,7 +282,7 @@ class Request {
 			throw new Request_Exception( $message );
 		}
 
-		// Return the response in the desired format
+		// Return the response in the desired format.
 		return $json ? $response_decoded : $response['body'];
 	}
 

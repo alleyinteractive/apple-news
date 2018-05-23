@@ -58,9 +58,11 @@ class Parser {
 			return '';
 		}
 
-		// Clean up any issues prior to formatting.
-		// This needs to be done here to avoid duplicating efforts
-		// in the HTML and Markdown classes.
+		/**
+		 * Clean up any issues prior to formatting.
+		 * This needs to be done here to avoid duplicating efforts
+		 * in the HTML and Markdown classes.
+		 */
 		$html = $this->_clean_html( $html );
 
 		// Fork for format.

@@ -36,10 +36,10 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * @param Settings $settings
 	 */
 	function __construct( $settings ) {
-		// Load current settings
+		// Load current settings.
 		$this->settings = $settings;
 
-		// Initialize the table
+		// Initialize the table.
 		parent::__construct( array(
 			'singular' => __( 'article', 'apple-news' ),
 			'plural'   => __( 'articles', 'apple-news' ),
@@ -113,7 +113,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		$remote_id = get_post_meta( $post->ID, 'apple_news_api_id', true );
 
 		if ( ! $remote_id ) {
-			// There is no remote id, check for a delete mark
+			// There is no remote id, check for a delete mark.
 			$deleted = get_post_meta( $post->ID, 'apple_news_api_deleted', true );
 			if ( $deleted ) {
 				return __( 'Deleted', 'apple-news' );
@@ -159,7 +159,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			return;
 		}
 
-		// Build the base URL
+		// Build the base URL.
 		$base_url = add_query_arg(
 			array(
 				'page' => $current_screen->parent_base,
@@ -168,7 +168,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			get_admin_url( null, 'admin.php' )
 		);
 
-		// Add common actions
+		// Add common actions.
 		$actions = array(
 			'export' => sprintf(
 				"<a href='%s'>%s</a>",
@@ -177,7 +177,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			),
 		);
 
-		// Only add push if the article is not pending publish
+		// Only add push if the article is not pending publish.
 		$pending = get_post_meta( $item->ID, 'apple_news_api_pending', true );
 		if ( empty( $pending ) ) {
 			$actions['push'] = sprintf(
@@ -196,7 +196,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			);
 		}
 
-		// Add the delete action, if required
+		// Add the delete action, if required.
 		if ( get_post_meta( $item->ID, 'apple_news_api_id', true ) ) {
 			$actions['delete'] = sprintf(
 				"<a title='%s' href='%s' class='delete-button'>%s</a>",
@@ -206,7 +206,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			);
 		}
 
-		// Create the share URL
+		// Create the share URL.
 		$share_url = get_post_meta( $item->ID, 'apple_news_api_share_url', true );
 		if ( $share_url ) {
 			$actions['share'] = sprintf(
@@ -218,11 +218,11 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			);
 		}
 
-		// Return the row action HTML
+		// Return the row action HTML.
 		return apply_filters( 'apple_news_column_title', sprintf( '%1$s <span>(id:%2$s)</span> %3$s',
 			esc_html( $item->post_title ),
 			absint( $item->ID ),
-			$this->row_actions( $actions ) // can't be escaped but all elements are fully escaped above
+			$this->row_actions( $actions ) // Can't be escaped but all elements are fully escaped above.
 		), $item, $actions );
 	}
 
@@ -256,7 +256,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * @access public
 	 */
 	public function column_cb( $item ) {
-		// Omit if the article is pending publish
+		// Omit if the article is pending publish.
 		$pending = get_post_meta( $item->ID, 'apple_news_api_pending', true );
 		if ( ! empty( $pending ) ) {
 			return '';
@@ -286,12 +286,14 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * @access public
 	 */
 	public function prepare_items() {
-		// Set column headers. It expects an array of columns, and as second
-		// argument an array of hidden columns, which in this case is empty.
+		/**
+		 * Set column headers. It expects an array of columns, and as second
+		 * argument an array of hidden columns, which in this case is empty.
+		 */
 		$columns = $this->get_columns();
 		$this->_column_headers = array( $columns, array(), array() );
 
-		// Build the default args for the query
+		// Build the default args for the query.
 		$current_page = $this->get_pagenum();
 		$args = array(
 			'post_type'     => $this->settings->get( 'post_types' ),
@@ -302,7 +304,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			'order'          => 'DESC',
 		);
 
-		// Add the publish status filter if set
+		// Add the publish status filter if set.
 		$publish_status = $this->get_publish_status_filter();
 		if ( ! empty( $publish_status ) ) {
 			switch ( $publish_status ) {
@@ -355,7 +357,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			}
 		}
 
-		// Add the date filters if set
+		// Add the date filters if set.
 		$date_from = $this->get_date_from_filter();
 		$date_to = $this->get_date_to_filter();
 		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
@@ -374,16 +376,16 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			}
 		}
 
-		// Add the search filter if set
+		// Add the search filter if set.
 		$search = $this->get_search_filter();
 		if ( ! empty( $search ) ) {
 			$args['s'] = $search;
 		}
 
-		// Data fetch
+		// Data fetch.
 		$query = new WP_Query( apply_filters( 'apple_news_export_table_get_posts_args', $args ) );
 
-		// Set data
+		// Set data.
 		$this->items = $query->posts;
 		$total_items = $query->found_posts;
 		$this->set_pagination_args( apply_filters( 'apple_news_export_table_pagination_args', array(
@@ -400,20 +402,20 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * @access protected
 	 */
 	protected function extra_tablenav( $which ) {
-		// Only display on the top of the table
+		// Only display on the top of the table.
 		if ( 'top' !== $which ) {
 			return;
 		}
 		?>
 		<div class="alignleft actions">
 		<?php
-		// Add a publish state filter
+		// Add a publish state filter.
 		$this->publish_status_filter_field();
 
-		// Add a dange range filter
+		// Add a dange range filter.
 		$this->date_range_filter_field();
 
-		// Allow for further options to be added within themes and plugins
+		// Allow for further options to be added within themes and plugins.
 		do_action( 'apple_news_extra_tablenav' );
 
 		submit_button( __( 'Filter', 'apple-news' ), 'button', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
@@ -468,7 +470,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * @access protected
 	 */
 	protected function publish_status_filter_field() {
-		// Add available statuses
+		// Add available statuses.
 		$publish_statuses = apply_filters( 'apple_news_publish_statuses', array(
 			'' => __( 'Show All Statuses', 'apple-news' ),
 			'published' => __( 'Published', 'apple-news' ),
@@ -477,7 +479,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			'deleted' => __( 'Deleted', 'apple-news' ),
 		) );
 
-		// Build the dropdown
+		// Build the dropdown.
 		?>
 		<select name="apple_news_publish_status" id="apple_news_publish_status">
 		<?php

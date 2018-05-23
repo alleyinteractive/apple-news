@@ -186,7 +186,7 @@ abstract class Component {
 	 * @param Parser $parser
 	 */
 	function __construct( $text = null, $workspace = null, $settings = null, $styles = null, $layouts = null, $parser = null ) {
-		// Register specs for this component
+		// Register specs for this component.
 		$this->register_specs();
 
 		// If all params are null, then this was just used to get spec data.
@@ -402,9 +402,6 @@ abstract class Component {
 		$this->workspace->bundle_source( $filename, $source );
 	}
 
-	// Isolate settings dependency
-	// -------------------------------------------------------------------------
-
 	/**
 	 * Gets an exporter setting.
 	 *
@@ -471,7 +468,7 @@ abstract class Component {
 	 * @access protected
 	 */
 	protected function register_spec( $name, $label, $spec ) {
-		// Store as a multidimensional array with the label and spec, indexed by name
+		// Store as a multidimensional array with the label and spec, indexed by name.
 		$this->specs[ $name ] = new Component_Spec( $this->get_component_name(), $name, $label, $spec );
 	}
 
@@ -570,7 +567,7 @@ abstract class Component {
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
 
-		// Initial colStart and colSpan
+		// Initial colStart and colSpan.
 		$col_start = 0;
 		$col_span  = $theme->get_layout_columns();
 
@@ -580,10 +577,12 @@ abstract class Component {
 			$col_span = $theme->get_body_column_span();
 		}
 
-		// Merge this into the existing spec.
-		// These values just get hardcoded in the spec since the above logic
-		// would make them impossible to override manually.
-		// Changes to this should really be handled by the above plugin settings.
+		/**
+		 * Merge this into the existing spec.
+		 * These values just get hardcoded in the spec since the above logic
+		 * would make them impossible to override manually.
+		 * Changes to this should really be handled by the above plugin settings.
+		 */
 		if ( isset( $this->specs[ $spec_name ] ) ) {
 			$this->specs[ $spec_name ]->spec = array_merge(
 				$this->specs[ $spec_name ]->spec,
@@ -594,7 +593,7 @@ abstract class Component {
 			);
 		}
 
-		// Register the layout as normal
+		// Register the layout as normal.
 		$this->register_layout( $name, $spec_name, $values, $property );
 	}
 

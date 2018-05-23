@@ -83,24 +83,26 @@ class Export extends Action {
 
 		do_action( 'apple_news_do_fetch_exporter', $this->id );
 
-		// Fetch WP_Post object, and all required post information to fill up the
-		// Exporter_Content instance.
+		/**
+		 * Fetch WP_Post object, and all required post information to fill up the
+		 * Exporter_Content instance.
+		 */
 		$post = get_post( $this->id );
 
-		// Build the excerpt if required
+		// Build the excerpt if required.
 		if ( empty( $post->post_excerpt ) ) {
 			$excerpt = wp_trim_words( wp_strip_all_tags( $this->remove_tags( strip_shortcodes( $post->post_content ) ) ), 55, '...' );
 		} else {
 			$excerpt = wp_strip_all_tags( $post->post_excerpt );
 		}
 
-		// Get the post thumbnail
+		// Get the post thumbnail.
 		$post_thumb = wp_get_attachment_url( get_post_thumbnail_id( $this->id ) ) ?: null;
 
-		// Build the byline
+		// Build the byline.
 		$byline = $this->format_byline( $post );
 
-		// Get the content
+		// Get the content.
 		$content = $this->get_content( $post );
 
 		// Filter each of our items before passing into the exporter class.
@@ -139,7 +141,7 @@ class Export extends Action {
 		// Get information about the currently used theme.
 		$theme = \Apple_Exporter\Theme::get_used();
 
-		// Get the author
+		// Get the author.
 		if ( empty( $author ) ) {
 
 			// Try to get the author information from Co-Authors Plus.
@@ -150,35 +152,37 @@ class Export extends Action {
 			}
 		}
 
-		// Get the date
+		// Get the date.
 		if ( empty( $date ) && ! empty( $post->post_date ) ) {
 			$date = $post->post_date;
 		}
 
-		// Set the default date format
+		// Set the default date format.
 		$date_format = 'M j, Y | g:i A';
 
-		// Check for a custom byline format
+		// Check for a custom byline format.
 		$byline_format = $theme->get_value( 'byline_format' );
 		if ( ! empty( $byline_format ) ) {
-			// Find and replace the author format placeholder name with a temporary placeholder
-			// This is because some bylines could contain hashtags!
+			/**
+			 * Find and replace the author format placeholder name with a temporary placeholder.
+			 * This is because some bylines could contain hashtags!
+			 */
 			$temp_byline_placeholder = 'AUTHOR' . time();
 			$byline = str_replace( '#author#', $temp_byline_placeholder, $byline_format );
 
-			// Attempt to parse the date format from the remaining string
+			// Attempt to parse the date format from the remaining string.
 			$matches = array();
 			preg_match( '/#(.*?)#/', $byline, $matches );
 			if ( ! empty( $matches[1] ) && ! empty( $date ) ) {
-				// Set the date using the custom format
+				// Set the date using the custom format.
 				$byline = str_replace( $matches[0], date( $matches[1], strtotime( $date ) ), $byline );
 			}
 
-			// Replace the temporary placeholder with the actual byline
+			// Replace the temporary placeholder with the actual byline.
 			$byline = str_replace( $temp_byline_placeholder, $author, $byline );
 
 		} else {
-			// Use the default format
+			// Use the default format.
 			$byline = sprintf(
 				'by %1$s | %2$s',
 				$author,
@@ -198,9 +202,11 @@ class Export extends Action {
 	 * @access private
 	 */
 	private function get_content( $post ) {
-		// The post_content is not raw HTML, as WordPress editor cleans up
-		// paragraphs and new lines, so we need to transform the content to
-		// HTML. We use 'the_content' filter for that.
+		/**
+		 * The post_content is not raw HTML, as WordPress editor cleans up
+		 * paragraphs and new lines, so we need to transform the content to
+		 * HTML. We use 'the_content' filter for that.
+		 */
 		$content = apply_filters( 'apple_news_exporter_content_pre', $post->post_content, $post->ID );
 		$content = apply_filters( 'the_content', $content );
 		$content = $this->remove_tags( $content );

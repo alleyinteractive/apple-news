@@ -137,7 +137,7 @@ class Gallery extends Component {
 			return;
 		}
 
-		// Build the JSON
+		// Build the JSON.
 		$this->register_json(
 			'json',
 			array(
