@@ -221,7 +221,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Create local copies of values to pass into the partial.
 		$publish_action = $this->publish_action;
 
-		include plugin_dir_path( __FILE__ ) . 'partials/metabox_publish.php';
+		include plugin_dir_path( __FILE__ ) . 'partials/metabox-publish.php';
 	}
 
 	/**

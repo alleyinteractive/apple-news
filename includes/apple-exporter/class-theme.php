@@ -496,7 +496,7 @@ class Theme {
 
 		// Load the template.
 		include dirname( dirname( plugin_dir_path( __FILE__ ) ) )
-			. '/admin/partials/field_meta_component_order.php';
+			. '/admin/partials/field-meta-component-order.php';
 	}
 
 	/**

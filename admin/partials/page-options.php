@@ -7,9 +7,9 @@
 			<?php $section->before_section() ?>
 			<?php
 				if ( $section->is_hidden() ) {
-					include plugin_dir_path( __FILE__ ) . 'page_options_section_hidden.php';
+					include plugin_dir_path( __FILE__ ) . 'page-options-section-hidden.php';
 				} else {
-					include plugin_dir_path( __FILE__ ) . 'page_options_section.php';
+					include plugin_dir_path( __FILE__ ) . 'page-options-section.php';
 				}
 				$section->after_section();
 			?>

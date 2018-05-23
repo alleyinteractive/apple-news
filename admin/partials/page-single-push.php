@@ -86,7 +86,7 @@
 				<th scope="row"><?php esc_html_e( 'Cover art', 'apple-news' ) ?></th>
 				<td>
 					<?php if ( $enable_cover_art ) : ?>
-						<?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
+						<?php include plugin_dir_path( __FILE__ ) . 'cover-art.php'; ?>
 					<?php else : ?>
 						<?php
 							printf(

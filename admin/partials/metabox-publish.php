@@ -68,7 +68,7 @@
 	<div id="apple-news-metabox-coverart" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
 		<h3><?php esc_html_e( 'Cover art', 'apple-news' ) ?></h3>
 		<?php if ( 'yes' === $this->settings->get( 'enable_cover_art' ) ) : ?>
-			<?php include plugin_dir_path( __FILE__ ) . 'cover_art.php'; ?>
+			<?php include plugin_dir_path( __FILE__ ) . 'cover-art.php'; ?>
 		<?php else : ?>
 			<p>
 			<?php

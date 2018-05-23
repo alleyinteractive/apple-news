@@ -97,7 +97,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 				$post = get_post( $id );
 				$post_meta = get_post_meta( $id );
 				$enable_cover_art = ( 'yes' === $this->settings->enable_cover_art );
-				include plugin_dir_path( __FILE__ ) . 'partials/page_single_push.php';
+				include plugin_dir_path( __FILE__ ) . 'partials/page-single-push.php';
 				break;
 			default:
 				$this->show_post_list_action();
@@ -312,7 +312,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	public function show_post_list_action() {
 		$table = new Admin_Apple_News_List_Table( $this->settings );
 		$table->prepare_items();
-		include plugin_dir_path( __FILE__ ) . 'partials/page_index.php';
+		include plugin_dir_path( __FILE__ ) . 'partials/page-index.php';
 	}
 
 	/**

@@ -289,7 +289,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$theme_options = \Apple_Exporter\Theme::get_options();
 
 		// Load the edit page.
-		include plugin_dir_path( __FILE__ ) . 'partials/page_theme_edit.php';
+		include plugin_dir_path( __FILE__ ) . 'partials/page-theme-edit.php';
 	}
 
 	/**
@@ -302,7 +302,7 @@ class Admin_Apple_Themes extends Apple_News {
 			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
-		include plugin_dir_path( __FILE__ ) . 'partials/page_themes.php';
+		include plugin_dir_path( __FILE__ ) . 'partials/page-themes.php';
 	}
 
 	/**

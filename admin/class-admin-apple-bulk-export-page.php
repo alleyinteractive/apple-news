@@ -92,7 +92,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			}
 		}
 
-		require_once plugin_dir_path( __FILE__ ) . 'partials/page_bulk_export.php';
+		require_once plugin_dir_path( __FILE__ ) . 'partials/page-bulk-export.php';
 	}
 
 	/**

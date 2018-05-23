@@ -143,7 +143,7 @@ class Admin_Apple_Settings extends Apple_News {
 		}
 
 		$sections = $this->sections;
-		include plugin_dir_path( __FILE__ ) . 'partials/page_options.php';
+		include plugin_dir_path( __FILE__ ) . 'partials/page-options.php';
 	}
 
 	/**

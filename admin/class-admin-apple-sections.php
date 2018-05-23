@@ -366,7 +366,7 @@ class Admin_Apple_Sections extends Apple_News {
 		$themes = \Apple_Exporter\Theme::get_registry();
 
 		// Load the partial with the form.
-		include plugin_dir_path( __FILE__ ) . 'partials/page_sections.php';
+		include plugin_dir_path( __FILE__ ) . 'partials/page-sections.php';
 	}
 
 	/**
