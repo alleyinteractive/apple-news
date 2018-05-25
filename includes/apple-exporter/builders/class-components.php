@@ -497,10 +497,10 @@ class Components extends Builder {
 	/**
 	 * Get a component from a node.
 	 *
-	 * @param DOMNode $node
+	 * @param \DOMElement $node The node to be examined.
 	 *
-	 * @return Component
 	 * @access private
+	 * @return array An array of components matching the node.
 	 */
 	private function _get_components_from_node( $node ) {
 		return Component_Factory::get_components_from_node( $node );

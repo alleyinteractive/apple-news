@@ -2,8 +2,6 @@
 namespace Apple_Exporter\Builders;
 
 use \Apple_Exporter\Components\Component as Component;
-use \Apple_Exporter\Components\Body as Body;
-use \Apple_Exporter\Exporter as Exporter;
 
 /**
  * Exporter and components can register layouts. This class manages the layouts
@@ -33,8 +31,8 @@ class Component_Layouts extends Builder {
 	 * Register a layout into the exporter.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @param string $spec
+	 * @param string $name The name of the layout to register.
+	 * @param string $spec The spec for the layout.
 	 * @access public
 	 */
 	public function register_layout( $name, $spec ) {
@@ -61,9 +59,9 @@ class Component_Layouts extends Builder {
 	 * Check if a layout already exists.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @return boolean
+	 * @param string $name The name of the layout to look up.
 	 * @access private
+	 * @return boolean True if the layout exists, false if not.
 	 */
 	private function layout_exists( $name ) {
 		return array_key_exists( $name, $this->layouts );
@@ -73,7 +71,7 @@ class Component_Layouts extends Builder {
 	 * Sets the required layout for a component to anchor another component or
 	 * be anchored.
 	 *
-	 * @param Component $component
+	 * @param \Apple_Exporter\Components\Component $component The component to anchor.
 	 * @access public
 	 */
 	public function set_anchor_layout_for( $component ) {
