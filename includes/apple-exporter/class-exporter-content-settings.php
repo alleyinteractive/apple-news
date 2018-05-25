@@ -20,9 +20,9 @@ class Exporter_Content_Settings {
 	/**
 	 * Get a setting.
 	 *
-	 * @param string $name
-	 * @return mixed
+	 * @param string $name The name of the setting to retrieve.
 	 * @access public
+	 * @return mixed The value of the setting.
 	 */
 	public function get( $name ) {
 		if ( ! array_key_exists( $name, $this->settings ) ) {
@@ -35,10 +35,10 @@ class Exporter_Content_Settings {
 	/**
 	 * Sets a setting.
 	 *
-	 * @param string $name
-	 * @param mixed $value
-	 * @return mixed
+	 * @param string $name  The name of the setting to set.
+	 * @param mixed  $value The value to set for the setting.
 	 * @access public
+	 * @return mixed The value that was set.
 	 */
 	public function set( $name, $value ) {
 		$this->settings[ $name ] = $value;
@@ -48,8 +48,8 @@ class Exporter_Content_Settings {
 	/**
 	 * Get all settings.
 	 *
-	 * @return array
 	 * @access public
+	 * @return array An array of all settings.
 	 */
 	public function all() {
 		return $this->settings;
