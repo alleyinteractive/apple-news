@@ -28,8 +28,11 @@ class Admin_Apple_Async extends Apple_News {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param \Apple_Exporter\Settings $settings Settings to use during this run.
+	 * @access public
 	 */
-	function __construct( $settings ) {
+	public function __construct( $settings ) {
 		$this->settings = $settings;
 
 		// If async mode is enabled create the action hook.
@@ -46,10 +49,10 @@ class Admin_Apple_Async extends Apple_News {
 	/**
 	 * Handle performing an asynchronous push request.
 	 *
-	 * @access public
-	 * @param int $post_id
-	 * @param int $user_id
 	 * @since 1.0.0
+	 * @param int $post_id The post ID to be pushed.
+	 * @param int $user_id The user ID performing the push.
+	 * @access public
 	 */
 	public function async_push( $post_id, $user_id ) {
 		/**
@@ -95,8 +98,10 @@ class Admin_Apple_Async extends Apple_News {
 	 * This will allow for a maximum publishing time up to 12 hours, which is
 	 * well in excess of even the most lengthy API request.
 	 *
-	 * @access public
 	 * @since 1.0.0
+	 * @param array $hooks The list of hooks to be modified.
+	 * @access public
+	 * @return array The modified list of hooks.
 	 */
 	public function passthrough_cron_to_jobs( $hooks ) {
 		$hooks[] = self::ASYNC_PUSH_HOOK;

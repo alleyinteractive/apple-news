@@ -25,7 +25,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Current settings.
 	 *
-	 * @var Settings
+	 * @var \Apple_Exporter\Settings
 	 * @since 0.9.0
 	 */
 	public $settings;
@@ -33,9 +33,10 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Constructor.
 	 *
-	 * @param Settings $settings
+	 * @param \Apple_Exporter\Settings $settings Settings in use during this run.
+	 * @access public
 	 */
-	function __construct( $settings ) {
+	public function __construct( $settings ) {
 		// Load current settings.
 		$this->settings = $settings;
 
@@ -50,10 +51,10 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Set column defaults.
 	 *
-	 * @param mixed $item
-	 * @param string $column_name
-	 * @return string
+	 * @param mixed  $item        Default value for the column.
+	 * @param string $column_name The name of the column.
 	 * @access public
+	 * @return string
 	 */
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
@@ -77,9 +78,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Get the updated at time.
 	 *
-	 * @param WP_Post $post
-	 * @return string
+	 * @param \WP_Post $post The post to analyze.
 	 * @access private
+	 * @return string
 	 */
 	private function get_updated_at( $post ) {
 		$updated_at = get_post_meta( $post->ID, 'apple_news_api_modified_at', true );
@@ -94,9 +95,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Get the Apple News status.
 	 *
-	 * @param WP_Post $post
-	 * @return string
+	 * @param \WP_Post $post The post to analyze.
 	 * @access private
+	 * @return string
 	 */
 	private function get_status_for( $post ) {
 		return \Admin_Apple_News::get_post_status( $post->ID );
@@ -105,9 +106,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Get the synced status.
 	 *
-	 * @param WP_Post $post
-	 * @return string
+	 * @param \WP_Post $post The post to analyze.
 	 * @access private
+	 * @return string
 	 */
 	private function get_synced_status_for( $post ) {
 		$remote_id = get_post_meta( $post->ID, 'apple_news_api_id', true );
@@ -149,9 +150,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 *
 	 * Actions can be generated here.
 	 *
-	 * @param WP_Post $item
-	 * @return string
+	 * @param \WP_Post $item The post to analyze.
 	 * @access public
+	 * @return string
 	 */
 	public function column_title( $item ) {
 		$current_screen = get_current_screen();
@@ -228,13 +229,10 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 
 	/**
 	 * Dictates the table columns and titles. The 'cb' column is special and, if
-	 * existant, there needs to be a `column_cb` method defined.
+	 * existent, there needs to be a `column_cb` method defined.
 	 *
-	 * @return array An array where the key is the column slug and the value is
-	 * the title text.
-	 *
-	 * @return array
 	 * @access public
+	 * @return array An array where the key is the column slug and the value is the title text.
 	 */
 	public function get_columns() {
 		return apply_filters( 'apple_news_export_list_columns', array(
@@ -251,9 +249,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * treatment when columns are processed. It ALWAYS needs to have it's own
 	 * method.
 	 *
-	 * @param WP_Post $item
-	 * @return string
+	 * @param \WP_Post $item The post to analyze.
 	 * @access public
+	 * @return string
 	 */
 	public function column_cb( $item ) {
 		// Omit if the article is pending publish.
@@ -271,8 +269,8 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Get bulk actions.
 	 *
-	 * @return array
 	 * @access public
+	 * @return array
 	 */
 	public function get_bulk_actions() {
 		return apply_filters( 'apple_news_bulk_actions', array(
@@ -398,7 +396,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Display extra filtering options.
 	 *
-	 * @param string $which
+	 * @param string $which Which section of the table we are on.
 	 * @access protected
 	 */
 	protected function extra_tablenav( $which ) {
