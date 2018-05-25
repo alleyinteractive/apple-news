@@ -387,9 +387,9 @@ class Quote extends Component {
 	/**
 	 * Set the border for a blockquote.
 	 *
-	 * @param array $values
-	 * @return array
+	 * @param array $values Token values to be augmented.
 	 * @access private
+	 * @return array The modified list of token values.
 	 */
 	private function _set_blockquote_border( $values ) {
 
@@ -461,9 +461,9 @@ class Quote extends Component {
 	/**
 	 * Set the border for a pullquote.
 	 *
-	 * @param array $values
-	 * @return array
+	 * @param array $values The list of token values to be modified.
 	 * @access private
+	 * @return array The modified list of token values.
 	 */
 	private function _set_pullquote_border( $values ) {
 
