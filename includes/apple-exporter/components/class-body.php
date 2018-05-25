@@ -35,7 +35,7 @@ class Body extends Component {
 	 * @return array|null An array of matching HTML on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
-		// We are only interested in p, pre, ul and ol
+		// We are only interested in p, pre, ul and ol.
 		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ), true ) ) {
 			return null;
 		}

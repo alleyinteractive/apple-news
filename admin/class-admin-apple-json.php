@@ -55,16 +55,16 @@ class Admin_Apple_JSON extends Apple_News {
 	 * @access public
 	 */
 	public function action_router() {
-		// Check for a valid action
+		// Check for a valid action.
 		$action	= isset( $_POST['apple_news_action'] ) ? sanitize_text_field( $_POST['apple_news_action'] ) : null;
 		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
 			return;
 		}
 
-		// Check the nonce
+		// Check the nonce.
 		check_admin_referer( 'apple_news_json' );
 
-		// Call the callback for the action for further processing
+		// Call the callback for the action for further processing.
 		call_user_func( $this->valid_actions[ $action ]['callback'] );
 	}
 
@@ -272,7 +272,7 @@ class Admin_Apple_JSON extends Apple_News {
 		// Keep track of which ones were updated.
 		$updates = array();
 		foreach ( $specs as $spec ) {
-			// Ensure the value exists
+			// Ensure the value exists.
 			$key = 'apple_news_json_' . $spec->key_from_name( $spec->name );
 			if ( isset( $_POST[ $key ] ) ) {
 				$custom_spec = stripslashes( sanitize_text_field( $_POST[ $key ] ) );
@@ -325,7 +325,7 @@ class Admin_Apple_JSON extends Apple_News {
 		$component_factory->initialize();
 		$components = $component_factory::get_components();
 
-		// Make this alphabetized and pretty
+		// Make this alphabetized and pretty.
 		$components_sanitized = array();
 		foreach ( $components as $component ) {
 			$component_key = str_replace( $this->namespace, '', $component );

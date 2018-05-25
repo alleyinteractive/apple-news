@@ -81,14 +81,14 @@ class Component_Factory {
 		self::register_component( 'ul', '\\Apple_Exporter\\Components\\Body' );
 		self::register_component( 'pre', '\\Apple_Exporter\\Components\\Body' );
 		self::register_component( 'hr', '\\Apple_Exporter\\Components\\Divider' );
-		// Non HTML-based components
+		// Non HTML-based components.
 		self::register_component( 'intro', '\\Apple_Exporter\\Components\\Intro' );
 		self::register_component( 'cover', '\\Apple_Exporter\\Components\\Cover' );
 		self::register_component( 'title', '\\Apple_Exporter\\Components\\Title' );
 		self::register_component( 'byline', '\\Apple_Exporter\\Components\\Byline' );
 		self::register_component( 'advertisement', '\\Apple_Exporter\\Components\\Advertisement' );
 
-		// Allow built-in components and order to be overridden
+		// Allow built-in components and order to be overridden.
 		self::$components = apply_filters( 'apple_news_initialize_components', self::$components );
 	}
 
@@ -150,9 +150,11 @@ class Component_Factory {
 				continue;
 			}
 
-			// Did we match several components? If so, a hash is returned. Both the
-			// body and heading components can returns this, in the case they find
-			// non-markdown-able elements inside.
+			/**
+			 * Did we match several components? If so, a hash is returned. Both the
+			 * body and heading components can returns this, in the case they find
+			 * non-markdown-able elements inside.
+			 */
 			if ( is_array( $matched_node ) ) {
 				foreach ( $matched_node as $base_component ) {
 					$result[] = self::get_component( $base_component['name'], $base_component['value'] );
@@ -161,7 +163,7 @@ class Component_Factory {
 				return $result;
 			}
 
-			// We matched a single node
+			// We matched a single node.
 			$html = $node->ownerDocument->saveXML( $matched_node );
 			$result[] = self::get_component( $shortname, $html );
 			return $result;
@@ -172,14 +174,16 @@ class Component_Factory {
 			foreach ( $node->childNodes as $child ) {
 				$result = array_merge( $result, self::get_components_from_node( $child, $node ) );
 			}
-			// Remove all nulls from the array
+			// Remove all nulls from the array.
 			$result = array_filter( $result );
 		}
 
-		// If nothing was found, log this as a component error by recording the node name.
-		// Only record components with a tagName since otherwise there is nothing to report.
-		// Others nodes without a match are almost always just stray empty text nodes
-		// that are always safe to remove. Paragraphs should also be ignored for this reason.
+		/**
+		 * If nothing was found, log this as a component error by recording the node name.
+		 * Only record components with a tagName since otherwise there is nothing to report.
+		 * Others nodes without a match are almost always just stray empty text nodes
+		 * that are always safe to remove. Paragraphs should also be ignored for this reason.
+		 */
 		if ( empty( $result ) && ( ! empty( $node->tagName ) && 'p' !== $node->tagName ) ) {
 			self::$workspace->log_error( 'component_errors', $node->tagName );
 		}

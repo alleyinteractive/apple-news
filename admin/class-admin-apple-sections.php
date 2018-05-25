@@ -456,7 +456,7 @@ class Admin_Apple_Sections extends Apple_News {
 				}
 			}
 
-			// Determine if there is theme data for this section
+			// Determine if there is theme data for this section.
 			$theme_key = 'theme-mapping-' . $section_id;
 			if ( ! empty( $_POST[ $theme_key ] ) ) {
 				$theme_mappings[ $section_id ] = sanitize_text_field( $_POST[ $theme_key ] );

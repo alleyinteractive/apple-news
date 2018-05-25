@@ -41,7 +41,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		parent::__construct();
 		$this->settings = $settings;
 
-		// Handle routing to various admin pages
+		// Handle routing to various admin pages.
 		add_action( 'admin_init', array( $this, 'page_router' ) );
 		add_action( 'admin_menu', array( $this, 'setup_admin_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'setup_assets' ) );
@@ -55,7 +55,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access public
 	 */
 	public function setup_admin_page() {
-		// Set up main page. This page reads parameters and handles actions
+		// Set up main page. This page reads parameters and handles actions.
 		// accordingly.
 		add_menu_page(
 			__( 'Apple News', 'apple-news' ),
@@ -122,7 +122,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		$action		= isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : null;
 		$action2	= isset( $_GET['action2'] ) ? sanitize_text_field( $_GET['action2'] ) : null;
 
-		// Allow for bulk actions from top or bottom
+		// Allow for bulk actions from top or bottom.
 		if ( ( empty( $action ) || '-1' === $action ) && ! empty( $action2 ) ) {
 			$action = $action2;
 		}
@@ -181,7 +181,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access public
 	 */
 	private function do_redirect() {
-		// Perform the redirect
+		// Perform the redirect.
 		wp_safe_redirect( esc_url_raw( self::action_query_params( '', menu_page_url( $this->plugin_slug . '_index', false ) ) ) );
 		if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {
 			exit;
@@ -208,7 +208,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access public
 	 */
 	public static function action_query_params( $action, $url ) {
-		// Set the keys we need to pay attention to
+		// Set the keys we need to pay attention to.
 		$keys = array(
 			'apple_news_publish_status',
 			'apple_news_date_from',
@@ -217,20 +217,20 @@ class Admin_Apple_Index_Page extends Apple_News {
 			'paged',
 		);
 
-		// Start the params
+		// Start the params.
 		$params = array();
 		if ( ! empty( $action ) ) {
 			$params['action'] = self::namespace_action( $action );
 		}
 
-		// Add the other params
+		// Add the other params.
 		foreach ( $keys as $key ) {
 			if ( ! empty( $_GET[ $key ] ) ) {
 				$params[ $key ] = urlencode( sanitize_text_field( $_GET[ $key ] ) );
 			}
 		}
 
-		// Add to the action URL
+		// Add to the action URL.
 		return add_query_arg( $params, $url );
 	}
 
@@ -272,10 +272,10 @@ class Admin_Apple_Index_Page extends Apple_News {
 			return;
 		}
 
-		// Enable jQuery datepicker for the export table date filter
+		// Enable jQuery datepicker for the export table date filter.
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
-		// Add the export table script and style
+		// Add the export table script and style.
 		wp_enqueue_style(
 			$this->plugin_slug . '_export_table_css',
 			plugin_dir_url( __FILE__ ) .  '../assets/css/export-table.css',
@@ -297,7 +297,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 			true
 		);
 
-		// Localize strings
+		// Localize strings.
 		wp_localize_script( $this->plugin_slug . '_export_table_js', 'apple_news_export_table', array(
 			'reset_confirmation' => __( "Are you sure you want to reset status? Please only proceed if you're certain the post is stuck or this could reset in duplicate posts in Apple News.", 'apple-news' ),
 			'delete_confirmation' => __( 'Are you sure you want to delete this post from Apple News?', 'apple-news' ),
@@ -343,7 +343,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access private
 	 */
 	private function push_action( $id ) {
-		// Ensure the post is published
+		// Ensure the post is published.
 		if ( 'publish' !== get_post_status( $id ) ) {
 			$this->notice_error( sprintf(
 				__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
@@ -363,17 +363,17 @@ class Admin_Apple_Index_Page extends Apple_News {
 			$this->notice_error( __( 'Invalid nonce.', 'apple-news' ) );
 		}
 
-		// Save fields
+		// Save fields.
 		\Admin_Apple_Meta_Boxes::save_post_meta( $id );
 
 		$message = __( 'Settings saved.', 'apple-news' );
 
-		// Push the post
+		// Push the post.
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
 		try {
 			$action->perform();
 
-			// In async mode, success or failure will be displayed later
+			// In async mode, success or failure will be displayed later.
 			if ( 'yes' !== $this->settings->get( 'api_async' ) ) {
 				$this->notice_success( __( 'Your article has been pushed successfully!', 'apple-news' ) );
 			} else {
@@ -407,17 +407,17 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access private
 	 */
 	private function reset_action( $id ) {
-		// Remove the pending designation if it exists
+		// Remove the pending designation if it exists.
 		delete_post_meta( $id, 'apple_news_api_pending' );
 
-		// Remove the async in progress flag
+		// Remove the async in progress flag.
 		delete_post_meta( $id, 'apple_news_api_async_in_progress' );
 
-		// Manually clean the workspace
+		// Manually clean the workspace.
 		$workspace = new Workspace( $id );
 		$workspace->clean_up();
 
-		// This can only succeed
+		// This can only succeed.
 		$this->notice_success( __( 'Your article status has been successfully reset!', 'apple-news' ) );
 	}
 

@@ -41,7 +41,7 @@ class Get extends API_Action {
 			return null;
 		}
 
-		// Get the article from the API
+		// Get the article from the API.
 		$article = $this->get_api()->get_article( $apple_id );
 		if ( empty( $article->data ) ) {
 			return null;

@@ -58,13 +58,13 @@ class Push extends API_Action {
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
 		if ( 'yes' === $this->settings->get( 'api_async' ) && false === $doing_async ) {
-			// Do not proceed if this is already pending publish
+			// Do not proceed if this is already pending publish.
 			$pending = get_post_meta( $this->id, 'apple_news_api_pending', true );
 			if ( ! empty( $pending ) ) {
 				return false;
 			}
 
-			// Track this publish event as pending with the timestamp it was sent
+			// Track this publish event as pending with the timestamp it was sent.
 			update_post_meta( $this->id, 'apple_news_api_pending', time() );
 
 			wp_schedule_single_event( time(), \Admin_Apple_Async::ASYNC_PUSH_HOOK, array( $this->id, get_current_user_id() ) );
@@ -108,13 +108,13 @@ class Push extends API_Action {
 			throw new \Apple_Actions\Action_Exception( __( 'This post does not have a valid Apple News ID, so it cannot be retrieved from the API.', 'apple-news' ) );
 		}
 
-		// Get the article from the API
+		// Get the article from the API.
 		$result = $this->get_api()->get_article( $apple_id );
 		if ( empty( $result->data->revision ) ) {
 			throw new \Apple_Actions\Action_Exception( __( 'The API returned invalid data for this article since the revision is empty.', 'apple-news' ) );
 		}
 
-		// Update the revision
+		// Update the revision.
 		update_post_meta( $this->id, 'apple_news_api_revision', sanitize_text_field( $result->data->revision ) );
 	}
 
@@ -145,7 +145,7 @@ class Push extends API_Action {
 			);
 		}
 
-		// Ignore if the post is already in sync
+		// Ignore if the post is already in sync.
 		if ( $this->is_post_in_sync() ) {
 			throw new \Apple_Actions\Action_Exception(
 				sprintf(
@@ -156,23 +156,25 @@ class Push extends API_Action {
 			);
 		}
 
-		// generate_article uses Exporter->generate, so we MUST clean the workspace
-		// before and after its usage.
+		/**
+		 * The generate_article function uses Exporter->generate, so we MUST
+		 * clean the workspace before and after its usage.
+		 */
 		$this->clean_workspace();
 
-		// Get sections
+		// Get sections.
 		$this->sections = Admin_Apple_Sections::get_sections_for_post( $this->id );
 
-		// Generate the JSON for the article
+		// Generate the JSON for the article.
 		list( $json, $bundles, $errors ) = $this->generate_article();
 
-		// Process errors
+		// Process errors.
 		$this->process_errors( $errors );
 
 		// Sanitize the data before using since it's filterable.
 		$json = $this->sanitize_json( $json );
 
-		// Bundles should be an array of URLs
+		// Bundles should be an array of URLs.
 		if ( ! empty( $bundles ) && is_array( $bundles ) ) {
 			$bundles = array_map( 'esc_url_raw', $bundles );
 		} else {
@@ -186,7 +188,7 @@ class Push extends API_Action {
 
 			do_action( 'apple_news_before_push', $this->id );
 
-			// Populate optional metadata
+			// Populate optional metadata.
 			$meta = array(
 				'data' => array(),
 			);
@@ -197,29 +199,29 @@ class Push extends API_Action {
 				$meta['data']['links'] = array( 'sections' => $this->sections );
 			}
 
-			// Get the isPreview setting
+			// Get the isPreview setting.
 			$is_preview = (bool) get_post_meta( $this->id, 'apple_news_is_preview', true );
 			$meta['data']['isPreview'] = $is_preview;
 
-			// Get the isHidden setting
+			// Get the isHidden setting.
 			$is_hidden = (bool) get_post_meta( $this->id, 'apple_news_is_hidden', true );
 			$meta['data']['isHidden'] = $is_hidden;
 
-			// Get the isSponsored setting
+			// Get the isSponsored setting.
 			$is_sponsored = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
 			$meta['data']['isSponsored'] = $is_sponsored;
 
-			// Get the maturity rating setting
+			// Get the maturity rating setting.
 			$maturity_rating = get_post_meta( $this->id, 'apple_news_maturity_rating', true );
 			if ( ! empty( $maturity_rating ) ) {
 				$meta['data']['maturityRating'] = $maturity_rating;
 			}
 
 			if ( $remote_id ) {
-				// Update the current article from the API in case the revision changed
+				// Update the current article from the API in case the revision changed.
 				$this->get();
 
-				// Get the current revision
+				// Get the current revision.
 				$revision = get_post_meta( $this->id, 'apple_news_api_revision', true );
 				$result   = $this->get_api()->update_article( $remote_id, $revision, $json, $bundles, $meta, $this->id );
 			} else {
@@ -236,22 +238,22 @@ class Push extends API_Action {
 			// If it's marked as deleted, remove the mark. Ignore otherwise.
 			delete_post_meta( $this->id, 'apple_news_api_deleted' );
 
-			// Remove the pending designation if it exists
+			// Remove the pending designation if it exists.
 			delete_post_meta( $this->id, 'apple_news_api_pending' );
 
-			// Remove the async in progress flag
+			// Remove the async in progress flag.
 			delete_post_meta( $this->id, 'apple_news_api_async_in_progress' );
 
-			// Clear the cache for post status
+			// Clear the cache for post status.
 			delete_transient( 'apple_news_post_state_' . $this->id );
 
 			do_action( 'apple_news_after_push', $this->id, $result );
 		} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
 
-			// Remove the pending designation if it exists
+			// Remove the pending designation if it exists.
 			delete_post_meta( $this->id, 'apple_news_api_pending' );
 
-			// Remove the async in progress flag
+			// Remove the async in progress flag.
 			delete_post_meta( $this->id, 'apple_news_api_async_in_progress' );
 
 			$this->clean_workspace();
@@ -294,21 +296,21 @@ class Push extends API_Action {
 	 * @throws \Apple_Actions\Action_Exception If set to fail on component errors.
 	 */
 	private function process_errors( $errors ) {
-		// Get the current alert settings
+		// Get the current alert settings.
 		$component_alerts = $this->get_setting( 'component_alerts' );
 		$json_alerts = $this->get_setting( 'json_alerts' );
 
-		// Initialize the alert message
+		// Initialize the alert message.
 		$alert_message = '';
 
-		// Get the current user id
+		// Get the current user id.
 		if ( empty( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
 
-		// Build the component alert error message, if required
+		// Build the component alert error message, if required.
 		if ( ! empty( $errors[0]['component_errors'] ) ) {
-			// Build an list of the components that caused errors
+			// Build an list of the components that caused errors.
 			$component_names = implode( ', ', $errors[0]['component_errors'] );
 
 			if ( 'warn' === $component_alerts ) {
@@ -324,16 +326,16 @@ class Push extends API_Action {
 			}
 		}
 
-		// Check for JSON errors
+		// Check for JSON errors.
 		if ( ! empty( $errors[0]['json_errors'] ) ) {
 			if ( ! empty( $alert_message ) ) {
 				$alert_message .= '|';
 			}
 
-			// Merge all errors into a single message
+			// Merge all errors into a single message.
 			$json_errors = implode( ', ', $errors[0]['json_errors'] );
 
-			// Add these to the message
+			// Add these to the message.
 			if ( 'warn' === $json_alerts ) {
 				$alert_message .= sprintf(
 					__( 'The following JSON errors were detected: %s', 'apple-news' ),
@@ -347,24 +349,24 @@ class Push extends API_Action {
 			}
 		}
 
-		// See if we found any errors
+		// See if we found any errors.
 		if ( empty( $alert_message ) ) {
 			return;
 		}
 
-		// Proceed based on component alert settings
+		// Proceed based on component alert settings.
 		if ( ( 'fail' === $component_alerts && ! empty( $errors[0]['component_errors'] ) )
 			|| ( 'fail' === $json_alerts && ! empty( $errors[0]['json_errors'] ) ) ) {
-			// Remove the pending designation if it exists
+			// Remove the pending designation if it exists.
 			delete_post_meta( $this->id, 'apple_news_api_pending' );
 
-			// Remove the async in progress flag
+			// Remove the async in progress flag.
 			delete_post_meta( $this->id, 'apple_news_api_async_in_progress' );
 
-			// Clean the workspace
+			// Clean the workspace.
 			$this->clean_workspace();
 
-			// Throw an exception
+			// Throw an exception.
 			throw new \Apple_Actions\Action_Exception( $alert_message );
 		} else if ( ( 'warn' === $component_alerts && ! empty( $errors[0]['component_errors'] ) )
 			|| ( 'warn' === $json_alerts && ! empty( $errors[0]['json_errors'] ) ) ) {
@@ -412,8 +414,10 @@ class Push extends API_Action {
 	 * @throws \Apple_Actions\Action_Exception If the JSON is invalid.
 	 */
 	private function sanitize_json( $json ) {
-		// Apple News format is complex and has too many options to validate otherwise.
-		// Let's just make sure the JSON is valid
+		/**
+		 * Apple News format is complex and has too many options to validate otherwise.
+		 * Let's just make sure the JSON is valid.
+		 */
 		$decoded = json_decode( $json );
 		if ( ! $decoded ) {
 			 throw new \Apple_Actions\Action_Exception( __( 'The Apple News JSON is invalid and cannot be published.', 'apple-news' ) );

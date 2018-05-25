@@ -21,10 +21,10 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 	 * @param string $page
 	 */
 	function __construct( $page ) {
-		// Set the name
+		// Set the name.
 		$this->name =  __( 'Advanced Settings', 'apple-news' );
 
-		// Add the settings
+		// Add the settings.
 		$this->settings = array(
 			'component_alerts' => array(
 				'label'   => __( 'Component Alerts', 'apple-news' ),
@@ -63,7 +63,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 			),
 		);
 
-		// Add the groups
+		// Add the groups.
 		$this->groups = array(
 			'alerts' => array(
 				'label'       => __( 'Alerts', 'apple-news' ),

@@ -49,7 +49,7 @@ class Audio extends Component {
 	 * @access protected
 	 */
 	protected function build( $text ) {
-		// Remove initial and trailing tags: <video><p>...</p></video>
+		// Remove initial and trailing tags: <video><p>...</p></video>.
 		if ( ! preg_match( '/src="([^"]+)"/', $text, $match ) ) {
 			return null;
 		}

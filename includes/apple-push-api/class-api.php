@@ -77,7 +77,7 @@ class API {
 	public function update_article( $uid, $revision, $article, $bundles = array(), $meta = array(), $post_id = null ) {
 		$url = $this->endpoint . '/articles/' . $uid;
 
-		// Always add the revision
+		// Always add the revision.
 		if ( empty( $meta['data'] ) || ! is_array( $meta['data'] ) ) {
 			$meta['data'] = array();
 		}
@@ -150,10 +150,6 @@ class API {
 		$url = $this->endpoint . '/sections/' . $section_id;
 		return $this->send_get_request( $url );
 	}
-
-	// Isolate request dependency.
-	// -------------------------------------------------------------------------
-
 
 	/**
 	 * Send a get request.

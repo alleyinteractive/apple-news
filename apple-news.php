@@ -27,7 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Activate the plugin.
  */
 function apple_news_activate_wp_plugin() {
-	// Check for PHP version
+	// Check for PHP version.
 	if ( version_compare( PHP_VERSION, '5.3.6' ) < 0 ) {
 		deactivate_plugins( basename( __FILE__ ) );
 		wp_die( esc_html__( 'This plugin requires at least PHP 5.3.6', 'apple-news' ) );
@@ -40,7 +40,6 @@ require plugin_dir_path( __FILE__ ) . 'includes/apple-exporter/class-settings.ph
  * Deactivate the plugin.
  */
 function apple_news_uninstall_wp_plugin() {
-	// Do something
 	$settings = new Apple_Exporter\Settings;
 	foreach ( $settings->all() as $name => $value ) {
 		delete_option( $name );
@@ -53,7 +52,7 @@ if ( ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV ) {
 	register_uninstall_hook( __FILE__, 'apple_news_uninstall_wp_plugin' );
 }
 
-// Initialize plugin class
+// Initialize plugin class.
 require plugin_dir_path( __FILE__ ) . 'includes/class-apple-news.php';
 require plugin_dir_path( __FILE__ ) . 'admin/class-admin-apple-news.php';
 

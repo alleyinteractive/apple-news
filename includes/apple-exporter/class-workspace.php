@@ -89,9 +89,11 @@ class Workspace {
 	public function write_json( $content ) {
 		$json = apply_filters( 'apple_news_write_json', $content, $this->content_id );
 
-		// JSON should be decoded before being stored.
-		// Otherwise, stripslashes_deep could potentially remove valid characters
-		// such as newlines (\n).s
+		/**
+		 * JSON should be decoded before being stored.
+		 * Otherwise, stripslashes_deep could potentially remove valid characters
+		 * such as newlines (\n).
+		 */
 		$decoded_json = json_decode( $json );
 		if ( null === $decoded_json ) {
 			// This is invalid JSON.
@@ -133,23 +135,23 @@ class Workspace {
 	 * @since 1.0.6
 	 */
 	public function log_error( $key, $value ) {
-		// Get current errors
+		// Get current errors.
 		$errors = get_post_meta( $this->content_id, self::ERRORS_META_KEY, true );
 
-		// Initialize if needed
+		// Initialize if needed.
 		if ( empty( $errors ) ) {
 			$errors = array();
 		}
 
-		// Initialize the key if needed
+		// Initialize the key if needed.
 		if ( empty( $errors[ $key ] ) ) {
 			$errors[ $key ] = array();
 		}
 
-		// Log the error
+		// Log the error.
 		$errors[ $key ][] = $value;
 
-		// Save the errors
+		// Save the errors.
 		update_post_meta( $this->content_id, self::ERRORS_META_KEY, $errors );
 	}
 

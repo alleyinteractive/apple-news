@@ -163,7 +163,7 @@ class Image extends Component {
 			$this->set_anchor_position( Component::ANCHOR_NONE );
 		}
 
-		// Check for caption
+		// Check for caption.
 		if ( preg_match( '#<figcaption.*?>(.*?)</figcaption>#m', $text, $matches ) ) {
 			$caption = trim( $matches[1] );
 			$values['#caption#'] = $caption;
@@ -173,16 +173,18 @@ class Image extends Component {
 			$spec_name = 'json-without-caption';
 		}
 
-		// Full width images have top margin
-		// We can't use the standard layout registration due to grouping components
-		// with images so instead, send it through as a value.
+		/**
+		 * Full width images have top margin
+		 * We can't use the standard layout registration due to grouping components
+		 * with images so instead, send it through as a value.
+		 */
 		if ( Component::ANCHOR_NONE === $this->get_anchor_position() ) {
 			$values = $this->register_non_anchor_layout( $values );
 		} else {
 			$values = $this->register_anchor_layout( $values );
 		}
 
-		// Register the JSON
+		// Register the JSON.
 		$this->register_json( $spec_name, $values );
 	}
 
@@ -215,7 +217,7 @@ class Image extends Component {
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
 
-		// Set values to merge into the spec
+		// Set values to merge into the spec.
 		$layout_values = array();
 
 		if ( 'yes' === $this->get_setting( 'full_bleed_images' ) ) {

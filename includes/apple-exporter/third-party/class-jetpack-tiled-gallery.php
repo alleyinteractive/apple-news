@@ -51,8 +51,10 @@ class Jetpack_Tiled_Gallery {
 			return;
 		}
 
-		// Allow default rendering of gallery since we have
-		// builtin handling for the default WP galleries.
+		/**
+		 * Allow default rendering of gallery since we have
+		 * builtin handling for the default WP galleries.
+		 */
 		add_filter( 'jetpack_tiled_gallery_types', function() {
 			return array();
 		} );

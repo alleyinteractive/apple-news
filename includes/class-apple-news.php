@@ -332,8 +332,10 @@ class Apple_News {
 	 */
 	public function migrate_api_settings() {
 
-		// Use the value of api_autosync_update for api_autosync_delete if not set
-		// since that was the previous value used to determine this behavior.
+		/**
+		 * Use the value of api_autosync_update for api_autosync_delete if not set
+		 * since that was the previous value used to determine this behavior.
+		 */
 		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['api_autosync_delete'] )
 		     && ! empty( $wp_settings['api_autosync_update'] )

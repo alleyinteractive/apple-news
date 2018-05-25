@@ -93,9 +93,11 @@ class Component_Layouts extends Builder {
 			$position = 'right';
 			break;
 		case Component::ANCHOR_AUTO:
-			// The alignment position is the opposite of the body_orientation
-			// setting. In the case of centered body orientation, use left alignment.
-			// This behaviour was chosen by design.
+			/**
+			 * The alignment position is the opposite of the body_orientation
+			 * setting. In the case of centered body orientation, use left alignment.
+			 * This behaviour was chosen by design.
+			 */
 			if ( 'left' === $theme->get_value( 'body_orientation' ) ) {
 				$position = 'right';
 			} else {
@@ -115,8 +117,10 @@ class Component_Layouts extends Builder {
 			$body_column_span = $theme->get_body_column_span();
 			$layout_columns = $theme->get_layout_columns();
 
-			// Find out the starting column. This is easy enough if we are anchoring
-			// left, but for right side alignment, we have to make some math :)
+			/**
+			 * Find out the starting column. This is easy enough if we are anchoring
+			 * left, but for right side alignment, we have to make some math :)
+			 */
 			$col_start = $body_offset;
 			if ( 'right' === $position ) {
 				if ( $component->is_anchor_target() ) {
@@ -130,9 +134,11 @@ class Component_Layouts extends Builder {
 				$col_start = 0;
 			}
 
-			// Find the column span. For the target element, let's use the same
-			// column span as the Body component, that is, 5 columns, minus the
-			// defined offset. The element to be anchored uses the remaining space.
+			/**
+			 * Find the column span. For the target element, let's use the same
+			 * column span as the Body component, that is, 5 columns, minus the
+			 * defined offset. The element to be anchored uses the remaining space.
+			 */
 			$col_span = 0;
 			if ( $component->is_anchor_target() ) {
 				$col_span = $body_column_span - $alignment_offset;
@@ -140,7 +146,7 @@ class Component_Layouts extends Builder {
 				$col_span = $alignment_offset;
 			}
 
-			// Finally, register the layout
+			// Finally, register the layout.
 			$this->register_layout( $layout_name, array(
 				'columnStart' => $col_start,
 				'columnSpan'  => $col_span,

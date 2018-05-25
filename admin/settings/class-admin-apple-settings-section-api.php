@@ -21,10 +21,10 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 	 * @param string $page
 	 */
 	function __construct( $page ) {
-		// Set the name
+		// Set the name.
 		$this->name =  __( 'API Settings', 'apple-news' );
 
-		// Add the settings
+		// Add the settings.
 		$this->settings = array(
 			'api_channel' => array(
 				'label'   => __( 'Channel ID', 'apple-news' ),
@@ -57,7 +57,7 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 			),
 		);
 
-		// Add the groups
+		// Add the groups.
 		$this->groups = array(
 			'apple_news' => array(
 				'label'       => __( 'Apple News API', 'apple-news' ),

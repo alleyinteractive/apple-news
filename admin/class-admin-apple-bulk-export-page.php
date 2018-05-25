@@ -44,12 +44,12 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	 */
 	public function register_page() {
 		add_submenu_page(
-			null,                                // Parent, if null, it won't appear in any menu
-			__( 'Bulk Export', 'apple-news' ),   // Page title
-			__( 'Bulk Export', 'apple-news' ),   // Menu title
-			apply_filters( 'apple_news_bulk_export_capability', 'manage_options' ),	// Capability
-			$this->plugin_slug . '_bulk_export', // Menu Slug
-			array( $this, 'build_page' )         // Function
+			null,                                // Parent, if null, it won't appear in any menu.
+			__( 'Bulk Export', 'apple-news' ),   // Page title.
+			__( 'Bulk Export', 'apple-news' ),   // Menu title.
+			apply_filters( 'apple_news_bulk_export_capability', 'manage_options' ),	// Capability.
+			$this->plugin_slug . '_bulk_export', // Menu Slug.
+			array( $this, 'build_page' )         // Function.
 	 	);
 	}
 
@@ -84,7 +84,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			}
 		}
 
-		// Populate $articles array with a set of valid posts
+		// Populate $articles array with a set of valid posts.
 		$articles = array();
 		foreach ( explode( '.', $ids ) as $id ) {
 			if ( $post = get_post( absint( $id ) ) ) {
@@ -101,13 +101,13 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	 * @access public
 	 */
 	public function ajax_push_post() {
-		// Check the nonce
+		// Check the nonce.
 		check_ajax_referer( self::ACTION );
 
-		// Sanitize input data
+		// Sanitize input data.
 		$id = absint( $_GET['id'] );
 
-		// Ensure the post exists and that it's published
+		// Ensure the post exists and that it's published.
 		$post = get_post( $id );
 		if ( empty( $post ) ) {
 			echo wp_json_encode( array(
@@ -155,7 +155,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			) );
 		}
 
-		// This is required to terminate immediately and return a valid response
+		// This is required to terminate immediately and return a valid response.
 		wp_die();
 	}
 

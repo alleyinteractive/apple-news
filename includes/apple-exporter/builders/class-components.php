@@ -54,11 +54,13 @@ class Components extends Builder {
 			$components[] = $component_array;
 		}
 
-		// Process meta components.
-		//
-		// Meta components are handled after the body and then prepended, since they
-		// could change depending on the above body processing, such as if a
-		// thumbnail was used from the body.
+		/**
+		 * Process meta components.
+		 *
+		 * Meta components are handled after the body and then prepended, since they
+		 * could change depending on the above body processing, such as if a
+		 * thumbnail was used from the body.
+		 */
 		$components = array_merge( $this->_meta_components(), $components );
 
 		// Group body components to improve text flow at all orientations.
@@ -160,11 +162,13 @@ class Components extends Builder {
 				return;
 			}
 
-			// Isolate the bundle URL basename
+			// Isolate the bundle URL basename.
 			$bundle_basename = str_replace( 'bundle://', '', $json_url );
 
-			// We need to find the original URL from the bundle meta because it's
-			// needed in order to override the thumbnail.
+			/**
+			 * We need to find the original URL from the bundle meta because it's
+			 * needed in order to override the thumbnail.
+			 */
 			$workspace = new Workspace( $this->content_id() );
 			$bundles = $workspace->get_bundles();
 
@@ -227,8 +231,10 @@ class Components extends Builder {
 				continue;
 			}
 
-			// Anchor this component to the next component. If there is no next
-			// component available, try with the previous one.
+			/**
+			 * Anchor this component to the next component. If there is no next
+			 * component available, try with the previous one.
+			 */
 			if ( ! empty( $components[ $i + 1 ] ) ) {
 				$target_component = $components[ $i + 1 ];
 			} else {
@@ -306,9 +312,11 @@ class Components extends Builder {
 			);
 		}
 
-		// Regardless of what the component class specifies, add the
-		// targetComponentIdentifier here. There's no way for the class to know what
-		// this is before this point.
+		/**
+		 * Regardless of what the component class specifies, add the
+		 * targetComponentIdentifier here. There's no way for the class to know what
+		 * this is before this point.
+		 */
 		$anchor_json['targetComponentIdentifier'] = $target_component->uid();
 
 		// Add the JSON back to the component.
@@ -323,10 +331,12 @@ class Components extends Builder {
 			$other_position = Component::ANCHOR_RIGHT;
 		}
 
-		// The anchor method adds the required layout, thus making the actual
-		// anchoring. This must be called after using the UID, because we need to
-		// distinguish target components from anchor ones and components with
-		// UIDs are always anchor targets.
+		/**
+		 * The anchor method adds the required layout, thus making the actual
+		 * anchoring. This must be called after using the UID, because we need to
+		 * distinguish target components from anchor ones and components with
+		 * UIDs are always anchor targets.
+		 */
 		$target_component->set_anchor_position( $other_position );
 		$target_component->anchor();
 		$component->anchor();
@@ -631,8 +641,10 @@ class Components extends Builder {
 			return $new_components;
 		}
 
-		// All components after the cover must be grouped to avoid issues with
-		// parallax text scroll.
+		/**
+		 * All components after the cover must be grouped to avoid issues with
+		 * parallax text scroll.
+		 */
 		$regrouped_components = array(
 			'role' => 'container',
 			'layout' => array(
@@ -712,8 +724,10 @@ class Components extends Builder {
 	 */
 	private function _split_into_components() {
 
-		// Loop though the first-level nodes of the body element. Components might
-		// include child-components, like an Cover and Image.
+		/**
+		 * Loop though the first-level nodes of the body element. Components might
+		 * include child-components, like an Cover and Image.
+		 */
 		$components = array();
 		foreach ( $this->content_nodes() as $node ) {
 			$components = array_merge(

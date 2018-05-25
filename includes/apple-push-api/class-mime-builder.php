@@ -128,10 +128,10 @@ class MIME_Builder {
 			$contents = wp_remote_retrieve_body( $request );
 		}
 
-		// Attempt to get the size
+		// Attempt to get the size.
 		$size = strlen( $contents );
 
-		// If this fails for some reason, try alternate methods
+		// If this fails for some reason, try alternate methods.
 		if ( empty( $size ) ) {
 			if ( filter_var( $filepath, FILTER_VALIDATE_URL ) ) {
 				$headers = get_headers( $filepath );
@@ -141,12 +141,12 @@ class MIME_Builder {
 					}
 				}
 			} else {
-				// This will be the final catch for local files
+				// This will be the final catch for local files.
 				$size = filesize( $filepath );
 			}
 		}
 
-		// If the name wasn't specified, build it from the filename
+		// If the name wasn't specified, build it from the filename.
 		$filename = \Apple_News::get_filename( $filepath );
 		if ( empty( $name ) ) {
 			$name = sanitize_key( $filename );
@@ -185,7 +185,7 @@ class MIME_Builder {
 	 * @access private
 	 */
 	private function build_attachment( $name, $filename, $content, $mime_type, $size ) {
-		// Ensure the file isn't empty
+		// Ensure the file isn't empty.
 		if ( empty( $content ) ) {
 			throw new Request_Exception( sprintf(
 				__( 'The attachment %s could not be included in the request because it was empty.', 'apple-news' ),
@@ -193,7 +193,7 @@ class MIME_Builder {
 			) );
 		}
 
-		// Ensure a valid size was provided
+		// Ensure a valid size was provided.
 		if ( 0 >= intval( $size ) ) {
 			throw new Request_Exception( sprintf(
 				__( 'The attachment %s could not be included in the request because its size was %s.', 'apple-news' ),
@@ -202,7 +202,7 @@ class MIME_Builder {
 			) );
 		}
 
-		// Build the attachment
+		// Build the attachment.
 		$attachment  = '--' . $this->boundary . $this->eol;
 		$attachment .= 'Content-Type: ' . $mime_type . $this->eol;
 		$attachment .= 'Content-Disposition: form-data; name=' . $name . '; filename=' . $filename . '; size=' . $size . $this->eol . $this->eol;
@@ -229,7 +229,7 @@ class MIME_Builder {
 	 * @access private
 	 */
 	private function get_mime_type_for( $filepath ) {
-		// TODO: rethink this for better integration with WordPress
+		// TODO: rethink this for better integration with WordPress.
 		return 'application/octet-stream';
 	}
 
@@ -254,8 +254,10 @@ class MIME_Builder {
 	public function get_debug_content( $args ) {
 		$content = '';
 
-		// Parse the header from the args and convert it into the format
-		// that would actually be sent to the API.
+		/**
+		 * Parse the header from the args and convert it into the format
+		 * that would actually be sent to the API.
+		 */
 		if ( ! empty( $args['headers'] ) && is_array( $args['headers'] ) ) {
 			foreach ( $args['headers'] as $key => $value ) {
 				$content .= sprintf(

@@ -23,9 +23,11 @@ class Admin_Apple_Post_Sync {
 	 * Constructor.
 	 */
 	function __construct( $settings = null ) {
-		// Don't re-fetch settings if they've been previously obtained.
-		// However, this class may be used within themes and therefore may
-		// need to get it's own settings.
+		/**
+		 * Don't re-fetch settings if they've been previously obtained.
+		 * However, this class may be used within themes and therefore may
+		 * need to get its own settings.
+		 */
 		if ( ! empty( $settings ) ) {
 			$this->settings = $settings;
 		} else {
@@ -76,7 +78,7 @@ class Admin_Apple_Post_Sync {
 			return;
 		}
 
-		// Proceed with the push
+		// Proceed with the push.
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
 		try {
 			$action->perform();
@@ -100,7 +102,7 @@ class Admin_Apple_Post_Sync {
 			return;
 		}
 
-		// If it does not have a remote API ID just ignore
+		// If it does not have a remote API ID just ignore.
 		if ( ! get_post_meta( $id, 'apple_news_api_id', true ) ) {
 			return;
 		}

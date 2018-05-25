@@ -20,8 +20,10 @@ class Metadata extends Builder {
 	protected function build() {
 		$meta = array();
 
-		// The content's intro is optional. In WordPress, it's a post's
-		// excerpt. It's an introduction to the article.
+		/**
+		 * The content's intro is optional. In WordPress, it's a post's
+		 * excerpt. It's an introduction to the article.
+		 */
 		if ( $this->content_intro() ) {
 			$meta['excerpt'] = $this->content_intro();
 		}
@@ -33,9 +35,11 @@ class Metadata extends Builder {
 			);
 		}
 
-		// Add date fields.
-		// We need to get the WordPress post for this
-		// since the date functions are inconsistent.
+		/**
+		 * Add date fields.
+		 * We need to get the WordPress post for this
+		 * since the date functions are inconsistent.
+		 */
 		$post = get_post( $this->content_id() );
 		if ( ! empty( $post ) ) {
 			$post_date = date( 'c', strtotime( get_gmt_from_date( $post->post_date ) ) );
@@ -49,10 +53,10 @@ class Metadata extends Builder {
 		// Add canonical URL.
 		$meta['canonicalURL'] = get_permalink( $this->content_id() );
 
-		// Add plugin information to the generator metadata
+		// Add plugin information to the generator metadata.
 		$plugin_data = apple_news_get_plugin_data();
 
-		// Add generator information
+		// Add generator information.
 		$meta['generatorIdentifier'] = sanitize_title_with_dashes( $plugin_data['Name'] );
 		$meta['generatorName'] = $plugin_data['Name'];
 		$meta['generatorVersion'] = $plugin_data['Version'];
