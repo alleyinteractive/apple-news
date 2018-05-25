@@ -65,7 +65,7 @@ class Audio extends Component {
 			array(
 				'#url#' => esc_url_raw( $url ),
 			)
-	 	);
+		);
 	}
 
 }

@@ -35,7 +35,7 @@ class Export extends Action {
 	 * Constructor.
 	 *
 	 * @param Settings $settings
-	 * @param int $id
+	 * @param int      $id
 	 */
 	function __construct( $settings, $id = null, $sections = null ) {
 		parent::__construct( $settings );
@@ -131,8 +131,8 @@ class Export extends Action {
 	 *
 	 * @since 1.2.0
 	 * @param WP_Post $post
-	 * @param string $author
-	 * @param string $date
+	 * @param string  $author
+	 * @param string  $date
 	 * @return string
 	 * @access public
 	 */
@@ -285,7 +285,7 @@ class Export extends Action {
 		}
 
 		// Try to get theme settings.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $theme_name );
 		if ( ! $theme->load() ) {
 

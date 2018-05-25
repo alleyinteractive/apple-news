@@ -47,9 +47,9 @@ class API {
 	 * @since 0.2.0
 	 * @param string $article
 	 * @param string $channel_uuid
-	 * @param array $bundles
-	 * @param array $meta
-	 * @param int $post_id
+	 * @param array  $bundles
+	 * @param array  $meta
+	 * @param int    $post_id
 	 * @return object
 	 * @access public
 	 */
@@ -68,9 +68,9 @@ class API {
 	 * @param string $uid
 	 * @param string $revision
 	 * @param string $article
-	 * @param array $bundles
-	 * @param array $meta
-	 * @param int $post_id
+	 * @param array  $bundles
+	 * @param array  $meta
+	 * @param int    $post_id
 	 * @return object
 	 * @access public
 	 */
@@ -181,9 +181,9 @@ class API {
 	 * @since 0.2.0
 	 * @param string $url
 	 * @param string $article
-	 * @param array $bundles
-	 * @param array $meta
-	 * @param int $post_id
+	 * @param array  $bundles
+	 * @param array  $meta
+	 * @param int    $post_id
 	 * @return object
 	 * @access private
 	 */

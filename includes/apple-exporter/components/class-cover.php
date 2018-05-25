@@ -32,7 +32,7 @@ class Cover extends Component {
 						'role' => 'photo',
 						'layout' => 'headerPhotoLayout',
 						'URL' => '#url#',
-					)
+					),
 				),
 				'behavior' => array(
 					'type' => 'parallax',

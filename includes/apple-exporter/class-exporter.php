@@ -63,13 +63,13 @@ class Exporter {
 	 * Constructor.
 	 *
 	 * @param Exporter_Content $content
-	 * @param Workspace $workspace
-	 * @param Settings $settings
+	 * @param Workspace        $workspace
+	 * @param Settings         $settings
 	 */
 	function __construct( $content, $workspace = null, $settings = null ) {
 		$this->content   = $content;
 		$this->workspace = $workspace ?: new Workspace( $this->content_id() );
-		$this->settings  = $settings  ?: new Settings();
+		$this->settings  = $settings ?: new Settings();
 		$this->builders  = array();
 		$this->separators = array(
 			json_decode( '"\u0020"' ),
@@ -119,7 +119,7 @@ class Exporter {
 	/**
 	 * Register a builder.
 	 *
-	 * @param string $name
+	 * @param string  $name
 	 * @param Builder $builder
 	 * @access private
 	 */

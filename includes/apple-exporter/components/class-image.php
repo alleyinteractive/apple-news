@@ -20,7 +20,7 @@ class Image extends Component {
 	public static function node_matches( $node ) {
 		// Is this an image node?
 		if (
-		 	( 'img' === $node->nodeName || 'figure' === $node->nodeName )
+			( 'img' === $node->nodeName || 'figure' === $node->nodeName )
 			&& self::remote_file_exists( $node )
 		) {
 			return $node;
@@ -152,11 +152,11 @@ class Image extends Component {
 
 		// Determine image alignment.
 		if ( false !== stripos( $text, 'align="left"' )
-		     || preg_match( '/class="[^"]*alignleft[^"]*"/i', $text )
+			 || preg_match( '/class="[^"]*alignleft[^"]*"/i', $text )
 		) {
 			$this->set_anchor_position( Component::ANCHOR_LEFT );
 		} elseif ( false !== stripos( $text, 'align="right"' )
-		            || preg_match( '/class="[^"]*alignright[^"]*"/i', $text )
+					|| preg_match( '/class="[^"]*alignright[^"]*"/i', $text )
 		) {
 			$this->set_anchor_position( Component::ANCHOR_RIGHT );
 		} else {
@@ -271,7 +271,7 @@ class Image extends Component {
 	 * Let's instead, return the values as a Container instead of an Image.
 	 *
 	 * @param string $caption
-	 * @param array $values
+	 * @param array  $values
 	 * @return array
 	 * @access private
 	 */

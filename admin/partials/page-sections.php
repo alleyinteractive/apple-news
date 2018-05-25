@@ -1,15 +1,25 @@
 <div class="wrap apple-news-sections">
-	<h1 id="apple_news_sections_title"><?php esc_html_e( 'Manage Sections', 'apple-news' ) ?></h1>
-	<h2><?php esc_html_e( 'Section Mappings', 'apple-news' ) ?></h2>
-	<p><?php echo esc_html( sprintf(
+	<h1 id="apple_news_sections_title"><?php esc_html_e( 'Manage Sections', 'apple-news' ); ?></h1>
+	<h2><?php esc_html_e( 'Section Mappings', 'apple-news' ); ?></h2>
+	<p>
+	<?php
+	echo esc_html(
+		sprintf(
 			__( 'To enable automatic section assignment, choose the %s that you would like to be associated with each section.', 'apple-news' ),
 			strtolower( $taxonomy->label )
-		) ); ?>
+		)
+	);
+		?>
 	</p>
-	<p><?php echo wp_kses_post( sprintf(
+	<p>
+	<?php
+	echo wp_kses_post(
+		sprintf(
 			__( 'You can also map a theme to automatically be used for posts with a specific Apple News section, if you want to use something other than the <a href="%s">active theme</a>. This will only work for posts with precisely one Apple News section to avoid conflicts.', 'apple-news' ),
 			esc_url( $theme_admin_url )
-		) ); ?>
+		)
+	);
+		?>
 	</p>
 	<form method="post" action="" id="apple-news-section-form" enctype="multipart/form-data">
 		<?php wp_nonce_field( 'apple_news_sections' ); ?>
@@ -29,13 +39,13 @@
 			</thead>
 			<tbody id="apple-news-sections-list">
 			<?php $count = 0; ?>
-			<?php foreach ( $sections as $section_id => $section_name ): ?>
+			<?php foreach ( $sections as $section_id => $section_name ) : ?>
 				<tr id="apple-news-section-<?php echo esc_attr( $section_id ); ?>">
 					<td><?php echo esc_html( $section_name ); ?></td>
 					<td>
 						<ul class="apple-news-section-taxonomy-mapping-list">
-						<?php if ( ! empty( $taxonomy_mappings[ $section_id ] ) ): ?>
-							<?php foreach ( $taxonomy_mappings[ $section_id ] as $term ): ?>
+						<?php if ( ! empty( $taxonomy_mappings[ $section_id ] ) ) : ?>
+							<?php foreach ( $taxonomy_mappings[ $section_id ] as $term ) : ?>
 								<?php $taxonomy_id = 'apple-news-section-mapping-' . ++ $count; ?>
 								<li>
 									<label for="<?php echo esc_attr( $taxonomy_id ); ?>" class="screen-reader-text"><?php echo esc_html( $taxonomy->labels->singular_name ); ?></label>
@@ -55,9 +65,9 @@
 						<select name="theme-mapping-<?php echo esc_attr( $section_id ); ?>" id="<?php echo esc_attr( $theme_id ); ?>">
 							<option value=""></option>
 							<?php
-								foreach ( $themes as $theme ) :
-									?>
-									<option value="<?php echo esc_attr( $theme ) ?>" <?php selected( $theme, $selected_theme ) ?>><?php echo esc_html( $theme ) ?></option>
+							foreach ( $themes as $theme ) :
+								?>
+								<option value="<?php echo esc_attr( $theme ); ?>" <?php selected( $theme, $selected_theme ); ?>><?php echo esc_html( $theme ); ?></option>
 									<?php
 								endforeach;
 							?>

@@ -352,7 +352,7 @@ class Theme {
 
 	/**
 	 * Theme name in current usage.
-	 * 
+	 *
 	 * @access private
 	 * @var string
 	 */
@@ -466,7 +466,7 @@ class Theme {
 
 		// Set the default.
 		$theme_name = \Apple_Exporter\Theme::get_active_theme_name();
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $theme_name );
 		$theme->load();
 		$theme->use_this();
@@ -1471,10 +1471,12 @@ class Theme {
 
 		// Get the list of installed themes and ensure the new name isn't taken.
 		if ( self::theme_exists( $name ) ) {
-			$this->_log_error( sprintf(
-				__( 'Theme name %s is already in use.', 'apple-news' ),
-				$name
-			) );
+			$this->_log_error(
+				sprintf(
+					__( 'Theme name %s is already in use.', 'apple-news' ),
+					$name
+				)
+			);
 
 			return false;
 		}
@@ -1487,7 +1489,7 @@ class Theme {
 		}
 
 		// Remove the old theme.
-		$old_theme = new self;
+		$old_theme = new self();
 		$old_theme->set_name( $old_name );
 		$old_theme->delete();
 
@@ -1535,7 +1537,7 @@ class Theme {
 	public function set_active() {
 
 		// Ensure that this theme is saved before setting it as active.
-		$theme = new self;
+		$theme = new self();
 		$theme->set_name( $this->get_name() );
 		if ( ! $theme->load() ) {
 			return false;
@@ -1602,10 +1604,12 @@ class Theme {
 
 		// If values is not an array, then the configuration is invalid.
 		if ( ! is_array( $this->_values ) ) {
-			$this->_log_error( __(
-				'Theme values were not in array format.',
-				'apple-news'
-			) );
+			$this->_log_error(
+				__(
+					'Theme values were not in array format.',
+					'apple-news'
+				)
+			);
 
 			return false;
 		}
@@ -1616,10 +1620,12 @@ class Theme {
 
 			// If the provided key is not in the valid options spec, mark invalid.
 			if ( ! isset( $options[ $key ] ) ) {
-				$this->_log_error( sprintf(
-					__( 'An invalid setting was encountered: %s', 'apple-news' ),
-					$key
-				) );
+				$this->_log_error(
+					sprintf(
+						__( 'An invalid setting was encountered: %s', 'apple-news' ),
+						$key
+					)
+				);
 
 				return false;
 			}
@@ -1632,17 +1638,18 @@ class Theme {
 			// Fork for sanitization type.
 			switch ( $options[ $key ]['type'] ) {
 				case 'array':
-
 					// Ensure the provided value is actually an array.
 					if ( ! is_array( $value ) ) {
-						$this->_log_error( sprintf(
-							__(
-								'Array expected for setting %1$s, %2$s provided',
-								'apple-news'
-							),
-							$key,
-							gettype( $value )
-						) );
+						$this->_log_error(
+							sprintf(
+								__(
+									'Array expected for setting %1$s, %2$s provided',
+									'apple-news'
+								),
+								$key,
+								gettype( $value )
+							)
+						);
 
 						return false;
 					}
@@ -1653,20 +1660,21 @@ class Theme {
 					break;
 
 				case 'color':
-
 					// Sanitize.
 					$value = sanitize_text_field( $value );
 
 					// Ensure the color value provided is valid.
 					if ( false === preg_match( '/#([a-f0-9]{3}){1,2}\b/i', $value ) ) {
-						$this->_log_error( sprintf(
-							__(
-								'Invalid color value %1$s specified for setting %2$s',
-								'apple-news'
-							),
-							$value,
-							$key
-						) );
+						$this->_log_error(
+							sprintf(
+								__(
+									'Invalid color value %1$s specified for setting %2$s',
+									'apple-news'
+								),
+								$value,
+								$key
+							)
+						);
 
 						return false;
 					}
@@ -1679,20 +1687,21 @@ class Theme {
 					break;
 
 				case 'font':
-
 					// Sanitize.
 					$value = sanitize_text_field( $value );
 
 					// Ensure the named font is part of the whitelist.
 					if ( ! in_array( $value, self::get_fonts(), true ) ) {
-						$this->_log_error( sprintf(
-							__(
-								'Invalid font value %1$s specified for setting %2$s',
-								'apple-news'
-							),
-							$value,
-							$key
-						) );
+						$this->_log_error(
+							sprintf(
+								__(
+									'Invalid font value %1$s specified for setting %2$s',
+									'apple-news'
+								),
+								$value,
+								$key
+							)
+						);
 
 						return false;
 					}
@@ -1705,17 +1714,18 @@ class Theme {
 					break;
 
 				case 'select':
-
 					// Sanitize.
 					$value = sanitize_text_field( $value );
 
 					// Ensure that the value is one of the allowed options.
 					if ( ! in_array( $value, $options[ $key ]['options'] ) ) {
-						$this->_log_error( sprintf(
-							__( 'Invalid value %1$s specified for setting %2$s', 'apple-news' ),
-							$value,
-							$key
-						) );
+						$this->_log_error(
+							sprintf(
+								__( 'Invalid value %1$s specified for setting %2$s', 'apple-news' ),
+								$value,
+								$key
+							)
+						);
 
 						return false;
 					}
@@ -2052,7 +2062,7 @@ class Theme {
 		foreach ( $components as $component_class ) {
 
 			// Negotiate the component key.
-			$component = new $component_class;
+			$component = new $component_class();
 			$component_key = $component->get_component_name();
 
 			// Determine if this component key is defined in this theme.
@@ -2076,13 +2086,15 @@ class Theme {
 
 				// Validate this spec.
 				if ( ! $spec->validate( $current_component[ $spec_key ] ) ) {
-					$this->_log_error( sprintf(
-						__(
-							'The spec for %s had invalid tokens and cannot be saved',
-							'apple-news'
-						),
-						$component_key . '/' . $spec_key
-					) );
+					$this->_log_error(
+						sprintf(
+							__(
+								'The spec for %s had invalid tokens and cannot be saved',
+								'apple-news'
+							),
+							$component_key . '/' . $spec_key
+						)
+					);
 
 					return false;
 				}

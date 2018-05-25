@@ -76,8 +76,7 @@ abstract class API_Action extends Action {
 		$api_channel = $this->get_setting( 'api_channel' );
 		if ( empty( $api_key )
 			|| empty( $api_secret )
-			|| empty( $api_channel ) )
-		{
+			|| empty( $api_channel ) ) {
 			return false;
 		}
 

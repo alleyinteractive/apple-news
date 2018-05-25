@@ -35,7 +35,7 @@ class MIME_Builder {
 	 * @var array
 	 * @access private
 	 */
-	private static $valid_mime_types = array (
+	private static $valid_mime_types = array(
 		'image/jpeg',
 		'image/png',
 		'image/gif',
@@ -180,26 +180,30 @@ class MIME_Builder {
 	 * @param string $filename
 	 * @param string $content
 	 * @param string $mime_type
-	 * @param int $size
+	 * @param int    $size
 	 * @return string
 	 * @access private
 	 */
 	private function build_attachment( $name, $filename, $content, $mime_type, $size ) {
 		// Ensure the file isn't empty.
 		if ( empty( $content ) ) {
-			throw new Request_Exception( sprintf(
-				__( 'The attachment %s could not be included in the request because it was empty.', 'apple-news' ),
-				esc_html( $filename )
-			) );
+			throw new Request_Exception(
+				sprintf(
+					__( 'The attachment %s could not be included in the request because it was empty.', 'apple-news' ),
+					esc_html( $filename )
+				)
+			);
 		}
 
 		// Ensure a valid size was provided.
 		if ( 0 >= intval( $size ) ) {
-			throw new Request_Exception( sprintf(
-				__( 'The attachment %s could not be included in the request because its size was %s.', 'apple-news' ),
-				esc_html( $filename ),
-				esc_html( $size )
-			) );
+			throw new Request_Exception(
+				sprintf(
+					__( 'The attachment %1$s could not be included in the request because its size was %2$s.', 'apple-news' ),
+					esc_html( $filename ),
+					esc_html( $size )
+				)
+			);
 		}
 
 		// Build the attachment.

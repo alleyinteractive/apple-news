@@ -46,7 +46,7 @@ class Advertisement extends Component {
 		$this->register_json(
 			'json',
 			array()
-	 	);
+		);
 
 		$this->set_layout();
 	}

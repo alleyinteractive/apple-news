@@ -118,15 +118,26 @@ class Heading extends Component {
 		preg_match( '#<img.*?>#si', $html, $matches );
 
 		if ( ! $matches ) {
-			return array( array( 'name' => 'heading', 'value' => $html ) );
+			return array(
+				array(
+					'name' => 'heading',
+					'value' => $html,
+				),
+			);
 		}
 
 		$image_html   = $matches[0];
 		$heading_html = str_replace( $image_html, '', $html );
 
 		return array(
-			array( 'name'  => 'heading', 'value' => self::clean_html( $heading_html ) ),
-			array( 'name'  => 'img'    , 'value' => $image_html ),
+			array(
+				'name'  => 'heading',
+				'value' => self::clean_html( $heading_html ),
+			),
+			array(
+				'name'  => 'img',
+				'value' => $image_html,
+			),
 		);
 	}
 

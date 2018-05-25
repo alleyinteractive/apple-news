@@ -32,7 +32,7 @@ class Admin_Apple_Preview extends Apple_News {
 
 		// Load a default theme, if the theme was not provided.
 		if ( ! $theme instanceof \Apple_Exporter\Theme ) {
-			$theme = new \Apple_Exporter\Theme;
+			$theme = new \Apple_Exporter\Theme();
 		}
 
 		// Merge plugin-level settings with theme-level settings.
@@ -70,26 +70,30 @@ class Admin_Apple_Preview extends Apple_News {
 
 				// Get the order of the top components.
 				$meta_component_order = $theme->get_value( 'meta_component_order' );
-				if ( ! is_array( $meta_component_order ) ) {
-					$meta_component_order = array();
+			if ( ! is_array( $meta_component_order ) ) {
+				$meta_component_order = array();
+			}
+			foreach ( $meta_component_order as $component ) {
+				if ( isset( $$component ) ) {
+					echo wp_kses( $$component, Admin_Apple_Settings_Section::$allowed_html );
 				}
-				foreach ( $meta_component_order as $component ) {
-					if ( isset( $$component ) ) {
-						echo wp_kses( $$component, Admin_Apple_Settings_Section::$allowed_html );
-					}
-				}
+			}
 			?>
 			<div class="apple-news-component">
 			<p><span class="apple-news-dropcap">L</span>orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sagittis, libero nulla pellentesque quam, non venenatis massa odio id dolor.</p>
 			<p>Praesent eget odio vel sapien scelerisque euismod. Phasellus eros sapien, <a href="#">augue vitae iaculis euismod</a>, rutrum ac nibh nec, tristique commodo neque.</p>
-			<?php printf(
+			<?php
+			printf(
 				'<div class="apple-news-image">%s</div>',
 				esc_html__( 'Image', 'apple-news' )
-			); ?>
-			<?php printf(
+			);
+			?>
+			<?php
+			printf(
 				'<div class="apple-news-image-caption">%s</div>',
 				esc_html__( 'Image caption', 'apple-news' )
-			); ?>
+			);
+			?>
 			<p>Maecenas tortor dui, pellentesque ac ullamcorper quis, malesuada sit amet turpis. Nunc in tellus et justo dapibus sollicitudin.</p>
 			<h2>Quisque efficitur</h2>
 			<p>Quisque efficitur sit amet ex et venenatis. Morbi nisi nisi, ornare id iaculis eget, pulvinar ac dolor.</p>

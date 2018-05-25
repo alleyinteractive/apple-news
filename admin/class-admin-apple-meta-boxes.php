@@ -29,7 +29,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * Constructor.
 	 */
 	function __construct( $settings = null ) {
-	    parent::__construct();
+		parent::__construct();
 		$this->settings = $settings;
 
 		// Register hooks if enabled.
@@ -56,7 +56,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * Check for a publish action from the meta box.
 	 *
 	 * @since 0.9.0
-	 * @param int $post_id
+	 * @param int     $post_id
 	 * @param WP_Post $post
 	 * @access public
 	 */
@@ -253,8 +253,8 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		foreach ( $sections as $section ) {
 			?>
 			<div class="section">
-				<input id="apple-news-section-<?php echo esc_attr( $section->id ) ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ) ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ) ?>>
-				<label for="apple-news-section-<?php echo esc_attr( $section->id ) ?>"><?php echo esc_html( $section->name ) ?></label>
+				<input id="apple-news-section-<?php echo esc_attr( $section->id ); ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ); ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ); ?>>
+				<label for="apple-news-section-<?php echo esc_attr( $section->id ); ?>"><?php echo esc_html( $section->name ); ?></label>
 			</div>
 			<?php
 		}
@@ -293,8 +293,8 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * Determine if a section is checked.
 	 *
 	 * @param array $sections The list of sections applied to a particular post.
-	 * @param int $section_id The ID of the section to check.
-	 * @param bool $is_default Whether this section is the default section.
+	 * @param int   $section_id The ID of the section to check.
+	 * @param bool  $is_default Whether this section is the default section.
 	 *
 	 * @access public
 	 * @return bool True if the section should be checked, false otherwise.
@@ -325,7 +325,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Enqueue metabox stylesheet.
 		wp_enqueue_style(
 			$this->plugin_slug . '_meta_boxes_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/meta-boxes.css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/meta-boxes.css',
 			array(),
 			self::$version
 		);
@@ -333,16 +333,18 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Enqueue metabox script.
 		wp_enqueue_script(
 			$this->plugin_slug . '_meta_boxes_js',
-			plugin_dir_url( __FILE__ ) .  '../assets/js/meta-boxes.js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/meta-boxes.js',
 			array( 'jquery' ),
 			self::$version,
 			true
 		);
 
 		// Localize the JS file for meta boxes.
-		wp_localize_script( $this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(
-			'publish_action' => $this->publish_action,
-		) );
+		wp_localize_script(
+			$this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(
+				'publish_action' => $this->publish_action,
+			)
+		);
 	}
 
 	/**

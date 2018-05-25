@@ -22,7 +22,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 	 */
 	function __construct( $page ) {
 		// Set the name.
-		$this->name =  __( 'Advanced Settings', 'apple-news' );
+		$this->name = __( 'Advanced Settings', 'apple-news' );
 
 		// Add the settings.
 		$this->settings = array(

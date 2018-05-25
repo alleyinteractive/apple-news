@@ -115,7 +115,7 @@ class Body extends Component {
 			array_merge(
 				$this->get_default_style_spec(),
 				array(
-					'dropCapStyle' => array (
+					'dropCapStyle' => array(
 						'numberOfLines' => '#dropcap_number_of_lines#',
 						'numberOfCharacters' => '#dropcap_number_of_characters#',
 						'padding' => '#dropcap_padding#',
@@ -228,7 +228,7 @@ class Body extends Component {
 				'#text#' => $text,
 				'#format#' => $this->parser->format,
 			)
-	 	);
+		);
 
 		// Determine whether to apply dropcap style.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -342,7 +342,7 @@ class Body extends Component {
 			'default-body',
 			$this->get_default_style_values(),
 			'textStyle'
-		 );
+		);
 	}
 
 	/**
@@ -387,7 +387,7 @@ class Body extends Component {
 				$dropcap_style
 			),
 			'textStyle'
-	 	);
+		);
 	}
 
 	/**

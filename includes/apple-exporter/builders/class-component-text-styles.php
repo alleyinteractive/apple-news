@@ -30,7 +30,7 @@ class Component_Text_Styles extends Builder {
 	 *
 	 * @since 0.4.0
 	 * @param string $name
-	 * @param array $spec
+	 * @param array  $spec
 	 * @access public
 	 */
 	public function register_style( $name, $spec ) {

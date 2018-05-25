@@ -21,7 +21,7 @@ class Section extends API_Action {
 	 * Constructor.
 	 *
 	 * @param Settings $settings
-	 * @param string $section_id
+	 * @param string   $section_id
 	 */
 	function __construct( $settings, $section_id = null ) {
 		parent::__construct( $settings );
@@ -61,7 +61,7 @@ class Section extends API_Action {
 	 * Get all available sections.
 	 * Cache for 5 minutes to avoid too many API requests.
 	 *
-	 * @param string $type 	Either 'display' or 'raw'.
+	 * @param string $type  Either 'display' or 'raw'.
 	 * @return array
 	 * @access public
 	 */

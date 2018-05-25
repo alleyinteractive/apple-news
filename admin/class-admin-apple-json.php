@@ -56,7 +56,7 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	public function action_router() {
 		// Check for a valid action.
-		$action	= isset( $_POST['apple_news_action'] ) ? sanitize_text_field( $_POST['apple_news_action'] ) : null;
+		$action = isset( $_POST['apple_news_action'] ) ? sanitize_text_field( $_POST['apple_news_action'] ) : null;
 		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
 			return;
 		}
@@ -212,10 +212,12 @@ class Admin_Apple_JSON extends Apple_News {
 		// Get the specs for the component.
 		$specs = $this->get_specs( $component );
 		if ( empty( $specs ) ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The component %s has no specs and cannot be reset', 'apple-news' ),
-				$component
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'The component %s has no specs and cannot be reset', 'apple-news' ),
+					$component
+				)
+			);
 
 			return;
 		}
@@ -225,10 +227,12 @@ class Admin_Apple_JSON extends Apple_News {
 			$spec->delete();
 		}
 
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'Reset the custom specs for %s.', 'apple-news' ),
-			$component
-		) );
+		\Admin_Apple_Notice::success(
+			sprintf(
+				__( 'Reset the custom specs for %s.', 'apple-news' ),
+				$component
+			)
+		);
 	}
 
 	/**
@@ -261,10 +265,12 @@ class Admin_Apple_JSON extends Apple_News {
 		$theme = stripslashes( sanitize_text_field( $_POST['apple_news_theme'] ) );
 		$specs = $this->get_specs( $component, $theme );
 		if ( empty( $specs ) ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The component %s has no specs and cannot be saved', 'apple-news' ),
-				$component
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'The component %s has no specs and cannot be saved', 'apple-news' ),
+					$component
+				)
+			);
 
 			return;
 		}
@@ -285,16 +291,20 @@ class Admin_Apple_JSON extends Apple_News {
 		}
 
 		if ( empty( $updates ) ) {
-			\Admin_Apple_Notice::info( sprintf(
-				__( 'No spec updates were found for %s', 'apple-news' ),
-				$component
-			) );
+			\Admin_Apple_Notice::info(
+				sprintf(
+					__( 'No spec updates were found for %s', 'apple-news' ),
+					$component
+				)
+			);
 		} else {
-			\Admin_Apple_Notice::success( sprintf(
-				__( 'Saved the following custom specs for %1$s: %2$s', 'apple-news' ),
-				$component,
-				implode( ', ', $updates )
-			) );
+			\Admin_Apple_Notice::success(
+				sprintf(
+					__( 'Saved the following custom specs for %1$s: %2$s', 'apple-news' ),
+					$component,
+					implode( ', ', $updates )
+				)
+			);
 		}
 	}
 

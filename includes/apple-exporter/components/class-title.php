@@ -91,7 +91,7 @@ class Title extends Component {
 				'#text_alignment#' => $this->find_text_alignment(),
 			),
 			'textStyle'
-		 );
+		);
 	}
 
 	/**

@@ -36,7 +36,7 @@ class Exporter_Content_Settings {
 	 * Sets a setting.
 	 *
 	 * @param string $name
-	 * @param mixed $value
+	 * @param mixed  $value
 	 * @return mixed
 	 * @access public
 	 */

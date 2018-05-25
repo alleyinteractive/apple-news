@@ -22,7 +22,7 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 	 */
 	function __construct( $page ) {
 		// Set the name.
-		$this->name =  __( 'API Settings', 'apple-news' );
+		$this->name = __( 'API Settings', 'apple-news' );
 
 		// Add the settings.
 		$this->settings = array(
@@ -51,9 +51,9 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 				'type'    => array( 'yes', 'no' ),
 			),
 			'api_async' => array(
-				'label'   			=> __( 'Asynchronously publish to Apple News', 'apple-news' ),
-				'type'    			=> array( 'yes', 'no' ),
-				'description' 	=> $this->get_async_description(),
+				'label'             => __( 'Asynchronously publish to Apple News', 'apple-news' ),
+				'type'              => array( 'yes', 'no' ),
+				'description'   => $this->get_async_description(),
 			),
 		);
 

@@ -52,10 +52,10 @@ class Component_Factory {
 	/**
 	 * Initialize the component factory.
 	 *
-	 * @param Workspace $workspace
-	 * @param Settings $settings
+	 * @param Workspace             $workspace
+	 * @param Settings              $settings
 	 * @param Component_Text_Styles $styles
-	 * @param Component_Layouts $layouts
+	 * @param Component_Layouts     $layouts
 	 * @access public
 	 */
 	public static function initialize( $workspace = null, $settings = null, $styles = null, $layouts = null ) {

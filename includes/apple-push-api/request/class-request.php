@@ -51,8 +51,8 @@ class Request {
 	/**
 	 * Constructor.
 	 *
-	 * @param Credentials $credentials
-	 * @param boolean $debug
+	 * @param Credentials  $credentials
+	 * @param boolean      $debug
 	 * @param Mime_Builder $mime_builder
 	 */
 	function __construct( $credentials, $debug = false, $mime_builder = null ) {
@@ -61,10 +61,12 @@ class Request {
 		$this->mime_builder = $mime_builder ?: new MIME_Builder();
 
 		// Set the default WordPress HTTP API args.
-		$this->default_args = apply_filters( 'apple_news_request_args', array(
-			'reject_unsafe_urls' => true,
-			'timeout' => 5,
-		) );
+		$this->default_args = apply_filters(
+			'apple_news_request_args', array(
+				'reject_unsafe_urls' => true,
+				'timeout' => 5,
+			)
+		);
 	}
 
 	/**
@@ -72,9 +74,9 @@ class Request {
 	 *
 	 * @param string $url
 	 * @param string $article
-	 * @param array $bundles
-	 * @param array $meta
-	 * @param int $post_id
+	 * @param array  $bundles
+	 * @param array  $meta
+	 * @param int    $post_id
 	 * @return mixed
 	 * @since 0.2.0
 	 */
@@ -165,13 +167,13 @@ class Request {
 	/**
 	 * Parses the API response and checks for errors.
 	 *
-	 * @param array $response
+	 * @param array   $response
 	 * @param boolean $json
-	 * @param string $type
-	 * @param array $meta
-	 * @param array $bundles
-	 * @param string $article
-	 * @param array $debug_mime
+	 * @param string  $type
+	 * @param array   $meta
+	 * @param array   $bundles
+	 * @param string  $article
+	 * @param array   $debug_mime
 	 * @return mixed
 	 * @since 0.2.0
 	 */
@@ -205,12 +207,12 @@ class Request {
 			}
 
 			// Note image settings.
-			$body .= "\n\n"  . esc_html__( 'Image Settings', 'apple-news' ) . ":\n";
+			$body .= "\n\n" . esc_html__( 'Image Settings', 'apple-news' ) . ":\n";
 			if ( 'yes' === $settings['use_remote_images'] ) {
 				$body .= esc_html__( 'Use Remote images enabled ', 'apple-news' );
 			} else {
 				if ( ! empty( $bundles ) ) {
-					$body .= "\n"  . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
+					$body .= "\n" . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
 					$body .= implode( "\n", $bundles );
 				} else {
 					$body .= esc_html__( 'No bundled images found.', 'apple-news' );
@@ -292,9 +294,9 @@ class Request {
 	 * something similar here? That way this method could live there.
 	 *
 	 * @param string $article
-	 * @param array $bundles
-	 * @param array $meta
-	 * @param int $post_id
+	 * @param array  $bundles
+	 * @param array  $meta
+	 * @param int    $post_id
 	 * @return string
 	 * @since 0.2.0
 	 */

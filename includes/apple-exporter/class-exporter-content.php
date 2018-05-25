@@ -104,12 +104,12 @@ class Exporter_Content {
 	/**
 	 * Constructor.
 	 *
-	 * @param int $id
-	 * @param string $title
-	 * @param string $content
-	 * @param string $intro
-	 * @param string $cover
-	 * @param string $byline
+	 * @param int      $id
+	 * @param string   $title
+	 * @param string   $content
+	 * @param string   $intro
+	 * @param string   $cover
+	 * @param string   $byline
 	 * @param Settings $settings
 	 */
 	function __construct( $id, $title, $content, $intro = null, $cover = null, $byline = null, $settings = null ) {
@@ -196,7 +196,7 @@ class Exporter_Content {
 	 * Update a property, useful during content parsing.
 	 *
 	 * @param string $name
-	 * @param mixed $value
+	 * @param mixed  $value
 	 * @access public
 	 */
 	public function set_property( $name, $value ) {

@@ -99,7 +99,7 @@ class Quote extends Component {
 						'format' => '#format#',
 						'layout' => 'blockquote-layout',
 						'textStyle' => 'default-blockquote',
-					)
+					),
 				),
 			)
 		);
@@ -165,7 +165,7 @@ class Quote extends Component {
 				'role' => 'container',
 				'layout' => array(
 					'columnStart' => 3,
-					'columnSpan' => 4
+					'columnSpan' => 4,
 				),
 				'components' => array(
 					array(
@@ -174,11 +174,11 @@ class Quote extends Component {
 						'format' => '#format#',
 						'layout' => 'pullquote-layout',
 						'textStyle' => 'default-pullquote',
-					)
+					),
 				),
 				'style' => array(
 					'border' => array(
-						'all' => array (
+						'all' => array(
 							'width' => '#pullquote_border_width#',
 							'style' => '#pullquote_border_style#',
 							'color' => '#pullquote_border_color#',

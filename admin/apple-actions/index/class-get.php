@@ -20,7 +20,7 @@ class Get extends API_Action {
 	 * Constructor.
 	 *
 	 * @param Settings $settings
-	 * @param int $id
+	 * @param int      $id
 	 */
 	function __construct( $settings, $id ) {
 		parent::__construct( $settings );

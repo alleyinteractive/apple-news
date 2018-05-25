@@ -118,9 +118,9 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access public
 	 */
 	public function page_router() {
-		$id				= isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null;
-		$action		= isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : null;
-		$action2	= isset( $_GET['action2'] ) ? sanitize_text_field( $_GET['action2'] ) : null;
+		$id             = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null;
+		$action     = isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : null;
+		$action2    = isset( $_GET['action2'] ) ? sanitize_text_field( $_GET['action2'] ) : null;
 
 		// Allow for bulk actions from top or bottom.
 		if ( ( empty( $action ) || '-1' === $action ) && ! empty( $action2 ) ) {
@@ -250,7 +250,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * Downloads the JSON file for troubleshooting purposes.
 	 *
 	 * @param string $json
-	 * @param int $id
+	 * @param int    $id
 	 * @access private
 	 */
 	private function download_json( $json, $id ) {
@@ -278,30 +278,32 @@ class Admin_Apple_Index_Page extends Apple_News {
 		// Add the export table script and style.
 		wp_enqueue_style(
 			$this->plugin_slug . '_export_table_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/export-table.css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/export-table.css',
 			array(),
 			self::$version
 		);
 		wp_enqueue_script(
 			$this->plugin_slug . '_export_table_js',
-			plugin_dir_url( __FILE__ ) .  '../assets/js/export-table.js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/export-table.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
 			self::$version,
 			true
 		);
 		wp_enqueue_script(
 			$this->plugin_slug . '_single_push_js',
-			plugin_dir_url( __FILE__ ) .  '../assets/js/single-push.js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/single-push.js',
 			array( 'jquery' ),
 			self::$version,
 			true
 		);
 
 		// Localize strings.
-		wp_localize_script( $this->plugin_slug . '_export_table_js', 'apple_news_export_table', array(
-			'reset_confirmation' => __( "Are you sure you want to reset status? Please only proceed if you're certain the post is stuck or this could reset in duplicate posts in Apple News.", 'apple-news' ),
-			'delete_confirmation' => __( 'Are you sure you want to delete this post from Apple News?', 'apple-news' ),
-		) );
+		wp_localize_script(
+			$this->plugin_slug . '_export_table_js', 'apple_news_export_table', array(
+				'reset_confirmation' => __( "Are you sure you want to reset status? Please only proceed if you're certain the post is stuck or this could reset in duplicate posts in Apple News.", 'apple-news' ),
+				'delete_confirmation' => __( 'Are you sure you want to delete this post from Apple News?', 'apple-news' ),
+			)
+		);
 	}
 
 	/**
@@ -345,10 +347,12 @@ class Admin_Apple_Index_Page extends Apple_News {
 	private function push_action( $id ) {
 		// Ensure the post is published.
 		if ( 'publish' !== get_post_status( $id ) ) {
-			$this->notice_error( sprintf(
-				__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
-				$id
-			) );
+			$this->notice_error(
+				sprintf(
+					__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
+					$id
+				)
+			);
 			return;
 		}
 

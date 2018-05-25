@@ -84,26 +84,26 @@ class Component_Layouts extends Builder {
 		// Are we anchoring left or right?
 		$position = null;
 		switch ( $component->get_anchor_position() ) {
-		case Component::ANCHOR_NONE:
-			return;
-		case Component::ANCHOR_LEFT:
-			$position = 'left';
-			break;
-		case Component::ANCHOR_RIGHT:
-			$position = 'right';
-			break;
-		case Component::ANCHOR_AUTO:
-			/**
+			case Component::ANCHOR_NONE:
+				return;
+			case Component::ANCHOR_LEFT:
+				$position = 'left';
+				break;
+			case Component::ANCHOR_RIGHT:
+				$position = 'right';
+				break;
+			case Component::ANCHOR_AUTO:
+				/**
 			 * The alignment position is the opposite of the body_orientation
 			 * setting. In the case of centered body orientation, use left alignment.
 			 * This behaviour was chosen by design.
 			 */
-			if ( 'left' === $theme->get_value( 'body_orientation' ) ) {
-				$position = 'right';
-			} else {
-				$position = 'left';
-			}
-			break;
+				if ( 'left' === $theme->get_value( 'body_orientation' ) ) {
+					$position = 'right';
+				} else {
+					$position = 'left';
+				}
+				break;
 		}
 
 		$layout_name = "anchor-layout-$position";
@@ -147,10 +147,12 @@ class Component_Layouts extends Builder {
 			}
 
 			// Finally, register the layout.
-			$this->register_layout( $layout_name, array(
-				'columnStart' => $col_start,
-				'columnSpan'  => $col_span,
-			) );
+			$this->register_layout(
+				$layout_name, array(
+					'columnStart' => $col_start,
+					'columnSpan'  => $col_span,
+				)
+			);
 		}
 
 		$component->set_json( 'layout', $layout_name );

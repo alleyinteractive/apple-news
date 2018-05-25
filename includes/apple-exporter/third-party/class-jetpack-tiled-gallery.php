@@ -4,8 +4,8 @@ namespace Apple_Exporter\Third_Party;
 /**
  * Custom Jetpack tiled gallery handling.
  * This will remove permissable gallery
- * types to force standard WP Gallery output. 
- * 
+ * types to force standard WP Gallery output.
+ *
  * @since 1.4.0
  */
 class Jetpack_Tiled_Gallery {
@@ -55,8 +55,10 @@ class Jetpack_Tiled_Gallery {
 		 * Allow default rendering of gallery since we have
 		 * builtin handling for the default WP galleries.
 		 */
-		add_filter( 'jetpack_tiled_gallery_types', function() {
-			return array();
-		} );
+		add_filter(
+			'jetpack_tiled_gallery_types', function() {
+				return array();
+			}
+		);
 	}
 }

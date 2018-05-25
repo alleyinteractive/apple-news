@@ -49,7 +49,7 @@ class Divider extends Component {
 				'margin' => array(
 					'top' => 25,
 					'bottom' => 25,
-				)
+				),
 			)
 		);
 	}

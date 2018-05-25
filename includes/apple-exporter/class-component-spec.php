@@ -56,7 +56,7 @@ class Component_Spec {
 	 * @param string $component The component name.
 	 * @param string $name The spec name.
 	 * @param string $label The human-readable label for the spec.
-	 * @param array $spec The spec definition.
+	 * @param array  $spec The spec definition.
 	 *
 	 * @access public
 	 */
@@ -71,7 +71,7 @@ class Component_Spec {
 	 * Using the provided spec and array of values, build the component's JSON.
 	 *
 	 * @param array $values Values to substitute into the spec.
-	 * @param int $post_id Optional. The post ID to pull postmeta for.
+	 * @param int   $post_id Optional. The post ID to pull postmeta for.
 	 *
 	 * @access public
 	 * @return array The component JSON with placeholders in the spec replaced.
@@ -85,7 +85,7 @@ class Component_Spec {
 	 *
 	 * @param array $spec The spec to use as a template.
 	 * @param array $values Values to substitute in the spec.
-	 * @param int $post_id Optional. Post ID to pull postmeta for.
+	 * @param int   $post_id Optional. Post ID to pull postmeta for.
 	 *
 	 * @access public
 	 * @return array The spec with placeholders replaced by values.
@@ -220,7 +220,7 @@ class Component_Spec {
 	/**
 	 * Save the provided spec override.
 	 *
-	 * @param array $spec The spec definition to save.
+	 * @param array  $spec The spec definition to save.
 	 * @param string $theme_name Optional. Theme name to save to if other than default.
 	 *
 	 * @access public
@@ -231,10 +231,12 @@ class Component_Spec {
 		// Validate the JSON.
 		$json = json_decode( $spec, true );
 		if ( empty( $json ) ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The spec for %s was invalid and cannot be saved', 'apple-news' ),
-				$this->label
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'The spec for %s was invalid and cannot be saved', 'apple-news' ),
+					$this->label
+				)
+			);
 
 			return false;
 		}
@@ -252,13 +254,15 @@ class Component_Spec {
 		// Validate the JSON.
 		$result = $this->validate( $json );
 		if ( false === $result ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__(
-					'The spec for %s had invalid tokens and cannot be saved',
-					'apple-news'
-				),
-				$this->label
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__(
+						'The spec for %s had invalid tokens and cannot be saved',
+						'apple-news'
+					),
+					$this->label
+				)
+			);
 
 			return $result;
 		}
@@ -269,13 +273,15 @@ class Component_Spec {
 		}
 
 		// Attempt to load the theme to be saved.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $theme_name );
 		if ( ! $theme->load() ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'Unable to load theme %s to save spec', 'apple-news' ),
-				$theme_name
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'Unable to load theme %s to save spec', 'apple-news' ),
+					$theme_name
+				)
+			);
 
 			return false;
 		}
@@ -292,20 +298,24 @@ class Component_Spec {
 		$component_key = $this->key_from_name( $this->component );
 		$theme_settings['json_templates'][ $component_key ][ $this->name ] = $json;
 		if ( ! $theme->load( $theme_settings ) ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The spec for %s could not be loaded into the theme', 'apple-news' ),
-				$this->label
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'The spec for %s could not be loaded into the theme', 'apple-news' ),
+					$this->label
+				)
+			);
 
 			return false;
 		}
 
 		// Try to save the theme.
 		if ( ! $theme->save() ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The spec for %s could not be saved to the theme', 'apple-news' ),
-				$this->label
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'The spec for %s could not be saved to the theme', 'apple-news' ),
+					$this->label
+				)
+			);
 
 			return false;
 		}
@@ -330,7 +340,7 @@ class Component_Spec {
 		}
 
 		// Try to load theme settings.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $theme_name );
 		if ( ! $theme->load() ) {
 			return false;
@@ -406,7 +416,7 @@ class Component_Spec {
 
 		// Negotiate theme.
 		if ( ! empty( $theme_name ) ) {
-			$theme = new \Apple_Exporter\Theme;
+			$theme = new \Apple_Exporter\Theme();
 			$theme->set_name( $theme_name );
 			$theme->load();
 		} else {
