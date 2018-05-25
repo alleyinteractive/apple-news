@@ -18,10 +18,9 @@ class Table extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param \DOMNode $node The node to inspect for matches.
-	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return \DOMNode|null The DOMNode if there is a match, null if not.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 

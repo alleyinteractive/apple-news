@@ -11,9 +11,9 @@ class Divider extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		if ( 'hr' === $node->nodeName ) {

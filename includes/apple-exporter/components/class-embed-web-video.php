@@ -9,8 +9,6 @@
 
 namespace Apple_Exporter\Components;
 
-use \DOMElement;
-
 /**
  * An embedded video from Youtube or Vimeo, for example. For now, assume
  * any iframe is an embedded video.
@@ -32,8 +30,8 @@ class Embed_Web_Video extends Component {
 	/**
 	 * Test if this node is a match based on the node type and URL format.
 	 *
-	 * @param DOMElement $node    The node to examine.
-	 * @param string     $pattern The regex pattern to match against.
+	 * @param \DOMElement $node    The node to examine for matches.
+	 * @param string      $pattern The regex pattern to match against.
 	 * @access public
 	 * @return boolean
 	 */
@@ -47,9 +45,9 @@ class Embed_Web_Video extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine.
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return DOMElement|null The DOMElement on match, false on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 

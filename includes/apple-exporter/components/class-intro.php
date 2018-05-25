@@ -39,7 +39,7 @@ class Intro extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $text The node, rendered into HTML.
 	 * @access protected
 	 */
 	protected function build( $text ) {

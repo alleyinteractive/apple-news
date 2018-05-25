@@ -225,12 +225,14 @@ abstract class Component {
 	}
 
 	/**
-	 * Given a DomNode, if it matches the component, return the relevant node to
+	 * Given a DOMElement, if it matches the component, return the relevant node to
 	 * work on. Otherwise, return null.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * This function is intended to be overwritten by child classes.
+	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		return null;
@@ -615,7 +617,7 @@ abstract class Component {
 	/**
 	 * Check if a node has a class.
 	 *
-	 * @param DomNode $node
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @param string $classname
 	 * @return boolean
 	 * @access protected
@@ -676,7 +678,7 @@ abstract class Component {
 	/**
 	 * Check if the remote file exists for this node.
 	 *
-	 * @param DomNode $node
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @return boolean
 	 * @access protected
 	 */

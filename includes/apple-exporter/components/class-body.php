@@ -1,8 +1,6 @@
 <?php
 namespace Apple_Exporter\Components;
 
-use \DOMElement;
-
 /**
  * A paragraph component.
  *
@@ -30,9 +28,9 @@ class Body extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine for matches.
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return array|null An array of matching HTML on success, or null on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		// We are only interested in p, pre, ul and ol.

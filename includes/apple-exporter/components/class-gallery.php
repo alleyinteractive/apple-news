@@ -13,7 +13,6 @@ namespace Apple_Exporter\Components;
 
 use \Apple_Exporter\Exporter_Content;
 use \DOMDocument;
-use \DOMElement;
 
 /**
  * A class to translate the output of [gallery] shortcodes into Apple News format.
@@ -29,10 +28,9 @@ class Gallery extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine.
-	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return DOMElement|null The DOMElement on match, false on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		return ( self::node_has_class( $node, 'gallery' ) ) ? $node : null;

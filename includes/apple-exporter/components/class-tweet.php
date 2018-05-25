@@ -12,9 +12,9 @@ class Tweet extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		// Check if the body of a node is solely a tweet URL.
@@ -59,13 +59,13 @@ class Tweet extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $text The node, rendered to HTML.
 	 * @access protected
 	 */
 	protected function build( $text ) {
 		// Find Twitter URL in HTML string.
 		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?twitter.com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $text, $matches, PREG_SET_ORDER ) ) {
-			return null;
+			return;
 		}
 
 		$matches = array_pop( $matches );

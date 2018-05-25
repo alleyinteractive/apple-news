@@ -19,9 +19,9 @@ class Heading extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		$regex = sprintf(
@@ -105,9 +105,9 @@ class Heading extends Component {
 	/**
 	 * Split the image parts.
 	 *
-	 * @param string $html
-	 * @return array
+	 * @param string $html The node, rendered to HTML.
 	 * @access private
+	 * @return array An array of split components.
 	 */
 	private static function split_image( $html ) {
 		if ( empty( $html ) ) {
@@ -133,7 +133,7 @@ class Heading extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $text The node, rendered to HTML.
 	 * @access protected
 	 */
 	protected function build( $text ) {
@@ -193,6 +193,7 @@ class Heading extends Component {
 	/**
 	 * Set the style for the component.
 	 *
+	 * @param int $level The heading level (1-6).
 	 * @access private
 	 */
 	private function set_style( $level ) {

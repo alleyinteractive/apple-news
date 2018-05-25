@@ -13,9 +13,9 @@ class Image extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		// Is this an image node?
@@ -191,9 +191,9 @@ class Image extends Component {
 	/**
 	 * Register the anchor layout.
 	 *
-	 * @param array $values
-	 * @return array
+	 * @param array $values Values with corresponding replacement keys.
 	 * @access private
+	 * @return array The modified values array.
 	 */
 	private function register_anchor_layout( $values ) {
 		$this->register_layout(
@@ -208,9 +208,9 @@ class Image extends Component {
 	/**
 	 * Register the non-anchor layout.
 	 *
-	 * @param array $values
-	 * @return array
+	 * @param array $values Values with corresponding replacement keys.
 	 * @access private
+	 * @return array The modified values array.
 	 */
 	private function register_non_anchor_layout( $values ) {
 
@@ -241,8 +241,8 @@ class Image extends Component {
 	/**
 	 * Find the caption alignment to use.
 	 *
-	 * @return string
 	 * @access private
+	 * @return string The alignment value.
 	 */
 	private function find_caption_alignment() {
 
@@ -270,10 +270,10 @@ class Image extends Component {
 	 * If the image has a caption, we have to also show a caption component.
 	 * Let's instead, return the values as a Container instead of an Image.
 	 *
-	 * @param string $caption
-	 * @param array $values
-	 * @return array
+	 * @param string $caption The caption for the image.
+	 * @param array  $values  The values array, containing replacement keys and values.
 	 * @access private
+	 * @return array The modified values array.
 	 */
 	private function group_component( $caption, $values ) {
 
