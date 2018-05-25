@@ -45,12 +45,12 @@ class Audio extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text The node, rendered to HTML.
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 		// Remove initial and trailing tags: <video><p>...</p></video>.
-		if ( ! preg_match( '/src="([^"]+)"/', $text, $match ) ) {
+		if ( ! preg_match( '/src="([^"]+)"/', $html, $match ) ) {
 			return;
 		}
 
@@ -65,7 +65,7 @@ class Audio extends Component {
 			array(
 				'#url#' => esc_url_raw( $url ),
 			)
-	 	);
+		);
 	}
 
 }

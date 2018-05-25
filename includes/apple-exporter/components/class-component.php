@@ -640,10 +640,10 @@ abstract class Component {
 	 * This function is in charge of transforming HTML into a Article Format
 	 * valid array.
 	 *
-	 * @param string $text
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	abstract protected function build( $text );
+	abstract protected function build( $html );
 
 	/**
 	 * Register all specs used by this component.

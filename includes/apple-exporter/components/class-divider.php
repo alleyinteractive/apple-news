@@ -57,10 +57,10 @@ class Divider extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 		$this->register_json(
 			'json',
 			array()

@@ -207,14 +207,14 @@ class Body extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 
 		// If there is no text for this element, bail.
-		$text = $this->parser->parse( $text );
-		$check = trim( $text );
+		$html = $this->parser->parse( $html );
+		$check = trim( $html );
 		if ( empty( $check ) ) {
 			return;
 		}
@@ -223,10 +223,10 @@ class Body extends Component {
 		$this->register_json(
 			'json',
 			array(
-				'#text#' => $text,
+				'#text#' => $html,
 				'#format#' => $this->parser->format,
 			)
-	 	);
+		);
 
 		// Determine whether to apply dropcap style.
 		$theme = \Apple_Exporter\Theme::get_used();

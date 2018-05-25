@@ -133,11 +133,11 @@ class Heading extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text The node, rendered to HTML.
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
-		if ( 0 === preg_match( '#<h(\d).*?>(.*?)</h\1>#si', $text, $matches ) ) {
+	protected function build( $html ) {
+		if ( 0 === preg_match( '#<h(\d).*?>(.*?)</h\1>#si', $html, $matches ) ) {
 			return;
 		}
 

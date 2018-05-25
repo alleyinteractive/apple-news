@@ -225,7 +225,6 @@ class Quote extends Component {
 	 * Build the component.
 	 *
 	 * @param string $html The HTML to parse into text for processing.
-	 *
 	 * @access protected
 	 */
 	protected function build( $html ) {

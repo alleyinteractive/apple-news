@@ -122,8 +122,7 @@ class Table extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $html The html to convert into a component.
-	 *
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
 	protected function build( $html ) {

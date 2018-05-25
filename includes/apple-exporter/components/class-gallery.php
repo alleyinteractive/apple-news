@@ -66,16 +66,15 @@ class Gallery extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text The HTML to parse.
-	 *
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 
 		// Convert the text into a NodeList.
 		libxml_use_internal_errors( true );
 		$dom = new DOMDocument();
-		$dom->loadHTML( '<?xml encoding="UTF-8">' . $text );
+		$dom->loadHTML( '<?xml encoding="UTF-8">' . $html );
 		libxml_clear_errors();
 		libxml_use_internal_errors( false );
 		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes;

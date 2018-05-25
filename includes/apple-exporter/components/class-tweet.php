@@ -59,12 +59,12 @@ class Tweet extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text The node, rendered to HTML.
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 		// Find Twitter URL in HTML string.
-		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?twitter.com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $text, $matches, PREG_SET_ORDER ) ) {
+		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?twitter.com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $html, $matches, PREG_SET_ORDER ) ) {
 			return;
 		}
 
