@@ -18,9 +18,10 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 	/**
 	 * Constructor.
 	 *
-	 * @param string $page
+	 * @param string $page The name of the page.
+	 * @access public
 	 */
-	function __construct( $page ) {
+	public function __construct( $page ) {
 		// Set the name.
 		$this->name =  __( 'Post Type Options', 'apple-news' );
 
@@ -66,8 +67,8 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 	/**
 	 * Gets section info.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The description for this section.
 	 */
 	public function get_section_info() {
 		return __( 'Choose the post types that are eligible for publishing to Apple News.', 'apple-news' );
