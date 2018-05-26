@@ -1,6 +1,19 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Components\Title class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Components
+ */
+
 namespace Apple_Exporter\Components;
 
+/**
+ * A component representing a title.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Components
+ */
 class Title extends Component {
 
 	/**

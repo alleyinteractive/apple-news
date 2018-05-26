@@ -1,4 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Push_API\API class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Push_API
+ */
+
 namespace Apple_Push_API;
 
 use \Apple_Push_API\Request\Request as Request;

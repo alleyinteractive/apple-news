@@ -1,3 +1,11 @@
+<?php
+/**
+ * Publish to Apple News partials: JSON page template
+ *
+ * @package Apple_News
+ */
+
+?>
 <div class="wrap apple-news-json">
 	<h1 id="apple_news_json_title"><?php esc_html_e( 'Customize Component JSON', 'apple-news' ) ?></h1>
 

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Push_API\Request\Request class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Push_API
+ */
+
 namespace Apple_Push_API\Request;
 
 use \Apple_Push_API\MIME_Builder as MIME_Builder;
@@ -344,4 +351,10 @@ class Request {
 	}
 }
 
+/**
+ * A class to handle exceptions on requests.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Push_API\Request
+ */
 class Request_Exception extends \Exception {}

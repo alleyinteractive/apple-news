@@ -1,6 +1,19 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Push_API\Credentials class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Push_API
+ */
+
 namespace Apple_Push_API;
 
+/**
+ * A class to manage API credentials.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Push_API
+ */
 class Credentials {
 
 	/**

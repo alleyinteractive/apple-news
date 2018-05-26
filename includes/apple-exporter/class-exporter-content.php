@@ -1,4 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Exporter_Content class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter
+ */
+
 namespace Apple_Exporter;
 
 /**

@@ -1,4 +1,11 @@
-<?php $themes = new \Admin_Apple_Themes(); ?>
+<?php
+/**
+ * Publish to Apple News partials: Themes page template
+ *
+ * @package Apple_News
+ */
+
+$themes = new \Admin_Apple_Themes(); ?>
 <div class="wrap apple-news-themes">
 	<h1 id="apple_news_themes_title"><?php esc_html_e( 'Manage Themes', 'apple-news' ) ?></h1>
 

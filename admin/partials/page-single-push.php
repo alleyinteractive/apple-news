@@ -1,3 +1,11 @@
+<?php
+/**
+ * Publish to Apple News partials: Single Push page template
+ *
+ * @package Apple_News
+ */
+
+?>
 <div class="wrap">
 	<h1><?php esc_html_e( 'Publish', 'apple-news' ) ?> &ldquo;<?php echo esc_html( $post->post_title ); ?>&rdquo;</h1>
 

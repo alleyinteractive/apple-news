@@ -1,3 +1,11 @@
+<?php
+/**
+ * Publish to Apple News partials: Bulk Export page template
+ *
+ * @package Apple_News
+ */
+
+?>
 <div class="wrap">
 	<h1><?php esc_html_e( 'Bulk Export Articles', 'apple-news' ) ?></h1>
 	<p><?php esc_html_e( "The following articles will be published to Apple News. Once started, it might take a while, please don't close the browser window.", 'apple-news' ) ?></p>

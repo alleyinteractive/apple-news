@@ -1,7 +1,10 @@
 <?php
 /**
- * Autoload exporter classes.
+ * Publish to Apple News: Apple Exporter Autoloader
+ *
+ * @package Apple_News
  */
+
 spl_autoload_register( function ( $class ) {
 	$path = strtolower( $class );
 	$path = str_replace( '_', '-',  $path );

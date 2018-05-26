@@ -1,3 +1,11 @@
+<?php
+/**
+ * Publish to Apple News partials: Sections page template
+ *
+ * @package Apple_News
+ */
+
+?>
 <div class="wrap apple-news-sections">
 	<h1 id="apple_news_sections_title"><?php esc_html_e( 'Manage Sections', 'apple-news' ) ?></h1>
 	<h2><?php esc_html_e( 'Section Mappings', 'apple-news' ) ?></h2>

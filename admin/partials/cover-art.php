@@ -1,4 +1,10 @@
 <?php
+/**
+ * Publish to Apple News partials: Cover Art template
+ *
+ * @package Apple_News
+ */
+
 $cover_art = get_post_meta( $post->ID, 'apple_news_coverart', true );
 $orientations = array(
 	'landscape' => __( 'Landscape (4:3)', 'apple-news' ),

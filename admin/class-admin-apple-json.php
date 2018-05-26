@@ -1,5 +1,11 @@
 <?php
 /**
+ * Publish to Apple News: Admin_Apple_JSON class
+ *
+ * @package Apple_News
+ */
+
+/**
  * This class is in charge of handling the management of custom JSON.
  */
 class Admin_Apple_JSON extends Apple_News {

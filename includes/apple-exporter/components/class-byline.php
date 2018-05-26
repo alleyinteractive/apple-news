@@ -1,7 +1,12 @@
 <?php
-namespace Apple_Exporter\Components;
+/**
+ * Publish to Apple News: \Apple_Exporter\Components\Byline class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Components
+ */
 
-use \Apple_Exporter\Exporter as Exporter;
+namespace Apple_Exporter\Components;
 
 /**
  * A byline normally describes who wrote the article, the date, etc.

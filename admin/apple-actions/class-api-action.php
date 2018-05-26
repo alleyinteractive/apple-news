@@ -1,4 +1,10 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Actions\API_Action abstract class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions
+ */
 
 namespace Apple_Actions;
 

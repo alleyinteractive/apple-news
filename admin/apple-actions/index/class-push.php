@@ -1,4 +1,10 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Actions\Index\Push class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions\Index
+ */
 
 namespace Apple_Actions\Index;
 
@@ -9,6 +15,12 @@ use \Admin_Apple_Notice;
 use \Admin_Apple_Sections;
 use \Apple_Actions\API_Action;
 
+/**
+ * A class to handle a push request from the admin.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions\Index
+ */
 class Push extends API_Action {
 
 	/**

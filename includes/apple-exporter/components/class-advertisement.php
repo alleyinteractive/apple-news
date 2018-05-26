@@ -1,8 +1,15 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Components\Advertisement class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Components
+ */
+
 namespace Apple_Exporter\Components;
 
 /**
- * Represents an Article Format Advertisment. It gets generated automatically
+ * Represents an Article Format Advertisement. It gets generated automatically
  * so not much to do here but define the static JSON.
  *
  * @since 0.4.0

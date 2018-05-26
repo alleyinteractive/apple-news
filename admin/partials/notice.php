@@ -1,3 +1,11 @@
+<?php
+/**
+ * Publish to Apple News partials: Notice template
+ *
+ * @package Apple_News
+ */
+
+?>
 <div
 	class="notice <?php echo sanitize_html_class( 'notice-' . $type ); ?> apple-news-notice is-dismissible"
 	data-message="<?php echo esc_attr( $message ); ?>"

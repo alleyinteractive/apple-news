@@ -1,8 +1,21 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Push_API\MIME_Builder class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Push_API
+ */
+
 namespace Apple_Push_API;
 
 use Apple_Push_API\Request\Request_Exception as Request_Exception;
 
+/**
+ * A class to build attachments.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Push_API
+ */
 class MIME_Builder {
 
 	/**

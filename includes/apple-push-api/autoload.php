@@ -1,7 +1,10 @@
 <?php
 /**
- * Autoload push API classes.
+ * Publish to Apple News: Apple Push API autoloader
+ *
+ * @package Apple_News
  */
+
 spl_autoload_register( function ( $class ) {
 	$path = strtolower( $class );
 	$path = str_replace( '_', '-',  $path );

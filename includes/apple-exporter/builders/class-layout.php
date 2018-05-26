@@ -1,7 +1,12 @@
 <?php
-namespace Apple_Exporter\Builders;
+/**
+ * Publish to Apple News: \Apple_Exporter\Builders\Layout class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Builders
+ */
 
-use \Apple_Exporter\Exporter as Exporter;
+namespace Apple_Exporter\Builders;
 
 /**
  * Manage the article layout.

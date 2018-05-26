@@ -1,4 +1,10 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Actions\Index\Get class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions\Index
+ */
 
 namespace Apple_Actions\Index;
 
@@ -6,6 +12,12 @@ require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
 
 use Apple_Actions\API_Action as API_Action;
 
+/**
+ * A class to handle a get request from the admin.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions\Index
+ */
 class Get extends API_Action {
 
 	/**

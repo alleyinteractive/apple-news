@@ -1,4 +1,10 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Actions\Index\Export class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions\Index
+ */
 
 namespace Apple_Actions\Index;
 
@@ -13,6 +19,12 @@ use Apple_Exporter\Exporter_Content_Settings as Exporter_Content_Settings;
 use Apple_Exporter\Third_Party\Jetpack_Tiled_Gallery as Jetpack_Tiled_Gallery;
 use \Admin_Apple_Sections;
 
+/**
+ * A class to handle an export request from the admin.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions\Index
+ */
 class Export extends Action {
 
 	/**

@@ -1,7 +1,16 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Builders\Advertising_Settings class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Builders
+ */
+
 namespace Apple_Exporter\Builders;
 
 /**
+ * Builds advertising settings for the JSON export.
+ *
  * @since 0.4.0
  */
 class Advertising_Settings extends Builder {

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Workspace class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter
+ */
+
 namespace Apple_Exporter;
 
 /**
@@ -8,7 +15,7 @@ namespace Apple_Exporter;
  * potentially other enterprise WordPress hosts.
  *
  * @author  Federico Ramirez
- * @author	Bradford Campeau-Laurion
+ * @author  Bradford Campeau-Laurion
  * @since   0.2.0
  */
 class Workspace {

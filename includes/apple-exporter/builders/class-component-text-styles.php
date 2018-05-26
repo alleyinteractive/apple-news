@@ -1,4 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Builders\Component_Text_Styles class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Builders
+ */
+
 namespace Apple_Exporter\Builders;
 
 /**

@@ -1,3 +1,11 @@
+<?php
+/**
+ * Publish to Apple News partials: Theme Edit page template
+ *
+ * @package Apple_News
+ */
+
+?>
 <div class="wrap apple-news-theme-edit">
 	<h1><?php esc_html_e( 'Edit Theme', 'apple-news' ); ?></h1>
 	<form method="post" action="<?php echo esc_url( $theme_admin_url ) ?>" id="apple-news-theme-edit-form">

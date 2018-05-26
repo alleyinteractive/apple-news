@@ -1,4 +1,11 @@
-<?php $current_screen = get_current_screen(); ?>
+<?php
+/**
+ * Publish to Apple News partials: Index page template
+ *
+ * @package Apple_News
+ */
+
+$current_screen = get_current_screen(); ?>
 <div class="wrap">
 	<h1><?php esc_html_e( 'Apple News', 'apple-news' ) ?></h1>
 	<?php if ( ! \Apple_News::is_initialized() ) : ?>

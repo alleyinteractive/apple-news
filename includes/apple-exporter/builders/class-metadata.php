@@ -1,4 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Builders\Metadata class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Builders
+ */
+
 namespace Apple_Exporter\Builders;
 
 require_once plugin_dir_path( __FILE__ ) . '../../../admin/class-admin-apple-news.php';
@@ -7,6 +14,8 @@ use \Admin_Apple_News;
 use \Apple_Exporter\Exporter_Content;
 
 /**
+ * A class to handle building metadata.
+ *
  * @since 0.4.0
  */
 class Metadata extends Builder {

@@ -1,9 +1,14 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Builders\Component_Layouts class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Builders
+ */
+
 namespace Apple_Exporter\Builders;
 
 use \Apple_Exporter\Components\Component as Component;
-use \Apple_Exporter\Components\Body as Body;
-use \Apple_Exporter\Exporter as Exporter;
 
 /**
  * Exporter and components can register layouts. This class manages the layouts

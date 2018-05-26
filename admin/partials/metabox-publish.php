@@ -1,4 +1,11 @@
-<?php if ( ! \Apple_News::is_initialized() ) : ?>
+<?php
+/**
+ * Publish to Apple News partials: Publish Metabox template
+ *
+ * @package Apple_News
+ */
+
+if ( ! \Apple_News::is_initialized() ) : ?>
 	<div id="apple-news-publish">
 		<?php printf(
 			/* translators: First token is opening a tag, second is closing a tag */

@@ -4,6 +4,7 @@
  *
  * @author  Bradford Campeau-Laurion
  * @since   1.0.0
+ * @package Apple_News
  */
 
 /**

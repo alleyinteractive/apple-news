@@ -1,4 +1,9 @@
 <?php
+/**
+ * Publish to Apple News: Admin_Apple_Meta_Boxes class
+ *
+ * @package Apple_News
+ */
 
 /**
  * This class provides a meta box to publish posts to Apple News from the edit screen.

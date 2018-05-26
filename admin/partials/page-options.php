@@ -1,3 +1,11 @@
+<?php
+/**
+ * Publish to Apple News partials: Options page template
+ *
+ * @package Apple_News
+ */
+
+?>
 <div class="wrap apple-news-settings">
 	<h1><?php esc_html_e( 'Manage Settings', 'apple-news' ) ?></h1>
 	<form method="post" action="" id="apple-news-settings-form">

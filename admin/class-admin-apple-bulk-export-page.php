@@ -1,5 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: Admin_Apple_Bulk_Export_Page class
+ *
+ * @package Apple_News
+ */
 
+// Include dependencies.
 require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-push.php';
 
 /**

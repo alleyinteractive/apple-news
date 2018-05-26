@@ -1,4 +1,9 @@
 <?php
+/**
+ * Publish to Apple News: Admin_Apple_Settings_Section_Post_Types class
+ *
+ * @package Apple_News
+ */
 
 /**
  * Describes a WordPress setting section

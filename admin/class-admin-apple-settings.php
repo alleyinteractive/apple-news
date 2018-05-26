@@ -1,4 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: Admin_Apple_Settings class
+ *
+ * @package Apple_News
+ */
+
+// Include dependencies.
 require_once plugin_dir_path( __FILE__ ) . '../includes/apple-exporter/class-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'settings/class-admin-apple-settings-section.php';
 require_once plugin_dir_path( __FILE__ ) . 'settings/class-admin-apple-settings-section-api.php';

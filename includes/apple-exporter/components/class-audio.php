@@ -1,4 +1,11 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Exporter\Components\Audio class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Exporter\Components
+ */
+
 namespace Apple_Exporter\Components;
 
 use \Apple_Exporter\Exporter_Content;

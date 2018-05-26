@@ -4,8 +4,10 @@
  *
  * @author  Federico Ramirez
  * @since   0.6.0
+ * @package Apple_News
  */
 
+// Include dependencies.
 require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-get.php';
 require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-push.php';
 require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-delete.php';
@@ -15,6 +17,11 @@ require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-news-list-table.ph
 
 use \Apple_Exporter\Workspace as Workspace;
 
+/**
+ * A class to manage the index page of the Apple News admin interface.
+ *
+ * @package Apple_News
+ */
 class Admin_Apple_Index_Page extends Apple_News {
 
 	/**

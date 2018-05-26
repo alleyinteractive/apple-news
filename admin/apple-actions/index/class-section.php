@@ -1,4 +1,10 @@
 <?php
+/**
+ * Publish to Apple News: \Apple_Actions\Index\Section class
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions\Index
+ */
 
 namespace Apple_Actions\Index;
 
@@ -7,6 +13,12 @@ require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
 use Apple_Actions\API_Action;
 use Apple_Exporter\Settings;
 
+/**
+ * A class to handle a section request from the admin.
+ *
+ * @package Apple_News
+ * @subpackage Apple_Actions\Index
+ */
 class Section extends API_Action {
 
 	/**

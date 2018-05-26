@@ -1,10 +1,14 @@
 <?php
+/**
+ * Publish to Apple News: Admin_Apple_News_List_Table class
+ *
+ * @package Apple_News
+ */
 
+// Include WP_List_Table, if it hasn't been already.
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
-
-use \Apple_Push_API\API as API;
 
 /**
  * Use WordPress List_Table class to create a custom table displaying posts

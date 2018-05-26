@@ -1,3 +1,11 @@
+<?php
+/**
+ * Publish to Apple News partials: Options Section page template
+ *
+ * @package Apple_News
+ */
+
+?>
 <h3><?php echo esc_html( $section->name() ); ?></h3>
 <?php echo wp_kses_post( $section->get_section_info() ); ?>
 <table class="form-table apple-news">

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Publish to Apple News: Admin_Apple_Settings_Section class
+ *
+ * @package Apple_News
+ */
 
 use Apple_Exporter\Settings as Settings;
 
