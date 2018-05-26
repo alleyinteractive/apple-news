@@ -16,7 +16,7 @@ class Divider extends Component {
 	 * @access public
 	 */
 	public static function node_matches( $node ) {
-		if ( 'hr' === $node->nodeName ) {
+		if ( 'hr' === $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return $node;
 		}
 

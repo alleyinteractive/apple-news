@@ -30,11 +30,11 @@ class Heading extends Component {
 			self::$levels[ count( self::$levels ) - 1 ]
 		);
 
-		if ( ! preg_match( $regex, $node->nodeName ) ) {
+		if ( ! preg_match( $regex, $node->nodeName ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return null;
 		}
 
-		$html = $node->ownerDocument->saveXML( $node );
+		$html = $node->ownerDocument->saveXML( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		if ( preg_match( '#<img.*?>#si', $html ) ) {
 			return self::split_image( $html );
 		}

@@ -32,7 +32,7 @@ class Video extends Component {
 	public static function node_matches( $node ) {
 
 		// Ensure that this is a video tag and that the source exists.
-		if ( 'video' === $node->nodeName && self::remote_file_exists( $node ) ) {
+		if ( 'video' === $node->nodeName && self::remote_file_exists( $node ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return $node;
 		}
 

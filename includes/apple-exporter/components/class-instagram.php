@@ -30,7 +30,7 @@ class Instagram extends Component {
 	public static function node_matches( $node ) {
 
 		// Handle Instagram oEmbed URLs.
-		if ( false !== self::_get_instagram_url( $node->nodeValue ) ) {
+		if ( false !== self::_get_instagram_url( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return $node;
 		}
 

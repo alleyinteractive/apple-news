@@ -39,8 +39,8 @@ class Embed_Web_Video extends Component {
 	 */
 	public static function is_embed_web_video( $node, $pattern ) {
 		return (
-			( 'p' === $node->nodeName && preg_match( $pattern, trim( $node->nodeValue ) ) )
-			|| ( 'iframe' === $node->nodeName && preg_match( $pattern, trim( $node->getAttribute( 'src' ) ) ) )
+			( 'p' === $node->nodeName && preg_match( $pattern, trim( $node->nodeValue ) ) ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			|| ( 'iframe' === $node->nodeName && preg_match( $pattern, trim( $node->getAttribute( 'src' ) ) ) ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		);
 	}
 

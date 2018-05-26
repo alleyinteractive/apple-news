@@ -80,23 +80,23 @@ class Gallery extends Component {
 		$dom->loadHTML( '<?xml encoding="UTF-8">' . $text );
 		libxml_clear_errors();
 		libxml_use_internal_errors( false );
-		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes;
+		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 		// Determine if we have items.
-		if ( ! $nodes || ! $nodes->item( 0 )->childNodes ) {
+		if ( ! $nodes || ! $nodes->item( 0 )->childNodes ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return;
 		}
 
 		// Loop through items and construct slides.
 		$theme = \Apple_Exporter\Theme::get_used();
 		$items = array();
-		foreach ( $nodes->item( 0 )->childNodes as $item ) {
+		foreach ( $nodes->item( 0 )->childNodes as $item ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 			// Convert item into HTML for regex matching.
-			$itemHTML = $item->ownerDocument->saveXML( $item );
+			$item_html = $item->ownerDocument->saveXML( $item ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 			// Try to get URL.
-			if ( ! preg_match( '/src="([^"]+)"/', $itemHTML, $matches ) ) {
+			if ( ! preg_match( '/src="([^"]+)"/', $item_html, $matches ) ) {
 				continue;
 			}
 
@@ -116,13 +116,13 @@ class Gallery extends Component {
 			if ( $caption && $caption->length ) {
 				$content['caption'] = array(
 					'text' => sanitize_text_field(
-						trim( $caption->item(0)->nodeValue )
+						trim( $caption->item(0)->nodeValue ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 					),
 				);
 			}
 
 			// Try to add the alt text as the accessibility caption.
-			if ( preg_match( '/alt="([^"]+)"/', $itemHTML, $matches ) ) {
+			if ( preg_match( '/alt="([^"]+)"/', $item_html, $matches ) ) {
 				$content['accessibilityCaption'] = sanitize_text_field(
 					$matches[1]
 				);

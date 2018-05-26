@@ -252,7 +252,7 @@ abstract class Component {
 		libxml_clear_errors( true );
 
 		// Find the first-level nodes of the body tag.
-		$element = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
+		$element = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$html    = $dom->saveHTML( $element );
 		return preg_replace( '#<[^/>][^>]*></[^>]+>#', '', $html );
 	}
@@ -683,7 +683,7 @@ abstract class Component {
 	protected static function remote_file_exists( $node ) {
 
 		// Try to get a URL from the src attribute of the HTML.
-		$html = $node->ownerDocument->saveXML( $node );
+		$html = $node->ownerDocument->saveXML( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$path = self::url_from_src( $html );
 		if ( empty( $path ) ) {
 			return false;

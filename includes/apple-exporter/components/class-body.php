@@ -36,26 +36,26 @@ class Body extends Component {
 	 */
 	public static function node_matches( $node ) {
 		// We are only interested in p, pre, ul and ol.
-		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ), true ) ) {
+		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ), true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return null;
 		}
 
 		// If the node is p, ul or ol AND it's empty, just ignore.
-		if ( empty( $node->nodeValue ) ) {
+		if ( empty( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return null;
 		}
 
 		// Negotiate open and close values.
-		$open = '<' . $node->nodeName . '>';
-		$close = '</' . $node->nodeName . '>';
-		if ( 'ol' === $node->nodeName || 'ul' === $node->nodeName ) {
+		$open = '<' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$close = '</' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( 'ol' === $node->nodeName || 'ul' === $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			$open .= '<li>';
 			$close = '</li>' . $close;
 		}
 
 		return self::split_unsupported_elements(
-			$node->ownerDocument->saveXML( $node ),
-			$node->nodeName,
+			$node->ownerDocument->saveXML( $node ), // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			$node->nodeName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			$open,
 			$close
 		);

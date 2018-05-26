@@ -26,7 +26,7 @@ class Table extends Component {
 	public static function node_matches( $node ) {
 
 		// First, check to see if the primary node is a table.
-		if ( 'table' !== $node->nodeName ) {
+		if ( 'table' !== $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return null;
 		}
 
