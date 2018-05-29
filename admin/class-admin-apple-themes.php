@@ -200,7 +200,7 @@ class Admin_Apple_Themes extends Apple_News {
 	public function action_router() {
 
 		// Determine if an action was specified.
-		if ( ! isset( $_POST['action'] ) ) {
+		if ( ! isset( $_REQUEST['action'] ) ) {
 			return;
 		}
 
@@ -554,6 +554,11 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	private function _delete_theme() {
 
+		// Ensure an action was specified.
+		if ( empty( $_REQUEST['action'] ) ) {
+			return;
+		}
+
 		// Check the nonce.
 		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
 		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
@@ -592,6 +597,11 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function _export_theme() {
+
+		// Ensure an action was specified.
+		if ( empty( $_REQUEST['action'] ) ) {
+			return;
+		}
 
 		// Check the nonce.
 		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
@@ -654,6 +664,11 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function _save_edit_theme() {
+
+		// Ensure an action was specified.
+		if ( empty( $_REQUEST['action'] ) ) {
+			return;
+		}
 
 		// Check the nonce.
 		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
@@ -757,6 +772,11 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function _set_theme() {
+
+		// Ensure an action was specified.
+		if ( empty( $_REQUEST['action'] ) ) {
+			return;
+		}
 
 		// Check the nonce.
 		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
