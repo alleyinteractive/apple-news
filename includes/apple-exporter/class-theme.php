@@ -439,7 +439,7 @@ class Theme {
 	 * Gets a list of registered themes.
 	 *
 	 * @access public
-	 * @return array
+	 * @return array The theme registry.
 	 */
 	public static function get_registry() {
 

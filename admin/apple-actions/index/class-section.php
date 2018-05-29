@@ -20,10 +20,11 @@ class Section extends API_Action {
 	/**
 	 * Constructor.
 	 *
-	 * @param Settings $settings
-	 * @param string   $section_id
+	 * @param \Apple_Exporter\Settings $settings   Settings in use during this run.
+	 * @param string                   $section_id Optional. The current section ID being retrieved. Defaults to null.
+	 * @access public
 	 */
-	function __construct( $settings, $section_id = null ) {
+	public function __construct( $settings, $section_id = null ) {
 		parent::__construct( $settings );
 		$this->section_id = $section_id;
 	}
@@ -31,8 +32,8 @@ class Section extends API_Action {
 	/**
 	 * Get the section data from Apple News.
 	 *
-	 * @return object
 	 * @access public
+	 * @return object
 	 */
 	public function perform() {
 		// Get the section from the API.
@@ -47,10 +48,10 @@ class Section extends API_Action {
 	/**
 	 * Get a specific element of section data from Apple News
 	 *
-	 * @param string $key
-	 * @param string $default
-	 * @return mixed
+	 * @param string $key     The data key to look up.
+	 * @param string $default Optional. The default value to fall back to. Defaults to null otherwise.
 	 * @access public
+	 * @return mixed
 	 */
 	public function get_data( $key, $default = null ) {
 		$section = $this->perform();
@@ -59,11 +60,11 @@ class Section extends API_Action {
 
 	/**
 	 * Get all available sections.
+	 *
 	 * Cache for 5 minutes to avoid too many API requests.
 	 *
-	 * @param string $type  Either 'display' or 'raw'.
-	 * @return array
 	 * @access public
+	 * @return array
 	 */
 	public function get_sections() {
 		if ( false === ( $sections = get_transient( 'apple_news_sections' ) ) ) {

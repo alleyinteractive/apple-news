@@ -372,7 +372,7 @@ class Admin_Apple_Sections extends Apple_News {
 	/**
 	 * Register assets for the options page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The context under which this function was called.
 	 * @access public
 	 */
 	public function register_assets( $hook ) {

@@ -178,14 +178,15 @@ abstract class Component {
 	/**
 	 * Constructor.
 	 *
-	 * @param string                $text
-	 * @param Workspace             $workspace
-	 * @param Settings              $settings
-	 * @param Component_Text_Styles $styles
-	 * @param Component_Layouts     $layouts
-	 * @param Parser                $parser
+	 * @param string                                         $text      The HTML for this component.
+	 * @param \Apple_Exporter\Workspace                      $workspace The workspace used to prepare this component.
+	 * @param \Apple_Exporter\Settings                       $settings  Settings in use during this run.
+	 * @param \Apple_Exporter\Builders\Component_Text_Styles $styles    Registered text styles.
+	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts   Registered layouts.
+	 * @param \Apple_Exporter\Parser                         $parser    The parser in use during this run.
+	 * @access public
 	 */
-	function __construct( $text = null, $workspace = null, $settings = null, $styles = null, $layouts = null, $parser = null ) {
+	public function __construct( $text = null, $workspace = null, $settings = null, $styles = null, $layouts = null, $parser = null ) {
 		// Register specs for this component.
 		$this->register_specs();
 
@@ -225,12 +226,14 @@ abstract class Component {
 	}
 
 	/**
-	 * Given a DomNode, if it matches the component, return the relevant node to
+	 * Given a DOMElement, if it matches the component, return the relevant node to
 	 * work on. Otherwise, return null.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * This function is intended to be overwritten by child classes.
+	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		return null;
@@ -240,9 +243,9 @@ abstract class Component {
 	 * Use PHP's HTML parser to generate valid HTML out of potentially broken
 	 * input.
 	 *
-	 * @param string $html
-	 * @return string
+	 * @param string $html The HTML to be cleaned.
 	 * @access protected
+	 * @return string The cleaned HTML.
 	 */
 	protected static function clean_html( $html ) {
 		// Because PHP's DomDocument doesn't like HTML5 tags, ignore errors.
@@ -276,8 +279,8 @@ abstract class Component {
 	/**
 	 * Set a JSON value.
 	 *
-	 * @param string $name
-	 * @param mixed  $value
+	 * @param string $name  The name of the key to set in the JSON.
+	 * @param mixed  $value The value to set in the JSON.
 	 * @access public
 	 */
 	public function set_json( $name, $value ) {
@@ -289,9 +292,9 @@ abstract class Component {
 	/**
 	 * Get a JSON value
 	 *
-	 * @param string $name
-	 * @return mixed
+	 * @param string $name The name of the key to look up in the JSON.
 	 * @access public
+	 * @return mixed The value corresponding to the key.
 	 */
 	public function get_json( $name ) {
 		// TODO - how is this used?
@@ -301,7 +304,7 @@ abstract class Component {
 	/**
 	 * Set the anchor position.
 	 *
-	 * @param int $position
+	 * @param int $position The position of the anchor to set.
 	 * @access public
 	 */
 	public function set_anchor_position( $position ) {
@@ -406,9 +409,9 @@ abstract class Component {
 	 * Gets an exporter setting.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @return mixed
+	 * @param string $name The name of the setting to look up.
 	 * @access protected
+	 * @return mixed The value of the setting.
 	 */
 	protected function get_setting( $name ) {
 		return $this->settings->get( $name );
@@ -448,10 +451,10 @@ abstract class Component {
 	 * Sets an exporter setting.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @param mixed  $value
-	 * @return boolean
+	 * @param string $name  The name of the setting to set.
+	 * @param mixed  $value The value of the setting to set.
 	 * @access protected
+	 * @return boolean True on success, false on failure.
 	 */
 	protected function set_setting( $name, $value ) {
 		// TODO - how is this used?
@@ -462,9 +465,9 @@ abstract class Component {
 	 * Store specs that can be used for managing component JSON using an admin screen.
 	 *
 	 * @since 1.2.4
-	 * @param string $name
-	 * @param string $label
-	 * @param array  $spec
+	 * @param string $name  The name of the spec to be registered.
+	 * @param string $label The label for the spec.
+	 * @param array  $spec  The spec definition to register.
 	 * @access protected
 	 */
 	protected function register_spec( $name, $label, $spec ) {
@@ -476,9 +479,9 @@ abstract class Component {
 	 * Get a spec to use for creating component JSON.
 	 *
 	 * @since 1.2.4
-	 * @param string $spec_name
-	 * @return array
+	 * @param string $spec_name The name of the spec to fetch.
 	 * @access protected
+	 * @return array The spec definition.
 	 */
 	protected function get_spec( $spec_name ) {
 		if ( ! isset( $this->specs[ $spec_name ] ) ) {
@@ -614,10 +617,10 @@ abstract class Component {
 	/**
 	 * Check if a node has a class.
 	 *
-	 * @param DomNode $node
-	 * @param string  $classname
-	 * @return boolean
+	 * @param \DOMElement $node The node to examine for matches.
+	 * @param string $classname The name of the class to look up.
 	 * @access protected
+	 * @return boolean True if the node has the class, false if it does not.
 	 */
 	protected static function node_has_class( $node, $classname ) {
 		if ( ! method_exists( $node, 'getAttribute' ) ) {
@@ -637,10 +640,10 @@ abstract class Component {
 	 * This function is in charge of transforming HTML into a Article Format
 	 * valid array.
 	 *
-	 * @param string $text
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	abstract protected function build( $text );
+	abstract protected function build( $html );
 
 	/**
 	 * Register all specs used by this component.
@@ -675,7 +678,7 @@ abstract class Component {
 	/**
 	 * Check if the remote file exists for this node.
 	 *
-	 * @param DomNode $node
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @return boolean
 	 * @access protected
 	 */

@@ -306,7 +306,7 @@ class Admin_Apple_Themes extends Apple_News {
 	/**
 	 * Register assets for the options page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The context under which this function is called.
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
@@ -388,7 +388,6 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Fix the title since WordPress doesn't set one.
 	 *
 	 * @param string $admin_title The title to be filtered.
-	 *
 	 * @access public
 	 * @return string
 	 */

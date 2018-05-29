@@ -21,8 +21,10 @@ class Admin_Apple_Post_Sync {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param \Apple_Exporter\Settings $settings Optional. Settings to use. Defaults to null.
 	 */
-	function __construct( $settings = null ) {
+	public function __construct( $settings = null ) {
 		/**
 		 * Don't re-fetch settings if they've been previously obtained.
 		 * However, this class may be used within themes and therefore may
@@ -53,8 +55,8 @@ class Admin_Apple_Post_Sync {
 	 * When a post is published, or a published post updated, trigger this function.
 	 *
 	 * @since 0.4.0
-	 * @param int     $id
-	 * @param WP_Post $post
+	 * @param int     $id   The ID of the post being updated.
+	 * @param WP_Post $post The post object being updated.
 	 * @access public
 	 */
 	public function do_publish( $id, $post ) {
@@ -91,7 +93,7 @@ class Admin_Apple_Post_Sync {
 	 * When a post is deleted, remove it from Apple News.
 	 *
 	 * @since 0.4.0
-	 * @param int $id
+	 * @param int $id The ID of the post being deleted.
 	 * @access public
 	 */
 	public function do_delete( $id ) {

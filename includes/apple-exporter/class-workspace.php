@@ -48,18 +48,19 @@ class Workspace {
 	/**
 	 * Initialize.
 	 *
-	 * @param int $content_id
 	 * @since 0.2.0
+	 * @param int $content_id The ID of the post being exported.
+	 * @access public
 	 */
-	function __construct( $content_id ) {
+	public function __construct( $content_id ) {
 		$this->content_id = $content_id;
 	}
 
 	/**
 	 * Delete all bundle data from the post.
 	 *
-	 * @param int $content_id
 	 * @since 0.2.0
+	 * @access public
 	 */
 	public function clean_up() {
 		do_action( 'apple_news_before_clean_up' );
@@ -72,9 +73,10 @@ class Workspace {
 	/**
 	 * Adds a source file to be included later in the bundle.
 	 *
-	 * @param string $filename
-	 * @param string $source
 	 * @since 0.9.0
+	 * @param string $filename The filename to be included.
+	 * @param string $source   The full path to the source.
+	 * @access public
 	 */
 	public function bundle_source( $filename, $source ) {
 		add_post_meta( $this->content_id, self::BUNDLE_META_KEY, esc_url_raw( apply_filters( 'apple_news_bundle_source', $source, $filename, $this->content_id ) ) );
@@ -83,8 +85,9 @@ class Workspace {
 	/**
 	 * Stores the JSON file for this workspace to be included in the bundle.
 	 *
-	 * @param string $content
 	 * @since 0.9.0
+	 * @param string $content The JSON to be saved with the post.
+	 * @access public
 	 */
 	public function write_json( $content ) {
 		$json = apply_filters( 'apple_news_write_json', $content, $this->content_id );
@@ -106,8 +109,9 @@ class Workspace {
 	/**
 	 * Gets the JSON content.
 	 *
-	 * @return string
 	 * @since 0.9.0
+	 * @access public
+	 * @return string The JSON for this post.
 	 */
 	public function get_json() {
 		$json = get_post_meta( $this->content_id, self::JSON_META_KEY, true );
@@ -120,8 +124,9 @@ class Workspace {
 	/**
 	 * Gets any bundles.
 	 *
-	 * @return array
 	 * @since 0.9.0
+	 * @access public
+	 * @return array The bundles configured for this post.
 	 */
 	public function get_bundles() {
 		return apply_filters( 'apple_news_get_bundles', get_post_meta( $this->content_id, self::BUNDLE_META_KEY ), $this->content_id );
@@ -130,9 +135,10 @@ class Workspace {
 	/**
 	 * Logs errors encountered during publishing.
 	 *
-	 * @param string $key
-	 * @param string $value
 	 * @since 1.0.6
+	 * @param string $key   The error key.
+	 * @param string $value The error value.
+	 * @access public
 	 */
 	public function log_error( $key, $value ) {
 		// Get current errors.
@@ -158,8 +164,9 @@ class Workspace {
 	/**
 	 * Gets errors encountered during publishing.
 	 *
-	 * @return array
 	 * @since 1.0.6
+	 * @access public
+	 * @return array An array of errors for this post.
 	 */
 	public function get_errors() {
 		return apply_filters( 'apple_news_get_errors', get_post_meta( $this->content_id, self::ERRORS_META_KEY ), $this->content_id );

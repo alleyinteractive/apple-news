@@ -19,10 +19,11 @@ class Get extends API_Action {
 	/**
 	 * Constructor.
 	 *
-	 * @param Settings $settings
-	 * @param int      $id
+	 * @param \Apple_Exporter\Settings $settings Settings in use during this run.
+	 * @param int                      $id       Current content ID being retrieved.
+	 * @access public
 	 */
-	function __construct( $settings, $id ) {
+	public function __construct( $settings, $id ) {
 		parent::__construct( $settings );
 		$this->id = $id;
 	}
@@ -30,8 +31,8 @@ class Get extends API_Action {
 	/**
 	 * Get the post data from Apple News.
 	 *
-	 * @return object
 	 * @access public
+	 * @return object
 	 */
 	public function perform() {
 		// Ensure we have a valid ID.
@@ -52,10 +53,10 @@ class Get extends API_Action {
 	/**
 	 * Get a specific element of article data from Apple News
 	 *
-	 * @param string $key
-	 * @param string $default
-	 * @return mixed
+	 * @param string $key     The key to look up in the data.
+	 * @param string $default Optional. The default value to fall back to. Defaults to null.
 	 * @access public
+	 * @return mixed
 	 */
 	public function get_data( $key, $default = null ) {
 		$article = $this->perform();

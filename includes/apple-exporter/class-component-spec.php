@@ -54,9 +54,9 @@ class Component_Spec {
 	 * Initializes the object with the name, label and the spec.
 	 *
 	 * @param string $component The component name.
-	 * @param string $name The spec name.
-	 * @param string $label The human-readable label for the spec.
-	 * @param array  $spec The spec definition.
+	 * @param string $name      The spec name.
+	 * @param string $label     The human-readable label for the spec.
+	 * @param array  $spec      The spec definition.
 	 *
 	 * @access public
 	 */
@@ -70,7 +70,7 @@ class Component_Spec {
 	/**
 	 * Using the provided spec and array of values, build the component's JSON.
 	 *
-	 * @param array $values Values to substitute into the spec.
+	 * @param array $values  Values to substitute into the spec.
 	 * @param int   $post_id Optional. The post ID to pull postmeta for.
 	 *
 	 * @access public
@@ -83,8 +83,8 @@ class Component_Spec {
 	/**
 	 * Substitute values recursively for a given spec.
 	 *
-	 * @param array $spec The spec to use as a template.
-	 * @param array $values Values to substitute in the spec.
+	 * @param array $spec    The spec to use as a template.
+	 * @param array $values  Values to substitute in the spec.
 	 * @param int   $post_id Optional. Post ID to pull postmeta for.
 	 *
 	 * @access public
@@ -198,7 +198,7 @@ class Component_Spec {
 	/**
 	 * Recursively find tokens in the spec.
 	 *
-	 * @param array $spec The spec to iterate over to look for tokens.
+	 * @param array $spec   The spec to iterate over to look for tokens.
 	 * @param array $tokens A list of found tokens.
 	 *
 	 * @access public
@@ -220,7 +220,7 @@ class Component_Spec {
 	/**
 	 * Save the provided spec override.
 	 *
-	 * @param array  $spec The spec definition to save.
+	 * @param array  $spec       The spec definition to save.
 	 * @param string $theme_name Optional. Theme name to save to if other than default.
 	 *
 	 * @access public
@@ -396,9 +396,9 @@ class Component_Spec {
 	/**
 	 * Get the spec for this component as JSON.
 	 *
-	 * @param string $spec
-	 * @return string
+	 * @param array $spec The spec to be formatted as JSON.
 	 * @access public
+	 * @return string The JSON for the spec.
 	 */
 	public function format_json( $spec ) {
 		return wp_json_encode( $spec, JSON_PRETTY_PRINT );

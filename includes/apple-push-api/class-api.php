@@ -32,8 +32,13 @@ class API {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param string                      $endpoint    The endpoint to connect to.
+	 * @param \Apple_Push_API\Credentials $credentials The credentials to connect with.
+	 * @param bool                        $debug       Optional. Whether to debug the request. Defaults to false.
+	 * @access public
 	 */
-	function __construct( $endpoint, $credentials, $debug = false ) {
+	public function __construct( $endpoint, $credentials, $debug = false ) {
 		$this->endpoint = $endpoint;
 		$this->request  = new Request( $credentials, $debug );
 	}
@@ -41,17 +46,14 @@ class API {
 	/**
 	 * Sends a new article to a given channel.
 	 *
-	 * @param string $article The JSON string representing the article
-	 * @param array  $bundles An array of file paths for the article attachments
-	 *
 	 * @since 0.2.0
-	 * @param string $article
-	 * @param string $channel_uuid
-	 * @param array  $bundles
-	 * @param array  $meta
-	 * @param int    $post_id
-	 * @return object
+	 * @param string $article      The JSON for the article.
+	 * @param string $channel_uuid The unique ID for the channel.
+	 * @param array  $bundles      Optional. The bundles to send along with the article. Defaults to an empty array.
+	 * @param array  $meta         Optional. Additional metadata to send. Defaults to null.
+	 * @param int    $post_id      Optional. The post ID of the post to send. Defaults to null.
 	 * @access public
+	 * @return object The response body from the API.
 	 */
 	public function post_article_to_channel( $article, $channel_uuid, $bundles = array(), $meta = array(), $post_id = null ) {
 		$url = $this->endpoint . '/channels/' . $channel_uuid . '/articles';
@@ -61,18 +63,15 @@ class API {
 	/**
 	 * Updates an existing article to a given channel.
 	 *
-	 * @param string $article The JSON string representing the article
-	 * @param array  $bundles An array of file paths for the article attachments
-	 *
 	 * @since 0.2.0
-	 * @param string $uid
-	 * @param string $revision
-	 * @param string $article
-	 * @param array  $bundles
-	 * @param array  $meta
-	 * @param int    $post_id
-	 * @return object
+	 * @param string $uid      The unique ID for the article.
+	 * @param string $revision The revision ID for this article.
+	 * @param string $article  The JSON for the article.
+	 * @param array  $bundles  Optional. The bundles to send along with the article. Defaults to an empty array.
+	 * @param array  $meta     Optional. Additional metadata to send. Defaults to null.
+	 * @param int    $post_id  Optional. The post ID of the post to send. Defaults to null.
 	 * @access public
+	 * @return object The response body from the API.
 	 */
 	public function update_article( $uid, $revision, $article, $bundles = array(), $meta = array(), $post_id = null ) {
 		$url = $this->endpoint . '/articles/' . $uid;
@@ -90,9 +89,9 @@ class API {
 	 * Gets channel information.
 	 *
 	 * @since 0.2.0
-	 * @param string $channel_uuid
-	 * @return object
+	 * @param string $channel_uuid The channel UUID to look up.
 	 * @access public
+	 * @return object The response body from the API.
 	 */
 	public function get_channel( $channel_uuid ) {
 		$url = $this->endpoint . '/channels/' . $channel_uuid;
@@ -103,9 +102,9 @@ class API {
 	 * Gets article information.
 	 *
 	 * @since 0.2.0
-	 * @param int $article_id
+	 * @param int $article_id The ID of the article to get.
 	 * @return object
-	 * @access public
+	 * @access public The response body from the API.
 	 */
 	public function get_article( $article_id ) {
 		$url = $this->endpoint . '/articles/' . $article_id;
@@ -116,9 +115,9 @@ class API {
 	 * Deletes an article using a DELETE request.
 	 *
 	 * @since 0.4.0
-	 * @param int $article_id
-	 * @return object
+	 * @param int $article_id The ID of the article to delete.
 	 * @access public
+	 * @return object The response body from the API.
 	 */
 	public function delete_article( $article_id ) {
 		$url = $this->endpoint . '/articles/' . $article_id;
@@ -129,9 +128,9 @@ class API {
 	 * Gets all sections in the given channel.
 	 *
 	 * @since 0.2.0
-	 * @param string $channel_uuid
-	 * @return object
+	 * @param string $channel_uuid The channel UUID to look up.
 	 * @access public
+	 * @return object The response body from the API.
 	 */
 	public function get_sections( $channel_uuid ) {
 		$url = $this->endpoint . '/channels/' . $channel_uuid . '/sections';
@@ -142,9 +141,9 @@ class API {
 	 * Gets information for a section.
 	 *
 	 * @since 0.2.0
-	 * @param string $section_id
-	 * @return object
+	 * @param string $section_id The section ID to look up.
 	 * @access public
+	 * @return object The response body from the API.
 	 */
 	public function get_section( $section_id ) {
 		$url = $this->endpoint . '/sections/' . $section_id;
@@ -155,9 +154,9 @@ class API {
 	 * Send a get request.
 	 *
 	 * @since 0.2.0
-	 * @param string $url
-	 * @return object
+	 * @param string $url The API URL to use to process the GET request.
 	 * @access private
+	 * @return object The response body from the API.
 	 */
 	private function send_get_request( $url ) {
 		return $this->request->get( $url );
@@ -167,9 +166,9 @@ class API {
 	 * Send a delete request.
 	 *
 	 * @since 0.2.0
-	 * @param string $url
-	 * @return object
+	 * @param string $url The API URL to use to process the DELETE request.
 	 * @access private
+	 * @return object The response body from the API.
 	 */
 	private function send_delete_request( $url ) {
 		return $this->request->delete( $url );
@@ -179,13 +178,13 @@ class API {
 	 * Send a post request.
 	 *
 	 * @since 0.2.0
-	 * @param string $url
-	 * @param string $article
-	 * @param array  $bundles
-	 * @param array  $meta
-	 * @param int    $post_id
-	 * @return object
+	 * @param string $url     The URL to send the request to.
+	 * @param string $article The JSON for the article.
+	 * @param array  $bundles The bundles to send along with the article.
+	 * @param array  $meta    Optional. Additional metadata to send. Defaults to null.
+	 * @param int    $post_id Optional. The post ID of the post to send. Defaults to null.
 	 * @access private
+	 * @return object The response body from the API request.
 	 */
 	private function send_post_request( $url, $article, $bundles, $meta = null, $post_id = null ) {
 		return $this->request->post( $url, $article, $bundles, $meta, $post_id );

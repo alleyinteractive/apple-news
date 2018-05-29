@@ -27,14 +27,16 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param \Apple_Exporter\Settings $settings Settings in use during this run.
 	 */
-	function __construct( $settings ) {
+	public function __construct( $settings ) {
 		$this->settings = $settings;
 
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 		add_action( 'wp_ajax_push_post', array( $this, 'ajax_push_post' ) );
-		add_filter( 'admin_title', array( $this, 'set_title' ), 10, 2 );
+		add_filter( 'admin_title', array( $this, 'set_title' ) );
 	}
 
 	/**
@@ -56,12 +58,11 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	/**
 	 * Fix the title since WordPress doesn't set one.
 	 *
-	 * @param string $admin_title
-	 * @param string $title
-	 * @return strign
+	 * @param string $admin_title The title to be filtered.
 	 * @access public
+	 * @return string The title for the screen.
 	 */
-	public function set_title( $admin_title, $title ) {
+	public function set_title( $admin_title ) {
 		$screen = get_current_screen();
 		if ( 'admin_page_apple_news_bulk_export' === $screen->base ) {
 			$admin_title = __( 'Bulk Export' ) . $admin_title;
@@ -172,7 +173,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	/**
 	 * Registers assets used by the bulk export process.
 	 *
-	 * @param string $hook
+	 * @param string $hook The context under which this function is called.
 	 * @access public
 	 */
 	public function register_assets( $hook ) {

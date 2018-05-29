@@ -243,7 +243,7 @@ class Admin_Apple_News extends Apple_News {
 	/**
 	 * Get post status.
 	 *
-	 * @param int $post_id
+	 * @param int $post_id The ID of the post to look up.
 	 * @return string
 	 */
 	public static function get_post_status( $post_id ) {

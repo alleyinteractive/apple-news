@@ -104,15 +104,16 @@ class Exporter_Content {
 	/**
 	 * Constructor.
 	 *
-	 * @param int      $id
-	 * @param string   $title
-	 * @param string   $content
-	 * @param string   $intro
-	 * @param string   $cover
-	 * @param string   $byline
-	 * @param Settings $settings
+	 * @param int                      $id       The ID of the post to be exported.
+	 * @param string                   $title    The title of the post to be exported.
+	 * @param string                   $content  The content of the post to be exported.
+	 * @param string                   $intro    Optional. The intro of the post to be exported.
+	 * @param string                   $cover    Optional. The cover of the post to be exported.
+	 * @param string                   $byline   Optional. The byline of the post to be exported.
+	 * @param \Apple_Exporter\Settings $settings Optional. Settings for the exporter.
+	 * @access public
 	 */
-	function __construct( $id, $title, $content, $intro = null, $cover = null, $byline = null, $settings = null ) {
+	public function __construct( $id, $title, $content, $intro = null, $cover = null, $byline = null, $settings = null ) {
 		$this->id       = $id;
 		$this->title    = $title;
 		$this->content  = $content;
@@ -135,8 +136,8 @@ class Exporter_Content {
 	/**
 	 * Get the content title.
 	 *
-	 * @return strings
 	 * @access public
+	 * @return string The title.
 	 */
 	public function title() {
 		return $this->title;
@@ -145,8 +146,8 @@ class Exporter_Content {
 	/**
 	 * Get the content.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The content.
 	 */
 	public function content() {
 		return $this->content;
@@ -155,8 +156,8 @@ class Exporter_Content {
 	/**
 	 * Get the content intro.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The intro.
 	 */
 	public function intro() {
 		return $this->intro;
@@ -165,8 +166,8 @@ class Exporter_Content {
 	/**
 	 * Get the content cover.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The cover.
 	 */
 	public function cover() {
 		return $this->cover;
@@ -175,8 +176,8 @@ class Exporter_Content {
 	/**
 	 * Get the content byline.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The byline.
 	 */
 	public function byline() {
 		return $this->byline;
@@ -185,8 +186,9 @@ class Exporter_Content {
 	/**
 	 * Get the content settings.
 	 *
-	 * @return Settings
+	 * @param string $name The name of the setting to look up.
 	 * @access public
+	 * @return mixed The value for the setting.
 	 */
 	public function get_setting( $name ) {
 		return $this->settings->get( $name );
@@ -195,8 +197,8 @@ class Exporter_Content {
 	/**
 	 * Update a property, useful during content parsing.
 	 *
-	 * @param string $name
-	 * @param mixed  $value
+	 * @param string $name  The name of the setting to set.
+	 * @param mixed  $value The value to set for the setting.
 	 * @access public
 	 */
 	public function set_property( $name, $value ) {
@@ -208,8 +210,8 @@ class Exporter_Content {
 	/**
 	 * Get the DOM nodes.
 	 *
-	 * @return array of DomNodes
 	 * @access public
+	 * @return \DOMNodeList A DOMNodeList containing all nodes for the content.
 	 */
 	public function nodes() {
 		// Because PHP's DomDocument doesn't like HTML5 tags, ignore errors.

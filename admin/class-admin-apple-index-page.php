@@ -36,8 +36,11 @@ class Admin_Apple_Index_Page extends Apple_News {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param \Apple_Exporter\Settings $settings Settings in use during this run.
+	 * @access public
 	 */
-	function __construct( $settings ) {
+	public function __construct( $settings ) {
 		parent::__construct();
 		$this->settings = $settings;
 
@@ -110,12 +113,11 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * with an action. Actions are methods that end with "_action" and must
 	 * perform a task and output HTML with the result.
 	 *
-	 * FIXME: Regarding this class doing too much, maybe split all actions into
-	 * their own class.
+	 * @todo Regarding this class doing too much, maybe split all actions into their own class.
 	 *
 	 * @since 0.4.0
-	 * @return mixed
 	 * @access public
+	 * @return mixed The result of the requested action.
 	 */
 	public function page_router() {
 		$id             = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null;
@@ -155,7 +157,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Shows a success message.
 	 *
-	 * @param string $message
+	 * @param string $message The message to show.
 	 * @access public
 	 */
 	private function notice_success( $message ) {
@@ -166,7 +168,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Shows an error message.
 	 *
-	 * @param string $message
+	 * @param string $message The message to show.
 	 * @access public
 	 */
 	private function notice_error( $message ) {
@@ -177,7 +179,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Performs the redirect after an action is complete.
 	 *
-	 * @param string $message
+	 * @param string $message The message to show.
 	 * @access public
 	 */
 	private function do_redirect() {
@@ -191,9 +193,9 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Adds a namespace to all actions
 	 *
-	 * @param string $action
-	 * @return string
+	 * @param string $action The action to be performed.
 	 * @access public
+	 * @return string The name of the action, namespaced.
 	 */
 	public static function namespace_action( $action ) {
 		return 'apple_news_' . $action;
@@ -202,10 +204,10 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Helps build query params for each row action.
 	 *
-	 * @param string $action
-	 * @param string $url
-	 * @return string
+	 * @param string $action The action to be performed.
+	 * @param string $url    The URL to be augmented with the action.
 	 * @access public
+	 * @return string The URL with query args added.
 	 */
 	public static function action_query_params( $action, $url ) {
 		// Set the keys we need to pay attention to.
@@ -238,9 +240,9 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * Gets a setting by name which was loaded from WordPress options.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @return mixed
+	 * @param string $name The name of the setting to look up.
 	 * @access private
+	 * @return mixed The requested setting value.
 	 */
 	private function get_setting( $name ) {
 		return $this->settings->get( $name );
@@ -249,8 +251,8 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Downloads the JSON file for troubleshooting purposes.
 	 *
-	 * @param string $json
-	 * @param int    $id
+	 * @param string $json The JSON to be exported.
+	 * @param int    $id   The ID of the article being exported.
 	 * @access private
 	 */
 	private function download_json( $json, $id ) {
@@ -264,7 +266,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Sets up admin assets.
 	 *
-	 * @param string $hook
+	 * @param string $hook The context under which this function was called.
 	 * @access public
 	 */
 	public function setup_assets( $hook ) {
@@ -320,7 +322,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Handles an export action.
 	 *
-	 * @param int $id
+	 * @param int $id The ID of the post being exported.
 	 * @access public
 	 */
 	public function export_action( $id ) {
@@ -341,7 +343,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Handles a push to Apple News action.
 	 *
-	 * @param int $id
+	 * @param int $id The ID of the post being pushed.
 	 * @access private
 	 */
 	private function push_action( $id ) {
@@ -391,7 +393,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Handles a delete from Apple News action.
 	 *
-	 * @param int $id
+	 * @param int $id The ID of the post being deleted.
 	 * @access private
 	 */
 	private function delete_action( $id ) {
@@ -407,7 +409,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Handles a reset action.
 	 *
-	 * @param int $id
+	 * @param int $id The ID of the post being reset.
 	 * @access private
 	 */
 	private function reset_action( $id ) {
