@@ -207,6 +207,7 @@ class MIME_Builder {
 		if ( empty( $content ) ) {
 			throw new Request_Exception(
 				sprintf(
+					// translators: token is an attachment filename.
 					__( 'The attachment %s could not be included in the request because it was empty.', 'apple-news' ),
 					esc_html( $filename )
 				)
@@ -217,6 +218,7 @@ class MIME_Builder {
 		if ( 0 >= intval( $size ) ) {
 			throw new Request_Exception(
 				sprintf(
+					// translators: first token is the filename, second is the file size.
 					__( 'The attachment %1$s could not be included in the request because its size was %2$s.', 'apple-news' ),
 					esc_html( $filename ),
 					esc_html( $size )

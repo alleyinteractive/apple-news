@@ -142,6 +142,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 				array(
 					'success' => false,
 					'error'   => sprintf(
+						// translators: token is a post ID.
 						__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
 						$id
 					),

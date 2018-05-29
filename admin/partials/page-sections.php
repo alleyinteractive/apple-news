@@ -13,6 +13,7 @@
 	<?php
 	echo esc_html(
 		sprintf(
+			// translators: placeholder is a taxonomy label, plural form, e.g., "categories".
 			__( 'To enable automatic section assignment, choose the %s that you would like to be associated with each section.', 'apple-news' ),
 			strtolower( $taxonomy->label )
 		)
@@ -23,8 +24,10 @@
 	<?php
 	echo wp_kses_post(
 		sprintf(
-			__( 'You can also map a theme to automatically be used for posts with a specific Apple News section, if you want to use something other than the <a href="%s">active theme</a>. This will only work for posts with precisely one Apple News section to avoid conflicts.', 'apple-news' ),
-			esc_url( $theme_admin_url )
+			// translators: first argument is an opening <a> tag, second argument is </a>.
+			__( 'You can also map a theme to automatically be used for posts with a specific Apple News section, if you want to use something other than the %1$sactive theme%2$s. This will only work for posts with precisely one Apple News section to avoid conflicts.', 'apple-news' ),
+			'<a href="' . esc_url( $theme_admin_url ) . '">',
+			'</a>'
 		)
 	);
 		?>

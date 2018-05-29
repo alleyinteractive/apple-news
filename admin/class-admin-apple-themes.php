@@ -243,6 +243,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$theme->set_name( $name );
 		if ( ! $theme->load( $settings ) || ! $theme->save() ) {
 			return sprintf(
+				// translators: token is an error message.
 				__(
 					'The theme file was invalid and cannot be imported: %s',
 					'apple-news'
@@ -274,6 +275,7 @@ class Admin_Apple_Themes extends Apple_News {
 			$theme->set_name( $theme_name );
 			if ( false === $theme->load() ) {
 				$error = sprintf(
+					// translators: token is a theme name.
 					__( 'The theme %s does not exist', 'apple-news' ),
 					$theme_name
 				);
@@ -395,6 +397,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$screen = get_current_screen();
 		if ( 'admin_page_' . $this->theme_edit_page_name === $screen->base ) {
 			$admin_title = sprintf(
+				// translators: token is a theme name.
 				__( 'Edit Theme %s', 'apple-news' ),
 				trim( $admin_title )
 			);
@@ -572,6 +575,7 @@ class Admin_Apple_Themes extends Apple_News {
 		// Indicate success.
 		\Admin_Apple_Notice::success(
 			sprintf(
+				// translators: token is a theme name.
 				__( 'Successfully deleted theme %s', 'apple-news' ),
 				$name
 			)
@@ -607,6 +611,7 @@ class Admin_Apple_Themes extends Apple_News {
 		if ( ! $theme->load() ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is a theme name.
 					__( 'The theme %s could not be found', 'apple-news' ),
 					$name
 				)
@@ -683,6 +688,7 @@ class Admin_Apple_Themes extends Apple_News {
 		) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is a theme name.
 					__( 'Theme name %s is already in use.', 'apple-news' ),
 					$name
 				)
@@ -708,6 +714,7 @@ class Admin_Apple_Themes extends Apple_News {
 		if ( ! $theme->save() ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: first token is a theme name, second is an error message.
 					__( 'Could not save theme %1$s: %2$s', 'apple-news' ),
 					$name,
 					$theme->get_last_error()
@@ -725,6 +732,7 @@ class Admin_Apple_Themes extends Apple_News {
 		// Indicate success.
 		\Admin_Apple_Notice::success(
 			sprintf(
+				// translators: token is a theme name.
 				__( 'The theme %s was saved successfully', 'apple-news' ),
 				$name
 			)
@@ -760,6 +768,7 @@ class Admin_Apple_Themes extends Apple_News {
 		// Indicate success.
 		\Admin_Apple_Notice::success(
 			sprintf(
+				// translators: token is a theme name.
 				__( 'Successfully switched to theme %s', 'apple-news' ),
 				$name
 			)
@@ -796,8 +805,9 @@ class Admin_Apple_Themes extends Apple_News {
 			wp_import_cleanup( $this->file_id );
 			\Admin_Apple_Notice::error(
 				sprintf(
-					__( 'The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem.', 'apple-news' ),
-					esc_html( $file['file'] )
+					// translators: token is a filepath wrapped in <code>.
+					__( 'The export file could not be found at %s. It is likely that this was caused by a permissions problem.', 'apple-news' ),
+					'<code>' . esc_html( $file['file'] ) . '</code>'
 				)
 			);
 			return;
@@ -833,6 +843,7 @@ class Admin_Apple_Themes extends Apple_News {
 		// Indicate success.
 		\Admin_Apple_Notice::success(
 			sprintf(
+				// translators: token is the theme name.
 				__( 'Successfully uploaded theme %s', 'apple-news' ),
 				$name
 			)

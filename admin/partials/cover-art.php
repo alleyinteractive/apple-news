@@ -15,11 +15,10 @@ $orientations = array(
 <p class="description">
 	<?php
 	printf(
-		wp_kses(
-			__( '<a href="%s">Cover art</a> will represent your article if editorially chosen for Featured Stories. Cover Art must include your channel logo with text at 24 pt minimum that is related to the headline. The image provided must match the dimensions listed. Limit submissions to 1-3 articles per day.', 'apple-news' ),
-			array( 'a' => array( 'href' => array() ) )
-		),
-		'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html'
+		// translators: first token is an opening <a> tag, second is </a>.
+		esc_html__( '%1$sCover art%2$s will represent your article if editorially chosen for Featured Stories. Cover Art must include your channel logo with text at 24 pt minimum that is related to the headline. The image provided must match the dimensions listed. Limit submissions to 1-3 articles per day.', 'apple-news' ),
+		'<a href="https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html">',
+		'</a>'
 	);
 	?>
 </p>

@@ -85,6 +85,7 @@ class Admin_Apple_JSON extends Apple_News {
 		$screen = get_current_screen();
 		if ( 'admin_page_' . $this->json_page_name === $screen->base ) {
 			$admin_title = sprintf(
+				// translators: token is the admin page title.
 				__( 'Customize JSON %s', 'apple-news' ),
 				trim( $admin_title )
 			);
@@ -219,6 +220,7 @@ class Admin_Apple_JSON extends Apple_News {
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is component name.
 					__( 'The component %s has no specs and cannot be reset', 'apple-news' ),
 					$component
 				)
@@ -234,6 +236,7 @@ class Admin_Apple_JSON extends Apple_News {
 
 		\Admin_Apple_Notice::success(
 			sprintf(
+				// translators: token is component name.
 				__( 'Reset the custom specs for %s.', 'apple-news' ),
 				$component
 			)
@@ -272,6 +275,7 @@ class Admin_Apple_JSON extends Apple_News {
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is component name.
 					__( 'The component %s has no specs and cannot be saved', 'apple-news' ),
 					$component
 				)
@@ -298,6 +302,7 @@ class Admin_Apple_JSON extends Apple_News {
 		if ( empty( $updates ) ) {
 			\Admin_Apple_Notice::info(
 				sprintf(
+					// translators: token is component name.
 					__( 'No spec updates were found for %s', 'apple-news' ),
 					$component
 				)
@@ -305,6 +310,7 @@ class Admin_Apple_JSON extends Apple_News {
 		} else {
 			\Admin_Apple_Notice::success(
 				sprintf(
+					// translators: first token is the component name, second is spec names.
 					__( 'Saved the following custom specs for %1$s: %2$s', 'apple-news' ),
 					$component,
 					implode( ', ', $updates )

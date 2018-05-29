@@ -282,6 +282,7 @@ class Push extends API_Action {
 		if ( $remote_id ) {
 			Admin_Apple_Notice::success(
 				sprintf(
+					// translators: token is the post title.
 					__( 'Article %s has been successfully updated on Apple News!', 'apple-news' ),
 					$post->post_title
 				),
@@ -290,6 +291,7 @@ class Push extends API_Action {
 		} else {
 			Admin_Apple_Notice::success(
 				sprintf(
+					// translators: token is the post title.
 					__( 'Article %s has been pushed successfully to Apple News!', 'apple-news' ),
 					$post->post_title
 				),
@@ -327,11 +329,13 @@ class Push extends API_Action {
 
 			if ( 'warn' === $component_alerts ) {
 				$alert_message .= sprintf(
+					// translators: token is a list of component names.
 					__( 'The following components are unsupported by Apple News and were removed: %s', 'apple-news' ),
 					$component_names
 				);
 			} elseif ( 'fail' === $component_alerts ) {
 				$alert_message .= sprintf(
+					// translators: token is a list of component names.
 					__( 'The following components are unsupported by Apple News and prevented publishing: %s', 'apple-news' ),
 					$component_names
 				);
@@ -350,11 +354,13 @@ class Push extends API_Action {
 			// Add these to the message.
 			if ( 'warn' === $json_alerts ) {
 				$alert_message .= sprintf(
+					// translators: token is a list of errors.
 					__( 'The following JSON errors were detected: %s', 'apple-news' ),
 					$json_errors
 				);
 			} elseif ( 'fail' === $json_alerts ) {
 				$alert_message .= sprintf(
+					// translators: token is a list of errors.
 					__( 'The following JSON errors were detected and prevented publishing: %s', 'apple-news' ),
 					$json_errors
 				);

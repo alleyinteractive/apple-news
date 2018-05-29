@@ -97,15 +97,9 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 	 */
 	private function get_async_description() {
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && true === WPCOM_IS_VIP_ENV ) {
-			$system = __( 'the WordPress VIP jobs system', 'apple-news' );
-		} else {
-			$system = __( 'a single scheduled event', 'apple-news' );
+			return __( 'This will cause publishing to happen asynchronously using the WordPress VIP jobs system.', 'apple-news' );
 		}
 
-		return sprintf(
-			__( 'This will cause publishing to happen asynchronously using %s.', 'apple-news' ),
-			$system
-		);
+		return __( 'This will cause publishing to happen asynchronously using a single scheduled event.', 'apple-news' );
 	}
-
 }

@@ -358,6 +358,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		if ( 'publish' !== get_post_status( $id ) ) {
 			$this->notice_error(
 				sprintf(
+					// translators: token is the post ID.
 					__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
 					$id
 				)

@@ -1473,6 +1473,7 @@ class Theme {
 		if ( self::theme_exists( $name ) ) {
 			$this->_log_error(
 				sprintf(
+					// translators: token is the theme name.
 					__( 'Theme name %s is already in use.', 'apple-news' ),
 					$name
 				)
@@ -1622,6 +1623,7 @@ class Theme {
 			if ( ! isset( $options[ $key ] ) ) {
 				$this->_log_error(
 					sprintf(
+						// translators: token is a setting key.
 						__( 'An invalid setting was encountered: %s', 'apple-news' ),
 						$key
 					)
@@ -1642,6 +1644,7 @@ class Theme {
 					if ( ! is_array( $value ) ) {
 						$this->_log_error(
 							sprintf(
+								// translators: first token is the setting key, second token is the value type.
 								__(
 									'Array expected for setting %1$s, %2$s provided',
 									'apple-news'
@@ -1667,6 +1670,7 @@ class Theme {
 					if ( false === preg_match( '/#([a-f0-9]{3}){1,2}\b/i', $value ) ) {
 						$this->_log_error(
 							sprintf(
+								// translators: first token is a value, second token is the setting key.
 								__(
 									'Invalid color value %1$s specified for setting %2$s',
 									'apple-news'
@@ -1694,6 +1698,7 @@ class Theme {
 					if ( ! in_array( $value, self::get_fonts(), true ) ) {
 						$this->_log_error(
 							sprintf(
+								// translators: first token is the value, second is the setting key.
 								__(
 									'Invalid font value %1$s specified for setting %2$s',
 									'apple-news'
@@ -1721,6 +1726,7 @@ class Theme {
 					if ( ! in_array( $value, $options[ $key ]['options'] ) ) {
 						$this->_log_error(
 							sprintf(
+								// translators: first token is the value, second token is the setting key.
 								__( 'Invalid value %1$s specified for setting %2$s', 'apple-news' ),
 								$value,
 								$key
@@ -2088,6 +2094,7 @@ class Theme {
 				if ( ! $spec->validate( $current_component[ $spec_key ] ) ) {
 					$this->_log_error(
 						sprintf(
+							// translators: token is a combination of a component key and a spec key.
 							__(
 								'The spec for %s had invalid tokens and cannot be saved',
 								'apple-news'

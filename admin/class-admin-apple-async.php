@@ -79,6 +79,7 @@ class Admin_Apple_Async extends Apple_News {
 		if ( 'publish' !== $post->post_status ) {
 			Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is the post title.
 					__( 'Article %s is no longer published and cannot be pushed to Apple News.', 'apple-news' ),
 					$post->post_title
 				), $user_id
