@@ -27,6 +27,24 @@ class Admin_Apple_JSON extends Apple_News {
 	private $namespace = '\\Apple_Exporter\\Components\\';
 
 	/**
+	 * Holds the selected component from the request.
+	 *
+	 * @since 1.4.0
+	 * @var string
+	 * @access private
+	 */
+	private $selected_component = '';
+
+	/**
+	 * Holds the selected theme from the request.
+	 *
+	 * @since 1.4.0
+	 * @var string
+	 * @access private
+	 */
+	private $selected_theme = '';
+
+	/**
 	 * Valid actions handled by this class and their callback functions.
 	 *
 	 * @var array
@@ -61,6 +79,15 @@ class Admin_Apple_JSON extends Apple_News {
 	 * @access public
 	 */
 	public function action_router() {
+
+		// Determine if we got an action.
+		if ( empty( $_REQUEST['apple_news_action'] ) ) {
+			return;
+		}
+
+		// Check the nonce.
+		check_admin_referer( 'apple_news_json' );
+
 		// Check for a valid action.
 		$action = isset( $_POST['apple_news_action'] )
 			? sanitize_text_field( wp_unslash( $_POST['apple_news_action'] ) )
@@ -69,8 +96,18 @@ class Admin_Apple_JSON extends Apple_News {
 			return;
 		}
 
-		// Check the nonce.
-		check_admin_referer( 'apple_news_json' );
+		// Store the selected component value for use later.
+		$this->selected_component = isset( $_POST['apple_news_component'] )
+			? sanitize_text_field( wp_unslash( $_POST['apple_news_component'] ) )
+			: '';
+		if ( ! array_key_exists( $this->selected_component, $this->list_components() ) ) {
+			$this->selected_component = '';
+		}
+
+		// Store the selected theme for use later.
+		if ( ! empty( $_POST['apple_news_theme'] ) ) {
+			$this->selected_theme = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
+		}
 
 		// Call the callback for the action for further processing.
 		call_user_func( $this->valid_actions[ $action ]['callback'] );
@@ -137,12 +174,7 @@ class Admin_Apple_JSON extends Apple_News {
 		$all_themes = \Apple_Exporter\Theme::get_registry();
 
 		// Negotiate selected theme.
-		$selected_theme = '';
-		if ( ! empty( $_POST['apple_news_theme'] ) ) {
-			$selected_theme = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
-		} elseif ( ! empty( $_GET['theme'] ) ) {
-			$selected_theme = sanitize_text_field( wp_unslash( $_GET['theme'] ) );
-		}
+		$selected_theme = $this->get_selected_theme();
 
 		// Check if there is a valid selected component.
 		$selected_component = ( ! empty( $selected_theme ) )
@@ -198,6 +230,9 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	private function reset_json() {
 
+		// Check the nonce.
+		check_admin_referer( 'apple_news_json' );
+
 		// Ensure a theme was selected.
 		if ( empty( $_POST['apple_news_theme'] ) ) {
 			\Admin_Apple_Notice::error(
@@ -251,6 +286,9 @@ class Admin_Apple_JSON extends Apple_News {
 	 * @access private
 	 */
 	private function save_json() {
+
+		// Check the nonce.
+		check_admin_referer( 'apple_news_json' );
 
 		// Ensure a theme was selected.
 		if ( empty( $_POST['apple_news_theme'] ) ) {
@@ -367,16 +405,29 @@ class Admin_Apple_JSON extends Apple_News {
 	 * @access public
 	 */
 	public function get_selected_component() {
-		$selected_component = '';
+		return $this->selected_component;
+	}
 
-		if ( isset( $_POST['apple_news_component'] ) ) {
-			$selected_component = sanitize_text_field( wp_unslash( $_POST['apple_news_component'] ) );
-			if ( ! array_key_exists( $selected_component, $this->list_components() ) ) {
-				$selected_component = '';
-			}
+	/**
+	 * Checks for a valid selected theme.
+	 *
+	 * @since 1.4.0
+	 * @access public
+	 * @return string
+	 */
+	public function get_selected_theme() {
+
+		// First, check for a theme loaded in from postmeta.
+		if ( ! empty( $this->selected_theme ) ) {
+			return $this->selected_theme;
 		}
 
-		return $selected_component;
+		// Next, check for a theme loaded in from the query string.
+		if ( ! empty( $_GET['theme'] ) ) {
+			return sanitize_text_field( wp_unslash( $_GET['theme'] ) );
+		}
+
+		return '';
 	}
 
 	/**
