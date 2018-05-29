@@ -496,15 +496,21 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * @access public
 	 */
 	public function save_settings() {
+
+		// If there isn't an action, bail.
+		if ( ! isset( $_REQUEST['action'] ) ) {
+			return;
+		}
+
+		// Form nonce check.
+		check_admin_referer( $this->save_action );
+
 		// Check if we're saving options and that there are settings to save.
 		if ( empty( $_POST['action'] )
 			|| $this->save_action !== $_POST['action']
 			|| empty( $this->settings ) ) {
 			return;
 		}
-
-		// Form nonce check.
-		check_admin_referer( $this->save_action );
 
 		// Get the current Apple News settings.
 		$settings = get_option( self::$section_option_name, array() );

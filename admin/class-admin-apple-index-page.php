@@ -366,12 +366,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		}
 
 		// Check the nonce.
-		$nonce = isset( $_REQUEST['apple_news_nonce'] )
-			? sanitize_text_field( wp_unslash( $_REQUEST['apple_news_nonce'] ) )
-			: '';
-		if ( ! wp_verify_nonce( $nonce, 'publish' ) ) {
-			$this->notice_error( __( 'Invalid nonce.', 'apple-news' ) );
-		}
+		check_admin_referer( 'publish', 'apple_news_nonce' );
 
 		// Save fields.
 		\Admin_Apple_Meta_Boxes::save_post_meta( $id );

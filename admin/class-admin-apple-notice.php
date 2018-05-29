@@ -179,12 +179,7 @@ class Admin_Apple_Notice {
 	public static function wp_ajax_dismiss_notice() {
 
 		// Check the nonce.
-		$nonce = isset( $_REQUEST['nonce'] )
-			? sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) )
-			: '';
-		if ( ! wp_verify_nonce( $nonce, 'apple_news_dismiss_notice' ) ) {
-			return;
-		}
+		check_admin_referer( 'apple_news_dismiss_notice', 'nonce' );
 
 		// Safely extract message and type for comparison.
 		$message = isset( $_POST['message'] )
