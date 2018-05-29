@@ -80,21 +80,16 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	public function action_router() {
 
-		// Determine if we got an action.
-		if ( empty( $_REQUEST['apple_news_action'] ) ) {
+		// Check for a valid action.
+		$action = isset( $_REQUEST['apple_news_action'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['apple_news_action'] ) )
+			: null;
+		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
 			return;
 		}
 
 		// Check the nonce.
 		check_admin_referer( 'apple_news_json' );
-
-		// Check for a valid action.
-		$action = isset( $_POST['apple_news_action'] )
-			? sanitize_text_field( wp_unslash( $_POST['apple_news_action'] ) )
-			: null;
-		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
-			return;
-		}
 
 		// Store the selected component value for use later.
 		$this->selected_component = isset( $_POST['apple_news_component'] )

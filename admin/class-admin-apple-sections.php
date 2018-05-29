@@ -235,19 +235,16 @@ class Admin_Apple_Sections extends Apple_News {
 	 */
 	public function action_router() {
 
-		// Ensure an action was set.
-		if ( ! isset( $_REQUEST['action'] ) ) {
+		// Check for a valid action.
+		$action = isset( $_REQUEST['action'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
+			: null;
+		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
 			return;
 		}
 
 		// Check the nonce.
 		check_admin_referer( 'apple_news_sections' );
-
-		// Check for a valid action.
-		$action = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : null;
-		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
-			return;
-		}
 
 		// Call the callback for the action for further processing.
 		call_user_func( $this->valid_actions[ $action ] );

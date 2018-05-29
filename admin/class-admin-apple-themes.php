@@ -199,21 +199,17 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	public function action_router() {
 
-		// Determine if an action was specified.
-		if ( ! isset( $_REQUEST['action'] ) ) {
+		// Determine if a valid action was specified.
+		$action = isset( $_REQUEST['action'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
+			: null;
+		if ( ( empty( $action ) || ! array_key_exists( $action, $this->_valid_actions ) ) ) {
 			return;
 		}
 
 		// Check the nonce.
 		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
 		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
-
-		// Determine if a valid action was specified.
-		if ( ( empty( $action )
-			|| ! array_key_exists( $action, $this->_valid_actions ) )
-		) {
-			return;
-		}
 
 		// Call the callback for the action for further processing.
 		call_user_func( $this->_valid_actions[ $action ]['callback'] );
