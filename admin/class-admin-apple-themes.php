@@ -204,16 +204,16 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
+		// Check the nonce.
+		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
+
 		// Determine if a valid action was specified.
-		$action = sanitize_text_field( wp_unslash( $_POST['action'] ) );
 		if ( ( empty( $action )
 			|| ! array_key_exists( $action, $this->_valid_actions ) )
 		) {
 			return;
 		}
-
-		// Check the nonce.
-		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Call the callback for the action for further processing.
 		call_user_func( $this->_valid_actions[ $action ]['callback'] );
@@ -554,6 +554,10 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	private function _delete_theme() {
 
+		// Check the nonce.
+		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
+
 		// Attempt to get the name of the theme from postdata.
 		if ( empty( $name ) && ! empty( $_POST['apple_news_theme'] ) ) {
 			$name = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
@@ -588,6 +592,10 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function _export_theme() {
+
+		// Check the nonce.
+		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Get the theme name from POST data.
 		if ( ! empty( $_POST['apple_news_theme'] ) ) {
@@ -646,6 +654,10 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function _save_edit_theme() {
+
+		// Check the nonce.
+		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Create a theme object.
 		$theme = new \Apple_Exporter\Theme();
@@ -745,6 +757,10 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access private
 	 */
 	private function _set_theme() {
+
+		// Check the nonce.
+		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Get the theme name from postdata.
 		if ( ! empty( $_POST['apple_news_active_theme'] ) ) {
