@@ -54,6 +54,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$_POST['redirect'] = false;
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-theme-edit';
 		$_REQUEST['_wpnonce'] = $nonce;
+		$_REQUEST['action'] = $_POST['action'];
 
 		// Merge any provided settings with default settings.
 		$default_theme = new \Apple_Exporter\Theme;
@@ -193,6 +194,7 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 		$_POST['page'] = 'apple-news-themes';
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-themes';
 		$_REQUEST['_wpnonce'] = $nonce;
+		$_REQUEST['action'] = $_POST['action'];
 		$this->themes->action_router();
 
 		// Ensure that the test theme does not exist after deletion.
@@ -360,6 +362,7 @@ JSON;
 		$_POST['redirect'] = false;
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
 		$_REQUEST['_wpnonce'] = $nonce;
+		$_REQUEST['apple_news_action'] = $_POST['apple_news_action'];
 
 		// Trigger the save operation.
 		$admin_json = new \Admin_Apple_JSON();
@@ -401,6 +404,7 @@ JSON;
 		$_POST['redirect'] = false;
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
 		$_REQUEST['_wpnonce'] = $nonce;
+		$_REQUEST['apple_news_action'] = $_POST['apple_news_action'];
 
 		// Trigger the save operation.
 		$admin_json = new \Admin_Apple_JSON();
@@ -441,6 +445,7 @@ JSON;
 		$_POST['redirect'] = false;
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
 		$_REQUEST['_wpnonce'] = $nonce;
+		$_REQUEST['apple_news_action'] = $_POST['apple_news_action'];
 
 		// Trigger the spec save.
 		$admin_json = new \Admin_Apple_JSON();
@@ -488,6 +493,7 @@ JSON;
 		$_POST['redirect'] = false;
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
 		$_REQUEST['_wpnonce'] = $nonce;
+		$_REQUEST['apple_news_action'] = $_POST['apple_news_action'];
 
 		// Trigger the spec save.
 		$admin_json = new \Admin_Apple_JSON();
@@ -540,6 +546,7 @@ JSON;
 		$_POST['redirect'] = false;
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
 		$_REQUEST['_wpnonce'] = $nonce;
+		$_REQUEST['apple_news_action'] = $_POST['apple_news_action'];
 
 		// Trigger the spec save.
 		$admin_json = new \Admin_Apple_JSON();
@@ -582,6 +589,7 @@ JSON;
 		$_POST['page'] = 'apple-news-themes';
 		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-themes';
 		$_REQUEST['_wpnonce'] = $nonce;
+		$_REQUEST['action'] = $_POST['action'];
 		$this->themes->action_router();
 
 		// Check that the theme got set.
