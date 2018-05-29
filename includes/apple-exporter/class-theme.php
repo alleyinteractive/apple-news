@@ -1391,6 +1391,9 @@ class Theme {
 	 */
 	public function load_postdata() {
 
+		// Check the nonce.
+		check_admin_referer( 'apple_news_save_edit_theme' );
+
 		// Remove all configured values except for JSON templates.
 		if ( ! empty( $this->_values['json_templates'] )
 			&& is_array( $this->_values['json_templates'] )
