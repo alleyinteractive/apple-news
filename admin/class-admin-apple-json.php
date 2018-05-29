@@ -59,6 +59,7 @@ class Admin_Apple_JSON extends Apple_News {
 		$this->json_page_name = $this->plugin_domain . '-json';
 
 		$this->valid_actions = array(
+			'apple_news_get_json' => array(),
 			'apple_news_reset_json' => array(
 				'callback' => array( $this, 'reset_json' ),
 			),
@@ -105,7 +106,9 @@ class Admin_Apple_JSON extends Apple_News {
 		}
 
 		// Call the callback for the action for further processing.
-		call_user_func( $this->valid_actions[ $action ]['callback'] );
+		if ( isset( $this->valid_actions[ $action ]['callback'] ) ) {
+			call_user_func( $this->valid_actions[ $action ]['callback'] );
+		}
 	}
 
 	/**
@@ -263,7 +266,7 @@ class Admin_Apple_JSON extends Apple_News {
 
 		// Iterate over the specs and reset each one.
 		foreach ( $specs as $spec ) {
-			$spec->delete();
+			$spec->delete( $this->selected_theme );
 		}
 
 		\Admin_Apple_Notice::success(
@@ -412,7 +415,7 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	public function get_selected_theme() {
 
-		// First, check for a theme loaded in from postmeta.
+		// First, check for a theme loaded in from postdata.
 		if ( ! empty( $this->selected_theme ) ) {
 			return $this->selected_theme;
 		}
