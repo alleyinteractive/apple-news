@@ -86,6 +86,7 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 		$_REQUEST = array(
 			'_wp_http_referer' => '/wp-admin/admin.php?page=apple-news-sections',
 			'_wpnonce' => wp_create_nonce( 'apple_news_sections' ),
+			'action' => 'apple_news_set_section_mappings',
 		);
 
 		// Run the request to set up taxonomy mappings.

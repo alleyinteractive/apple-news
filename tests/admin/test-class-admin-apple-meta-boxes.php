@@ -28,6 +28,8 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 		$_POST['apple_news_pullquote_position'] = 'middle';
 		$_POST['apple_news_nonce'] = wp_create_nonce( 'apple_news_publish' );
 		$_POST['apple_news_publish_action'] = 'apple_news_publish';
+		$_REQUEST['post_ID'] = $_POST['post_ID'];
+		$_REQUEST['apple_news_nonce'] = $_POST['apple_news_nonce'];
 
 		// Create the meta box class and simulate a save
 		$meta_box = new Admin_Apple_Meta_Boxes( $this->settings );
@@ -62,6 +64,8 @@ class Admin_Apple_Meta_Boxes_Test extends WP_UnitTestCase {
 		$_POST['apple_news_pullquote_position'] = 'middle';
 		$_POST['apple_news_nonce'] = wp_create_nonce( 'apple_news_publish' );
 		$_POST['apple_news_publish_action'] = 'apple_news_publish';
+		$_REQUEST['post_ID'] = $_POST['post_ID'];
+		$_REQUEST['apple_news_nonce'] = $_POST['apple_news_nonce'];
 
 		// Create the meta box class and simulate a save
 		$meta_box = new Admin_Apple_Meta_Boxes( $this->settings );

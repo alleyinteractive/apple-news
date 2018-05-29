@@ -69,6 +69,11 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 */
 	public function do_publish( $post_id, $post ) {
 
+		// If there is no post ID, bail.
+		if ( empty( $_REQUEST['post_ID'] ) ) {
+			return;
+		}
+
 		// Check the nonce.
 		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );
 
