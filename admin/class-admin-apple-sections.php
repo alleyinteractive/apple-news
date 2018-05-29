@@ -81,7 +81,8 @@ class Admin_Apple_Sections extends Apple_News {
 	public static function get_sections() {
 
 		// Try to load from cache.
-		if ( false !== ( $sections = get_transient( 'apple_news_sections' ) ) ) {
+		$sections = get_transient( 'apple_news_sections' );
+		if ( false !== $sections ) {
 			return $sections;
 		}
 
@@ -186,8 +187,7 @@ class Admin_Apple_Sections extends Apple_News {
 	/**
 	 * Given a section ID, check for a custom theme mapping.
 	 *
-	 * @param string $section_id The Apple News section ID
-	 *
+	 * @param string $section_id The Apple News section ID.
 	 * @access public
 	 * @return string The name of the theme, or null if not found.
 	 */
@@ -205,7 +205,7 @@ class Admin_Apple_Sections extends Apple_News {
 	/**
 	 * Constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 
 		// Initialize class variables.
 		$this->page_name = $this->plugin_domain . '-sections';
@@ -252,7 +252,6 @@ class Admin_Apple_Sections extends Apple_News {
 	 * AJAX endpoint for section/taxonomy mapping autocomplete fields.
 	 *
 	 * @access public
-	 * @return array An array of values matching the query.
 	 */
 	public function ajax_apple_news_section_taxonomy_autocomplete() {
 
@@ -437,7 +436,8 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Loop through sections and look for mappings in POST data.
-		$taxonomy_mappings = $theme_mappings = array();
+		$taxonomy_mappings = array();
+		$theme_mappings = array();
 		$taxonomy = self::get_mapping_taxonomy();
 		$section_ids = wp_list_pluck( $sections_raw, 'id' );
 		foreach ( $section_ids as $section_id ) {

@@ -164,7 +164,8 @@ class Component_Spec {
 
 		// Iterate recursively over the built-in spec and get all the tokens.
 		// Do the same for the provided spec.
-		$new_tokens = $default_tokens = array();
+		$new_tokens = array();
+		$default_tokens = array();
 		$this->find_tokens( $spec, $new_tokens );
 		$this->find_tokens( $this->spec, $default_tokens );
 
@@ -233,6 +234,7 @@ class Component_Spec {
 		if ( empty( $json ) ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is a spec label.
 					__( 'The spec for %s was invalid and cannot be saved', 'apple-news' ),
 					$this->label
 				)
@@ -256,6 +258,7 @@ class Component_Spec {
 		if ( false === $result ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is a spec label.
 					__(
 						'The spec for %s had invalid tokens and cannot be saved',
 						'apple-news'
@@ -278,6 +281,7 @@ class Component_Spec {
 		if ( ! $theme->load() ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is a theme name.
 					__( 'Unable to load theme %s to save spec', 'apple-news' ),
 					$theme_name
 				)
@@ -300,6 +304,7 @@ class Component_Spec {
 		if ( ! $theme->load( $theme_settings ) ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is a spec label.
 					__( 'The spec for %s could not be loaded into the theme', 'apple-news' ),
 					$this->label
 				)
@@ -312,6 +317,7 @@ class Component_Spec {
 		if ( ! $theme->save() ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
+					// translators: token is a spec label.
 					__( 'The spec for %s could not be saved to the theme', 'apple-news' ),
 					$this->label
 				)

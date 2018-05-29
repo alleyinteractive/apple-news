@@ -72,8 +72,7 @@ class Components extends Builder {
 	/**
 	 * Add a pullquote component if needed.
 	 *
-	 * @param array &$components An array of Component objects to analyze.
-	 *
+	 * @param array $components An array of Component objects to analyze.
 	 * @access private
 	 */
 	private function _add_pullquote_if_needed( &$components ) {
@@ -126,8 +125,7 @@ class Components extends Builder {
 	/**
 	 * Add a thumbnail if needed.
 	 *
-	 * @param array &$components An array of Component objects to analyze.
-	 *
+	 * @param array $components An array of Component objects to analyze.
 	 * @access private
 	 */
 	private function _add_thumbnail_if_needed( &$components ) {
@@ -208,8 +206,7 @@ class Components extends Builder {
 	/**
 	 * Anchor components that are marked as can_be_anchor_target.
 	 *
-	 * @param array &$components An array of Component objects to process.
-	 *
+	 * @param array $components An array of Component objects to process.
 	 * @access private
 	 */
 	private function _anchor_components( &$components ) {
@@ -404,10 +401,8 @@ class Components extends Builder {
 	/**
 	 * Performs additional processing on 'body' nodes to clean up data.
 	 *
-	 * @param Component &$component The component to clean up.
-	 *
 	 * @since 1.2.1
-	 *
+	 * @param Component $component The component to clean up.
 	 * @access private
 	 */
 	private function _clean_up_components( &$component ) {
@@ -692,9 +687,13 @@ class Components extends Builder {
 
 			// Determine if component is loadable.
 			$method = 'content_' . $component;
-			if ( ! method_exists( $this, $method )
-				 || ! ( $content = $this->$method() )
-			) {
+			if ( ! method_exists( $this, $method ) ) {
+				continue;
+			}
+
+			// Determine if component has content.
+			$content = $this->$method();
+			if ( empty( $content ) ) {
 				continue;
 			}
 

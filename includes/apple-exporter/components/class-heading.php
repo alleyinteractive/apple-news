@@ -82,6 +82,7 @@ class Heading extends Component {
 			$this->register_spec(
 				'default-heading-' . $level,
 				sprintf(
+					// translators: token is the heading level.
 					__( 'Level %s Style', 'apple-news' ),
 					$level
 				),

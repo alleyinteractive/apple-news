@@ -20,8 +20,10 @@
 			<?php
 			echo wp_kses(
 				sprintf(
-					__( 'Select a component to customize any of the specs for its JSON snippets. This will enable to you create advanced templates beyond what is supported by <a href="%s">themes</a>.', 'apple-news' ),
-					esc_url( $theme_admin_url )
+					// translators: first token is an opening <a> tag, second is </a>.
+					__( 'Select a component to customize any of the specs for its JSON snippets. This will enable to you create advanced templates beyond what is supported by %1$sthemes%2$s.', 'apple-news' ),
+					'<a href="' . esc_url( $theme_admin_url ) . '">',
+					'</a>'
 				),
 				array(
 					'a' => array(
@@ -47,8 +49,10 @@
 			<?php
 			echo wp_kses(
 				sprintf(
-					__( 'For more information on the Apple News format options for each component, please read the <a href="%s">Apple News Format Reference</a>.', 'apple-news' ),
-					'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Component.html#//apple_ref/doc/uid/TP40015408-CH5-SW1'
+					// translators: first argument is an opening <a> tag, second argument is </a>.
+					__( 'For more information on the Apple News format options for each component, please read the %1$sApple News Format Reference%2$s.', 'apple-news' ),
+					'<a href="https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Component.html#//apple_ref/doc/uid/TP40015408-CH5-SW1">',
+					'</a>'
 				),
 				array(
 					'a' => array(

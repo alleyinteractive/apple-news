@@ -79,7 +79,8 @@ class Section extends API_Action {
 	 * @return array
 	 */
 	public function get_sections() {
-		if ( false === ( $sections = get_transient( 'apple_news_sections' ) ) ) {
+		$sections = get_transient( 'apple_news_sections' );
+		if ( false === $sections ) {
 			$sections = array();
 			$channel = $this->get_setting( 'api_channel' );
 			if ( ! empty( $channel ) ) {
