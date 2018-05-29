@@ -62,7 +62,9 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	public function action_router() {
 		// Check for a valid action.
-		$action = isset( $_POST['apple_news_action'] ) ? sanitize_text_field( $_POST['apple_news_action'] ) : null;
+		$action = isset( $_POST['apple_news_action'] )
+			? sanitize_text_field( wp_unslash( $_POST['apple_news_action'] ) )
+			: null;
 		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
 			return;
 		}
@@ -137,9 +139,9 @@ class Admin_Apple_JSON extends Apple_News {
 		// Negotiate selected theme.
 		$selected_theme = '';
 		if ( ! empty( $_POST['apple_news_theme'] ) ) {
-			$selected_theme = sanitize_text_field( $_POST['apple_news_theme'] );
+			$selected_theme = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
 		} elseif ( ! empty( $_GET['theme'] ) ) {
-			$selected_theme = sanitize_text_field( $_GET['theme'] );
+			$selected_theme = sanitize_text_field( wp_unslash( $_GET['theme'] ) );
 		}
 
 		// Check if there is a valid selected component.
@@ -270,7 +272,7 @@ class Admin_Apple_JSON extends Apple_News {
 		}
 
 		// Get the specs for the component and theme.
-		$theme = stripslashes( sanitize_text_field( $_POST['apple_news_theme'] ) );
+		$theme = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
 		$specs = $this->get_specs( $component, $theme );
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error(
@@ -291,7 +293,7 @@ class Admin_Apple_JSON extends Apple_News {
 			// Ensure the value exists.
 			$key = 'apple_news_json_' . $spec->key_from_name( $spec->name );
 			if ( isset( $_POST[ $key ] ) ) {
-				$custom_spec = stripslashes( sanitize_text_field( $_POST[ $key ] ) );
+				$custom_spec = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
 				$result = $spec->save( $custom_spec, $theme );
 				if ( true === $result ) {
 					$updates[] = $spec->label;
@@ -368,7 +370,7 @@ class Admin_Apple_JSON extends Apple_News {
 		$selected_component = '';
 
 		if ( isset( $_POST['apple_news_component'] ) ) {
-			$selected_component = sanitize_text_field( $_POST['apple_news_component'] );
+			$selected_component = sanitize_text_field( wp_unslash( $_POST['apple_news_component'] ) );
 			if ( ! array_key_exists( $selected_component, $this->list_components() ) ) {
 				$selected_component = '';
 			}

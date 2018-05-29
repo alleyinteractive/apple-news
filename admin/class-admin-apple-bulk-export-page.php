@@ -83,7 +83,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	 * @access public
 	 */
 	public function build_page() {
-		$ids = isset( $_GET['ids'] ) ? sanitize_text_field( $_GET['ids'] ) : null;
+		$ids = isset( $_GET['ids'] ) ? sanitize_text_field( wp_unslash( $_GET['ids'] ) ) : null;
 		if ( ! $ids ) {
 			wp_safe_redirect( esc_url_raw( menu_page_url( $this->plugin_slug . '_index', false ) ) );
 			if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {

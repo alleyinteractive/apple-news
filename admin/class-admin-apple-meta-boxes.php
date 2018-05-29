@@ -127,7 +127,10 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			) {
 				$sections = array_map(
 					'sanitize_text_field',
-					$_POST['apple_news_sections']
+					array_map(
+						'wp_unslash',
+						$_POST['apple_news_sections'] // phpcs:ignore WordPress.VIP.ValidatedSanitizedInput.MissingUnslash, WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+					)
 				);
 			}
 			update_post_meta( $post_id, 'apple_news_sections', $sections );
@@ -157,7 +160,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		update_post_meta( $post_id, 'apple_news_is_sponsored', $is_sponsored );
 
 		if ( ! empty( $_POST['apple_news_maturity_rating'] ) ) {
-			$maturity_rating = sanitize_text_field( $_POST['apple_news_maturity_rating'] );
+			$maturity_rating = sanitize_text_field( wp_unslash( $_POST['apple_news_maturity_rating'] ) );
 			if ( ! in_array( $maturity_rating, self::$maturity_ratings, true ) ) {
 				$maturity_rating = '';
 			}
@@ -167,14 +170,14 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 
 		if ( ! empty( $_POST['apple_news_pullquote'] ) ) {
-			$pullquote = sanitize_text_field( $_POST['apple_news_pullquote'] );
+			$pullquote = sanitize_text_field( wp_unslash( $_POST['apple_news_pullquote'] ) );
 		} else {
 			$pullquote = '';
 		}
 		update_post_meta( $post_id, 'apple_news_pullquote', $pullquote );
 
 		if ( ! empty( $_POST['apple_news_pullquote_position'] ) ) {
-			$pullquote_position = sanitize_text_field( $_POST['apple_news_pullquote_position'] );
+			$pullquote_position = sanitize_text_field( wp_unslash( $_POST['apple_news_pullquote_position'] ) );
 		} else {
 			$pullquote_position = 'middle';
 		}
@@ -374,7 +377,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Start building cover art meta using the orientation.
 		$meta_value = array(
-			'orientation' => sanitize_text_field( $_POST['apple-news-coverart-orientation'] ),
+			'orientation' => sanitize_text_field( wp_unslash( $_POST['apple-news-coverart-orientation'] ) ),
 		);
 
 		// Iterate through image sizes and add each that is set for the orientation.

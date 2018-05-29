@@ -18,7 +18,7 @@ use Apple_Actions\API_Action as API_Action;
  * @package Apple_News
  * @subpackage Apple_Actions\Index
  */
-class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWritesDisallow.file_ops_delete
+class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWritesDisallow.file_ops_delete, Generic.Classes.OpeningBraceSameLine.ContentAfterBrace
 
 	/**
 	 * ID of the post to be deleted.

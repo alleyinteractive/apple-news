@@ -236,7 +236,7 @@ class Admin_Apple_Sections extends Apple_News {
 	public function action_router() {
 
 		// Check for a valid action.
-		$action = isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : null;
+		$action = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : null;
 		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
 			return;
 		}
@@ -274,7 +274,7 @@ class Admin_Apple_Sections extends Apple_News {
 				'fields' => 'names',
 				'hide_empty' => false,
 				'number' => 10,
-				'search' => sanitize_text_field( $_GET['term'] ),
+				'search' => sanitize_text_field( wp_unslash( $_GET['term'] ) ),
 				'taxonomy' => $taxonomy->name,
 			)
 		);
@@ -446,7 +446,13 @@ class Admin_Apple_Sections extends Apple_News {
 			$taxonomy_key = 'taxonomy-mapping-' . $section_id;
 			if ( ! empty( $_POST[ $taxonomy_key ] ) && is_array( $_POST[ $taxonomy_key ] ) ) {
 				// Loop over terms and convert to term IDs for save.
-				$values = array_map( 'sanitize_text_field', $_POST[ $taxonomy_key ] );
+				$values = array_map(
+					'sanitize_text_field',
+					array_map(
+						'wp_unslash',
+						$_POST[ $taxonomy_key ] // phpcs:ignore WordPress.VIP.ValidatedSanitizedInput.MissingUnslash, WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+					)
+				);
 				foreach ( $values as $value ) {
 					$term = get_term_by( 'name', $value, $taxonomy->name );
 					if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
@@ -459,7 +465,7 @@ class Admin_Apple_Sections extends Apple_News {
 			// Determine if there is theme data for this section.
 			$theme_key = 'theme-mapping-' . $section_id;
 			if ( ! empty( $_POST[ $theme_key ] ) ) {
-				$theme_mappings[ $section_id ] = sanitize_text_field( $_POST[ $theme_key ] );
+				$theme_mappings[ $section_id ] = sanitize_text_field( wp_unslash( $_POST[ $theme_key ] ) );
 			}
 		}
 

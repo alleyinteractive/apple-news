@@ -205,7 +205,7 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Determine if a valid action was specified.
-		$action = sanitize_text_field( $_POST['action'] );
+		$action = sanitize_text_field( wp_unslash( $_POST['action'] ) );
 		if ( ( empty( $action )
 			|| ! array_key_exists( $action, $this->_valid_actions ) )
 		) {
@@ -271,7 +271,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$error = '';
 		$theme = new \Apple_Exporter\Theme();
 		if ( isset( $_GET['theme'] ) ) {
-			$theme_name = sanitize_text_field( $_GET['theme'] );
+			$theme_name = sanitize_text_field( wp_unslash( $_GET['theme'] ) );
 			$theme->set_name( $theme_name );
 			if ( false === $theme->load() ) {
 				$error = sprintf(
@@ -556,7 +556,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Attempt to get the name of the theme from postdata.
 		if ( empty( $name ) && ! empty( $_POST['apple_news_theme'] ) ) {
-			$name = sanitize_text_field( $_POST['apple_news_theme'] );
+			$name = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
 		}
 
 		// Ensure a name was provided.
@@ -591,7 +591,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Get the theme name from POST data.
 		if ( ! empty( $_POST['apple_news_theme'] ) ) {
-			$name = sanitize_text_field( $_POST['apple_news_theme'] );
+			$name = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
 		}
 
 		// Ensure we got a theme name.
@@ -660,7 +660,7 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Ensure the theme name is valid.
-		$name = sanitize_text_field( $_POST['apple_news_theme_name'] );
+		$name = sanitize_text_field( wp_unslash( $_POST['apple_news_theme_name'] ) );
 		if ( empty( $name ) ) {
 			\Admin_Apple_Notice::error(
 				__( 'The theme name was empty', 'apple-news' )
@@ -671,7 +671,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Negotiate previous theme name.
 		$previous_name = ( ! empty( $_POST['apple_news_theme_name_previous'] ) )
-			? sanitize_text_field( $_POST['apple_news_theme_name_previous'] )
+			? sanitize_text_field( wp_unslash( $_POST['apple_news_theme_name_previous'] ) )
 			: '';
 
 		// Determine whether this theme is new, is an update, or is being renamed.
@@ -748,7 +748,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Get the theme name from postdata.
 		if ( ! empty( $_POST['apple_news_active_theme'] ) ) {
-			$name = sanitize_text_field( $_POST['apple_news_active_theme'] );
+			$name = sanitize_text_field( wp_unslash( $_POST['apple_news_active_theme'] ) );
 		}
 
 		// Ensure we have a theme name.
