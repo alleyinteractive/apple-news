@@ -69,19 +69,22 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @access public
 	 */
 	public function do_publish( $post_id, $post ) {
-		// Check if the values we want are present in $_REQUEST params.
-		if ( empty( $_POST['apple_news_nonce'] )
-			|| empty( $_POST['post_ID'] ) ) {
+
+		// Check the nonce.
+		$nonce = isset( $_REQUEST['apple_news_nonce'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['apple_news_nonce'] ) )
+			: '';
+		if ( ! wp_verify_nonce( $nonce, $this->publish_action ) ) {
 			return;
 		}
 
-		// Check the nonce.
-		if ( ! wp_verify_nonce( $_POST['apple_news_nonce'], $this->publish_action ) ) {
+		// Check the post ID.
+		$post_id = isset( $_POST['post_ID'] ) ? absint( $_POST['post_ID'] ) : 0;
+		if ( empty( $post_id ) ) {
 			return;
 		}
 
 		// Save meta box fields.
-		$post_id = absint( $_POST['post_ID'] );
 		self::save_post_meta( $post_id );
 
 		// If this is set to autosync or no action is set, we're done here.

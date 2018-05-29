@@ -112,7 +112,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		check_ajax_referer( self::ACTION );
 
 		// Sanitize input data.
-		$id = absint( $_GET['id'] );
+		$id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
 
 		// Ensure the post exists and that it's published.
 		$post = get_post( $id );

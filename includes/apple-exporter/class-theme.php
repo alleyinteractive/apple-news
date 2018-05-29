@@ -1423,7 +1423,7 @@ class Theme {
 							'sanitize_text_field',
 							array_map(
 								'wp_unslash',
-								$_POST[ $option_key ]
+								$_POST[ $option_key ] // phpcs:ignore WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized, WordPress.VIP.ValidatedSanitizedInput.MissingUnslash
 							)
 						);
 					}

@@ -77,9 +77,9 @@ class Settings {
 
 			// Log a deprecated notice, since this is no longer preferred.
 			_deprecated_function(
-				__( 'Getting formatting settings through the \\Apple_Exporter\\Settings object', 'apple-news' ),
+				esc_html__( 'Getting formatting settings through the \\Apple_Exporter\\Settings object', 'apple-news' ),
 				'1.3.0',
-				__( 'the \\Apple_Exporter\\Theme object', 'apple-news' )
+				esc_html__( 'the \\Apple_Exporter\\Theme object', 'apple-news' )
 			);
 
 			return $value;
@@ -91,9 +91,9 @@ class Settings {
 
 			// Log a deprecated notice, since this is no longer preferred.
 			_deprecated_function(
-				__( 'Getting formatting settings through the \\Apple_Exporter\\Settings object', 'apple-news' ),
+				esc_html__( 'Getting formatting settings through the \\Apple_Exporter\\Settings object', 'apple-news' ),
 				'1.3.0',
-				__( 'the \\Apple_Exporter\\Theme object', 'apple-news' )
+				esc_html__( 'the \\Apple_Exporter\\Theme object', 'apple-news' )
 			);
 
 			return $value;

@@ -266,7 +266,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		header( 'Content-Description: File Transfer' );
 		header( 'Content-Type: application/json' );
 		header( 'Content-Disposition: attachment; filename="article-' . absint( $id ) . '.json"' );
-		echo $json;
+		echo wp_json_encode( json_decode( $json ) );
 		die();
 	}
 
@@ -366,13 +366,10 @@ class Admin_Apple_Index_Page extends Apple_News {
 		}
 
 		// Check the nonce.
-		// If it isn't set, this isn't a form submission so we need to just display the form.
-		if ( ! isset( $_POST['apple_news_nonce'] ) ) {
-			return;
-		}
-
-		// If invalid, we need to display an error.
-		if ( ! wp_verify_nonce( $_POST['apple_news_nonce'], 'publish' ) ) {
+		$nonce = isset( $_REQUEST['apple_news_nonce'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['apple_news_nonce'] ) )
+			: '';
+		if ( ! wp_verify_nonce( $nonce, 'publish' ) ) {
 			$this->notice_error( __( 'Invalid nonce.', 'apple-news' ) );
 		}
 

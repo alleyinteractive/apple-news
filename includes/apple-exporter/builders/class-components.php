@@ -180,7 +180,7 @@ class Components extends Builder {
 			// Try to get the original URL for the image.
 			$original_url = '';
 			foreach ( $bundles as $bundle_url ) {
-				if ( $bundle_basename === Apple_News::get_filename( $bundle_url ) ) {
+				if ( Apple_News::get_filename( $bundle_url ) === $bundle_basename ) {
 					$original_url = $bundle_url;
 					break;
 				}
