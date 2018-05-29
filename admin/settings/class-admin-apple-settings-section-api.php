@@ -18,11 +18,12 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $page
+	 * @param string $page The page that this section belongs to.
+	 * @access public
 	 */
-	function __construct( $page ) {
+	public function __construct( $page ) {
 		// Set the name.
-		$this->name =  __( 'API Settings', 'apple-news' );
+		$this->name = __( 'API Settings', 'apple-news' );
 
 		// Add the settings.
 		$this->settings = array(
@@ -51,9 +52,9 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 				'type'    => array( 'yes', 'no' ),
 			),
 			'api_async' => array(
-				'label'   			=> __( 'Asynchronously publish to Apple News', 'apple-news' ),
-				'type'    			=> array( 'yes', 'no' ),
-				'description' 	=> $this->get_async_description(),
+				'label'             => __( 'Asynchronously publish to Apple News', 'apple-news' ),
+				'type'              => array( 'yes', 'no' ),
+				'description'   => $this->get_async_description(),
 			),
 		);
 
@@ -71,8 +72,8 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 	/**
 	 * Gets section info.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string Information about this section.
 	 */
 	public function get_section_info() {
 		return sprintf(
@@ -86,8 +87,8 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 	/**
 	 * Generates the description for the async field since this varies by environment.
 	 *
-	 * @return string
 	 * @access private
+	 * @return string The description of the async field.
 	 */
 	private function get_async_description() {
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && true === WPCOM_IS_VIP_ENV ) {

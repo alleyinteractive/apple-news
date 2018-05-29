@@ -18,11 +18,12 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 	/**
 	 * Constructor.
 	 *
-	 * @param string $page
+	 * @param string $page The name of the page.
+	 * @access public
 	 */
-	function __construct( $page ) {
+	public function __construct( $page ) {
 		// Set the name.
-		$this->name =  __( 'Post Type Options', 'apple-news' );
+		$this->name = __( 'Post Type Options', 'apple-news' );
 
 		// Add the settings.
 		$this->settings = array(
@@ -33,10 +34,14 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 		);
 
 		// Build the post types to display.
-		$post_types = apply_filters( 'apple_news_post_types', get_post_types( array(
-			'public' => true,
-			'show_ui' => true,
-		), 'objects' ) );
+		$post_types = apply_filters(
+			'apple_news_post_types', get_post_types(
+				array(
+					'public' => true,
+					'show_ui' => true,
+				), 'objects'
+			)
+		);
 
 		if ( ! empty( $post_types ) ) {
 			$post_type_options = array();
@@ -45,10 +50,10 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 			}
 
 			$this->settings['post_types'] = array(
-				'label'   	=> __( 'Post Types', 'apple-news' ),
-				'type'    	=> $post_type_options,
-				'multiple' 	=> true,
-				'sanitize'	=> array( $this, 'sanitize_array' ),
+				'label'     => __( 'Post Types', 'apple-news' ),
+				'type'      => $post_type_options,
+				'multiple'  => true,
+				'sanitize'  => array( $this, 'sanitize_array' ),
 			);
 		}
 
@@ -66,8 +71,8 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 	/**
 	 * Gets section info.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The description for this section.
 	 */
 	public function get_section_info() {
 		return __( 'Choose the post types that are eligible for publishing to Apple News.', 'apple-news' );

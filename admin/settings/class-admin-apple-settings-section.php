@@ -152,16 +152,17 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $page
-	 * @param boolean $hidden
-	 * @param string $save_action
-	 * @param string $section_option_name
+	 * @param string  $page                The name of the page.
+	 * @param boolean $hidden              Whether this section is hidden.
+	 * @param string  $save_action         Action used for saving the section.
+	 * @param string  $section_option_name Option name used for the section.
+	 * @access public
 	 */
-	function __construct( $page, $hidden = false, $save_action = 'apple_news_options', $section_option_name = null ) {
+	public function __construct( $page, $hidden = false, $save_action = 'apple_news_options', $section_option_name = null ) {
 		$this->page = $page;
 		self::$section_option_name = ( ! empty( $section_option_name ) ) ? $section_option_name : self::$option_name;
 		$this->save_action = $save_action;
-		$base_settings = new \Apple_Exporter\Settings;
+		$base_settings = new \Apple_Exporter\Settings();
 		self::$base_settings = $base_settings->all();
 		self::$loaded_settings = get_option( self::$section_option_name );
 		$this->settings = apply_filters( 'apple_news_section_settings', $this->settings, $page );
@@ -175,8 +176,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get the settings section name.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The name of this settings section.
 	 */
 	public function name() {
 		return $this->name;
@@ -186,8 +187,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * Return an array which contains all groups and their related settings,
 	 * embedded.
 	 *
-	 * @return array
 	 * @access public
+	 * @return array An array of all groups and their related settings.
 	 */
 	public function groups() {
 		$result = array();
@@ -212,8 +213,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get the ID of the settings section.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The namespaced ID of the settings section.
 	 */
 	public function id() {
 		return $this->plugin_slug . '_options_section_' . $this->slug;
@@ -222,8 +223,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Render a settings field.
 	 *
-	 * @param array $args
+	 * @param array $args Arguments for the field to be rendered.
 	 * @access public
+	 * @return mixed The result of the callback, if provided.
 	 */
 	public function render_field( $args ) {
 		list( $name, $default_value, $callback ) = $args;
@@ -275,14 +277,14 @@ class Admin_Apple_Settings_Section extends Apple_News {
 				} else {
 					$field .= selected( $value, $store_value, false );
 				}
-				$field .= ">" . esc_html( $option ) . "</option>";
+				$field .= '>' . esc_html( $option ) . '</option>';
 			}
 			$field .= '</select>';
 		} elseif ( 'password' === $type ) {
 			$field = '<input type="password" id="%s" name="%s" value="%s" size="%s" %s>';
 		} elseif ( 'hidden' === $type ) {
 			$field = '<input type="hidden" id="%s" name="%s" value="%s">';
-		}  else {
+		} else {
 			// If nothing else matches, it's a string.
 			$field = '<input type="text" id="%s" name="%s" value="%s" size="%s" %s>';
 		}
@@ -323,9 +325,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get the type for a field.
 	 *
-	 * @param string $name
-	 * @return string
+	 * @param string $name The name of the field for which to fetch a type.
 	 * @access protected
+	 * @return string The type of the field.
 	 */
 	protected function get_type_for( $name ) {
 		if ( $this->hidden ) {
@@ -338,9 +340,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get the description for a field.
 	 *
-	 * @param string $name
-	 * @return string
+	 * @param string $name The name of the field for which to fetch a description.
 	 * @access protected
+	 * @return string The description for the field.
 	 */
 	protected function get_description_for( $name ) {
 		return empty( $this->settings[ $name ]['description'] ) ? '' : $this->settings[ $name ]['description'];
@@ -349,9 +351,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get the size for a field.
 	 *
-	 * @param string $name
-	 * @return int
+	 * @param string $name The name of the field for which to fetch a size.
 	 * @access protected
+	 * @return int The size of the field.
 	 */
 	protected function get_size_for( $name ) {
 		return empty( $this->settings[ $name ]['size'] ) ? 20 : $this->settings[ $name ]['size'];
@@ -360,9 +362,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Check if a field is required.
 	 *
-	 * @param string $name
-	 * @return int
+	 * @param string $name The name of the field for which to fetch the required flag.
 	 * @access protected
+	 * @return string The string 'required' if required, or a blank string otherwise.
 	 */
 	protected function is_required( $name ) {
 		$required = ! isset( $this->settings[ $name ]['required'] ) ? true : $this->settings[ $name ]['required'];
@@ -372,9 +374,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Check if the field can hold multiple values.
 	 *
-	 * @param string $name
-	 * @return boolean
+	 * @param string $name The name of the field for which the multiple check should be performed.
 	 * @access protected
+	 * @return boolean True if the field can hold multiple values, false otherwise.
 	 */
 	protected function is_multiple( $name ) {
 		return ! empty( $this->settings[ $name ]['multiple'] );
@@ -383,9 +385,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get the default for a field.
 	 *
-	 * @param string $name
-	 * @return string
+	 * @param string $name The name of the field for which to fetch the default.
 	 * @access protected
+	 * @return string The default for the field.
 	 */
 	protected static function get_default_for( $name ) {
 		return isset( self::$base_settings[ $name ] ) ? self::$base_settings[ $name ] : '';
@@ -394,8 +396,10 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Gets section info.
 	 *
-	 * @return string
+	 * Intended to be overridden by child classes.
+	 *
 	 * @access public
+	 * @return string The section info to be displayed.
 	 */
 	public function get_section_info() {
 		return '';
@@ -404,7 +408,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * HTML to display before the section.
 	 *
-	 * @return string
+	 * Intended to be overridden by child classes.
+	 *
 	 * @access public
 	 */
 	public function before_section() {
@@ -414,7 +419,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * HTML to display after the section.
 	 *
-	 * @return string
+	 * Intended to be overridden by child classes.
+	 *
 	 * @access public
 	 */
 	public function after_section() {
@@ -424,8 +430,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get settings.
 	 *
-	 * @return array
 	 * @access public
+	 * @return array The settings array.
 	 */
 	public function get_settings() {
 		return $this->settings;
@@ -434,8 +440,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get loaded settings.
 	 *
-	 * @return array
 	 * @access public
+	 * @return array The loaded settings array.
 	 */
 	public function get_loaded_settings() {
 		return $this->loaded_settings;
@@ -444,8 +450,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Check if the section is hidden on the settings page.
 	 *
-	 * @return boolean
 	 * @access public
+	 * @return boolean Whether this section is hidden.
 	 */
 	public function is_hidden() {
 		return $this->hidden;
@@ -454,8 +460,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Sanitizes a single dimension array with text values.
 	 *
-	 * @param array $value
-	 * @return array
+	 * @param array $value The array value to be sanitized.
+	 * @access public
+	 * @return array The sanitized array.
 	 */
 	public function sanitize_array( $value ) {
 		return array_map( 'sanitize_text_field', $value );
@@ -464,9 +471,10 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Get the current value for an option.
 	 *
-	 * @param string $key
-	 * @param array $saved_settings
-	 * @return mixed
+	 * @param string $key            The key to look up.
+	 * @param array  $saved_settings Optional. The settings to use. Defaults to null, which forces a lookup.
+	 * @access public
+	 * @return mixed The value for the option.
 	 */
 	public static function get_value( $key, $saved_settings = null ) {
 		if ( empty( $saved_settings ) ) {
@@ -478,6 +486,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	/**
 	 * Each section is responsible for saving its own settings
 	 * since only it knows the nature of the fields and sanitization methods.
+	 *
+	 * @access public
 	 */
 	public function save_settings() {
 		// Check if we're saving options and that there are settings to save.

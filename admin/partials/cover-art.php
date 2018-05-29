@@ -7,13 +7,15 @@ $orientations = array(
 );
 ?>
 <p class="description">
-	<?php printf(
+	<?php
+	printf(
 		wp_kses(
 			__( '<a href="%s">Cover art</a> will represent your article if editorially chosen for Featured Stories. Cover Art must include your channel logo with text at 24 pt minimum that is related to the headline. The image provided must match the dimensions listed. Limit submissions to 1-3 articles per day.', 'apple-news' ),
 			array( 'a' => array( 'href' => array() ) )
 		),
 		'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html'
-	); ?>
+	);
+	?>
 </p>
 <div>
 	<label for="apple-news-coverart-orientation"><?php esc_html_e( 'Orientation:', 'apple-news' ); ?></label>
@@ -27,21 +29,25 @@ $orientations = array(
 <p class="description"><?php esc_html_e( 'Note: You must provide the largest size (iPad Pro 12.9 in) in order for your submission to be considered.', 'apple-news' ); ?></p>
 <?php $image_sizes = Admin_Apple_News::get_image_sizes(); ?>
 <?php foreach ( $image_sizes as $key => $data ) : ?>
-	<?php if ( 'coverArt' !== $data['type'] ) {
+	<?php
+	if ( 'coverArt' !== $data['type'] ) {
 		continue;
-	} ?>
+	}
+	?>
 	<div class="apple-news-coverart-image-container apple-news-coverart-image-<?php echo esc_attr( $data['orientation'] ); ?>">
 		<?php $image_id = ( ! empty( $cover_art[ $key ] ) ) ? absint( $cover_art[ $key ] ) : ''; ?>
 		<h4><?php echo esc_html( $data['label'] ); ?></h4>
 		<div class="apple-news-coverart-image">
-			<?php if ( ! empty( $image_id ) ) {
+			<?php
+			if ( ! empty( $image_id ) ) {
 				echo wp_get_attachment_image( $image_id, 'medium' );
 				$add_hidden = 'hidden';
 				$remove_hidden = '';
 			} else {
 				$add_hidden = '';
 				$remove_hidden = 'hidden';
-			} ?>
+			}
+			?>
 		</div>
 		<input name="<?php echo esc_attr( $key ); ?>"
 			class="apple-news-coverart-id"

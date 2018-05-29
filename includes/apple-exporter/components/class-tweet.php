@@ -12,15 +12,16 @@ class Tweet extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		// Check if the body of a node is solely a tweet URL.
 		$is_twitter_url = $node->nodeName === 'p' && preg_match( // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			'#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i',
-			trim( $node->nodeValue ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			trim( $node->nodeValue ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		);
 
 		if ( self::node_has_class( $node, 'twitter-tweet' ) || $is_twitter_url ) {
 			return $node;
@@ -51,7 +52,7 @@ class Tweet extends Component {
 				'margin' => array(
 					'top' => 30,
 					'bottom' => 30,
-				)
+				),
 			)
 		);
 	}
@@ -59,13 +60,13 @@ class Tweet extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 		// Find Twitter URL in HTML string.
-		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?twitter.com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $text, $matches, PREG_SET_ORDER ) ) {
-			return null;
+		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?twitter.com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $html, $matches, PREG_SET_ORDER ) ) {
+			return;
 		}
 
 		$matches = array_pop( $matches );

@@ -40,7 +40,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/apple-exporter/class-settings.ph
  * Deactivate the plugin.
  */
 function apple_news_uninstall_wp_plugin() {
-	$settings = new Apple_Exporter\Settings;
+	$settings = new Apple_Exporter\Settings();
 	foreach ( $settings->all() as $name => $value ) {
 		delete_option( $name );
 	}
@@ -48,7 +48,7 @@ function apple_news_uninstall_wp_plugin() {
 
 // WordPress VIP plugins do not execute these hooks, so ignore in that environment.
 if ( ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV ) {
-	register_activation_hook( __FILE__,   'apple_news_activate_wp_plugin' );
+	register_activation_hook( __FILE__, 'apple_news_activate_wp_plugin' );
 	register_uninstall_hook( __FILE__, 'apple_news_uninstall_wp_plugin' );
 }
 

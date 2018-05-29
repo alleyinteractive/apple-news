@@ -52,10 +52,10 @@ class Component_Factory {
 	/**
 	 * Initialize the component factory.
 	 *
-	 * @param Workspace $workspace
-	 * @param Settings $settings
-	 * @param Component_Text_Styles $styles
-	 * @param Component_Layouts $layouts
+	 * @param \Apple_Exporter\Workspace                      $workspace The workspace to use.
+	 * @param \Apple_Exporter\Settings                       $settings  The settings to use.
+	 * @param \Apple_Exporter\Builders\Component_Text_Styles $styles    The styles to use.
+	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts   The layouts to use.
 	 * @access public
 	 */
 	public static function initialize( $workspace = null, $settings = null, $styles = null, $layouts = null ) {
@@ -105,8 +105,8 @@ class Component_Factory {
 	/**
 	 * Register a component.
 	 *
-	 * @param string $shortname
-	 * @param string $classname
+	 * @param string $shortname The short name for the component.
+	 * @param string $classname The class name for the component.
 	 * @access private
 	 */
 	private static function register_component( $shortname, $classname ) {
@@ -116,10 +116,10 @@ class Component_Factory {
 	/**
 	 * Get a component.
 	 *
-	 * @param string $shortname
-	 * @param string $html
-	 * @return Component
+	 * @param string $shortname The short name for the component type to use.
+	 * @param string $html      The HTML to be parsed by the component.
 	 * @access public
+	 * @return \Apple_Exporter\Components\Component A component class matching the shortname.
 	 */
 	public static function get_component( $shortname, $html ) {
 		$class = self::$components[ $shortname ];
@@ -135,9 +135,9 @@ class Component_Factory {
 	 * Given a node, returns an array of all the components inside that node. If
 	 * the node is a component itself, returns an array of only one element.
 	 *
-	 * @param DomNode $node
-	 * @return array
+	 * @param \DOMElement $node The node to be examined.
 	 * @access public
+	 * @return array An array of components contained in the node.
 	 */
 	public static function get_components_from_node( $node ) {
 		$result = array();

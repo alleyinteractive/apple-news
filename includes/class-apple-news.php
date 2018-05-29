@@ -134,7 +134,7 @@ class Apple_News {
 	 * Displays support information for the plugin.
 	 *
 	 * @param string $format The format in which to return the information.
-	 * @param bool $with_padding Whether to include leading line breaks.
+	 * @param bool   $with_padding Whether to include leading line breaks.
 	 *
 	 * @access public
 	 * @return string The HTML for the support info block.
@@ -228,7 +228,7 @@ class Apple_News {
 		// Enqueue styles.
 		wp_enqueue_style(
 			$this->plugin_slug . '_cover_art_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/cover-art.css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/cover-art.css',
 			array(),
 			self::$version
 		);
@@ -236,19 +236,21 @@ class Apple_News {
 		// Enqueue scripts.
 		wp_enqueue_script(
 			$this->plugin_slug . '_cover_art_js',
-			plugin_dir_url( __FILE__ ) .  '../assets/js/cover-art.js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/cover-art.js',
 			array( 'jquery' ),
 			self::$version,
 			true
 		);
 
 		// Localize scripts.
-		wp_localize_script( $this->plugin_slug . '_cover_art_js', 'apple_news_cover_art', array(
-			'image_sizes' => Admin_Apple_News::get_image_sizes(),
-			'image_too_small' => esc_html__( 'You must select an image that is at least the height and width specified above.', 'apple-news' ),
-			'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
-			'media_modal_title' => esc_html__( 'Choose an image', 'apple-news' ),
-		) );
+		wp_localize_script(
+			$this->plugin_slug . '_cover_art_js', 'apple_news_cover_art', array(
+				'image_sizes' => Admin_Apple_News::get_image_sizes(),
+				'image_too_small' => esc_html__( 'You must select an image that is at least the height and width specified above.', 'apple-news' ),
+				'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
+				'media_modal_title' => esc_html__( 'Choose an image', 'apple-news' ),
+			)
+		);
 	}
 
 	/**
@@ -300,7 +302,7 @@ class Apple_News {
 		}
 
 		// Build the theme formatting settings from the base settings array.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$options = \Apple_Exporter\Theme::get_options();
 		$wp_settings = get_option( self::$option_name, array() );
 		$theme_settings = array();
@@ -338,7 +340,7 @@ class Apple_News {
 		 */
 		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['api_autosync_delete'] )
-		     && ! empty( $wp_settings['api_autosync_update'] )
+			 && ! empty( $wp_settings['api_autosync_update'] )
 		) {
 			$wp_settings['api_autosync_delete'] = $wp_settings['api_autosync_update'];
 			update_option( self::$option_name, $wp_settings, 'no' );
@@ -354,23 +356,25 @@ class Apple_News {
 
 		// Check for the presence of blockquote-specific settings.
 		$wp_settings = get_option( self::$option_name );
-		if ( $this->_all_keys_exist( $wp_settings, array(
-			'blockquote_background_color',
-			'blockquote_border_color',
-			'blockquote_border_style',
-			'blockquote_border_width',
-			'blockquote_color',
-			'blockquote_font',
-			'blockquote_line_height',
-			'blockquote_size',
-			'blockquote_tracking',
-		) ) ) {
+		if ( $this->_all_keys_exist(
+			$wp_settings, array(
+				'blockquote_background_color',
+				'blockquote_border_color',
+				'blockquote_border_style',
+				'blockquote_border_width',
+				'blockquote_color',
+				'blockquote_font',
+				'blockquote_line_height',
+				'blockquote_size',
+				'blockquote_tracking',
+			)
+		) ) {
 			return;
 		}
 
 		// Set the background color to 90% of the body background.
 		if ( ! isset( $wp_settings['blockquote_background_color'] )
-		     && isset( $wp_settings['body_background_color'] )
+			 && isset( $wp_settings['body_background_color'] )
 		) {
 
 			// Get current octets.
@@ -428,20 +432,22 @@ class Apple_News {
 
 		// Check for the presence of caption-specific settings.
 		$wp_settings = get_option( self::$option_name );
-		if ( $this->_all_keys_exist( $wp_settings, array(
-			'caption_color',
-			'caption_font',
-			'caption_line_height',
-			'caption_size',
-			'caption_tracking',
-		) ) ) {
+		if ( $this->_all_keys_exist(
+			$wp_settings, array(
+				'caption_color',
+				'caption_font',
+				'caption_line_height',
+				'caption_size',
+				'caption_tracking',
+			)
+		) ) {
 			return;
 		}
 
 		// Clone and modify font size, if necessary.
 		if ( ! isset( $wp_settings['caption_size'] )
-		     && isset( $wp_settings['body_size'] )
-		     && is_numeric( $wp_settings['body_size'] )
+			 && isset( $wp_settings['body_size'] )
+			 && is_numeric( $wp_settings['body_size'] )
 		) {
 			$wp_settings['caption_size'] = $wp_settings['body_size'] - 2;
 		}
@@ -481,7 +487,7 @@ class Apple_News {
 		foreach ( $components as $component_class ) {
 
 			// Negotiate the component key.
-			$component = new $component_class;
+			$component = new $component_class();
 			$component_key = $component->get_component_name();
 
 			// Try to get the custom JSON for this component.
@@ -504,7 +510,7 @@ class Apple_News {
 
 		// Loop over themes and apply to each.
 		foreach ( $all_themes as $theme_name ) {
-			$theme = new \Apple_Exporter\Theme;
+			$theme = new \Apple_Exporter\Theme();
 			$theme->set_name( $theme_name );
 			$theme->load();
 			$settings = $theme->all_settings();
@@ -530,33 +536,35 @@ class Apple_News {
 		// Check for presence of any legacy header setting.
 		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['header_font'] )
-		     && empty( $wp_settings['header_color'] )
-		     && empty( $wp_settings['header_line_height'] )
+			 && empty( $wp_settings['header_color'] )
+			 && empty( $wp_settings['header_line_height'] )
 		) {
 			return;
 		}
 
 		// Clone settings, as necessary.
-		$wp_settings = $this->_clone_settings( $wp_settings, array(
-			'header1_color' => 'header_color',
-			'header2_color' => 'header_color',
-			'header3_color' => 'header_color',
-			'header4_color' => 'header_color',
-			'header5_color' => 'header_color',
-			'header6_color' => 'header_color',
-			'header1_font' => 'header_font',
-			'header2_font' => 'header_font',
-			'header3_font' => 'header_font',
-			'header4_font' => 'header_font',
-			'header5_font' => 'header_font',
-			'header6_font' => 'header_font',
-			'header1_line_height' => 'header_line_height',
-			'header2_line_height' => 'header_line_height',
-			'header3_line_height' => 'header_line_height',
-			'header4_line_height' => 'header_line_height',
-			'header5_line_height' => 'header_line_height',
-			'header6_line_height' => 'header_line_height',
-		) );
+		$wp_settings = $this->_clone_settings(
+			$wp_settings, array(
+				'header1_color' => 'header_color',
+				'header2_color' => 'header_color',
+				'header3_color' => 'header_color',
+				'header4_color' => 'header_color',
+				'header5_color' => 'header_color',
+				'header6_color' => 'header_color',
+				'header1_font' => 'header_font',
+				'header2_font' => 'header_font',
+				'header3_font' => 'header_font',
+				'header4_font' => 'header_font',
+				'header5_font' => 'header_font',
+				'header6_font' => 'header_font',
+				'header1_line_height' => 'header_line_height',
+				'header2_line_height' => 'header_line_height',
+				'header3_line_height' => 'header_line_height',
+				'header4_line_height' => 'header_line_height',
+				'header5_line_height' => 'header_line_height',
+				'header6_line_height' => 'header_line_height',
+			)
+		);
 
 		// Remove legacy settings.
 		unset( $wp_settings['header_color'] );
@@ -621,6 +629,7 @@ class Apple_News {
 	/**
 	 * Migrates table settings for a theme, using other settings in the
 	 * theme to inform sensible defaults.
+	 *
 	 * @param string $theme_name The theme name for which settings should be migrated.
 	 */
 	public function migrate_table_settings( $theme_name ) {
@@ -732,7 +741,7 @@ class Apple_News {
 		foreach ( $example_themes as $slug => $name ) {
 
 			// Determine if the theme already exists.
-			$theme = new \Apple_Exporter\Theme;
+			$theme = new \Apple_Exporter\Theme();
 			$theme->set_name( $name );
 			if ( $theme->load() ) {
 				continue;
@@ -769,7 +778,8 @@ class Apple_News {
 		}
 
 		return ( count( $keys ) === count(
-			array_intersect_key( $compare, array_combine( $keys, $keys ) ) )
+			array_intersect_key( $compare, array_combine( $keys, $keys ) )
+		)
 		);
 	}
 

@@ -35,7 +35,7 @@ class MIME_Builder {
 	 * @var array
 	 * @access private
 	 */
-	private static $valid_mime_types = array (
+	private static $valid_mime_types = array(
 		'image/jpeg',
 		'image/png',
 		'image/gif',
@@ -50,8 +50,10 @@ class MIME_Builder {
 
 	/**
 	 * Constructor.
+	 *
+	 * @access public
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->boundary = md5( microtime() );
 	}
 
@@ -68,9 +70,9 @@ class MIME_Builder {
 	/**
 	 * Add metadata to the MIME request.
 	 *
-	 * @param mixed $meta
-	 * @return string
+	 * @param mixed $meta The meta to include.
 	 * @access public
+	 * @return string The textual representation of the meta.
 	 */
 	public function add_metadata( $meta ) {
 		$attachment  = '--' . $this->boundary . $this->eol;
@@ -86,11 +88,12 @@ class MIME_Builder {
 	/**
 	 * Add a JSON string to the MIME request.
 	 *
-	 * @param string $name
-	 * @param string $filename
-	 * @param string $content
-	 * @return string
+	 * @param string $name     The name of the JSON string to be added.
+	 * @param string $filename The filename of the JSON to be added.
+	 * @param string $content  The content to be added.
 	 * @access public
+	 * @return string The textual representation of the content.
+	 * @throws Request_Exception If the request fails.
 	 */
 	public function add_json_string( $name, $filename, $content ) {
 		return $this->build_attachment(
@@ -105,10 +108,11 @@ class MIME_Builder {
 	/**
 	 * Add file contents to the MIME request.
 	 *
-	 * @param string $filepath
-	 * @param string $name
-	 * @return string
+	 * @param string $filepath The filepath of the file to add.
+	 * @param string $name     Optional. The name of the file to add. Defaults to null.
 	 * @access public
+	 * @return string The attachment content.
+	 * @throws Request_Exception If the request fails.
 	 */
 	public function add_content_from_file( $filepath, $name = null ) {
 		// Get the contents of the file.
@@ -176,30 +180,35 @@ class MIME_Builder {
 	/**
 	 * Build an attachment in the MIME request.
 	 *
-	 * @param string $name
-	 * @param string $filename
-	 * @param string $content
-	 * @param string $mime_type
-	 * @param int $size
-	 * @return string
+	 * @param string $name      The name of the attachment.
+	 * @param string $filename  The filename of the attachment.
+	 * @param string $content   The content of the attachment.
+	 * @param string $mime_type The MIME type of the attachment.
+	 * @param int    $size      The filesize of the attachment.
 	 * @access private
+	 * @return string The attachment data.
+	 * @throws Request_Exception If the file is empty or an invalid size.
 	 */
 	private function build_attachment( $name, $filename, $content, $mime_type, $size ) {
 		// Ensure the file isn't empty.
 		if ( empty( $content ) ) {
-			throw new Request_Exception( sprintf(
-				__( 'The attachment %s could not be included in the request because it was empty.', 'apple-news' ),
-				esc_html( $filename )
-			) );
+			throw new Request_Exception(
+				sprintf(
+					__( 'The attachment %s could not be included in the request because it was empty.', 'apple-news' ),
+					esc_html( $filename )
+				)
+			);
 		}
 
 		// Ensure a valid size was provided.
 		if ( 0 >= intval( $size ) ) {
-			throw new Request_Exception( sprintf(
-				__( 'The attachment %s could not be included in the request because its size was %s.', 'apple-news' ),
-				esc_html( $filename ),
-				esc_html( $size )
-			) );
+			throw new Request_Exception(
+				sprintf(
+					__( 'The attachment %1$s could not be included in the request because its size was %2$s.', 'apple-news' ),
+					esc_html( $filename ),
+					esc_html( $size )
+				)
+			);
 		}
 
 		// Build the attachment.
@@ -224,9 +233,9 @@ class MIME_Builder {
 	 * Get the MIME type for a file.
 	 *
 	 * @todo replace with the proper WordPress function.
-	 * @param string $filepath
-	 * @return string
+	 * @param string $filepath The filepath to get the MIME type for.
 	 * @access private
+	 * @return string The MIME type for the filepath.
 	 */
 	private function get_mime_type_for( $filepath ) {
 		// TODO: rethink this for better integration with WordPress.
@@ -236,9 +245,9 @@ class MIME_Builder {
 	/**
 	 * Check if this file is a valid MIME type to be included in the bundle.
 	 *
-	 * @param string $type
-	 * @return boolean
+	 * @param string $type The MIME type to check.
 	 * @access private
+	 * @return boolean True if it is a valid MIME type, false otherwise.
 	 */
 	private function is_valid_mime_type( $type ) {
 		return in_array( $type, self::$valid_mime_types, true );
@@ -247,9 +256,9 @@ class MIME_Builder {
 	/**
 	 * Gets the debug version of the MIME content
 	 *
-	 * @param array $args
-	 * @return string
+	 * @param array $args Arguments to parse for debug info.
 	 * @access public
+	 * @return string The debug content, augmented with header information.
 	 */
 	public function get_debug_content( $args ) {
 		$content = '';

@@ -40,7 +40,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Renders a theme option field for use in a form.
 	 *
 	 * @param \Apple_Exporter\Theme $theme The Theme object to use.
-	 * @param string $option_name The option name to process.
+	 * @param string                $option_name The option name to process.
 	 *
 	 * @access public
 	 * @return string The HTML for the field.
@@ -82,7 +82,6 @@ class Admin_Apple_Themes extends Apple_News {
 
 				break;
 			case 'font':
-
 				// Build the options list.
 				$fonts = \Apple_Exporter\Theme::get_fonts();
 				foreach ( $fonts as $font_name ) {
@@ -104,7 +103,6 @@ class Admin_Apple_Themes extends Apple_News {
 
 				break;
 			case 'select':
-
 				// Build the options list.
 				foreach ( $option['options'] as $option_value ) {
 					$field .= sprintf(
@@ -241,7 +239,7 @@ class Admin_Apple_Themes extends Apple_News {
 		unset( $settings['theme_name'] );
 
 		// Create a new theme object and attempt to save it.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $name );
 		if ( ! $theme->load( $settings ) || ! $theme->save() ) {
 			return sprintf(
@@ -270,7 +268,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Negotiate theme object.
 		$error = '';
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		if ( isset( $_GET['theme'] ) ) {
 			$theme_name = sanitize_text_field( $_GET['theme'] );
 			$theme->set_name( $theme_name );
@@ -308,14 +306,16 @@ class Admin_Apple_Themes extends Apple_News {
 	/**
 	 * Register assets for the options page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The context under which this function is called.
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
-		if ( ! in_array( $hook, array(
-			'apple-news_page_apple-news-themes',
-			'admin_page_apple-news-theme-edit',
-		), true ) ) {
+		if ( ! in_array(
+			$hook, array(
+				'apple-news_page_apple-news-themes',
+				'admin_page_apple-news-theme-edit',
+			), true
+		) ) {
 			return;
 		}
 
@@ -333,11 +333,13 @@ class Admin_Apple_Themes extends Apple_News {
 			self::$version
 		);
 
-		wp_localize_script( 'apple-news-themes-js', 'appleNewsThemes', array(
-			'deleteWarning' => __( 'Are you sure you want to delete the theme', 'apple-news' ),
-			'noNameError' => __( 'Please enter a name for the new theme.', 'apple-news' ),
-			'tooLongError' => __( 'Theme names must be 45 characters or less.', 'apple-news' ),
-		) );
+		wp_localize_script(
+			'apple-news-themes-js', 'appleNewsThemes', array(
+				'deleteWarning' => __( 'Are you sure you want to delete the theme', 'apple-news' ),
+				'noNameError' => __( 'Please enter a name for the new theme.', 'apple-news' ),
+				'tooLongError' => __( 'Theme names must be 45 characters or less.', 'apple-news' ),
+			)
+		);
 
 		if ( 'admin_page_apple-news-theme-edit' === $hook ) {
 			wp_enqueue_style(
@@ -369,14 +371,16 @@ class Admin_Apple_Themes extends Apple_News {
 					'jquery-ui-sortable',
 					'apple-news-select2-js',
 					'iris',
-					'apple-news-preview-js'
+					'apple-news-preview-js',
 				),
 				self::$version
 			);
 
-			wp_localize_script( 'apple-news-theme-edit-js', 'appleNewsThemeEdit', array(
-				'fontNotice' => __( 'Font preview is only available on macOS', 'apple-news' ),
-			) );
+			wp_localize_script(
+				'apple-news-theme-edit-js', 'appleNewsThemeEdit', array(
+					'fontNotice' => __( 'Font preview is only available on macOS', 'apple-news' ),
+				)
+			);
 		}
 	}
 
@@ -384,7 +388,6 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Fix the title since WordPress doesn't set one.
 	 *
 	 * @param string $admin_title The title to be filtered.
-	 *
 	 * @access public
 	 * @return string
 	 */
@@ -415,7 +418,7 @@ class Admin_Apple_Themes extends Apple_News {
 		// Ensure there is at least one theme created.
 		$registry = \Apple_Exporter\Theme::get_registry();
 		if ( empty( $registry ) ) {
-			$theme = new \Apple_Exporter\Theme;
+			$theme = new \Apple_Exporter\Theme();
 			$theme->save();
 			$theme->set_active();
 		}
@@ -521,7 +524,7 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Determine if the theme is using the default settings.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
 		$theme->load();
 
@@ -533,7 +536,7 @@ class Admin_Apple_Themes extends Apple_News {
 		// Nag the user.
 		\Admin_Apple_Notice::info(
 			sprintf(
-			/* translators: First parameter is opening a tag, second is closing a tag */
+				/* translators: First parameter is opening a tag, second is closing a tag */
 				__( 'It looks like you are using the default theme. You can choose a new theme or customize your theme on the %1$sthemes page%2$s.', 'apple-news' ),
 				'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-themes' ) ) . '">',
 				'</a>'
@@ -562,15 +565,17 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Remove the theme.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $name );
 		$theme->delete();
 
 		// Indicate success.
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'Successfully deleted theme %s', 'apple-news' ),
-			$name
-		) );
+		\Admin_Apple_Notice::success(
+			sprintf(
+				__( 'Successfully deleted theme %s', 'apple-news' ),
+				$name
+			)
+		);
 	}
 
 	/**
@@ -587,21 +592,25 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Ensure we got a theme name.
 		if ( empty( $name ) ) {
-			\Admin_Apple_Notice::error( __(
-				'Unable to export the theme because no name was provided',
-				'apple-news'
-			) );
+			\Admin_Apple_Notice::error(
+				__(
+					'Unable to export the theme because no name was provided',
+					'apple-news'
+				)
+			);
 			return;
 		}
 
 		// Try to load the theme.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $name );
 		if ( ! $theme->load() ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The theme %s could not be found', 'apple-news' ),
-				$name
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'The theme %s could not be found', 'apple-news' ),
+					$name
+				)
+			);
 			return;
 		}
 
@@ -634,7 +643,7 @@ class Admin_Apple_Themes extends Apple_News {
 	private function _save_edit_theme() {
 
 		// Create a theme object.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 
 		// Get the theme name.
 		if ( ! isset( $_POST['apple_news_theme_name'] ) ) {
@@ -672,10 +681,12 @@ class Admin_Apple_Themes extends Apple_News {
 		if ( ( 'new' === $action || 'rename' === $action )
 			&& \Apple_Exporter\Theme::theme_exists( $name )
 		) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'Theme name %s is already in use.', 'apple-news' ),
-				$name
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'Theme name %s is already in use.', 'apple-news' ),
+					$name
+				)
+			);
 
 			return;
 		}
@@ -695,11 +706,13 @@ class Admin_Apple_Themes extends Apple_News {
 		// Load postdata into the theme and try to save.
 		$theme->load_postdata();
 		if ( ! $theme->save() ) {
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'Could not save theme %1$s: %2$s', 'apple-news' ),
-				$name,
-				$theme->get_last_error()
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'Could not save theme %1$s: %2$s', 'apple-news' ),
+					$name,
+					$theme->get_last_error()
+				)
+			);
 
 			return;
 		}
@@ -710,10 +723,12 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Indicate success.
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'The theme %s was saved successfully', 'apple-news' ),
-			$name
-		) );
+		\Admin_Apple_Notice::success(
+			sprintf(
+				__( 'The theme %s was saved successfully', 'apple-news' ),
+				$name
+			)
+		);
 	}
 
 	/**
@@ -738,15 +753,17 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Set the theme as active.
-		$theme = new \Apple_Exporter\Theme;
+		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $name );
 		$theme->set_active();
 
 		// Indicate success.
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'Successfully switched to theme %s', 'apple-news' ),
-			$name
-		) );
+		\Admin_Apple_Notice::success(
+			sprintf(
+				__( 'Successfully switched to theme %s', 'apple-news' ),
+				$name
+			)
+		);
 	}
 
 	/**
@@ -777,10 +794,12 @@ class Admin_Apple_Themes extends Apple_News {
 		$this->file_id = absint( $file['id'] );
 		if ( ! file_exists( $file['file'] ) ) {
 			wp_import_cleanup( $this->file_id );
-			\Admin_Apple_Notice::error( sprintf(
-				__( 'The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem.', 'wp-options-importer' ),
-				esc_html( $file['file'] )
-			) );
+			\Admin_Apple_Notice::error(
+				sprintf(
+					__( 'The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem.', 'wp-options-importer' ),
+					esc_html( $file['file'] )
+				)
+			);
 			return;
 		}
 
@@ -812,9 +831,11 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Indicate success.
-		\Admin_Apple_Notice::success( sprintf(
-			__( 'Successfully uploaded theme %s', 'apple-news' ),
-			$name
-		) );
+		\Admin_Apple_Notice::success(
+			sprintf(
+				__( 'Successfully uploaded theme %s', 'apple-news' ),
+				$name
+			)
+		);
 	}
 }

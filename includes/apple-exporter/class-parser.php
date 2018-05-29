@@ -40,7 +40,7 @@ class Parser {
 	 * @access public
 	 */
 	public function __construct( $format = 'markdown' ) {
-		$this->format = ( 'html' === $format  ) ? 'html' : 'markdown';
+		$this->format = ( 'html' === $format ) ? 'html' : 'markdown';
 	}
 
 	/**
@@ -141,8 +141,8 @@ class Parser {
 	 * Handles cleaning up any HTML issues prior to parsing that could affect
 	 * both HTML and Markdown format.
 	 *
+	 * @param string $html The HTML to be cleaned.
 	 * @access private
-	 * @param string $html
 	 * @return string The clean HTML
 	 */
 	private function _clean_html( $html ) {

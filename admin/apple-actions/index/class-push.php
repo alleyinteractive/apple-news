@@ -38,10 +38,10 @@ class Push extends API_Action {
 	/**
 	 * Constructor.
 	 *
-	 * @param Settings $settings
-	 * @param int $id
+	 * @param \Apple_Exporter\Settings $settings A settings object containing settings at load time.
+	 * @param int                      $id       The ID for the content object to be pushed.
 	 */
-	function __construct( $settings, $id ) {
+	public function __construct( $settings, $id ) {
 		parent::__construct( $settings );
 		$this->id       = $id;
 		$this->exporter = null;
@@ -50,9 +50,11 @@ class Push extends API_Action {
 	/**
 	 * Perform the push action.
 	 *
+	 * @param boolean $doing_async Optional. Whether the action is being performed asynchronously.
+	 * @param int     $user_id     Optional. The ID of the user performing the action. Defaults to the current user ID.
 	 * @access public
-	 * @param boolean $doing_async
 	 * @return boolean
+	 * @throws \Apple_Actions\Action_Exception If the push fails.
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
 		if ( 'yes' === $this->settings->get( 'api_async' ) && false === $doing_async ) {
@@ -119,8 +121,9 @@ class Push extends API_Action {
 	/**
 	 * Push the post using the API data.
 	 *
-	 * @param int $user_id
+	 * @param int $user_id Optional. The ID of the user performing the push. Defaults to current user.
 	 * @access private
+	 * @throws \Apple_Actions\Action_Exception If unable to push.
 	 */
 	private function push( $user_id = null ) {
 		if ( ! $this->is_api_configuration_valid() ) {
@@ -258,7 +261,7 @@ class Push extends API_Action {
 			if ( preg_match( '#WRONG_REVISION#', $e->getMessage() ) ) {
 				throw new \Apple_Actions\Action_Exception( __( 'It seems like the article was updated by another call. If the problem persists, try removing and pushing again.', 'apple-news' ) );
 			} else {
-				throw new \Apple_Actions\Action_Exception( __( 'There has been an error with the API: ', 'apple-news' ) .  $e->getMessage() );
+				throw new \Apple_Actions\Action_Exception( __( 'There has been an error with the API: ', 'apple-news' ) . $e->getMessage() );
 			}
 		}
 
@@ -288,8 +291,9 @@ class Push extends API_Action {
 	/**
 	 * Processes errors, halts publishing if needed.
 	 *
-	 * @param array $errors
+	 * @param array $errors Array of errors to be processed.
 	 * @access private
+	 * @throws \Apple_Actions\Action_Exception If set to fail on component errors.
 	 */
 	private function process_errors( $errors ) {
 		// Get the current alert settings.
@@ -402,10 +406,12 @@ class Push extends API_Action {
 	/**
 	 * Sanitize the JSON output based on whether HTML or markdown is used.
 	 *
-	 * @access private
-	 * @param string $json
-	 * @return string
 	 * @since 1.2.7
+	 *
+	 * @param string $json The JSON to be sanitized.
+	 * @access private
+	 * @return string
+	 * @throws \Apple_Actions\Action_Exception If the JSON is invalid.
 	 */
 	private function sanitize_json( $json ) {
 		/**

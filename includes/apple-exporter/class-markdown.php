@@ -71,7 +71,7 @@ class Markdown {
 		switch ( $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			case 'strong':
 				return $this->_parse_node_strong( $node );
-			case  'i':
+			case 'i':
 			case 'em':
 				return $this->_parse_node_emphasis( $node );
 			case 'br':
@@ -201,7 +201,7 @@ class Markdown {
 			return sprintf(
 				'%d. %s',
 				$this->_list_index ++,
-			    $text
+				$text
 			);
 		}
 

@@ -31,7 +31,7 @@ abstract class API_Action extends Action {
 	/**
 	 * Set the instance of the API class.
 	 *
-	 * @param API $api
+	 * @param API $api The instance of the API class.
 	 * @access public
 	 */
 	public function set_api( $api ) {
@@ -41,8 +41,8 @@ abstract class API_Action extends Action {
 	/**
 	 * Get the instance of the API class.
 	 *
-	 * @return API
 	 * @access protected
+	 * @return API
 	 */
 	protected function get_api() {
 		if ( is_null( $this->api ) ) {
@@ -55,8 +55,8 @@ abstract class API_Action extends Action {
 	/**
 	 * Fetch the current API credentials.
 	 *
-	 * @return Credentials
 	 * @access private
+	 * @return Credentials
 	 */
 	private function fetch_credentials() {
 		$key    = $this->get_setting( 'api_key' );
@@ -67,8 +67,8 @@ abstract class API_Action extends Action {
 	/**
 	 * Check if the API configuration is valid.
 	 *
-	 * @return boolean
 	 * @access protected
+	 * @return boolean
 	 */
 	protected function is_api_configuration_valid() {
 		$api_key = $this->get_setting( 'api_key' );
@@ -76,8 +76,7 @@ abstract class API_Action extends Action {
 		$api_channel = $this->get_setting( 'api_channel' );
 		if ( empty( $api_key )
 			|| empty( $api_secret )
-			|| empty( $api_channel ) )
-		{
+			|| empty( $api_channel ) ) {
 			return false;
 		}
 

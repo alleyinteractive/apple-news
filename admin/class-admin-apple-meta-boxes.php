@@ -27,9 +27,12 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param \Apple_Exporter\Settings $settings Optional. Settings to use during this run. Defaults to null.
+	 * @access public
 	 */
-	function __construct( $settings = null ) {
-	    parent::__construct();
+	public function __construct( $settings = null ) {
+		parent::__construct();
 		$this->settings = $settings;
 
 		// Register hooks if enabled.
@@ -56,8 +59,8 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * Check for a publish action from the meta box.
 	 *
 	 * @since 0.9.0
-	 * @param int $post_id
-	 * @param WP_Post $post
+	 * @param int      $post_id The ID of the post being published.
+	 * @param \WP_Post $post    The post object being published.
 	 * @access public
 	 */
 	public function do_publish( $post_id, $post ) {
@@ -103,7 +106,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	/**
 	 * Saves the Apple News meta fields associated with a post
 	 *
-	 * @param int $post_id
+	 * @param int $post_id The ID of the post being saved.
 	 * @access public
 	 */
 	public static function save_post_meta( $post_id ) {
@@ -177,7 +180,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * Add the Apple News meta boxes
 	 *
 	 * @since 0.9.0
-	 * @param WP_Post $post
+	 * @param \WP_Post $post The post object for which meta boxes are being added.
 	 * @access public
 	 */
 	public function add_meta_boxes( $post ) {
@@ -196,7 +199,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * Add the Apple News publish meta box
 	 *
 	 * @since 0.9.0
-	 * @param WP_Post $post
+	 * @param \WP_Post $post The post object for which the meta box is being added.
 	 * @access public
 	 */
 	public function publish_meta_box( $post ) {
@@ -253,8 +256,8 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		foreach ( $sections as $section ) {
 			?>
 			<div class="section">
-				<input id="apple-news-section-<?php echo esc_attr( $section->id ) ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ) ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ) ?>> <?php /* phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar */ ?>
-				<label for="apple-news-section-<?php echo esc_attr( $section->id ) ?>"><?php echo esc_html( $section->name ) ?></label>
+				<input id="apple-news-section-<?php echo esc_attr( $section->id ); ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ); ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ); ?>> <?php /* phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar */ ?>
+				<label for="apple-news-section-<?php echo esc_attr( $section->id ); ?>"><?php echo esc_html( $section->name ); ?></label>
 			</div>
 			<?php
 		}
@@ -292,9 +295,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	/**
 	 * Determine if a section is checked.
 	 *
-	 * @param array $sections The list of sections applied to a particular post.
-	 * @param int $section_id The ID of the section to check.
-	 * @param bool $is_default Whether this section is the default section.
+	 * @param array $sections   The list of sections applied to a particular post.
+	 * @param int   $section_id The ID of the section to check.
+	 * @param bool  $is_default Whether this section is the default section.
 	 *
 	 * @access public
 	 * @return bool True if the section should be checked, false otherwise.
@@ -325,7 +328,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Enqueue metabox stylesheet.
 		wp_enqueue_style(
 			$this->plugin_slug . '_meta_boxes_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/meta-boxes.css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/meta-boxes.css',
 			array(),
 			self::$version
 		);
@@ -333,16 +336,18 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Enqueue metabox script.
 		wp_enqueue_script(
 			$this->plugin_slug . '_meta_boxes_js',
-			plugin_dir_url( __FILE__ ) .  '../assets/js/meta-boxes.js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/meta-boxes.js',
 			array( 'jquery' ),
 			self::$version,
 			true
 		);
 
 		// Localize the JS file for meta boxes.
-		wp_localize_script( $this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(
-			'publish_action' => $this->publish_action,
-		) );
+		wp_localize_script(
+			$this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(
+				'publish_action' => $this->publish_action,
+			)
+		);
 	}
 
 	/**
