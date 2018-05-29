@@ -13,6 +13,14 @@
 class Admin_Apple_Meta_Boxes extends Apple_News {
 
 	/**
+	 * Publish action.
+	 *
+	 * @since 0.9.0
+	 * @var array
+	 */
+	const PUBLISH_ACTION = 'apple_news_publish';
+
+	/**
 	 * Current settings.
 	 *
 	 * @since 0.9.0
@@ -20,15 +28,6 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @access private
 	 */
 	private $settings;
-
-	/**
-	 * Publish action.
-	 *
-	 * @since 0.9.0
-	 * @var array
-	 * @access private
-	 */
-	private $publish_action = 'apple_news_publish';
 
 	/**
 	 * Constructor.
@@ -71,12 +70,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	public function do_publish( $post_id, $post ) {
 
 		// Check the nonce.
-		$nonce = isset( $_REQUEST['apple_news_nonce'] )
-			? sanitize_text_field( wp_unslash( $_REQUEST['apple_news_nonce'] ) )
-			: '';
-		if ( ! wp_verify_nonce( $nonce, $this->publish_action ) ) {
-			return;
-		}
+		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );
 
 		// Check the post ID.
 		$post_id = isset( $_POST['post_ID'] ) ? absint( $_POST['post_ID'] ) : 0;
@@ -91,7 +85,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		if ( 'yes' === $this->settings->get( 'api_autosync' )
 			|| 'publish' !== $post->post_status
 			|| empty( $_POST['apple_news_publish_action'] )
-			|| $this->publish_action !== $_POST['apple_news_publish_action'] ) {
+			|| self::PUBLISH_ACTION !== $_POST['apple_news_publish_action'] ) {
 			return;
 		}
 
@@ -118,6 +112,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @access public
 	 */
 	public static function save_post_meta( $post_id ) {
+
+		// Check the nonce.
+		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );
 
 		// Determine whether to save sections.
 		if ( empty( $_POST['apple_news_sections_by_taxonomy'] ) ) {
@@ -233,7 +230,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		}
 
 		// Create local copies of values to pass into the partial.
-		$publish_action = $this->publish_action;
+		$publish_action = self::PUBLISH_ACTION;
 
 		include plugin_dir_path( __FILE__ ) . 'partials/metabox-publish.php';
 	}
@@ -356,7 +353,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		// Localize the JS file for meta boxes.
 		wp_localize_script(
 			$this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(
-				'publish_action' => $this->publish_action,
+				'publish_action' => self::PUBLISH_ACTION,
 			)
 		);
 	}
@@ -369,6 +366,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @access private
 	 */
 	private static function _save_coverart_meta( $post_id ) {
+
+		// Check the nonce.
+		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );
 
 		// Ensure there is an orientation.
 		if ( empty( $_POST['apple-news-coverart-orientation'] ) ) {
