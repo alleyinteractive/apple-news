@@ -69,19 +69,16 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 */
 	public function do_publish( $post_id, $post ) {
 
-		// If there is no post ID, bail.
-		if ( empty( $_REQUEST['post_ID'] ) ) {
+		// Check the post ID.
+		$post_id = isset( $_REQUEST['post_ID'] )
+			? absint( $_REQUEST['post_ID'] )
+			: 0;
+		if ( empty( $post_id ) ) {
 			return;
 		}
 
 		// Check the nonce.
 		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );
-
-		// Check the post ID.
-		$post_id = isset( $_POST['post_ID'] ) ? absint( $_POST['post_ID'] ) : 0;
-		if ( empty( $post_id ) ) {
-			return;
-		}
 
 		// Save meta box fields.
 		self::save_post_meta( $post_id );
@@ -117,6 +114,11 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 * @access public
 	 */
 	public static function save_post_meta( $post_id ) {
+
+		// If there is no postdata, bail.
+		if ( empty( $_POST ) ) {
+			return;
+		}
 
 		// Check the nonce.
 		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );

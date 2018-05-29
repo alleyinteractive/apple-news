@@ -365,9 +365,6 @@ class Admin_Apple_Index_Page extends Apple_News {
 			return;
 		}
 
-		// Check the nonce.
-		check_admin_referer( 'publish', 'apple_news_nonce' );
-
 		// Save fields.
 		\Admin_Apple_Meta_Boxes::save_post_meta( $id );
 

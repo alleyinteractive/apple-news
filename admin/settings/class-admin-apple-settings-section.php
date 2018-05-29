@@ -497,20 +497,16 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 */
 	public function save_settings() {
 
-		// If there isn't an action, bail.
-		if ( ! isset( $_REQUEST['action'] ) ) {
+		// Check if we're saving options and that there are settings to save.
+		$action = isset( $_REQUEST['action'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
+			: null;
+		if ( empty( $action ) || $this->save_action !== $action || empty( $this->settings ) ) {
 			return;
 		}
 
 		// Form nonce check.
 		check_admin_referer( $this->save_action );
-
-		// Check if we're saving options and that there are settings to save.
-		if ( empty( $_POST['action'] )
-			|| $this->save_action !== $_POST['action']
-			|| empty( $this->settings ) ) {
-			return;
-		}
 
 		// Get the current Apple News settings.
 		$settings = get_option( self::$section_option_name, array() );

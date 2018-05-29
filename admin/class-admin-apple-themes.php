@@ -208,7 +208,6 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Check the nonce.
-		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
 		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Call the callback for the action for further processing.
@@ -550,13 +549,10 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	private function _delete_theme() {
 
-		// Ensure an action was specified.
-		if ( empty( $_REQUEST['action'] ) ) {
-			return;
-		}
-
 		// Check the nonce.
-		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		$action = isset( $_REQUEST['action'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
+			: null;
 		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Attempt to get the name of the theme from postdata.
@@ -594,13 +590,10 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	private function _export_theme() {
 
-		// Ensure an action was specified.
-		if ( empty( $_REQUEST['action'] ) ) {
-			return;
-		}
-
 		// Check the nonce.
-		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		$action = isset( $_REQUEST['action'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
+			: null;
 		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Get the theme name from POST data.
@@ -661,13 +654,10 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	private function _save_edit_theme() {
 
-		// Ensure an action was specified.
-		if ( empty( $_REQUEST['action'] ) ) {
-			return;
-		}
-
 		// Check the nonce.
-		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		$action = isset( $_REQUEST['action'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
+			: null;
 		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Create a theme object.
@@ -769,13 +759,10 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	private function _set_theme() {
 
-		// Ensure an action was specified.
-		if ( empty( $_REQUEST['action'] ) ) {
-			return;
-		}
-
 		// Check the nonce.
-		$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+		$action = isset( $_REQUEST['action'] )
+			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
+			: null;
 		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Get the theme name from postdata.
