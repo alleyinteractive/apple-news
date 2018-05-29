@@ -46,7 +46,7 @@ abstract class Builder {
 	/**
 	 * Constructor.
 	 *
-	 * @param Exporter_Content $content The content object to load.
+	 * @param Exporter_Content          $content The content object to load.
 	 * @param Exporter_Content_Settings $settings The settings object to load.
 	 *
 	 * @access public
@@ -71,7 +71,7 @@ abstract class Builder {
 	 *
 	 * @access protected
 	 */
-	protected abstract function build();
+	abstract protected function build();
 
 	/**
 	 * Gets the content byline.
@@ -220,7 +220,7 @@ abstract class Builder {
 	 * Updates a content property.
 	 *
 	 * @param string $name The setting key to modify.
-	 * @param mixed $value The new value for the setting.
+	 * @param mixed  $value The new value for the setting.
 	 *
 	 * @access protected
 	 */

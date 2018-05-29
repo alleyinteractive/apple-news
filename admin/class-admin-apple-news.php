@@ -45,7 +45,7 @@ class Admin_Apple_News extends Apple_News {
 		 * it up, let's get the settings getter and setter object and save it into
 		 * $settings.
 		 */
-		$admin_settings = new Admin_Apple_Settings;
+		$admin_settings = new Admin_Apple_Settings();
 		self::$settings = $admin_settings->fetch_settings();
 
 		// Initialize notice messaging utility.
@@ -245,7 +245,7 @@ class Admin_Apple_News extends Apple_News {
 	/**
 	 * Get post status.
 	 *
-	 * @param int $post_id
+	 * @param int $post_id The ID of the post to look up.
 	 * @return string
 	 */
 	public static function get_post_status( $post_id ) {
@@ -253,12 +253,12 @@ class Admin_Apple_News extends Apple_News {
 		if ( false === ( $state = get_transient( $key ) ) ) {
 				// Get the state from the API.
 				// If this causes an error, display that message instead of the state.
-				try {
-					$action = new Apple_Actions\Index\Get( self::$settings, $post_id );
-					$state = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
-				} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
-					$state = $e->getMessage();
-				}
+			try {
+				$action = new Apple_Actions\Index\Get( self::$settings, $post_id );
+				$state = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
+			} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
+				$state = $e->getMessage();
+			}
 
 				$cache_expiration = ( 'LIVE' === $state || 'TAKEN_DOWN' === $state ) ? 3600 : 60;
 				set_transient( $key, $state, apply_filters( 'apple_news_post_status_cache_expiration', $cache_expiration, $state ) );

@@ -42,10 +42,11 @@ class Credentials {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $key
-	 * @param string $secret
+	 * @param string $key    The API key.
+	 * @param string $secret The API secret.
+	 * @access public
 	 */
-	function __construct( $key, $secret ) {
+	public function __construct( $key, $secret ) {
 		$this->secret = $secret;
 		$this->key    = $key;
 	}

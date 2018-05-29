@@ -13,7 +13,6 @@ namespace Apple_Exporter\Components;
 
 use \Apple_Exporter\Exporter_Content;
 use \DOMDocument;
-use \DOMElement;
 
 /**
  * A class to translate the output of [gallery] shortcodes into Apple News format.
@@ -29,10 +28,9 @@ class Gallery extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine.
-	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return DOMElement|null The DOMElement on match, false on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		return ( self::node_has_class( $node, 'gallery' ) ) ? $node : null;
@@ -68,35 +66,34 @@ class Gallery extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text The HTML to parse.
-	 *
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 
 		// Convert the text into a NodeList.
 		libxml_use_internal_errors( true );
 		$dom = new DOMDocument();
-		$dom->loadHTML( '<?xml encoding="UTF-8">' . $text );
+		$dom->loadHTML( '<?xml encoding="UTF-8">' . $html );
 		libxml_clear_errors();
 		libxml_use_internal_errors( false );
-		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes;
+		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 		// Determine if we have items.
-		if ( ! $nodes || ! $nodes->item( 0 )->childNodes ) {
+		if ( ! $nodes || ! $nodes->item( 0 )->childNodes ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return;
 		}
 
 		// Loop through items and construct slides.
 		$theme = \Apple_Exporter\Theme::get_used();
 		$items = array();
-		foreach ( $nodes->item( 0 )->childNodes as $item ) {
+		foreach ( $nodes->item( 0 )->childNodes as $item ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 			// Convert item into HTML for regex matching.
-			$itemHTML = $item->ownerDocument->saveXML( $item );
+			$item_html = $item->ownerDocument->saveXML( $item ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 			// Try to get URL.
-			if ( ! preg_match( '/src="([^"]+)"/', $itemHTML, $matches ) ) {
+			if ( ! preg_match( '/src="([^"]+)"/', $item_html, $matches ) ) {
 				continue;
 			}
 
@@ -116,13 +113,13 @@ class Gallery extends Component {
 			if ( $caption && $caption->length ) {
 				$content['caption'] = array(
 					'text' => sanitize_text_field(
-						trim( $caption->item(0)->nodeValue )
+						trim( $caption->item( 0 )->nodeValue ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 					),
 				);
 			}
 
 			// Try to add the alt text as the accessibility caption.
-			if ( preg_match( '/alt="([^"]+)"/', $itemHTML, $matches ) ) {
+			if ( preg_match( '/alt="([^"]+)"/', $item_html, $matches ) ) {
 				$content['accessibilityCaption'] = sanitize_text_field(
 					$matches[1]
 				);

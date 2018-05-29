@@ -128,8 +128,8 @@ class Settings {
 	/**
 	 * Magic method for setting property values.
 	 *
-	 * @param string $name The setting name to update.
-	 * @param mixed $value The new value for the setting.
+	 * @param string $name  The setting name to update.
+	 * @param mixed  $value The new value for the setting.
 	 *
 	 * @access public
 	 */
@@ -166,8 +166,8 @@ class Settings {
 	/**
 	 * Set a setting.
 	 *
-	 * @param string $name The setting key to modify.
-	 * @param mixed $value The new value for the setting.
+	 * @param string $name  The setting key to modify.
+	 * @param mixed  $value The new value for the setting.
 	 *
 	 * @deprecated 1.2.1 Replaced by magic __set() method.
 	 *

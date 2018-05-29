@@ -18,14 +18,14 @@ class Image extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		// Is this an image node?
 		if (
-		 	( 'img' === $node->nodeName || 'figure' === $node->nodeName )
+			( 'img' === $node->nodeName || 'figure' === $node->nodeName ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			&& self::remote_file_exists( $node )
 		) {
 			return $node;
@@ -127,14 +127,13 @@ class Image extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text The text to convert into a component.
-	 *
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 
 		// Extract the URL from the text.
-		$url = self::url_from_src( $text );
+		$url = self::url_from_src( $html );
 
 		/**
 		 * Allows for an image src value to be filtered before being applied.
@@ -142,7 +141,7 @@ class Image extends Component {
 		 * @param string $url The URL to be filtered.
 		 * @param string $text The raw text that was parsed for the URL.
 		 */
-		$url = esc_url_raw( apply_filters( 'apple_news_build_image_src', $url, $text ) );
+		$url = esc_url_raw( apply_filters( 'apple_news_build_image_src', $url, $html ) );
 
 		// If we don't have a valid URL at this point, bail.
 		if ( empty( $url ) ) {
@@ -156,12 +155,12 @@ class Image extends Component {
 		);
 
 		// Determine image alignment.
-		if ( false !== stripos( $text, 'align="left"' )
-		     || preg_match( '/class="[^"]*alignleft[^"]*"/i', $text )
+		if ( false !== stripos( $html, 'align="left"' )
+			|| preg_match( '/class="[^"]*alignleft[^"]*"/i', $html )
 		) {
 			$this->set_anchor_position( Component::ANCHOR_LEFT );
-		} elseif ( false !== stripos( $text, 'align="right"' )
-		            || preg_match( '/class="[^"]*alignright[^"]*"/i', $text )
+		} elseif ( false !== stripos( $html, 'align="right"' )
+			|| preg_match( '/class="[^"]*alignright[^"]*"/i', $html )
 		) {
 			$this->set_anchor_position( Component::ANCHOR_RIGHT );
 		} else {
@@ -169,7 +168,7 @@ class Image extends Component {
 		}
 
 		// Check for caption.
-		if ( preg_match( '#<figcaption.*?>(.*?)</figcaption>#m', $text, $matches ) ) {
+		if ( preg_match( '#<figcaption.*?>(.*?)</figcaption>#m', $html, $matches ) ) {
 			$caption = trim( $matches[1] );
 			$values['#caption#'] = $caption;
 			$values = $this->group_component( $caption, $values );
@@ -196,9 +195,9 @@ class Image extends Component {
 	/**
 	 * Register the anchor layout.
 	 *
-	 * @param array $values
-	 * @return array
+	 * @param array $values Values with corresponding replacement keys.
 	 * @access private
+	 * @return array The modified values array.
 	 */
 	private function register_anchor_layout( $values ) {
 		$this->register_layout(
@@ -213,9 +212,9 @@ class Image extends Component {
 	/**
 	 * Register the non-anchor layout.
 	 *
-	 * @param array $values
-	 * @return array
+	 * @param array $values Values with corresponding replacement keys.
 	 * @access private
+	 * @return array The modified values array.
 	 */
 	private function register_non_anchor_layout( $values ) {
 
@@ -246,8 +245,8 @@ class Image extends Component {
 	/**
 	 * Find the caption alignment to use.
 	 *
-	 * @return string
 	 * @access private
+	 * @return string The alignment value.
 	 */
 	private function find_caption_alignment() {
 
@@ -275,10 +274,10 @@ class Image extends Component {
 	 * If the image has a caption, we have to also show a caption component.
 	 * Let's instead, return the values as a Container instead of an Image.
 	 *
-	 * @param string $caption
-	 * @param array $values
-	 * @return array
+	 * @param string $caption The caption for the image.
+	 * @param array  $values  The values array, containing replacement keys and values.
 	 * @access private
+	 * @return array The modified values array.
 	 */
 	private function group_component( $caption, $values ) {
 

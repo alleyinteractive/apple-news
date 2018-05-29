@@ -77,7 +77,7 @@ class Admin_Apple_Settings extends Apple_News {
 	/**
 	 * Constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->loaded_settings = null;
 		$this->sections = array();
 		$this->page_name = $this->plugin_domain . '-options';
@@ -105,7 +105,7 @@ class Admin_Apple_Settings extends Apple_News {
 	/**
 	 * Add a settings section.
 	 *
-	 * @param Admin_Apple_Settings_Section
+	 * @param Admin_Apple_Settings_Section $section The section to add.
 	 * @access private
 	 */
 	private function add_section( $section ) {
@@ -156,7 +156,7 @@ class Admin_Apple_Settings extends Apple_News {
 	/**
 	 * Register assets for the options page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The context under which this function is called.
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
@@ -229,8 +229,8 @@ class Admin_Apple_Settings extends Apple_News {
 	/**
 	 * Replaces the current settings.
 	 *
+	 * @param array Settings $settings New settings to replace the old.
 	 * @access public
-	 * @param array $settings
 	 */
 	public function save_settings( $settings ) {
 		update_option( self::$option_name, $settings );

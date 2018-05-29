@@ -37,7 +37,7 @@ class Cover extends Component {
 						'role' => 'photo',
 						'layout' => 'headerPhotoLayout',
 						'URL' => '#url#',
-					)
+					),
 				),
 				'behavior' => array(
 					'type' => 'parallax',
@@ -74,7 +74,7 @@ class Cover extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $url
+	 * @param string $url The URL for the cover image.
 	 * @access protected
 	 */
 	protected function build( $url ) {

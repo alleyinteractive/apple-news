@@ -11,8 +11,6 @@
 
 namespace Apple_Exporter\Components;
 
-use \DOMElement;
-
 /**
  * A class to transform a Facebook oEmbed into a Facebook Apple News component.
  *
@@ -66,21 +64,20 @@ class Facebook extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine.
-	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return DOMElement|null The DOMElement on match, false on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 
 		// Check for element with just facebook url.
-		if ( false !== self::_get_facebook_url( $node->nodeValue ) ) {
+		if ( false !== self::_get_facebook_url( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return $node;
 		}
 
 		// Handling for a rendered facebook embed.
 		if (
-			'div' === $node->nodeName
+			'div' === $node->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			&& self::node_has_class( $node, 'fb-post' )
 		) {
 
@@ -97,7 +94,7 @@ class Facebook extends Component {
 		}
 
 		// Handling for a rendered WordPress.com Facebook embed.
-		$html = $node->ownerDocument->saveXML( $node );
+		$html = $node->ownerDocument->saveXML( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		if ( preg_match( '/<(?:fb:)?post\s.*?href="([^"]+)"/i', $html, $matches ) ) {
 
 			// Ensure we have a valid Facebook embed URL.
@@ -116,7 +113,6 @@ class Facebook extends Component {
 	 * Build the component.
 	 *
 	 * @param string $html The HTML to parse into text for processing.
-	 *
 	 * @access protected
 	 */
 	protected function build( $html ) {

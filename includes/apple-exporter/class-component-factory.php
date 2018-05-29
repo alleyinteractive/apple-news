@@ -59,10 +59,10 @@ class Component_Factory {
 	/**
 	 * Initialize the component factory.
 	 *
-	 * @param Workspace $workspace
-	 * @param Settings $settings
-	 * @param Component_Text_Styles $styles
-	 * @param Component_Layouts $layouts
+	 * @param \Apple_Exporter\Workspace                      $workspace The workspace to use.
+	 * @param \Apple_Exporter\Settings                       $settings  The settings to use.
+	 * @param \Apple_Exporter\Builders\Component_Text_Styles $styles    The styles to use.
+	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts   The layouts to use.
 	 * @access public
 	 */
 	public static function initialize( $workspace = null, $settings = null, $styles = null, $layouts = null ) {
@@ -112,8 +112,8 @@ class Component_Factory {
 	/**
 	 * Register a component.
 	 *
-	 * @param string $shortname
-	 * @param string $classname
+	 * @param string $shortname The short name for the component.
+	 * @param string $classname The class name for the component.
 	 * @access private
 	 */
 	private static function register_component( $shortname, $classname ) {
@@ -123,10 +123,10 @@ class Component_Factory {
 	/**
 	 * Get a component.
 	 *
-	 * @param string $shortname
-	 * @param string $html
-	 * @return Component
+	 * @param string $shortname The short name for the component type to use.
+	 * @param string $html      The HTML to be parsed by the component.
 	 * @access public
+	 * @return \Apple_Exporter\Components\Component A component class matching the shortname.
 	 */
 	public static function get_component( $shortname, $html ) {
 		$class = self::$components[ $shortname ];
@@ -142,9 +142,9 @@ class Component_Factory {
 	 * Given a node, returns an array of all the components inside that node. If
 	 * the node is a component itself, returns an array of only one element.
 	 *
-	 * @param DomNode $node
-	 * @return array
+	 * @param \DOMElement $node The node to be examined.
 	 * @access public
+	 * @return array An array of components contained in the node.
 	 */
 	public static function get_components_from_node( $node ) {
 		$result = array();
@@ -171,14 +171,14 @@ class Component_Factory {
 			}
 
 			// We matched a single node.
-			$html = $node->ownerDocument->saveXML( $matched_node );
+			$html = $node->ownerDocument->saveXML( $matched_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			$result[] = self::get_component( $shortname, $html );
 			return $result;
 		}
 
 		// Nothing found. Maybe it's a container element?
 		if ( $node->hasChildNodes() ) {
-			foreach ( $node->childNodes as $child ) {
+			foreach ( $node->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 				$result = array_merge( $result, self::get_components_from_node( $child, $node ) );
 			}
 			// Remove all nulls from the array.
@@ -191,8 +191,8 @@ class Component_Factory {
 		 * Others nodes without a match are almost always just stray empty text nodes
 		 * that are always safe to remove. Paragraphs should also be ignored for this reason.
 		 */
-		if ( empty( $result ) && ( ! empty( $node->tagName ) && 'p' !== $node->tagName ) ) {
-			self::$workspace->log_error( 'component_errors', $node->tagName );
+		if ( empty( $result ) && ( ! empty( $node->tagName ) && 'p' !== $node->tagName ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			self::$workspace->log_error( 'component_errors', $node->tagName ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		}
 
 		return $result;

@@ -36,8 +36,8 @@ class Component_Text_Styles extends Builder {
 	 * Register a style into the exporter.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @param array $spec
+	 * @param string $name The name of the style to register.
+	 * @param array  $spec The spec for the style.
 	 * @access public
 	 */
 	public function register_style( $name, $spec ) {

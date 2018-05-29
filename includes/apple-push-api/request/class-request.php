@@ -58,32 +58,37 @@ class Request {
 	/**
 	 * Constructor.
 	 *
-	 * @param Credentials $credentials
-	 * @param boolean $debug
-	 * @param Mime_Builder $mime_builder
+	 * @param \Apple_Push_API\Credentials  $credentials  The credentials to connect to the API.
+	 * @param boolean                      $debug        Optional. Whether to run the request in debug mode. Defaults to false.
+	 * @param \Apple_Push_API\Mime_Builder $mime_builder Optional. An instance of the Mime_Builder class. Defaults to null.
+	 * @access public
 	 */
-	function __construct( $credentials, $debug = false, $mime_builder = null ) {
+	public function __construct( $credentials, $debug = false, $mime_builder = null ) {
 		$this->credentials  = $credentials;
 		$this->debug        = $debug;
 		$this->mime_builder = $mime_builder ?: new MIME_Builder();
 
 		// Set the default WordPress HTTP API args.
-		$this->default_args = apply_filters( 'apple_news_request_args', array(
-			'reject_unsafe_urls' => true,
-			'timeout' => 5,
-		) );
+		$this->default_args = apply_filters(
+			'apple_news_request_args', array(
+				'reject_unsafe_urls' => true,
+				'timeout' => 5,
+			)
+		);
 	}
 
 	/**
 	 * Sends a POST request with the given article and bundles.
 	 *
-	 * @param string $url
-	 * @param string $article
-	 * @param array $bundles
-	 * @param array $meta
-	 * @param int $post_id
-	 * @return mixed
 	 * @since 0.2.0
+	 * @param string $url     The URL to post the request to.
+	 * @param string $article The content of the article.
+	 * @param array  $bundles Optional. Any bundles that will be sent with the article. Defaults to an empty array.
+	 * @param array  $meta    Optional. Any additional metadata that will be sent with the article. Defaults to null.
+	 * @param int    $post_id Optional. The post ID for the article being sent. Defaults to null.
+	 * @access public
+	 * @return mixed The response body from the API.
+	 * @throws Request_Exception If the request fails.
 	 */
 	public function post( $url, $article, $bundles = array(), $meta = null, $post_id = null ) {
 		// Assemble the content to send.
@@ -116,9 +121,11 @@ class Request {
 	/**
 	 * Sends a DELETE request for the given article and bundles.
 	 *
-	 * @param string $url
-	 * @return mixed
 	 * @since 0.2.0
+	 * @param string $url The URL to send the request to.
+	 * @access public
+	 * @return mixed The response body from the API.
+	 * @throws Request_Exception If the request fails.
 	 */
 	public function delete( $url ) {
 		// Build the delete request args.
@@ -147,9 +154,11 @@ class Request {
 	/**
 	 * Sends a GET request for the given article and bundles.
 	 *
-	 * @param string $url
-	 * @return mixed
 	 * @since 0.2.0
+	 * @param string $url The URL to send the request to.
+	 * @access public
+	 * @return mixed
+	 * @throws Request_Exception If the request fails.
 	 */
 	public function get( $url ) {
 		// Build the get request args.
@@ -172,15 +181,17 @@ class Request {
 	/**
 	 * Parses the API response and checks for errors.
 	 *
-	 * @param array $response
-	 * @param boolean $json
-	 * @param string $type
-	 * @param array $meta
-	 * @param array $bundles
-	 * @param string $article
-	 * @param array $debug_mime
-	 * @return mixed
 	 * @since 0.2.0
+	 * @param array   $response           The response from the API.
+	 * @param boolean $json               Optional. Whether to return the response as decoded JSON or not. Defaults to true.
+	 * @param string  $type               Optional. The post type of the content. Defaults to 'post'.
+	 * @param array   $meta               Optional. Additional meta information sent with the request. Defaults to null.
+	 * @param array   $bundles            Optional. Bundles sent with the request. Defaults to null.
+	 * @param string  $article            Optional. The content of the article. Defaults to a blank string.
+	 * @param string  $debug_mime_request Optional. Debug information about the MIME encoding. Defaults to a blank string.
+	 * @access private
+	 * @return mixed The response body from the API.
+	 * @throws Request_Exception If the response is invalid.
 	 */
 	private function parse_response( $response, $json = true, $type = 'post', $meta = null, $bundles = null, $article = '', $debug_mime_request = '' ) {
 		// Ensure we have an expected response type.
@@ -212,12 +223,12 @@ class Request {
 			}
 
 			// Note image settings.
-			$body .= "\n\n"  . esc_html__( 'Image Settings', 'apple-news' ) . ":\n";
+			$body .= "\n\n" . esc_html__( 'Image Settings', 'apple-news' ) . ":\n";
 			if ( 'yes' === $settings['use_remote_images'] ) {
 				$body .= esc_html__( 'Use Remote images enabled ', 'apple-news' );
 			} else {
 				if ( ! empty( $bundles ) ) {
-					$body .= "\n"  . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
+					$body .= "\n" . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
 					$body .= implode( "\n", $bundles );
 				} else {
 					$body .= esc_html__( 'No bundled images found.', 'apple-news' );
@@ -258,8 +269,8 @@ class Request {
 			foreach ( $response_decoded->errors as $error ) {
 				// If there is a keyPath, build it into a string.
 				$key_path = '';
-				if ( ! empty( $error->keyPath ) && is_array( $error->keyPath ) ) {
-					foreach ( $error->keyPath as $i => $path ) {
+				if ( ! empty( $error->keyPath ) && is_array( $error->keyPath ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+					foreach ( $error->keyPath as $i => $path ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 						if ( $i > 0 ) {
 							$key_path .= "->$path";
 						} else {
@@ -267,7 +278,7 @@ class Request {
 						}
 					}
 
-					$key_path = " (keyPath $key_path)";
+					$key_path = " (keyPath $key_path)"; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 				}
 
 				// Add the code, message and keyPath.
@@ -295,15 +306,18 @@ class Request {
 
 	/**
 	 * Parses the API response and checks for errors.
-	 * TODO The exporter has an abstracted article class. Should we have
-	 * something similar here? That way this method could live there.
 	 *
-	 * @param string $article
-	 * @param array $bundles
-	 * @param array $meta
-	 * @param int $post_id
-	 * @return string
+	 * @todo The exporter has an abstracted article class. Should we have
+	 *       something similar here? That way this method could live there.
+	 *
 	 * @since 0.2.0
+	 * @param string $article The article content.
+	 * @param array  $bundles Optional. The bundles to be sent with the article. Defaults to an empty array.
+	 * @param array  $meta    Optional. Additional meta to be sent with the request. Defaults to an empty array.
+	 * @param int    $post_id Optional. The post ID for the post being sent. Defaults to null.
+	 * @access private
+	 * @return string The content to be sent to the API.
+	 * @throws Request_Exception If the content cannot be built.
 	 */
 	private function build_content( $article, $bundles = array(), $meta = array(), $post_id = null ) {
 		$bundles = array_unique( $bundles );
@@ -328,11 +342,12 @@ class Request {
 	/**
 	 * Signs the API request.
 	 *
-	 * @param string $url
-	 * @param string $verb
-	 * @param string $content
-	 * @return array
 	 * @since 0.2.0
+	 * @param string $url     The API URL that will be used.
+	 * @param string $verb    The HTTP verb that will be used.
+	 * @param string $content The content that will be sent.
+	 * @access private
+	 * @return string The signature string for use in signing API requests.
 	 */
 	private function sign( $url, $verb, $content = null ) {
 		$current_date = date( 'c' );

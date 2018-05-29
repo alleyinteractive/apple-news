@@ -23,11 +23,12 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 	/**
 	 * Constructor.
 	 *
-	 * @param string $page
+	 * @param string $page The page that this section belongs to.
+	 * @access public
 	 */
-	function __construct( $page ) {
+	public function __construct( $page ) {
 		// Set the name.
-		$this->name =  __( 'Advanced Settings', 'apple-news' );
+		$this->name = __( 'Advanced Settings', 'apple-news' );
 
 		// Add the settings.
 		$this->settings = array(
@@ -90,8 +91,8 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 	/**
 	 * Gets section info.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string Information about this section.
 	 */
 	public function get_section_info() {
 		return __( 'Advanced publishing settings for Apple News.', 'apple-news' );

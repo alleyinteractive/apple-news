@@ -8,8 +8,6 @@
 
 namespace Apple_Exporter\Components;
 
-use \DOMElement;
-
 /**
  * A paragraph component.
  *
@@ -37,32 +35,32 @@ class Body extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine for matches.
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return array|null An array of matching HTML on success, or null on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		// We are only interested in p, pre, ul and ol.
-		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ), true ) ) {
+		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ), true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return null;
 		}
 
 		// If the node is p, ul or ol AND it's empty, just ignore.
-		if ( empty( $node->nodeValue ) ) {
+		if ( empty( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return null;
 		}
 
 		// Negotiate open and close values.
-		$open = '<' . $node->nodeName . '>';
-		$close = '</' . $node->nodeName . '>';
-		if ( 'ol' === $node->nodeName || 'ul' === $node->nodeName ) {
+		$open = '<' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$close = '</' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( 'ol' === $node->nodeName || 'ul' === $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			$open .= '<li>';
 			$close = '</li>' . $close;
 		}
 
 		return self::split_unsupported_elements(
-			$node->ownerDocument->saveXML( $node ),
-			$node->nodeName,
+			$node->ownerDocument->saveXML( $node ), // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			$node->nodeName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			$open,
 			$close
 		);
@@ -122,7 +120,7 @@ class Body extends Component {
 			array_merge(
 				$this->get_default_style_spec(),
 				array(
-					'dropCapStyle' => array (
+					'dropCapStyle' => array(
 						'numberOfLines' => '#dropcap_number_of_lines#',
 						'numberOfCharacters' => '#dropcap_number_of_characters#',
 						'padding' => '#dropcap_padding#',
@@ -216,14 +214,14 @@ class Body extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 
 		// If there is no text for this element, bail.
-		$text = $this->parser->parse( $text );
-		$check = trim( $text );
+		$html = $this->parser->parse( $html );
+		$check = trim( $html );
 		if ( empty( $check ) ) {
 			return;
 		}
@@ -232,10 +230,10 @@ class Body extends Component {
 		$this->register_json(
 			'json',
 			array(
-				'#text#' => $text,
+				'#text#' => $html,
 				'#format#' => $this->parser->format,
 			)
-	 	);
+		);
 
 		// Determine whether to apply dropcap style.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -349,7 +347,7 @@ class Body extends Component {
 			'default-body',
 			$this->get_default_style_values(),
 			'textStyle'
-		 );
+		);
 	}
 
 	/**
@@ -394,7 +392,7 @@ class Body extends Component {
 				$dropcap_style
 			),
 			'textStyle'
-	 	);
+		);
 	}
 
 	/**

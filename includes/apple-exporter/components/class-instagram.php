@@ -11,8 +11,6 @@
 
 namespace Apple_Exporter\Components;
 
-use \DOMElement;
-
 /**
  * A class to transform an Instagram embed into an Instagram Apple News component.
  *
@@ -23,14 +21,14 @@ class Instagram extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine.
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return DOMElement|null The DOMElement on match, false on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 
 		// Handle Instagram oEmbed URLs.
-		if ( false !== self::_get_instagram_url( $node->nodeValue ) ) {
+		if ( false !== self::_get_instagram_url( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return $node;
 		}
 
@@ -62,7 +60,6 @@ class Instagram extends Component {
 	 * Build the component.
 	 *
 	 * @param string $html The HTML to parse into text for processing.
-	 *
 	 * @access protected
 	 */
 	protected function build( $html ) {

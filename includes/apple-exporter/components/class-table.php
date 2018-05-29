@@ -18,15 +18,14 @@ class Table extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param \DOMNode $node The node to inspect for matches.
-	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return \DOMNode|null The DOMNode if there is a match, null if not.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 
 		// First, check to see if the primary node is a table.
-		if ( 'table' !== $node->nodeName ) {
+		if ( 'table' !== $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return null;
 		}
 
@@ -123,8 +122,7 @@ class Table extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $html The html to convert into a component.
-	 *
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
 	protected function build( $html ) {

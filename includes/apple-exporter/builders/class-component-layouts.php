@@ -38,8 +38,8 @@ class Component_Layouts extends Builder {
 	 * Register a layout into the exporter.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @param string $spec
+	 * @param string $name The name of the layout to register.
+	 * @param string $spec The spec for the layout.
 	 * @access public
 	 */
 	public function register_layout( $name, $spec ) {
@@ -66,9 +66,9 @@ class Component_Layouts extends Builder {
 	 * Check if a layout already exists.
 	 *
 	 * @since 0.4.0
-	 * @param string $name
-	 * @return boolean
+	 * @param string $name The name of the layout to look up.
 	 * @access private
+	 * @return boolean True if the layout exists, false if not.
 	 */
 	private function layout_exists( $name ) {
 		return array_key_exists( $name, $this->layouts );
@@ -78,7 +78,7 @@ class Component_Layouts extends Builder {
 	 * Sets the required layout for a component to anchor another component or
 	 * be anchored.
 	 *
-	 * @param Component $component
+	 * @param \Apple_Exporter\Components\Component $component The component to anchor.
 	 * @access public
 	 */
 	public function set_anchor_layout_for( $component ) {
@@ -89,26 +89,26 @@ class Component_Layouts extends Builder {
 		// Are we anchoring left or right?
 		$position = null;
 		switch ( $component->get_anchor_position() ) {
-		case Component::ANCHOR_NONE:
-			return;
-		case Component::ANCHOR_LEFT:
-			$position = 'left';
-			break;
-		case Component::ANCHOR_RIGHT:
-			$position = 'right';
-			break;
-		case Component::ANCHOR_AUTO:
-			/**
+			case Component::ANCHOR_NONE:
+				return;
+			case Component::ANCHOR_LEFT:
+				$position = 'left';
+				break;
+			case Component::ANCHOR_RIGHT:
+				$position = 'right';
+				break;
+			case Component::ANCHOR_AUTO:
+				/**
 			 * The alignment position is the opposite of the body_orientation
 			 * setting. In the case of centered body orientation, use left alignment.
 			 * This behaviour was chosen by design.
 			 */
-			if ( 'left' === $theme->get_value( 'body_orientation' ) ) {
-				$position = 'right';
-			} else {
-				$position = 'left';
-			}
-			break;
+				if ( 'left' === $theme->get_value( 'body_orientation' ) ) {
+					$position = 'right';
+				} else {
+					$position = 'left';
+				}
+				break;
 		}
 
 		$layout_name = "anchor-layout-$position";
@@ -152,10 +152,12 @@ class Component_Layouts extends Builder {
 			}
 
 			// Finally, register the layout.
-			$this->register_layout( $layout_name, array(
-				'columnStart' => $col_start,
-				'columnSpan'  => $col_span,
-			) );
+			$this->register_layout(
+				$layout_name, array(
+					'columnStart' => $col_start,
+					'columnSpan'  => $col_span,
+				)
+			);
 		}
 
 		$component->set_json( 'layout', $layout_name );

@@ -33,14 +33,16 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param \Apple_Exporter\Settings $settings Settings in use during this run.
 	 */
-	function __construct( $settings ) {
+	public function __construct( $settings ) {
 		$this->settings = $settings;
 
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 		add_action( 'wp_ajax_push_post', array( $this, 'ajax_push_post' ) );
-		add_filter( 'admin_title', array( $this, 'set_title' ), 10, 2 );
+		add_filter( 'admin_title', array( $this, 'set_title' ) );
 	}
 
 	/**
@@ -53,21 +55,20 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			null,                                // Parent, if null, it won't appear in any menu.
 			__( 'Bulk Export', 'apple-news' ),   // Page title.
 			__( 'Bulk Export', 'apple-news' ),   // Menu title.
-			apply_filters( 'apple_news_bulk_export_capability', 'manage_options' ),	// Capability.
+			apply_filters( 'apple_news_bulk_export_capability', 'manage_options' ), // Capability.
 			$this->plugin_slug . '_bulk_export', // Menu Slug.
 			array( $this, 'build_page' )         // Function.
-	 	);
+		);
 	}
 
 	/**
 	 * Fix the title since WordPress doesn't set one.
 	 *
-	 * @param string $admin_title
-	 * @param string $title
-	 * @return strign
+	 * @param string $admin_title The title to be filtered.
 	 * @access public
+	 * @return string The title for the screen.
 	 */
-	public function set_title( $admin_title, $title ) {
+	public function set_title( $admin_title ) {
 		$screen = get_current_screen();
 		if ( 'admin_page_apple_news_bulk_export' === $screen->base ) {
 			$admin_title = __( 'Bulk Export' ) . $admin_title;
@@ -116,49 +117,59 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Ensure the post exists and that it's published.
 		$post = get_post( $id );
 		if ( empty( $post ) ) {
-			echo wp_json_encode( array(
-				'success' => false,
-				'error'   => __( 'This post no longer exists.', 'apple-news' ),
-			) );
+			echo wp_json_encode(
+				array(
+					'success' => false,
+					'error'   => __( 'This post no longer exists.', 'apple-news' ),
+				)
+			);
 			wp_die();
 		}
 
 		// Check capabilities.
 		if ( ! current_user_can( apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) ) ) {
-			echo wp_json_encode( array(
-				'success' => false,
-				'error'   => __( 'You do not have permission to publish to Apple News', 'apple-news' ),
-			) );
+			echo wp_json_encode(
+				array(
+					'success' => false,
+					'error'   => __( 'You do not have permission to publish to Apple News', 'apple-news' ),
+				)
+			);
 			wp_die();
 		}
 
 		if ( 'publish' !== $post->post_status ) {
-			echo wp_json_encode( array(
-				'success' => false,
-				'error'   => sprintf(
-					__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
-					$id
-				),
-			) );
+			echo wp_json_encode(
+				array(
+					'success' => false,
+					'error'   => sprintf(
+						__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
+						$id
+					),
+				)
+			);
 			wp_die();
 		}
 
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
 		try {
 			$errors = $action->perform();
-		} catch( \Apple_Actions\Action_Exception $e ) {
+		} catch ( \Apple_Actions\Action_Exception $e ) {
 			$errors = $e->getMessage();
 		}
 
 		if ( $errors ) {
-			echo wp_json_encode( array(
-				'success' => false,
-				'error'   => $errors,
-			) );
+			echo wp_json_encode(
+				array(
+					'success' => false,
+					'error'   => $errors,
+				)
+			);
 		} else {
-			echo wp_json_encode( array(
-				'success' => true,
-			) );
+			echo wp_json_encode(
+				array(
+					'success' => true,
+				)
+			);
 		}
 
 		// This is required to terminate immediately and return a valid response.
@@ -168,7 +179,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	/**
 	 * Registers assets used by the bulk export process.
 	 *
-	 * @param string $hook
+	 * @param string $hook The context under which this function is called.
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
@@ -178,13 +189,13 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 
 		wp_enqueue_style(
 			$this->plugin_slug . '_bulk_export_css',
-			plugin_dir_url( __FILE__ ) .  '../assets/css/bulk-export.css',
+			plugin_dir_url( __FILE__ ) . '../assets/css/bulk-export.css',
 			array(),
 			self::$version
 		);
 		wp_enqueue_script(
 			$this->plugin_slug . '_bulk_export_js',
-			plugin_dir_url( __FILE__ ) .  '../assets/js/bulk-export.js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/bulk-export.js',
 			array( 'jquery' ),
 			self::$version,
 			true

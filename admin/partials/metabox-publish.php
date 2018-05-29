@@ -7,19 +7,21 @@
 
 if ( ! \Apple_News::is_initialized() ) : ?>
 	<div id="apple-news-publish">
-		<?php printf(
+		<?php
+		printf(
 			/* translators: First token is opening a tag, second is closing a tag */
 			esc_html__( 'You must enter your API information on the %1$ssettings page%2$s before using Publish to Apple News.', 'apple-news' ),
 			'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-options' ) ) . '">',
 			'</a>'
-		); ?>
+		);
+		?>
 	</div>
 	<?php return; ?>
 <?php endif; ?>
 <div id="apple-news-publish">
 	<?php wp_nonce_field( $publish_action, 'apple_news_nonce' ); ?>
 	<div id="apple-news-metabox-sections" class="apple-news-metabox-section">
-		<h3><?php esc_html_e( 'Sections', 'apple-news' ) ?></h3>
+		<h3><?php esc_html_e( 'Sections', 'apple-news' ); ?></h3>
 		<?php Admin_Apple_Meta_Boxes::build_sections_override( $post->ID ); ?>
 		<div class="apple-news-sections">
 			<?php Admin_Apple_Meta_Boxes::build_sections_field( $post->ID ); ?>
@@ -29,51 +31,51 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 	<div id="apple-news-metabox-is-preview" class="apple-news-metabox-section">
 		<h3><?php esc_html_e( 'Preview?', 'apple-news' ); ?></h3>
 		<label for="apple-news-is-preview">
-			<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ) ?>>
+			<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ); ?>>
 			<?php esc_html_e( 'Check this to publish the article as a draft.', 'apple-news' ); ?>
 		</label>
 	</div>
 	<div id="apple-news-metabox-is-hidden" class="apple-news-metabox-section">
 		<h3><?php esc_html_e( 'Hidden?', 'apple-news' ); ?></h3>
 		<label for="apple-news-is-hidden">
-			<input id="apple-news-is-hidden" name="apple_news_is_hidden" type="checkbox" value="1" <?php checked( $is_hidden ) ?>>
+			<input id="apple-news-is-hidden" name="apple_news_is_hidden" type="checkbox" value="1" <?php checked( $is_hidden ); ?>>
 			<?php esc_html_e( 'Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news' ); ?>
 		</label>
 	</div>
 	<div id="apple-news-metabox-is-sponsored" class="apple-news-metabox-section">
-		<h3><?php esc_html_e( 'Sponsored?', 'apple-news' ) ?></h3>
+		<h3><?php esc_html_e( 'Sponsored?', 'apple-news' ); ?></h3>
 		<label for="apple-news-is-sponsored">
-			<input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $is_sponsored ) ?>>
+			<input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $is_sponsored ); ?>>
 			<?php esc_html_e( 'Check this to indicate this article is sponsored content.', 'apple-news' ); ?>
 		</label>
 	</div>
 	<div id="apple-news-metabox-maturity-rating" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
-		<h3><?php esc_html_e( 'Maturity Rating', 'apple-news' ) ?></h3>
+		<h3><?php esc_html_e( 'Maturity Rating', 'apple-news' ); ?></h3>
 		<label for="apple-news-maturity-rating">
 			<select id="apple-news-maturity-rating" name="apple_news_maturity_rating">
 				<option value=""></option>
 				<?php foreach ( self::$maturity_ratings as $rating ) : ?>
-					<option value="<?php echo esc_attr( $rating ) ?>" <?php selected( $maturity_rating, $rating ) ?>><?php echo esc_html( ucwords( strtolower( $rating ) ) ) ?></option>
+					<option value="<?php echo esc_attr( $rating ); ?>" <?php selected( $maturity_rating, $rating ); ?>><?php echo esc_html( ucwords( strtolower( $rating ) ) ); ?></option>
 				<?php endforeach; ?>
 			</select>
 			<p class="description"><?php esc_html_e( 'Select the optional maturity rating for this post.', 'apple-news' ); ?></p>
 		</label>
 	</div>
 	<div id="apple-news-metabox-pullquote" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
-		<h3><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></h3>
-		<label for="apple-news-pullquote" class="screen-reader-text"><?php esc_html_e( 'Pull quote', 'apple-news' ) ?></label>
-		<textarea id="apple-news-pullquote" name="apple_news_pullquote" placeholder="<?php esc_attr_e( 'A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic.', 'apple-news' ) ?>" rows="6" class="large-text"><?php echo esc_textarea( $pullquote ) ?></textarea>
-		<p class="description"><?php esc_html_e( 'This is optional and can be left blank.', 'apple-news' ) ?></p>
-		<h4><?php esc_html_e( 'Pull quote position', 'apple-news' ) ?></h4>
+		<h3><?php esc_html_e( 'Pull quote', 'apple-news' ); ?></h3>
+		<label for="apple-news-pullquote" class="screen-reader-text"><?php esc_html_e( 'Pull quote', 'apple-news' ); ?></label>
+		<textarea id="apple-news-pullquote" name="apple_news_pullquote" placeholder="<?php esc_attr_e( 'A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic.', 'apple-news' ); ?>" rows="6" class="large-text"><?php echo esc_textarea( $pullquote ); ?></textarea>
+		<p class="description"><?php esc_html_e( 'This is optional and can be left blank.', 'apple-news' ); ?></p>
+		<h4><?php esc_html_e( 'Pull quote position', 'apple-news' ); ?></h4>
 		<select name="apple_news_pullquote_position">
-			<option <?php selected( $pullquote_position, 'top' ) ?> value="top"><?php esc_html_e( 'top', 'apple-news' ) ?></option>
-			<option <?php selected( $pullquote_position, 'middle' ) ?> value="middle"><?php esc_html_e( 'middle', 'apple-news' ) ?></option>
-			<option <?php selected( $pullquote_position, 'bottom' ) ?> value="bottom"><?php esc_html_e( 'bottom', 'apple-news' ) ?></option>
+			<option <?php selected( $pullquote_position, 'top' ); ?> value="top"><?php esc_html_e( 'top', 'apple-news' ); ?></option>
+			<option <?php selected( $pullquote_position, 'middle' ); ?> value="middle"><?php esc_html_e( 'middle', 'apple-news' ); ?></option>
+			<option <?php selected( $pullquote_position, 'bottom' ); ?> value="bottom"><?php esc_html_e( 'bottom', 'apple-news' ); ?></option>
 		</select>
-		<p class="description"><?php esc_html_e( 'The position in the article where the pull quote will appear.', 'apple-news' ) ?></p>
+		<p class="description"><?php esc_html_e( 'The position in the article where the pull quote will appear.', 'apple-news' ); ?></p>
 	</div>
 	<div id="apple-news-metabox-coverart" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
-		<h3><?php esc_html_e( 'Cover art', 'apple-news' ) ?></h3>
+		<h3><?php esc_html_e( 'Cover art', 'apple-news' ); ?></h3>
 		<?php if ( 'yes' === $this->settings->get( 'enable_cover_art' ) ) : ?>
 			<?php include plugin_dir_path( __FILE__ ) . 'cover-art.php'; ?>
 		<?php else : ?>
@@ -89,27 +91,31 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 			</p>
 		<?php endif; ?>
 	</div>
-	<?php if ( 'yes' !== $this->settings->get( 'api_autosync' )
+	<?php
+	if ( 'yes' !== $this->settings->get( 'api_autosync' )
 		 && current_user_can( apply_filters( 'apple_news_publish_capability', Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) )
 		 && 'publish' === $post->post_status
 		 && empty( $api_id )
 		 && empty( $deleted )
 		 && empty( $pending )
-	) : ?>
+	) :
+	?>
 		<input type="hidden" id="apple-news-publish-action" name="apple_news_publish_action" value="">
-		<input type="button" id="apple-news-publish-submit" name="apple_news_publish_submit" value="<?php esc_attr_e( 'Publish to Apple News', 'apple-news' ) ?>" class="button-primary" />
-	<?php elseif ( 'yes' === $this->settings->get( 'api_autosync' )
+		<input type="button" id="apple-news-publish-submit" name="apple_news_publish_submit" value="<?php esc_attr_e( 'Publish to Apple News', 'apple-news' ); ?>" class="button-primary" />
+	<?php
+	elseif ( 'yes' === $this->settings->get( 'api_autosync' )
 		 && empty( $api_id )
 		 && empty( $deleted )
 		 && empty( $pending )
-	) : ?>
+	) :
+	?>
 		<p><?php esc_html_e( 'This post will be automatically sent to Apple News on publish.', 'apple-news' ); ?></p>
 	<?php elseif ( 'yes' === $this->settings->get( 'api_async' ) && ! empty( $pending ) ) : ?>
 		<p><?php esc_html_e( 'This post is currently pending publishing to Apple News.', 'apple-news' ); ?></p>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $deleted ) ) : ?>
-		<p><b><?php esc_html_e( 'This post has been deleted from Apple News', 'apple-news' ) ?></b></p>
+		<p><b><?php esc_html_e( 'This post has been deleted from Apple News', 'apple-news' ); ?></b></p>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $api_id ) ) : ?>

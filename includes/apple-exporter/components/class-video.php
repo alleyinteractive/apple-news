@@ -12,7 +12,6 @@
 namespace Apple_Exporter\Components;
 
 use \Apple_Exporter\Exporter_Content;
-use \DOMElement;
 
 /**
  * A class which is used to transform video elements into Apple News format.
@@ -24,15 +23,14 @@ class Video extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine.
-	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return DOMElement|null The DOMElement on match, false on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 
 		// Ensure that this is a video tag and that the source exists.
-		if ( 'video' === $node->nodeName && self::remote_file_exists( $node ) ) {
+		if ( 'video' === $node->nodeName && self::remote_file_exists( $node ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return $node;
 		}
 
@@ -60,7 +58,6 @@ class Video extends Component {
 	 * Build the component.
 	 *
 	 * @param string $html The HTML to parse into text for processing.
-	 *
 	 * @access protected
 	 */
 	protected function build( $html ) {

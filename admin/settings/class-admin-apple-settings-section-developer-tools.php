@@ -27,8 +27,9 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 	 * Constructor.
 	 *
 	 * @param string $page The name of the submenu page that this section is part of.
+	 * @access public
 	 */
-	function __construct( $page ) {
+	public function __construct( $page ) {
 
 		// Set the name.
 		$this->name = __( 'Developer Tools', 'apple-news' );
@@ -63,8 +64,8 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 	/**
 	 * Gets section info.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The description for this section.
 	 */
 	public function get_section_info() {
 		return __(

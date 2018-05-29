@@ -86,7 +86,7 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Try to get sections. The get_sections call sets the transient.
-		$admin_settings = new Admin_Apple_Settings;
+		$admin_settings = new Admin_Apple_Settings();
 		$section_api = new Section( $admin_settings->fetch_settings() );
 		$sections = $section_api->get_sections();
 		if ( empty( $sections ) || ! is_array( $sections ) ) {
@@ -105,7 +105,7 @@ class Admin_Apple_Sections extends Apple_News {
 	 * Supports overrides for manual section selection and fallback to postmeta
 	 * when no mappings are set.
 	 *
-	 * @param int $post_id The ID of the post to query.
+	 * @param int    $post_id The ID of the post to query.
 	 * @param string $format The return format to use. Can be 'url' or 'raw'.
 	 *
 	 * @access public
@@ -209,7 +209,7 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Initialize class variables.
 		$this->page_name = $this->plugin_domain . '-sections';
-		$admin_settings = new Admin_Apple_Settings;
+		$admin_settings = new Admin_Apple_Settings();
 		$this->settings = $admin_settings->fetch_settings();
 
 		// Set up admin action callbacks for form submissions.
@@ -236,7 +236,7 @@ class Admin_Apple_Sections extends Apple_News {
 	public function action_router() {
 
 		// Check for a valid action.
-		$action	= isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : null;
+		$action = isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : null;
 		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
 			return;
 		}
@@ -372,7 +372,7 @@ class Admin_Apple_Sections extends Apple_News {
 	/**
 	 * Register assets for the options page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The context under which this function was called.
 	 * @access public
 	 */
 	public function register_assets( $hook ) {
@@ -385,7 +385,7 @@ class Admin_Apple_Sections extends Apple_News {
 		global $wp_scripts;
 
 		// Enqueue styles for this page.
-		$jquery_ui = $wp_scripts->query('jquery-ui-core');
+		$jquery_ui = $wp_scripts->query( 'jquery-ui-core' );
 		wp_enqueue_style(
 			'apple-news-jquery-ui-autocomplete',
 			'//ajax.googleapis.com/ajax/libs/jqueryui/' . $jquery_ui->ver . '/themes/smoothness/jquery-ui.min.css'
@@ -429,7 +429,7 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Try to get sections.
-		$admin_settings = new Admin_Apple_Settings;
+		$admin_settings = new Admin_Apple_Settings();
 		$section_api = new Section( $admin_settings->fetch_settings() );
 		$sections_raw = $section_api->get_sections();
 		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {

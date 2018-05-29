@@ -11,8 +11,6 @@
 
 namespace Apple_Exporter\Components;
 
-use \DOMElement;
-
 /**
  * A class which is used to transform blockquotes into Apple News format.
  *
@@ -23,13 +21,12 @@ class Quote extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DOMElement $node The node to examine.
-	 *
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return DOMElement|null The DOMElement on match, false on no match.
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
-		return ( 'blockquote' === $node->nodeName ) ? $node : null;
+		return ( 'blockquote' === $node->nodeName ) ? $node : null; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 	}
 
 	/**
@@ -99,7 +96,7 @@ class Quote extends Component {
 						'format' => '#format#',
 						'layout' => 'blockquote-layout',
 						'textStyle' => 'default-blockquote',
-					)
+					),
 				),
 			)
 		);
@@ -165,7 +162,7 @@ class Quote extends Component {
 				'role' => 'container',
 				'layout' => array(
 					'columnStart' => 3,
-					'columnSpan' => 4
+					'columnSpan' => 4,
 				),
 				'components' => array(
 					array(
@@ -174,11 +171,11 @@ class Quote extends Component {
 						'format' => '#format#',
 						'layout' => 'pullquote-layout',
 						'textStyle' => 'default-pullquote',
-					)
+					),
 				),
 				'style' => array(
 					'border' => array(
-						'all' => array (
+						'all' => array(
 							'width' => '#pullquote_border_width#',
 							'style' => '#pullquote_border_style#',
 							'color' => '#pullquote_border_color#',
@@ -228,7 +225,6 @@ class Quote extends Component {
 	 * Build the component.
 	 *
 	 * @param string $html The HTML to parse into text for processing.
-	 *
 	 * @access protected
 	 */
 	protected function build( $html ) {
@@ -391,9 +387,9 @@ class Quote extends Component {
 	/**
 	 * Set the border for a blockquote.
 	 *
-	 * @param array $values
-	 * @return array
+	 * @param array $values Token values to be augmented.
 	 * @access private
+	 * @return array The modified list of token values.
 	 */
 	private function _set_blockquote_border( $values ) {
 
@@ -465,9 +461,9 @@ class Quote extends Component {
 	/**
 	 * Set the border for a pullquote.
 	 *
-	 * @param array $values
-	 * @return array
+	 * @param array $values The list of token values to be modified.
 	 * @access private
+	 * @return array The modified list of token values.
 	 */
 	private function _set_pullquote_border( $values ) {
 

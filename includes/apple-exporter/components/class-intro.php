@@ -46,13 +46,13 @@ class Intro extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
+	protected function build( $html ) {
 
 		// If there is no text for this element, bail.
-		$check = trim( $text );
+		$check = trim( $html );
 		if ( empty( $check ) ) {
 			return;
 		}
@@ -60,7 +60,7 @@ class Intro extends Component {
 		$this->register_json(
 			'json',
 			array(
-				'#text#' => $text . "\n",
+				'#text#' => $html . "\n",
 			)
 		);
 

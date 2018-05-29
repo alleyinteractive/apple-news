@@ -23,7 +23,6 @@ class Metadata extends Builder {
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
 	 * @access protected
 	 */
 	protected function build() {

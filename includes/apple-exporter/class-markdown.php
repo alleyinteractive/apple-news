@@ -69,10 +69,10 @@ class Markdown {
 	 * @return string The processed content, converted to a Markdown string.
 	 */
 	private function _parse_node( $node ) {
-		switch ( $node->nodeName ) {
+		switch ( $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			case 'strong':
 				return $this->_parse_node_strong( $node );
-			case  'i':
+			case 'i':
 			case 'em':
 				return $this->_parse_node_emphasis( $node );
 			case 'br':
@@ -113,7 +113,7 @@ class Markdown {
 	private function _parse_node_emphasis( $node ) {
 
 		// If there is no text for this node, bail.
-		$text  = $this->parse_nodes( $node->childNodes );
+		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$check = trim( $text );
 		if ( empty( $check ) ) {
 			return '';
@@ -133,7 +133,7 @@ class Markdown {
 	private function _parse_node_heading( $node ) {
 
 		// If there is no text for this node, bail.
-		$text  = $this->parse_nodes( $node->childNodes );
+		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$check = trim( $text );
 		if ( empty( $check ) ) {
 			return '';
@@ -141,7 +141,7 @@ class Markdown {
 
 		return sprintf(
 			'%s %s' . "\n",
-			str_repeat( '#', intval( substr( $node->nodeName, 1, 1 ) ) ),
+			str_repeat( '#', intval( substr( $node->nodeName, 1, 1 ) ) ), // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			$text
 		);
 	}
@@ -160,7 +160,7 @@ class Markdown {
 		$url = $node->getAttribute( 'href' );
 
 		// Set the text from the content of the child nodes.
-		$text = $this->parse_nodes( $node->childNodes );
+		$text = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 		/**
 		 * Allows for filtering of the formatted content before return.
@@ -191,7 +191,7 @@ class Markdown {
 	private function _parse_node_list_item( $node ) {
 
 		// If there is no text for this node, bail.
-		$text  = $this->parse_nodes( $node->childNodes );
+		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$check = trim( $text );
 		if ( empty( $check ) ) {
 			return '';
@@ -202,7 +202,7 @@ class Markdown {
 			return sprintf(
 				'%d. %s',
 				$this->_list_index ++,
-			    $text
+				$text
 			);
 		}
 
@@ -222,7 +222,7 @@ class Markdown {
 		$this->_list_index = 1;
 
 		// If there is no text for this node, bail.
-		$text  = $this->parse_nodes( $node->childNodes );
+		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$check = trim( $text );
 		if ( empty( $check ) ) {
 			return '';
@@ -242,7 +242,7 @@ class Markdown {
 	private function _parse_node_paragraph( $node ) {
 
 		// If there is no text for this node, bail.
-		$text  = $this->parse_nodes( $node->childNodes );
+		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$check = trim( $text );
 		if ( empty( $check ) ) {
 			return '';
@@ -262,7 +262,7 @@ class Markdown {
 	private function _parse_node_strong( $node ) {
 
 		// If there is no text for this node, bail.
-		$text  = $this->parse_nodes( $node->childNodes );
+		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$check = trim( $text );
 		if ( empty( $check ) ) {
 			return '';
@@ -280,7 +280,7 @@ class Markdown {
 	 * @return string The processed node, converted to a string.
 	 */
 	private function _parse_node_text( $node ) {
-		return str_replace( '!', '\\!', $node->nodeValue );
+		return str_replace( '!', '\\!', $node->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 	}
 
 	/**
@@ -295,7 +295,7 @@ class Markdown {
 		$this->_list_mode = 'ul';
 
 		// If there is no text for this node, bail.
-		$text  = $this->parse_nodes( $node->childNodes );
+		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$check = trim( $text );
 		if ( empty( $check ) ) {
 			return '';

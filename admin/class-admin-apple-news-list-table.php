@@ -29,7 +29,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Current settings.
 	 *
-	 * @var Settings
+	 * @var \Apple_Exporter\Settings
 	 * @since 0.9.0
 	 */
 	public $settings;
@@ -37,27 +37,30 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Constructor.
 	 *
-	 * @param Settings $settings
+	 * @param \Apple_Exporter\Settings $settings Settings in use during this run.
+	 * @access public
 	 */
-	function __construct( $settings ) {
+	public function __construct( $settings ) {
 		// Load current settings.
 		$this->settings = $settings;
 
 		// Initialize the table.
-		parent::__construct( array(
-			'singular' => __( 'article', 'apple-news' ),
-			'plural'   => __( 'articles', 'apple-news' ),
-			'ajax'     => false,
-		) );
+		parent::__construct(
+			array(
+				'singular' => __( 'article', 'apple-news' ),
+				'plural'   => __( 'articles', 'apple-news' ),
+				'ajax'     => false,
+			)
+		);
 	}
 
 	/**
 	 * Set column defaults.
 	 *
-	 * @param mixed $item
-	 * @param string $column_name
-	 * @return string
+	 * @param mixed  $item        Default value for the column.
+	 * @param string $column_name The name of the column.
 	 * @access public
+	 * @return string
 	 */
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
@@ -81,9 +84,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Get the updated at time.
 	 *
-	 * @param WP_Post $post
-	 * @return string
+	 * @param \WP_Post $post The post to analyze.
 	 * @access private
+	 * @return string
 	 */
 	private function get_updated_at( $post ) {
 		$updated_at = get_post_meta( $post->ID, 'apple_news_api_modified_at', true );
@@ -98,9 +101,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Get the Apple News status.
 	 *
-	 * @param WP_Post $post
-	 * @return string
+	 * @param \WP_Post $post The post to analyze.
 	 * @access private
+	 * @return string
 	 */
 	private function get_status_for( $post ) {
 		return \Admin_Apple_News::get_post_status( $post->ID );
@@ -109,9 +112,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Get the synced status.
 	 *
-	 * @param WP_Post $post
-	 * @return string
+	 * @param \WP_Post $post The post to analyze.
 	 * @access private
+	 * @return string
 	 */
 	private function get_synced_status_for( $post ) {
 		$remote_id = get_post_meta( $post->ID, 'apple_news_api_id', true );
@@ -153,9 +156,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 *
 	 * Actions can be generated here.
 	 *
-	 * @param WP_Post $item
-	 * @return string
+	 * @param \WP_Post $item The post to analyze.
 	 * @access public
+	 * @return string
 	 */
 	public function column_title( $item ) {
 		$current_screen = get_current_screen();
@@ -223,31 +226,33 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		}
 
 		// Return the row action HTML.
-		return apply_filters( 'apple_news_column_title', sprintf( '%1$s <span>(id:%2$s)</span> %3$s',
-			esc_html( $item->post_title ),
-			absint( $item->ID ),
-			$this->row_actions( $actions ) // Can't be escaped but all elements are fully escaped above.
-		), $item, $actions );
+		return apply_filters(
+			'apple_news_column_title', sprintf(
+				'%1$s <span>(id:%2$s)</span> %3$s',
+				esc_html( $item->post_title ),
+				absint( $item->ID ),
+				$this->row_actions( $actions ) // Can't be escaped but all elements are fully escaped above.
+			), $item, $actions
+		);
 	}
 
 	/**
 	 * Dictates the table columns and titles. The 'cb' column is special and, if
-	 * existant, there needs to be a `column_cb` method defined.
+	 * existent, there needs to be a `column_cb` method defined.
 	 *
-	 * @return array An array where the key is the column slug and the value is
-	 * the title text.
-	 *
-	 * @return array
 	 * @access public
+	 * @return array An array where the key is the column slug and the value is the title text.
 	 */
 	public function get_columns() {
-		return apply_filters( 'apple_news_export_list_columns', array(
-			'cb'					=> '<input type="checkbox">',
-			'title'				=> __( 'Title', 'apple-news' ),
-			'updated_at'	=> __( 'Last updated at', 'apple-news' ),
-			'status'			=> __( 'Apple News Status', 'apple-news' ),
-			'sync'				=> __( 'Sync Status', 'apple-news' ),
-		) );
+		return apply_filters(
+			'apple_news_export_list_columns', array(
+				'cb'                    => '<input type="checkbox">',
+				'title'             => __( 'Title', 'apple-news' ),
+				'updated_at'    => __( 'Last updated at', 'apple-news' ),
+				'status'            => __( 'Apple News Status', 'apple-news' ),
+				'sync'              => __( 'Sync Status', 'apple-news' ),
+			)
+		);
 	}
 
 	/**
@@ -255,9 +260,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * treatment when columns are processed. It ALWAYS needs to have it's own
 	 * method.
 	 *
-	 * @param WP_Post $item
-	 * @return string
+	 * @param \WP_Post $item The post to analyze.
 	 * @access public
+	 * @return string
 	 */
 	public function column_cb( $item ) {
 		// Omit if the article is pending publish.
@@ -266,7 +271,8 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			return '';
 		}
 
-		return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s">',
+		return sprintf(
+			'<input type="checkbox" name="%1$s[]" value="%2$s">',
 			esc_attr( $this->_args['singular'] ),
 			absint( $item->ID )
 		);
@@ -275,13 +281,15 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	/**
 	 * Get bulk actions.
 	 *
-	 * @return array
 	 * @access public
+	 * @return array
 	 */
 	public function get_bulk_actions() {
-		return apply_filters( 'apple_news_bulk_actions', array(
-			Admin_Apple_Index_Page::namespace_action( 'push' ) => __( 'Publish', 'apple-news' ),
-		) );
+		return apply_filters(
+			'apple_news_bulk_actions', array(
+				Admin_Apple_Index_Page::namespace_action( 'push' ) => __( 'Publish', 'apple-news' ),
+			)
+		);
 	}
 
 	/**
@@ -301,7 +309,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		$current_page = $this->get_pagenum();
 		$args = array(
 			'post_type'     => $this->settings->get( 'post_types' ),
-			'post_status'	=> 'publish',
+			'post_status'   => 'publish',
 			'posts_per_page' => $this->per_page,
 			'offset'         => ( $current_page - 1 ) * $this->per_page,
 			'orderby'        => 'ID',
@@ -339,7 +347,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 						array(
 							'key' => 'apple_news_api_deleted',
 							'compare' => 'NOT EXISTS',
-						)
+						),
 					);
 					break;
 				case 'deleted':
@@ -347,7 +355,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 						array(
 							'key' => 'apple_news_api_deleted',
 							'compare' => 'EXISTS',
-						)
+						),
 					);
 					break;
 				case 'pending':
@@ -355,7 +363,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 						array(
 							'key' => 'apple_news_api_pending',
 							'compare' => 'EXISTS',
-						)
+						),
 					);
 					break;
 			}
@@ -368,7 +376,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			$args['date_query'] = array(
 				array(
 					'inclusive' => true,
-				)
+				),
 			);
 
 			if ( ! empty( $date_from ) ) {
@@ -392,17 +400,21 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		// Set data.
 		$this->items = $query->posts;
 		$total_items = $query->found_posts;
-		$this->set_pagination_args( apply_filters( 'apple_news_export_table_pagination_args', array(
-			'total_items' => $total_items,
-			'per_page'    => $this->per_page,
-			'total_pages' => ceil( $total_items / $this->per_page ),
-		) ) );
+		$this->set_pagination_args(
+			apply_filters(
+				'apple_news_export_table_pagination_args', array(
+					'total_items' => $total_items,
+					'per_page'    => $this->per_page,
+					'total_pages' => ceil( $total_items / $this->per_page ),
+				)
+			)
+		);
 	}
 
 	/**
 	 * Display extra filtering options.
 	 *
-	 * @param string $which
+	 * @param string $which Which section of the table we are on.
 	 * @access protected
 	 */
 	protected function extra_tablenav( $which ) {
@@ -475,13 +487,15 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 */
 	protected function publish_status_filter_field() {
 		// Add available statuses.
-		$publish_statuses = apply_filters( 'apple_news_publish_statuses', array(
-			'' => __( 'Show All Statuses', 'apple-news' ),
-			'published' => __( 'Published', 'apple-news' ),
-			'not_published' => __( 'Not Published', 'apple-news' ),
-			'pending' => __( 'Pending', 'apple-news' ),
-			'deleted' => __( 'Deleted', 'apple-news' ),
-		) );
+		$publish_statuses = apply_filters(
+			'apple_news_publish_statuses', array(
+				'' => __( 'Show All Statuses', 'apple-news' ),
+				'published' => __( 'Published', 'apple-news' ),
+				'not_published' => __( 'Not Published', 'apple-news' ),
+				'pending' => __( 'Pending', 'apple-news' ),
+				'deleted' => __( 'Deleted', 'apple-news' ),
+			)
+		);
 
 		// Build the dropdown.
 		?>
@@ -507,8 +521,8 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 */
 	protected function date_range_filter_field() {
 		?>
-		<input type="text" placeholder="<?php esc_attr_e( 'Show Posts From', 'apple-news' ) ?>" name="apple_news_date_from" id="apple_news_date_from" value="<?php echo esc_attr( $this->get_date_from_filter() ) ?>" />
-		<input type="text" placeholder="<?php esc_attr_e( 'Show Posts To', 'apple-news' ) ?>" name="apple_news_date_to" id="apple_news_date_to" value="<?php echo esc_attr( $this->get_date_to_filter() ) ?>" />
+		<input type="text" placeholder="<?php esc_attr_e( 'Show Posts From', 'apple-news' ); ?>" name="apple_news_date_from" id="apple_news_date_from" value="<?php echo esc_attr( $this->get_date_from_filter() ); ?>" />
+		<input type="text" placeholder="<?php esc_attr_e( 'Show Posts To', 'apple-news' ); ?>" name="apple_news_date_to" id="apple_news_date_to" value="<?php echo esc_attr( $this->get_date_to_filter() ); ?>" />
 		<?php
 	}
 }

@@ -69,14 +69,15 @@ class Exporter {
 	/**
 	 * Constructor.
 	 *
-	 * @param Exporter_Content $content
-	 * @param Workspace $workspace
-	 * @param Settings $settings
+	 * @param Exporter_Content $content   The content to export.
+	 * @param Workspace        $workspace Optional. The workspace to use.
+	 * @param Settings         $settings  Optional. Settings to use.
+	 * @access public
 	 */
-	function __construct( $content, $workspace = null, $settings = null ) {
+	public function __construct( $content, $workspace = null, $settings = null ) {
 		$this->content   = $content;
 		$this->workspace = $workspace ?: new Workspace( $this->content_id() );
-		$this->settings  = $settings  ?: new Settings();
+		$this->settings  = $settings ?: new Settings();
 		$this->builders  = array();
 		$this->separators = array(
 			json_decode( '"\u0020"' ),
@@ -104,7 +105,7 @@ class Exporter {
 	 * the JSON array.
 	 *
 	 * @since 0.4.0
-	 * @param array $builders
+	 * @param array $builders Optional. Builders to use.
 	 * @access public
 	 */
 	public function initialize_builders( $builders = null ) {
@@ -126,8 +127,8 @@ class Exporter {
 	/**
 	 * Register a builder.
 	 *
-	 * @param string $name
-	 * @param Builder $builder
+	 * @param string                           $name The name of the builder to register.
+	 * @param \Apple_Exporter\Builders\Builder $builder The builder to register.
 	 * @access private
 	 */
 	private function register_builder( $name, $builder ) {
@@ -137,9 +138,9 @@ class Exporter {
 	/**
 	 * Get a builder.
 	 *
-	 * @param string $name
-	 * @return Builder
+	 * @param string $name The name of the builder to fetch.
 	 * @access private
+	 * @return \Apple_Exporter\Builders\Builder The builder matching the provided name.
 	 */
 	private function get_builder( $name ) {
 		return $this->builders[ $name ];
@@ -167,8 +168,8 @@ class Exporter {
 	 * Gets the instance of the current workspace.
 	 *
 	 * @since 0.4.0
-	 * @return Workspace
 	 * @access public
+	 * @return Workspace The current workspace.
 	 */
 	public function workspace() {
 		return $this->workspace;
@@ -179,8 +180,8 @@ class Exporter {
 	 * and return the path.
 	 * This function builds the article and cleans up after.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The exported content in JSON format.
 	 */
 	public function export() {
 		// If an export or push was cancelled, the workspace might be polluted.
@@ -203,8 +204,8 @@ class Exporter {
 	 * Generate article.json contents. It does so by looping though all data,
 	 * generating valid JSON and adding attachments to workspace/tmp directory.
 	 *
-	 * @return string The generated JSON for article.json
 	 * @access private
+	 * @return string The generated JSON for article.json
 	 */
 	private function generate_json() {
 		/**
@@ -250,6 +251,7 @@ class Exporter {
 	/**
 	 * Write the JSON output to the Workspace.
 	 *
+	 * @param string $content The content to be written to the workspace.
 	 * @access private
 	 */
 	private function write_json( $content ) {
@@ -259,8 +261,8 @@ class Exporter {
 	/**
 	 * Get the JSON output from the workspace.
 	 *
-	 * @return string
 	 * @access public
+	 * @return string The JSON from the workspace.
 	 */
 	public function get_json() {
 		return $this->workspace->get_json();
@@ -269,8 +271,8 @@ class Exporter {
 	/**
 	 * Get the bundles from the workspace.
 	 *
-	 * @return array
 	 * @access public
+	 * @return array An array of bundles from the workspace.
 	 */
 	public function get_bundles() {
 		return $this->workspace->get_bundles();
@@ -279,8 +281,8 @@ class Exporter {
 	/**
 	 * Get the errors from the workspace.
 	 *
-	 * @return array
 	 * @access public
+	 * @return array An array of errors from the workspace.
 	 */
 	public function get_errors() {
 		return $this->workspace->get_errors();
@@ -298,8 +300,8 @@ class Exporter {
 	/**
 	 * Build the article style.
 	 *
-	 * @return array
 	 * @access private
+	 * @return array An array containing the background color for the article.
 	 */
 	private function build_article_style() {
 
@@ -314,8 +316,8 @@ class Exporter {
 	/**
 	 * Get the Exporter_Content object
 	 *
-	 * @return Exporter_Content
 	 * @access public
+	 * @return Exporter_Content The content from the exporter.
 	 */
 	public function get_content() {
 		return $this->content;
@@ -324,8 +326,8 @@ class Exporter {
 	/**
 	 * Get the content ID.
 	 *
-	 * @return int
 	 * @access private
+	 * @return int The ID of the post being exported.
 	 */
 	private function content_id() {
 		return $this->content->id();
@@ -334,8 +336,8 @@ class Exporter {
 	/**
 	 * Get the content title.
 	 *
-	 * @return string
 	 * @access private
+	 * @return string The title of the content being exported.
 	 */
 	private function content_title() {
 		return $this->content->title() ?: 'Untitled Article';

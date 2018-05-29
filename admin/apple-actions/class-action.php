@@ -28,7 +28,7 @@ abstract class Action {
 	/**
 	 * Abstract function implemented by all child class to perform the given action.
 	 */
-	public abstract function perform();
+	abstract public function perform();
 
 	/**
 	 * Gets a setting by name which was loaded from WordPress options.

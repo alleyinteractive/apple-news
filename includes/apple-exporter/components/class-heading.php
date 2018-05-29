@@ -26,9 +26,9 @@ class Heading extends Component {
 	/**
 	 * Look for node matches for this component.
 	 *
-	 * @param DomNode $node
-	 * @return mixed
+	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
+	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		$regex = sprintf(
@@ -37,11 +37,11 @@ class Heading extends Component {
 			self::$levels[ count( self::$levels ) - 1 ]
 		);
 
-		if ( ! preg_match( $regex, $node->nodeName ) ) {
+		if ( ! preg_match( $regex, $node->nodeName ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return null;
 		}
 
-		$html = $node->ownerDocument->saveXML( $node );
+		$html = $node->ownerDocument->saveXML( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		if ( preg_match( '#<img.*?>#si', $html ) ) {
 			return self::split_image( $html );
 		}
@@ -112,9 +112,9 @@ class Heading extends Component {
 	/**
 	 * Split the image parts.
 	 *
-	 * @param string $html
-	 * @return array
+	 * @param string $html The node, rendered to HTML.
 	 * @access private
+	 * @return array An array of split components.
 	 */
 	private static function split_image( $html ) {
 		if ( empty( $html ) ) {
@@ -125,26 +125,37 @@ class Heading extends Component {
 		preg_match( '#<img.*?>#si', $html, $matches );
 
 		if ( ! $matches ) {
-			return array( array( 'name' => 'heading', 'value' => $html ) );
+			return array(
+				array(
+					'name' => 'heading',
+					'value' => $html,
+				),
+			);
 		}
 
 		$image_html   = $matches[0];
 		$heading_html = str_replace( $image_html, '', $html );
 
 		return array(
-			array( 'name'  => 'heading', 'value' => self::clean_html( $heading_html ) ),
-			array( 'name'  => 'img'    , 'value' => $image_html ),
+			array(
+				'name'  => 'heading',
+				'value' => self::clean_html( $heading_html ),
+			),
+			array(
+				'name'  => 'img',
+				'value' => $image_html,
+			),
 		);
 	}
 
 	/**
 	 * Build the component.
 	 *
-	 * @param string $text
+	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $text ) {
-		if ( 0 === preg_match( '#<h(\d).*?>(.*?)</h\1>#si', $text, $matches ) ) {
+	protected function build( $html ) {
+		if ( 0 === preg_match( '#<h(\d).*?>(.*?)</h\1>#si', $html, $matches ) ) {
 			return;
 		}
 
@@ -200,6 +211,7 @@ class Heading extends Component {
 	/**
 	 * Set the style for the component.
 	 *
+	 * @param int $level The heading level (1-6).
 	 * @access private
 	 */
 	private function set_style( $level ) {
