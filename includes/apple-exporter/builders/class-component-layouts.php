@@ -28,8 +28,12 @@ class Component_Layouts extends Builder {
 
 	/**
 	 * Constructor.
+	 *
+	 * @param \Apple_Exporter\Exporter_Content          $content The content object to load.
+	 * @param \Apple_Exporter\Exporter_Content_Settings $settings The settings object to load.
+	 * @access public
 	 */
-	function __construct( $content, $settings ) {
+	public function __construct( $content, $settings ) {
 		parent::__construct( $content, $settings );
 		$this->layouts  = array();
 	}

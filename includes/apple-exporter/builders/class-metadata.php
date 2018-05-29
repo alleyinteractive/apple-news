@@ -102,7 +102,7 @@ class Metadata extends Builder {
 	/**
 	 * Adds metadata for cover art.
 	 *
-	 * @param array &$meta The metadata array to augment.
+	 * @param array $meta The metadata array to augment.
 	 *
 	 * @access private
 	 */

@@ -90,6 +90,7 @@ class Push extends API_Action {
 	 *
 	 * @access private
 	 * @return boolean
+	 * @throws \Apple_Actions\Action_Exception If the post could not be found.
 	 */
 	private function is_post_in_sync() {
 		$post = get_post( $this->id );
@@ -112,6 +113,7 @@ class Push extends API_Action {
 	 * Updates the current relevant metadata stored for the post.
 	 *
 	 * @access private
+	 * @throws \Apple_Actions\Action_Exception If there was an error getting the article from the API.
 	 */
 	private function get() {
 		// Ensure we have a valid ID.

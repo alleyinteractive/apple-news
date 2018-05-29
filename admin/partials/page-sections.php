@@ -54,7 +54,7 @@
 						<ul class="apple-news-section-taxonomy-mapping-list">
 						<?php if ( ! empty( $taxonomy_mappings[ $section_id ] ) ) : ?>
 							<?php foreach ( $taxonomy_mappings[ $section_id ] as $term ) : ?>
-								<?php $taxonomy_id = 'apple-news-section-mapping-' . ++ $count; ?>
+								<?php $taxonomy_id = 'apple-news-section-mapping-' . ( ++ $count ); ?>
 								<li>
 									<label for="<?php echo esc_attr( $taxonomy_id ); ?>" class="screen-reader-text"><?php echo esc_html( $taxonomy->labels->singular_name ); ?></label>
 									<input name="taxonomy-mapping-<?php echo esc_attr( $section_id ); ?>[]" id="<?php echo esc_attr( $taxonomy_id ); ?>" type="text" class="apple-news-section-taxonomy-autocomplete" value="<?php echo esc_attr( $term ); ?>" />
@@ -67,7 +67,7 @@
 					</td>
 					<td>
 						<?php
-							$theme_id = 'apple-news-theme-mapping-' . ++ $count;
+							$theme_id = 'apple-news-theme-mapping-' . ( ++ $count );
 							$selected_theme = ( isset( $theme_mappings[ $section_id ] ) ) ? $theme_mappings[ $section_id ] : '';
 						?>
 						<select name="theme-mapping-<?php echo esc_attr( $section_id ); ?>" id="<?php echo esc_attr( $theme_id ); ?>">

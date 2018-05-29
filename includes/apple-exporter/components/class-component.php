@@ -383,10 +383,9 @@ abstract class Component {
 	 * Maybe bundles the source based on current settings.
 	 * Returns the URL to use based on current setings.
 	 *
-	 * @param string $source    The path or URL of the resource which is going to
-	 *                          be bundled
-	 * @param string $filename  The name of the file to be created
-	 * @return string                   The URL to use for this asset in the JSON
+	 * @param string $source   The path or URL of the resource which is going to be bundled.
+	 * @param string $filename The name of the file to be created.
+	 * @return string The URL to use for this asset in the JSON.
 	 */
 	protected function maybe_bundle_source( $source, $filename = null ) {
 		if ( 'yes' === $this->get_setting( 'use_remote_images' ) ) {
@@ -404,9 +403,8 @@ abstract class Component {
 	 * Calls the current workspace bundle_source method to allow for
 	 * different implementations of the bundling technique.
 	 *
-	 * @param string $filename  The name of the file to be created
-	 * @param string $source    The path or URL of the resource which is going to
-	 *                          be bundled
+	 * @param string $filename The name of the file to be created.
+	 * @param string $source   The path or URL of the resource which is going to be bundled.
 	 */
 	protected function bundle_source( $filename, $source ) {
 		$this->workspace->bundle_source( $filename, $source );
@@ -502,8 +500,8 @@ abstract class Component {
 	 * Set the JSON for the component.
 	 *
 	 * @since 1.2.4
-	 * @param string $spec_name The spec to use for defining the JSON
-	 * @param array  $values Values to substitute for placeholders in the spec
+	 * @param string $spec_name The spec to use for defining the JSON.
+	 * @param array  $values    Values to substitute for placeholders in the spec.
 	 * @access protected
 	 */
 	protected function register_json( $spec_name, $values = array() ) {
@@ -520,10 +518,10 @@ abstract class Component {
 	 * Using the style service, register a new style.
 	 *
 	 * @since 0.4.0
-	 * @param string $name The name of the style
-	 * @param string $spec_name The spec to use for defining the JSON
-	 * @param array  $values Values to substitute for placeholders in the spec
-	 * @param array  $property The JSON property to set with the style
+	 * @param string $name      The name of the style.
+	 * @param string $spec_name The spec to use for defining the JSON.
+	 * @param array  $values    Values to substitute for placeholders in the spec.
+	 * @param array  $property  The JSON property to set with the style.
 	 * @access protected
 	 */
 	protected function register_style( $name, $spec_name, $values = array(), $property = null ) {
@@ -542,10 +540,10 @@ abstract class Component {
 	 * Using the layouts service, register a new layout.
 	 *
 	 * @since 0.4.0
-	 * @param string $name The name of the layout
-	 * @param string $spec_name The spec to use for defining the JSON
-	 * @param array  $values Values to substitute for placeholders in the spec
-	 * @param array  $property The JSON property to set with the layout
+	 * @param string $name      The name of the layout.
+	 * @param string $spec_name The spec to use for defining the JSON.
+	 * @param array  $values    Values to substitute for placeholders in the spec.
+	 * @param array  $property  The JSON property to set with the layout.
 	 * @access protected
 	 */
 	protected function register_layout( $name, $spec_name, $values = array(), $property = null ) {
@@ -566,10 +564,10 @@ abstract class Component {
 	 * because when the body is centered, the full-width layout spans the same
 	 * columns as the body.
 	 *
-	 * @param string $name The name of the layout
-	 * @param string $spec_name The spec to use for defining the JSON
-	 * @param array  $values Values to substitute for placeholders in the spec
-	 * @param array  $property The JSON property to set with the layout
+	 * @param string $name      The name of the layout.
+	 * @param string $spec_name The spec to use for defining the JSON.
+	 * @param array  $values    Values to substitute for placeholders in the spec.
+	 * @param array  $property  The JSON property to set with the layout.
 	 * @access protected
 	 */
 	protected function register_full_width_layout( $name, $spec_name, $values = array(), $property = null ) {
@@ -624,8 +622,8 @@ abstract class Component {
 	/**
 	 * Check if a node has a class.
 	 *
-	 * @param \DOMElement $node The node to examine for matches.
-	 * @param string $classname The name of the class to look up.
+	 * @param \DOMElement $node      The node to examine for matches.
+	 * @param string      $classname The name of the class to look up.
 	 * @access protected
 	 * @return boolean True if the node has the class, false if it does not.
 	 */

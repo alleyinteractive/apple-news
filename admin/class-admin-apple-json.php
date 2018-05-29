@@ -37,7 +37,7 @@ class Admin_Apple_JSON extends Apple_News {
 	/**
 	 * Constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->json_page_name = $this->plugin_domain . '-json';
 
 		$this->valid_actions = array(

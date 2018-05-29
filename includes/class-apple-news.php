@@ -115,6 +115,7 @@ class Apple_News {
 	 * This functionality is used in a number of classes that do not have a common
 	 * ancestor.
 	 *
+	 * @param string $path The path to analyze for a filename.
 	 * @access public
 	 * @return string The filename for an asset to be bundled.
 	 */
@@ -789,13 +790,8 @@ class Apple_News {
 	 * Accepts an array of settings and a settings map to clone settings from one
 	 * key to another.
 	 *
-	 * @param array $wp_settings An array of settings to modify.
+	 * @param array $wp_settings  An array of settings to modify.
 	 * @param array $settings_map A settings map in the format $to => $from.
-	 *   Example:
-	 *   $settings_map = array(
-	 *       'blockquote_color' => 'pullquote_color',
-	 *   );
-	 *
 	 * @access private
 	 * @return array The modified settings array.
 	 */

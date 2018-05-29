@@ -164,7 +164,8 @@ class Component_Spec {
 
 		// Iterate recursively over the built-in spec and get all the tokens.
 		// Do the same for the provided spec.
-		$new_tokens = $default_tokens = array();
+		$new_tokens = array();
+		$default_tokens = array();
 		$this->find_tokens( $spec, $new_tokens );
 		$this->find_tokens( $this->spec, $default_tokens );
 

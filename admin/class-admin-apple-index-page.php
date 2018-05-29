@@ -142,7 +142,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 				return $this->export_action( $id );
 			case self::namespace_action( 'reset' ):
 				return $this->reset_action( $id );
-			case self::namespace_action( 'push' ):
+			case self::namespace_action( 'push' ): // phpcs:ignore PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
 				if ( ! $id ) {
 					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
 					if ( isset( $_GET['article'] ) ) {
@@ -186,7 +186,6 @@ class Admin_Apple_Index_Page extends Apple_News {
 	/**
 	 * Performs the redirect after an action is complete.
 	 *
-	 * @param string $message The message to show.
 	 * @access public
 	 */
 	private function do_redirect() {

@@ -94,7 +94,8 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Populate $articles array with a set of valid posts.
 		$articles = array();
 		foreach ( explode( '.', $ids ) as $id ) {
-			if ( $post = get_post( absint( $id ) ) ) {
+			$post = get_post( absint( $id ) );
+			if ( ! empty( $post ) ) {
 				$articles[] = $post;
 			}
 		}

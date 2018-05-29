@@ -255,7 +255,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		 */
 		if ( is_array( $type ) ) {
 			// Check if this is a multiple select.
-			$multiple_name = $multiple_attr = '';
+			$multiple_name = '';
+			$multiple_attr = '';
 			if ( $this->is_multiple( $name ) ) {
 				$multiple_name = '[]';
 				$multiple_attr = 'multiple="multiple"';

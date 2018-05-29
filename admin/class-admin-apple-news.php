@@ -35,7 +35,7 @@ class Admin_Apple_News extends Apple_News {
 	/**
 	 * Constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		// Register hooks.
 		add_action( 'admin_print_styles-toplevel_page_apple_news_index', array( $this, 'plugin_styles' ) );
 		add_action( 'init', array( $this, 'action_init' ) );
@@ -250,9 +250,10 @@ class Admin_Apple_News extends Apple_News {
 	 */
 	public static function get_post_status( $post_id ) {
 		$key = 'apple_news_post_state_' . $post_id;
-		if ( false === ( $state = get_transient( $key ) ) ) {
-				// Get the state from the API.
-				// If this causes an error, display that message instead of the state.
+		$state = get_transient( $key );
+		if ( false === $state ) {
+			// Get the state from the API.
+			// If this causes an error, display that message instead of the state.
 			try {
 				$action = new Apple_Actions\Index\Get( self::$settings, $post_id );
 				$state = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
@@ -260,8 +261,8 @@ class Admin_Apple_News extends Apple_News {
 				$state = $e->getMessage();
 			}
 
-				$cache_expiration = ( 'LIVE' === $state || 'TAKEN_DOWN' === $state ) ? 3600 : 60;
-				set_transient( $key, $state, apply_filters( 'apple_news_post_status_cache_expiration', $cache_expiration, $state ) );
+			$cache_expiration = ( 'LIVE' === $state || 'TAKEN_DOWN' === $state ) ? 3600 : 60;
+			set_transient( $key, $state, apply_filters( 'apple_news_post_status_cache_expiration', $cache_expiration, $state ) );
 		}
 
 		return $state;

@@ -477,6 +477,7 @@ class Theme {
 	/**
 	 * Renders the meta component order field.
 	 *
+	 * @param \Apple_Exporter\Theme $theme The theme for which to render the order.
 	 * @access public
 	 */
 	public static function render_meta_component_order( $theme ) {
