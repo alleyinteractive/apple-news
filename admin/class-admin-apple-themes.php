@@ -796,7 +796,7 @@ class Admin_Apple_Themes extends Apple_News {
 			wp_import_cleanup( $this->file_id );
 			\Admin_Apple_Notice::error(
 				sprintf(
-					__( 'The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem.', 'wp-options-importer' ),
+					__( 'The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem.', 'apple-news' ),
 					esc_html( $file['file'] )
 				)
 			);

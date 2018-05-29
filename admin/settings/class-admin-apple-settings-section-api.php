@@ -103,7 +103,7 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 		}
 
 		return sprintf(
-			__( 'This will cause publishing to happen asynchronously using %s.', 'apple_news' ),
+			__( 'This will cause publishing to happen asynchronously using %s.', 'apple-news' ),
 			$system
 		);
 	}
