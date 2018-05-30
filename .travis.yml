@@ -55,7 +55,7 @@ before_script:
 
   # Install Composer dependencies.
   - composer install
-  - export PATH=$PATH:${og_dir}/vendor/bin/
+  - export PATH=$PATH:`pwd`/vendor/bin/
   - phpenv rehash
 
   # For debugging.
