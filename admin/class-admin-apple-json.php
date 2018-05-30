@@ -106,7 +106,9 @@ class Admin_Apple_JSON extends Apple_News {
 		}
 
 		// Call the callback for the action for further processing.
-		if ( isset( $this->valid_actions[ $action ]['callback'] ) ) {
+		if ( isset( $this->valid_actions[ $action ]['callback'] )
+			&& is_callable( $this->valid_actions[ $action ]['callback'] )
+		) {
 			call_user_func( $this->valid_actions[ $action ]['callback'] );
 		}
 	}

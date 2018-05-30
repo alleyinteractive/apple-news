@@ -65,7 +65,7 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// If the field has its own render callback, use that instead.
-		if ( ! empty( $option['callback'] ) ) {
+		if ( ! empty( $option['callback'] ) && is_callable( $option['callback'] ) ) {
 			return call_user_func( $option['callback'], $theme );
 		}
 
@@ -211,7 +211,11 @@ class Admin_Apple_Themes extends Apple_News {
 		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
 
 		// Call the callback for the action for further processing.
-		call_user_func( $this->_valid_actions[ $action ]['callback'] );
+		if ( isset( $this->_valid_actions[ $action ]['callback'] )
+			&& is_callable( $this->_valid_actions[ $action ]['callback'] )
+		) {
+			call_user_func( $this->_valid_actions[ $action ]['callback'] );
+		}
 	}
 
 	/**
