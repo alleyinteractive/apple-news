@@ -31,9 +31,7 @@ class Table extends Component {
 
 		// In order to match, HTML support needs to be turned on globally.
 		$settings = get_option( \Admin_Apple_Settings::$option_name );
-		if ( empty( $settings['html_support'] )
-			|| 'yes' !== $settings['html_support']
-		) {
+		if ( 'no' === $settings['html_support'] ) {
 			return null;
 		}
 
@@ -46,72 +44,88 @@ class Table extends Component {
 	 * @access public
 	 */
 	public function register_specs() {
+
+		// Register the JSON for the table itself.
 		$this->register_spec(
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
 				'role' => 'htmltable',
 				'html' => '#html#',
-				'layout' => array(
-					'margin' => array(
-						'bottom' => '#table_body_line_height#',
+				'layout' => 'table-layout',
+				'style' => 'default-table',
+			)
+		);
+
+		// Register the JSON for the table layout.
+		$this->register_spec(
+			'table-layout',
+			__( 'Table Layout', 'apple-news' ),
+			array(
+				'margin' => array(
+					'bottom' => '#table_body_line_height#',
+				),
+			)
+		);
+
+		// Register the JSON for the table style.
+		$this->register_spec(
+			'default-table',
+			__( 'Table Style', 'apple-news' ),
+			array(
+				'border' => array(
+					'all' => array(
+						'color' => '#table_border_color#',
+						'style' => '#table_border_style#',
+						'width' => '#table_border_width#',
 					),
 				),
-				'style' => array(
-					'border' => array(
-						'all' => array(
+				'tableStyle' => array(
+					'cells' => array(
+						'backgroundColor' => '#table_body_background_color#',
+						'horizontalAlignment' => '#table_body_horizontal_alignment#',
+						'padding' => '#table_body_padding#',
+						'textStyle' => array(
+							'fontName' => '#table_body_font#',
+							'fontSize' => '#table_body_size#',
+							'lineHeight' => '#table_body_line_height#',
+							'textColor' => '#table_body_color#',
+							'tracking' => '#table_body_tracking#',
+						),
+						'verticalAlignment' => '#table_body_vertical_alignment#',
+					),
+					'columns' => array(
+						'divider' => array(
 							'color' => '#table_border_color#',
 							'style' => '#table_border_style#',
 							'width' => '#table_border_width#',
 						),
 					),
-					'tableStyle' => array(
-						'cells' => array(
-							'backgroundColor' => '#table_body_background_color#',
-							'horizontalAlignment' => '#table_body_horizontal_alignment#',
-							'padding' => '#table_body_padding#',
-							'textStyle' => array(
-								'fontName' => '#table_body_font#',
-								'fontSize' => '#table_body_size#',
-								'lineHeight' => '#table_body_line_height#',
-								'textColor' => '#table_body_color#',
-								'tracking' => '#table_body_tracking#',
-							),
-							'verticalAlignment' => '#table_body_vertical_alignment#',
+					'headerCells' => array(
+						'backgroundColor' => '#table_header_background_color#',
+						'horizontalAlignment' => '#table_header_horizontal_alignment#',
+						'padding' => '#table_header_padding#',
+						'textStyle' => array(
+							'fontName' => '#table_header_font#',
+							'fontSize' => '#table_header_size#',
+							'lineHeight' => '#table_header_line_height#',
+							'textColor' => '#table_header_color#',
+							'tracking' => '#table_header_tracking#',
 						),
-						'columns' => array(
-							'divider' => array(
-								'color' => '#table_border_color#',
-								'style' => '#table_border_style#',
-								'width' => '#table_border_width#',
-							),
+						'verticalAlignment' => '#table_header_vertical_alignment#',
+					),
+					'headerRows' => array(
+						'divider' => array(
+							'color' => '#table_border_color#',
+							'style' => '#table_border_style#',
+							'width' => '#table_border_width#',
 						),
-						'headerCells' => array(
-							'backgroundColor' => '#table_header_background_color#',
-							'horizontalAlignment' => '#table_header_horizontal_alignment#',
-							'padding' => '#table_header_padding#',
-							'textStyle' => array(
-								'fontName' => '#table_header_font#',
-								'fontSize' => '#table_header_size#',
-								'lineHeight' => '#table_header_line_height#',
-								'textColor' => '#table_header_color#',
-								'tracking' => '#table_header_tracking#',
-							),
-							'verticalAlignment' => '#table_header_vertical_alignment#',
-						),
-						'headerRows' => array(
-							'divider' => array(
-								'color' => '#table_border_color#',
-								'style' => '#table_border_style#',
-								'width' => '#table_border_width#',
-							),
-						),
-						'rows' => array(
-							'divider' => array(
-								'color' => '#table_border_color#',
-								'style' => '#table_border_style#',
-								'width' => '#table_border_width#',
-							),
+					),
+					'rows' => array(
+						'divider' => array(
+							'color' => '#table_border_color#',
+							'style' => '#table_border_style#',
+							'width' => '#table_border_width#',
 						),
 					),
 				),
@@ -156,6 +170,14 @@ class Table extends Component {
 				'#html#' => $html,
 			)
 		);
+
+		// Get information about the currently loaded theme.
+		$theme = \Apple_Exporter\Theme::get_used();
+
+		// Register the layout for the table.
+		$this->register_layout( 'table-layout', 'table-layout' );
+
+		// TODO: Register style.
 	}
 
 	/**
