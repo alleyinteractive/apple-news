@@ -70,7 +70,9 @@ HTML;
 			null,
 			$this->settings,
 			$this->styles,
-			$this->layouts
+			$this->layouts,
+			null,
+			$this->component_styles
 		);
 
 		// Test.

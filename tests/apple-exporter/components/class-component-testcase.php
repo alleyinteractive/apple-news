@@ -4,6 +4,7 @@ use Apple_Exporter\Exporter_Content as Exporter_Content;
 use Apple_Exporter\Settings as Settings;
 use Apple_Exporter\Builders\Component_Layouts as Component_Layouts;
 use Apple_Exporter\Builders\Component_Text_Styles as Component_Text_Styles;
+use Apple_Exporter\Builders\Component_Styles as Component_Styles;
 
 abstract class Component_TestCase extends WP_UnitTestCase {
 
@@ -17,11 +18,12 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 	public function setup() {
 		$themes = new Admin_Apple_Themes;
 		$themes->setup_theme_pages();
-		$this->prophet  = new \Prophecy\Prophet;
-		$this->settings = new Settings();
-		$this->content  = new Exporter_Content( 1, __( 'My Title', 'apple-news' ), '<p>' . __( 'Hello, World!', 'apple-news' ) . '</p>' );
-		$this->styles   = new Component_Text_Styles( $this->content, $this->settings );
-		$this->layouts  = new Component_Layouts( $this->content, $this->settings );
+		$this->prophet          = new \Prophecy\Prophet;
+		$this->settings         = new Settings();
+		$this->content          = new Exporter_Content( 1, __( 'My Title', 'apple-news' ), '<p>' . __( 'Hello, World!', 'apple-news' ) . '</p>' );
+		$this->styles           = new Component_Text_Styles( $this->content, $this->settings );
+		$this->layouts          = new Component_Layouts( $this->content, $this->settings );
+		$this->component_styles = new Component_Styles( $this->content, $this->settings );
 	}
 
 	/**

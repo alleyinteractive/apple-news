@@ -226,7 +226,7 @@ abstract class Component {
 		$this->workspace        = $workspace;
 		$this->settings         = $settings;
 		$this->styles           = $styles;
-		$this->component_styles = $styles;
+		$this->component_styles = $component_styles;
 		$this->layouts          = $layouts;
 		$this->text             = $text;
 		$this->json             = null;
