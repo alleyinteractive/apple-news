@@ -99,16 +99,16 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 		 && empty( $deleted )
 		 && empty( $pending )
 	) :
-	?>
+		?>
 		<input type="hidden" id="apple-news-publish-action" name="apple_news_publish_action" value="">
 		<input type="button" id="apple-news-publish-submit" name="apple_news_publish_submit" value="<?php esc_attr_e( 'Publish to Apple News', 'apple-news' ); ?>" class="button-primary" />
-	<?php
+		<?php
 	elseif ( 'yes' === $this->settings->get( 'api_autosync' )
 		 && empty( $api_id )
 		 && empty( $deleted )
 		 && empty( $pending )
 	) :
-	?>
+		?>
 		<p><?php esc_html_e( 'This post will be automatically sent to Apple News on publish.', 'apple-news' ); ?></p>
 	<?php elseif ( 'yes' === $this->settings->get( 'api_async' ) && ! empty( $pending ) ) : ?>
 		<p><?php esc_html_e( 'This post is currently pending publishing to Apple News.', 'apple-news' ); ?></p>
@@ -119,15 +119,15 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $api_id ) ) : ?>
-	<?php
-	// Add data about the article if it exists.
-	$state = \Admin_Apple_News::get_post_status( $post->ID );
-	$share_url = get_post_meta( $post->ID, 'apple_news_api_share_url', true );
-	$created_at = get_post_meta( $post->ID, 'apple_news_api_created_at', true );
-	$created_at = empty( $created_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $created_at ) ), 'F j, h:i a' );
-	$modified_at = get_post_meta( $post->ID, 'apple_news_api_modified_at', true );
-	$modified_at = empty( $modified_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $modified_at ) ), 'F j, h:i a' );
-	?>
+		<?php
+		// Add data about the article if it exists.
+		$state = \Admin_Apple_News::get_post_status( $post->ID );
+		$share_url = get_post_meta( $post->ID, 'apple_news_api_share_url', true );
+		$created_at = get_post_meta( $post->ID, 'apple_news_api_created_at', true );
+		$created_at = empty( $created_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $created_at ) ), 'F j, h:i a' );
+		$modified_at = get_post_meta( $post->ID, 'apple_news_api_modified_at', true );
+		$modified_at = empty( $modified_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $modified_at ) ), 'F j, h:i a' );
+		?>
 	<div id="apple-news-metabox-pullquote" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
 		<h3><?php esc_html_e( 'Apple News Publish Information', 'apple-news' ); ?></h3>
 		<ul>

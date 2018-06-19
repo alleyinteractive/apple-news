@@ -29,7 +29,7 @@
 						'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-json&theme=' . $theme_name ) ) . '">',
 						'</a>'
 					);
-				?>
+					?>
 				</p>
 				<table class="form-table apple-news">
 					<?php foreach ( $theme->get_groups() as $group ) : ?>
@@ -78,7 +78,7 @@
 					'submit',
 					false
 				);
-			?>
+				?>
 			<a class="button" href="<?php echo esc_url( $theme_admin_url ); ?>"><?php esc_html_e( 'Cancel', 'apple-news' ); ?></a>
 		</p>
 	</form>

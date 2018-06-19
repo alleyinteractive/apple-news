@@ -67,7 +67,7 @@ $themes = new \Admin_Apple_Themes(); ?>
 				$all_themes = \Apple_Exporter\Theme::get_registry();
 				$active_theme = \Apple_Exporter\Theme::get_active_theme_name();
 				if ( empty( $all_themes ) ) :
-				?>
+					?>
 					<h2><?php esc_html_e( 'No themes were found', 'apple-news' ); ?></h2>
 				<?php else : ?>
 					<?php foreach ( $all_themes as $theme ) : ?>
