@@ -115,6 +115,7 @@ class Exporter {
 			$this->register_builder( 'layout', new Builders\Layout( $this->content, $this->settings ) );
 			$this->register_builder( 'components', new Builders\Components( $this->content, $this->settings ) );
 			$this->register_builder( 'componentTextStyles', new Builders\Component_Text_Styles( $this->content, $this->settings ) );
+			$this->register_builder( 'componentStyles', new Builders\Component_Styles( $this->content, $this->settings ) );
 			$this->register_builder( 'textStyles', new Builders\Text_Styles( $this->content, $this->settings ) );
 			$this->register_builder( 'componentLayouts', new Builders\Component_Layouts( $this->content, $this->settings ) );
 			$this->register_builder( 'metadata', new Builders\Metadata( $this->content, $this->settings ) );
