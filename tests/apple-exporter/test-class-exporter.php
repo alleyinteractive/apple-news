@@ -66,12 +66,17 @@ class Exporter_Test extends WP_UnitTestCase {
 		$builder2
 			->to_array()
 			->shouldBeCalled();
+		$builder3 = $this->prophet->prophesize( '\Apple_Exporter\Builders\Builder' );
+		$builder3
+			->to_array()
+			->shouldBeCalled();
 
 		$content  = new Apple_Exporter\Exporter_Content( 3, 'Title', '<p>Example content</p>' );
 		$exporter = new Exporter( $content, $workspace->reveal() );
 		$exporter->initialize_builders( array(
 			'componentTextStyles' => $builder1->reveal(),
 			'componentLayouts'    => $builder2->reveal(),
+			'componentStyles'     => $builder3->reveal(),
 		) );
 		$exporter->export();
 	}

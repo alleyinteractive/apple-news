@@ -31,7 +31,7 @@ class Table extends Component {
 
 		// In order to match, HTML support needs to be turned on globally.
 		$settings = get_option( \Admin_Apple_Settings::$option_name );
-		if ( 'no' === $settings['html_support'] ) {
+		if ( ! empty( $settings['html_support'] ) && 'no' === $settings['html_support'] ) {
 			return null;
 		}
 
