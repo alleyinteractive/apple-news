@@ -191,6 +191,71 @@
                     "bottom": 60
                 }
             }
+        },
+        "table": {
+            "default-table": {
+                "border": {
+                    "all": {
+                        "color": "#table_border_color#",
+                        "style": "#table_border_style#",
+                        "width": "#table_border_width#"
+                    }
+                },
+                "tableStyle": {
+                    "cells": {
+                        "backgroundColor": "#table_body_background_color#",
+                        "horizontalAlignment": "#table_body_horizontal_alignment#",
+                        "padding": "#table_body_padding#",
+                        "textStyle": {
+                            "fontName": "#table_body_font#",
+                            "fontSize": "#table_body_size#",
+                            "lineHeight": "#table_body_line_height#",
+                            "textColor": "#table_body_color#",
+                            "tracking": "#table_body_tracking#"
+                        },
+                        "verticalAlignment": "#table_body_vertical_alignment#"
+                    },
+                    "columns": {
+                        "divider": {
+                            "color": "#table_border_color#",
+                            "style": "#table_border_style#",
+                            "width": "#table_border_width#"
+                        }
+                    },
+                    "headerCells": {
+                        "backgroundColor": "#table_header_background_color#",
+                        "horizontalAlignment": "#table_header_horizontal_alignment#",
+                        "padding": {
+                          "top": "#table_header_padding#",
+                          "right": 7,
+                          "bottom": "#table_header_padding#",
+                          "left": 7
+                        },
+                        "textStyle": {
+                            "fontName": "#table_header_font#",
+                            "fontSize": "#table_header_size#",
+                            "lineHeight": "#table_header_line_height#",
+                            "textColor": "#table_header_color#",
+                            "tracking": "#table_header_tracking#"
+                        },
+                        "verticalAlignment": "#table_header_vertical_alignment#"
+                    },
+                    "headerRows": {
+                        "divider": {
+                            "color": "#table_border_color#",
+                            "style": "#table_border_style#",
+                            "width": 4
+                        }
+                    },
+                    "rows": {
+                        "divider": {
+                            "color": "#table_border_color#",
+                            "style": "#table_border_style#",
+                            "width": "#table_border_width#"
+                        }
+                    }
+                }
+            }
         }
     },
     "layout_gutter": 20,
@@ -218,23 +283,23 @@
     "pullquote_transform": "none",
     "table_border_color": "#30bcff",
     "table_border_style": "solid",
-    "table_border_width": 3,
+    "table_border_width": 1,
     "table_body_background_color": "#ffffff",
     "table_body_color": "#000000",
-    "table_body_font": "Optima-Regular",
+    "table_body_font": "AvenirNext-Regular",
     "table_body_horizontal_alignment": "left",
-    "table_body_line_height": 22,
-    "table_body_padding": 5.0,
+    "table_body_line_height": 23,
+    "table_body_padding": 7.0,
     "table_body_size": 17,
     "table_body_tracking": 0,
     "table_body_vertical_alignment": "center",
     "table_header_background_color": "#e6f7ff",
-    "table_header_color": "#30bcff",
+    "table_header_color": "#000000",
     "table_header_font": "AvenirNext-Regular",
-    "table_header_horizontal_alignment": "center",
-    "table_header_line_height": 24,
+    "table_header_horizontal_alignment": "left",
+    "table_header_line_height": 23,
     "table_header_padding": 10.0,
-    "table_header_size": 18,
+    "table_header_size": 17,
     "table_header_tracking": 0,
     "table_header_vertical_alignment": "center",
     "theme_name": "Modern"
