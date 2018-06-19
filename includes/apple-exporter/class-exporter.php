@@ -122,7 +122,13 @@ class Exporter {
 			$this->register_builder( 'advertisingSettings', new Builders\Advertising_Settings( $this->content, $this->settings ) );
 		}
 
-		Component_Factory::initialize( $this->workspace, $this->settings, $this->get_builder( 'componentTextStyles' ), $this->get_builder( 'componentLayouts' ) );
+		Component_Factory::initialize(
+			$this->workspace,
+			$this->settings,
+			$this->get_builder( 'componentTextStyles' ),
+			$this->get_builder( 'componentLayouts' ),
+			$this->get_builder( 'componentStyles' )
+		);
 	}
 
 	/**

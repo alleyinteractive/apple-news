@@ -43,15 +43,23 @@ class Component_Factory {
 	/**
 	 * Current styles.
 	 *
-	 * @var Component_Text_Styles
+	 * @var \Apple_Exporter\Builders\Component_Text_Styles
 	 * @access private
 	 */
 	private static $styles = null;
 
 	/**
+	 * Current component styles.
+	 *
+	 * @var \Apple_Exporter\Builders\Component_Styles
+	 * @access private
+	 */
+	private static $component_styles = null;
+
+	/**
 	 * Current layouts.
 	 *
-	 * @var Component_Layouts
+	 * @var \Apple_Exporter\Builders\Component_Layouts
 	 * @access private
 	 */
 	private static $layouts = null;
@@ -59,17 +67,25 @@ class Component_Factory {
 	/**
 	 * Initialize the component factory.
 	 *
-	 * @param \Apple_Exporter\Workspace                      $workspace The workspace to use.
-	 * @param \Apple_Exporter\Settings                       $settings  The settings to use.
-	 * @param \Apple_Exporter\Builders\Component_Text_Styles $styles    The styles to use.
-	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts   The layouts to use.
+	 * @param \Apple_Exporter\Workspace                      $workspace        The workspace to use.
+	 * @param \Apple_Exporter\Settings                       $settings         The settings to use.
+	 * @param \Apple_Exporter\Builders\Component_Text_Styles $styles           The styles to use.
+	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts          The layouts to use.
+	 * @param \Apple_Exporter\Builders\Component_Styles      $component_styles The component styles to use.
 	 * @access public
 	 */
-	public static function initialize( $workspace = null, $settings = null, $styles = null, $layouts = null ) {
-		self::$workspace = $workspace;
-		self::$settings  = $settings;
-		self::$styles    = $styles;
-		self::$layouts   = $layouts;
+	public static function initialize(
+		$workspace = null,
+		$settings = null,
+		$styles = null,
+		$layouts = null,
+		$component_styles = null
+	) {
+		self::$workspace        = $workspace;
+		self::$settings         = $settings;
+		self::$styles           = $styles;
+		self::$layouts          = $layouts;
+		self::$component_styles = $component_styles;
 
 		// Order is important. Components are checked in the order they are added.
 		self::register_component( 'gallery', '\\Apple_Exporter\\Components\\Gallery' );
@@ -135,7 +151,15 @@ class Component_Factory {
 			return null;
 		}
 
-		return new $class( $html, self::$workspace, self::$settings, self::$styles, self::$layouts );
+		return new $class(
+			$html,
+			self::$workspace,
+			self::$settings,
+			self::$styles,
+			self::$layouts,
+			null,
+			self::$component_styles
+		);
 	}
 
 	/**

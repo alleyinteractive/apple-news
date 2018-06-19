@@ -177,7 +177,11 @@ class Table extends Component {
 		// Register the layout for the table.
 		$this->register_layout( 'table-layout', 'table-layout' );
 
-		// TODO: Register style.
+		// Register the style for the table.
+		$this->register_component_style(
+			'default-table',
+			'default-table'
+		);
 	}
 
 	/**
