@@ -55,13 +55,13 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 * Set the default publish and delete capabilities to the corresponding post publish and delete capabilities for the post type being edited, rather than requiring "manage_options," which is typically an administrator-only capability. This allows users with the ability to publish posts to also publish those posts to Apple News.
 * Removed overzealous check for invalid Unicode sequences. Over the past several releases, enhancements have been made to better identify and fix problems with content that would cause issues upon pushing to Apple News. Therefore, the check for invalid Unicode character sequences is now not providing much value, and is inhibiting valid content (including emoji) from being pushed to Apple News.
 * Added a function (apple_news_is_exporting) for determining whether an export is happening, which can be used in themes and plugins to change behavior if a hook is being executed in the context of an Apple News request.
-* Adds context to the message that is displayed when a post push is skipped explaining why it was skipped.
-* Adds a framework for saving dismissed state of persistent admin notices (such as those that appear after an upgrade) so that the close button causes the notice to not appear again for that user.
-* Uses the language code from blog settings for document properties (thanks @ffffelix).
-* Adds support for the isHidden property (thanks @jonesmatthew).
-* Adds support for Jetpack Tiled Galleries.
-* Swaps deprecated wpcom_vip_* functions for core versions.
-* Adds expand/collapse functionality to the theme editor to reduce scrolling between where settings are set and the preview area.
+* Added context to the message that is displayed when a post push is skipped explaining why it was skipped.
+* Added a framework for saving dismissed state of persistent admin notices (such as those that appear after an upgrade) so that the close button causes the notice to not appear again for that user.
+* Set the language code from blog settings for document properties (thanks @ffffelix).
+* Added support for the isHidden property (thanks @jonesmatthew).
+* Added support for Jetpack Tiled Galleries.
+* Swapped deprecated wpcom_vip_* functions for core versions.
+* Added expand/collapse functionality to the theme editor to reduce scrolling between where settings are set and the preview area.
 * Brought entire codebase up to WordPress coding standards, which is now being verified through PHP CodeSniffer on each pull request.
 * Updated Travis configuration for more robust testing.
 * Bumped minimum required version to PHP 5.6 due to incompatibility with certain tools (e.g., Composer) required for running builds and tests.
@@ -70,16 +70,16 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 * Bugfix: Addressed an issue with sanitization that did not properly strip out script tags that contain CDATA with a greater than symbol.
 * Bugfix: Empty meta_component_order settings can now be saved properly on the theme edit screen.
 * Bugfix: No longer assumes that any embed that isn't YouTube is actually Vimeo. Performs a strict check for Vimeo embed signatures and drops the embed if it does not match known providers.
-* Bugfix: Re-adds erroneously removed apple_news_fonts_list hook.
-* Bugfix: Fixes an error where the list of sections was occasionally being encoded as an object instead of an array.
-* Bugfix: Fixes the undefined message warning if an article was deleted from iCloud, thereby breaking the linkage between the plugin and the Apple News API, to explain why the link was broken.
-* Bugfix: Fixes undefined index and undefined variable notices in a few places.
-* Bugfix: Fixes an assignment bug in class-admin-apple-post-sync.php (thanks @lgladdy and @dhanendran).
-* Bugfix: Prevents empty text nodes from being added in a variety of ways, which was causing errors on publish in some cases, and unwanted extra space in articles in others.
-* Bugfix: Prevent Apple News API timeouts from causing the entire WordPress install to hang by only using long remote request timeouts when making a POST request to the Apple News API.
+* Bugfix: Re-added erroneously removed apple_news_fonts_list hook.
+* Bugfix: Fixed an error where the list of sections was occasionally being encoded as an object instead of an array.
+* Bugfix: Fixed the undefined message warning if an article was deleted from iCloud, thereby breaking the linkage between the plugin and the Apple News API, to explain why the link was broken.
+* Bugfix: Fixed undefined index and undefined variable notices in a few places.
+* Bugfix: Fixed an assignment bug in class-admin-apple-post-sync.php (thanks @lgladdy and @dhanendran).
+* Bugfix: Prevented empty text nodes from being added in a variety of ways, which was causing errors on publish in some cases, and unwanted extra space in articles in others.
+* Bugfix: Prevented Apple News API timeouts from causing the entire WordPress install to hang by only using long remote request timeouts when making a POST request to the Apple News API.
 * Bugfix: Fixed improper handling of several different types of links, such as empty URLs, malformed URLs, root-relative URLs, and anchor links.
-* Bugfix: Properly decodes ampersands and other HTML-encoded entities when using Markdown format.
-* Bugfix: Removes style tags and their contents where they appear inline.
+* Bugfix: Properly decoded ampersands and other HTML-encoded entities when using Markdown format.
+* Bugfix: Removed style tags and their contents where they appear inline.
 
 = 1.3.0 =
 * Moved JSON customizations to themes so that JSON can be customized on a per-theme basis.
