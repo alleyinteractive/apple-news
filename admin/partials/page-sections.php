@@ -18,7 +18,7 @@
 			strtolower( $taxonomy->label )
 		)
 	);
-		?>
+	?>
 	</p>
 	<p>
 	<?php
@@ -30,7 +30,7 @@
 			'</a>'
 		)
 	);
-		?>
+	?>
 	</p>
 	<form method="post" action="" id="apple-news-section-form" enctype="multipart/form-data">
 		<?php wp_nonce_field( 'apple_news_sections' ); ?>
@@ -96,7 +96,7 @@
 					'apple_news_set_section_mappings',
 					false
 				);
-			?>
+				?>
 			<?php
 				submit_button(
 					__( 'Refresh Section List', 'apple-news' ),
@@ -104,7 +104,7 @@
 					'apple_news_refresh_section_list',
 					false
 				);
-			?>
+				?>
 		</p>
 	</form>
 </div>
