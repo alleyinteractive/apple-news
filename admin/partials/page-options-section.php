@@ -10,13 +10,13 @@
 <?php echo wp_kses_post( $section->get_section_info() ); ?>
 <table class="form-table apple-news">
 	<?php foreach ( $section->groups() as $group ) : ?>
-	<?php do_action( 'apple_news_before_setting_group', $group, false ); ?>
+		<?php do_action( 'apple_news_before_setting_group', $group, false ); ?>
 	<tr>
 		<th scope="row"><?php echo esc_html( $group['label'] ); ?></th>
 		<td>
 			<fieldset>
 				<?php foreach ( $group['settings'] as $setting_name => $setting_meta ) : ?>
-				<?php do_action( 'apple_news_before_setting', $setting_name, $setting_meta ); ?>
+					<?php do_action( 'apple_news_before_setting', $setting_name, $setting_meta ); ?>
 				<label class="setting-container">
 					<?php if ( ! empty( $setting_meta['label'] ) ) : ?>
 						<span class="label-name"><?php echo esc_html( $setting_meta['label'] ); ?></span>
@@ -34,7 +34,7 @@
 						);
 					?>
 				</label>
-				<?php do_action( 'apple_news_after_setting', $setting_name, $setting_meta ); ?>
+					<?php do_action( 'apple_news_after_setting', $setting_name, $setting_meta ); ?>
 				<br />
 				<?php endforeach; ?>
 
@@ -44,6 +44,6 @@
 			</fieldset>
 		</td>
 	</tr>
-	<?php do_action( 'apple_news_after_setting_group', $group, false ); ?>
+		<?php do_action( 'apple_news_after_setting_group', $group, false ); ?>
 	<?php endforeach; ?>
 </table>
