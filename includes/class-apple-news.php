@@ -644,7 +644,6 @@ class Apple_News {
 		$settings_map = array(
 			'table_border_color' => 'blockquote_border_color',
 			'table_border_style' => 'blockquote_border_style',
-			'table_border_width' => 'blockquote_border_width',
 			'table_body_background_color' => 'body_background_color',
 			'table_body_color' => 'body_color',
 			'table_body_font' => 'body_font',
@@ -653,7 +652,7 @@ class Apple_News {
 			'table_body_tracking' => 'body_tracking',
 			'table_header_background_color' => 'blockquote_background_color',
 			'table_header_color' => 'blockquote_color',
-			'table_header_font' => 'blockquote_font',
+			'table_header_font' => 'body_font',
 			'table_header_line_height' => 'blockquote_line_height',
 			'table_header_size' => 'blockquote_size',
 			'table_header_tracking' => 'blockquote_tracking',
@@ -666,6 +665,9 @@ class Apple_News {
 				$theme->get_value( $reference_setting )
 			);
 		}
+
+		// Default the border width to 1.
+		$theme->set_value( 'table_border_width', 1 );
 
 		// Save changes to this theme.
 		$theme->save();

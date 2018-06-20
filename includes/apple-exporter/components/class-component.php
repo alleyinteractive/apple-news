@@ -108,16 +108,25 @@ abstract class Component {
 	 * Styles for this component.
 	 *
 	 * @since 0.4.0
-	 * @var Component_Text_Styles
+	 * @var \Apple_Exporter\Builders\Component_Text_Styles
 	 * @access protected
 	 */
 	protected $styles;
 
 	/**
+	 * Component styles for this component.
+	 *
+	 * @since 1.4.0
+	 * @var \Apple_Exporter\Builders\Component_Styles
+	 * @access protected
+	 */
+	protected $component_styles;
+
+	/**
 	 * Layouts for this component.
 	 *
 	 * @since 0.4.0
-	 * @var Component_Layouts
+	 * @var \Apple_Exporter\Builders\Component_Layouts
 	 * @access protected
 	 */
 	protected $layouts;
@@ -185,15 +194,26 @@ abstract class Component {
 	/**
 	 * Constructor.
 	 *
-	 * @param string                                         $text      The HTML for this component.
-	 * @param \Apple_Exporter\Workspace                      $workspace The workspace used to prepare this component.
-	 * @param \Apple_Exporter\Settings                       $settings  Settings in use during this run.
-	 * @param \Apple_Exporter\Builders\Component_Text_Styles $styles    Registered text styles.
-	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts   Registered layouts.
-	 * @param \Apple_Exporter\Parser                         $parser    The parser in use during this run.
+	 * @since 1.4.0 Added component styles parameter.
+	 *
+	 * @param string                                         $text             The HTML for this component.
+	 * @param \Apple_Exporter\Workspace                      $workspace        The workspace used to prepare this component.
+	 * @param \Apple_Exporter\Settings                       $settings         Settings in use during this run.
+	 * @param \Apple_Exporter\Builders\Component_Text_Styles $styles           Registered text styles.
+	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts          Registered layouts.
+	 * @param \Apple_Exporter\Parser                         $parser           The parser in use during this run.
+	 * @param \Apple_Exporter\Builders\Component_Styles      $component_styles Registered text styles.
 	 * @access public
 	 */
-	public function __construct( $text = null, $workspace = null, $settings = null, $styles = null, $layouts = null, $parser = null ) {
+	public function __construct(
+		$text = null,
+		$workspace = null,
+		$settings = null,
+		$styles = null,
+		$layouts = null,
+		$parser = null,
+		$component_styles = null
+	) {
 		// Register specs for this component.
 		$this->register_specs();
 
@@ -203,12 +223,13 @@ abstract class Component {
 			return;
 		}
 
-		$this->workspace = $workspace;
-		$this->settings  = $settings;
-		$this->styles    = $styles;
-		$this->layouts   = $layouts;
-		$this->text      = $text;
-		$this->json      = null;
+		$this->workspace        = $workspace;
+		$this->settings         = $settings;
+		$this->styles           = $styles;
+		$this->component_styles = $component_styles;
+		$this->layouts          = $layouts;
+		$this->text             = $text;
+		$this->json             = null;
 
 		// Negotiate parser.
 		if ( empty( $parser ) ) {
@@ -532,6 +553,29 @@ abstract class Component {
 				: 0;
 			$json = $component_spec->substitute_values( $values, $post_id );
 			$this->styles->register_style( $name, $json );
+			$this->set_json( $property, $name );
+		}
+	}
+
+	/**
+	 * Using the component style service, register a new component style.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param string $name      The name of the style.
+	 * @param string $spec_name The spec to use for defining the JSON.
+	 * @param array  $values    Values to substitute for placeholders in the spec.
+	 * @param array  $property  The JSON property to set with the style.
+	 * @access protected
+	 */
+	protected function register_component_style( $name, $spec_name, $values = array(), $property = null ) {
+		$component_spec = $this->get_spec( $spec_name );
+		if ( ! empty( $component_spec ) ) {
+			$post_id = ( ! empty( $this->workspace->content_id ) )
+				? $this->workspace->content_id
+				: 0;
+			$json = $component_spec->substitute_values( $values, $post_id );
+			$this->component_styles->register_style( $name, $json );
 			$this->set_json( $property, $name );
 		}
 	}

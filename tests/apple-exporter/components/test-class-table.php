@@ -10,6 +10,8 @@
 
 require_once __DIR__ . '/class-component-testcase.php';
 
+use Apple_Exporter\Exporter;
+use Apple_Exporter\Exporter_Content;
 use Apple_Exporter\Components\Table;
 
 /**
@@ -18,15 +20,19 @@ use Apple_Exporter\Components\Table;
 class Table_Test extends Component_TestCase {
 
 	/**
-	 * Tests HTML formatting.
+	 * Instructions to be executed before each test.
 	 *
 	 * @access public
 	 */
-	public function testHTML() {
+	public function setUp() {
 
-		// Setup.
-		$this->settings->html_support = 'yes';
-		$html = <<<HTML
+		// Run the parent setup function (not done automatically).
+		parent::setup();
+
+		// Turn on HTML support globally in the
+
+		// Create an example table to use in tests.
+		$this->html = <<<HTML
 <table>
 	<thead>
 		<tr>
@@ -48,84 +54,157 @@ class Table_Test extends Component_TestCase {
 	</tfoot>
 </table>
 HTML;
+
+	}
+
+	/**
+	 * Tests HTML formatting.
+	 *
+	 * @access public
+	 */
+	public function testHTML() {
+
+		// Setup.
 		$component = new Table(
-			$html,
+			$this->html,
 			null,
 			$this->settings,
 			$this->styles,
-			$this->layouts
+			$this->layouts,
+			null,
+			$this->component_styles
 		);
 
 		// Test.
 		$this->assertEquals(
 			array(
-				'html' => $html,
-				'layout' => array(
-					'margin' => array(
-						'bottom' => 20.0,
+				'html' => $this->html,
+				'layout' => 'table-layout',
+				'role' => 'htmltable',
+				'style' => 'default-table',
+			),
+			$component->to_array()
+		);
+	}
+
+	/**
+	 * Tests table settings.
+	 *
+	 * @access public
+	 */
+	public function testSettings() {
+
+		// Setup.
+		$content = new Exporter_Content(
+			3,
+			'Title',
+			$this->html
+		);
+
+		// Set table settings.
+		$theme = \Apple_Exporter\Theme::get_used();
+		$settings = $theme->all_settings();
+		$settings['table_border_color'] = '#abcdef';
+		$settings['table_border_style'] = 'dashed';
+		$settings['table_border_width'] = 5;
+		$settings['table_body_background_color'] = '#fedcba';
+		$settings['table_body_color'] = '#123456';
+		$settings['table_body_font'] = 'AmericanTypewriter';
+		$settings['table_body_horizontal_alignment'] = 'center';
+		$settings['table_body_line_height'] = 1;
+		$settings['table_body_padding'] = 2;
+		$settings['table_body_size'] = 3;
+		$settings['table_body_tracking'] = 4;
+		$settings['table_body_vertical_alignment'] = 'bottom';
+		$settings['table_header_background_color'] = '#654321';
+		$settings['table_header_color'] = '#987654';
+		$settings['table_header_font'] = 'Menlo-Regular';
+		$settings['table_header_horizontal_alignment'] = 'right';
+		$settings['table_header_line_height'] = 5;
+		$settings['table_header_padding'] = 6;
+		$settings['table_header_size'] = 7;
+		$settings['table_header_tracking'] = 8;
+		$settings['table_header_vertical_alignment'] = 'top';
+		$theme->load( $settings );
+		$this->assertTrue( $theme->save() );
+
+		// Run the export.
+		$exporter = new Exporter( $content, null, $this->settings );
+		$json = $exporter->export();
+		$this->ensure_tokens_replaced( $json );
+		$json = json_decode( $json, true );
+
+		// Validate table layout in generated JSON.
+		$this->assertEquals(
+			array(
+				'margin' => array(
+					'bottom' => 1,
+				),
+			),
+			$json['componentLayouts']['table-layout']
+		);
+
+		// Validate table settings in generated JSON.
+		$this->assertEquals(
+			array(
+				'border' => array(
+					'all' => array(
+						'color' => '#abcdef',
+						'style' => 'dashed',
+						'width' => 5,
 					),
 				),
-				'role' => 'htmltable',
-				'style' => array(
-					'border' => array(
-						'all' => array(
-							'color' => '#4f4f4f',
-							'style' => 'solid',
-							'width' => 1.0,
+				'tableStyle' => array(
+					'cells' => array(
+						'backgroundColor' => '#fedcba',
+						'horizontalAlignment' => 'center',
+						'padding' => 2,
+						'textStyle' => array(
+							'fontName' => 'AmericanTypewriter',
+							'fontSize' => 3,
+							'lineHeight' => 1,
+							'textColor' => '#123456',
+							'tracking' => 4,
+						),
+						'verticalAlignment' => 'bottom',
+					),
+					'columns' => array(
+						'divider' => array(
+							'color' => '#abcdef',
+							'style' => 'dashed',
+							'width' => 5,
 						),
 					),
-					'tableStyle' => array(
-						'cells' => array(
-							'backgroundColor' => '#fafafa',
-							'horizontalAlignment' => 'left',
-							'padding' => 5.0,
-							'textStyle' => array(
-								'fontName' => 'AvenirNext-Regular',
-								'fontSize' => 16,
-								'lineHeight' => 20.0,
-								'textColor' => '#4f4f4f',
-								'tracking' => 0,
-							),
-							'verticalAlignment' => 'center',
+					'headerCells' => array(
+						'backgroundColor' => '#654321',
+						'horizontalAlignment' => 'right',
+						'padding' => 6,
+						'textStyle' => array(
+							'fontName' => 'Menlo-Regular',
+							'fontSize' => 7,
+							'lineHeight' => 5,
+							'textColor' => '#987654',
+							'tracking' => 8,
 						),
-						'columns' => array(
-							'divider' => array(
-								'color' => '#4f4f4f',
-								'style' => 'solid',
-								'width' => 1.0,
-							),
+						'verticalAlignment' => 'top',
+					),
+					'headerRows' => array(
+						'divider' => array(
+							'color' => '#abcdef',
+							'style' => 'dashed',
+							'width' => 5,
 						),
-						'headerCells' => array(
-							'backgroundColor' => '#fafafa',
-							'horizontalAlignment' => 'center',
-							'padding' => 10.0,
-							'textStyle' => array(
-								'fontName' => 'AvenirNext-Regular',
-								'fontSize' => 16,
-								'lineHeight' => 20.0,
-								'textColor' => '#4f4f4f',
-								'tracking' => 0,
-							),
-							'verticalAlignment' => 'center',
-						),
-						'headerRows' => array(
-							'divider' => array(
-								'color' => '#4f4f4f',
-								'style' => 'solid',
-								'width' => 1.0,
-							),
-						),
-						'rows' => array(
-							'divider' => array(
-								'color' => '#4f4f4f',
-								'style' => 'solid',
-								'width' => 1.0,
-							),
+					),
+					'rows' => array(
+						'divider' => array(
+							'color' => '#abcdef',
+							'style' => 'dashed',
+							'width' => 5,
 						),
 					),
 				),
 			),
-			$component->to_array()
+			$json['componentStyles']['default-table']
 		);
 	}
 }
