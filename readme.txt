@@ -47,13 +47,45 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 == Changelog ==
 
 = 1.4.0 =
-* TBD
+* Set HTML to the default output format (instead of Markdown) for new installs. HTML format is now recommended for all installs. Support for Markdown may be removed in a future version. Individual components now have a filter to toggle HTML support on or off for each component.
+* Added support for HTML format to Heading and Quote components.
+* Added support for tables (requires HTML support to be turned on) with new table styles defined in example themes, and intelligent defaults applied to existing themes based on comparable settings.
+* Made Cover Art feature opt-in for new installs to avoid creating a plethora of additional image crops which may not be necessary. Sets the setting to enabled for existing installations during upgrade, since there is not a good way to know whether a user has utilized this feature without running a very expensive postmeta query.
+* Added a "Refresh Sections" button on the Sections page to clear the cached settings list.
+* Set the default publish and delete capabilities to the corresponding post publish and delete capabilities for the post type being edited, rather than requiring "manage_options," which is typically an administrator-only capability. This allows users with the ability to publish posts to also publish those posts to Apple News.
+* Removed overzealous check for invalid Unicode sequences. Over the past several releases, enhancements have been made to better identify and fix problems with content that would cause issues upon pushing to Apple News. Therefore, the check for invalid Unicode character sequences is now not providing much value, and is inhibiting valid content (including emoji) from being pushed to Apple News.
+* Added a function (apple_news_is_exporting) for determining whether an export is happening, which can be used in themes and plugins to change behavior if a hook is being executed in the context of an Apple News request.
+* Adds context to the message that is displayed when a post push is skipped explaining why it was skipped.
+* Adds a framework for saving dismissed state of persistent admin notices (such as those that appear after an upgrade) so that the close button causes the notice to not appear again for that user.
+* Uses the language code from blog settings for document properties (thanks @ffffelix).
+* Adds support for the isHidden property (thanks @jonesmatthew).
+* Adds support for Jetpack Tiled Galleries.
+* Swaps deprecated wpcom_vip_* functions for core versions.
+* Adds expand/collapse functionality to the theme editor to reduce scrolling between where settings are set and the preview area.
+* Brought entire codebase up to WordPress coding standards, which is now being verified through PHP CodeSniffer on each pull request.
+* Updated Travis configuration for more robust testing.
+* Bumped minimum required version to PHP 5.6 due to incompatibility with certain tools (e.g., Composer) required for running builds and tests.
+* Security: Added nonce verification to all remaining form data processing sections.
+* Bugfix: Added a handler for WordPress.com/OpenGraph Facebook embeds so that they properly render as Facebook components instead of a blockquote.
+* Bugfix: Addressed an issue with sanitization that did not properly strip out script tags that contain CDATA with a greater than symbol.
+* Bugfix: Empty meta_component_order settings can now be saved properly on the theme edit screen.
+* Bugfix: No longer assumes that any embed that isn't YouTube is actually Vimeo. Performs a strict check for Vimeo embed signatures and drops the embed if it does not match known providers.
+* Bugfix: Re-adds erroneously removed apple_news_fonts_list hook.
+* Bugfix: Fixes an error where the list of sections was occasionally being encoded as an object instead of an array.
+* Bugfix: Fixes the undefined message warning if an article was deleted from iCloud, thereby breaking the linkage between the plugin and the Apple News API, to explain why the link was broken.
+* Bugfix: Fixes undefined index and undefined variable notices in a few places.
+* Bugfix: Fixes an assignment bug in class-admin-apple-post-sync.php (thanks @lgladdy and @dhanendran).
+* Bugfix: Prevents empty text nodes from being added in a variety of ways, which was causing errors on publish in some cases, and unwanted extra space in articles in others.
+* Bugfix: Prevent Apple News API timeouts from causing the entire WordPress install to hang by only using long remote request timeouts when making a POST request to the Apple News API.
+* Bugfix: Fixed improper handling of several different types of links, such as empty URLs, malformed URLs, root-relative URLs, and anchor links.
+* Bugfix: Properly decodes ampersands and other HTML-encoded entities when using Markdown format.
+* Bugfix: Removes style tags and their contents where they appear inline.
 
 = 1.3.0 =
 * Moved JSON customizations to themes so that JSON can be customized on a per-theme basis.
 * Enabled access to postmeta in custom JSON so that values from postmeta fields can be inserted into customized JSON.
 * Removed all formatting settings from the settings option in favor of storing them in themes. This is a potentially breaking change if you are using custom code that relies on formatting settings stored in the settings option.
-* Removed the option for JSON customization in favor of moving those settings to themes. This is a potentailly breaking change if you are accessing the custom JSON option directly.
+* Removed the option for JSON customization in favor of moving those settings to themes. This is a potentially breaking change if you are accessing the custom JSON option directly.
 * Deprecated access of formatting settings using the Settings object.
 * Added a new Theme object to handle all formatting settings.
 * Bugfix: Fixed a bug where themes were not being automatically switched via section mappings.
