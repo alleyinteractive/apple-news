@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 4.0
 Tested up to: 4.9.6
 Requires PHP: 5.6
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -45,6 +45,9 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 1.4.1 =
+* Bugfix: Post types that were not registered with Publish to Apple News were failing the nonce check on publish/update because the metabox was not present. Refined the save_post hook to register only for post types with Publish to Apple News support to avoid this situation.
 
 = 1.4.0 =
 * Set HTML to the default output format (instead of Markdown) for new installs. HTML format is now recommended for all installs. Support for Markdown may be removed in a future version. Individual components now have a filter to toggle HTML support on or off for each component.
