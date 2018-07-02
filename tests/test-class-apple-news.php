@@ -277,6 +277,6 @@ class Apple_News_Test extends WP_UnitTestCase {
 	 */
 	public function testVersion() {
 		$plugin_data = apple_news_get_plugin_data();
-		$this->assertEquals( $plugin_data['Version'], Apple_News::$version );
+		$this->assertEquals( Apple_News::$version, $plugin_data['Version'] );
 	}
 }
