@@ -41,9 +41,6 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Register hooks if enabled.
 		if ( 'yes' === $settings->get( 'show_metabox' ) ) {
-			// Handle a publish action and saving fields.
-			add_action( 'save_post', array( $this, 'do_publish' ), 10, 2 );
-
 			// Add the custom meta boxes to each post type.
 			$post_types = $settings->get( 'post_types' );
 			if ( ! is_array( $post_types ) ) {
@@ -52,6 +49,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 			foreach ( $post_types as $post_type ) {
 				add_action( 'add_meta_boxes_' . $post_type, array( $this, 'add_meta_boxes' ) );
+				add_action( 'save_post_' . $post_type, array( $this, 'do_publish' ), 10, 2 );
 			}
 
 			// Register assets used by the meta box.
