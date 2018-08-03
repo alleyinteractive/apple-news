@@ -258,7 +258,7 @@ class Admin_Apple_Sections extends Apple_News {
 	public function ajax_apple_news_section_taxonomy_autocomplete() {
 
 		// Determine if we have anything to search for.
-		if ( empty( $_GET['term'] ) ) {
+		if ( empty( $_GET['term'] ) ) { // input var ok.
 			echo wp_json_encode( array() );
 			exit;
 		}
@@ -276,7 +276,7 @@ class Admin_Apple_Sections extends Apple_News {
 				'fields' => 'names',
 				'hide_empty' => false,
 				'number' => 10,
-				'search' => sanitize_text_field( wp_unslash( $_GET['term'] ) ),
+				'search' => sanitize_text_field( wp_unslash( $_GET['term'] ) ), // input var ok.
 				'taxonomy' => $taxonomy->name,
 			)
 		);
