@@ -253,7 +253,6 @@ class Image extends Component {
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
 
-		$text_alignment = null;
 		if ( Component::ANCHOR_NONE === $this->get_anchor_position() ) {
 			return 'center';
 		}
