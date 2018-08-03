@@ -158,7 +158,7 @@ class Apple_News {
 
 		// Remove tags, if requested.
 		if ( 'text' === $format ) {
-			$support_info = strip_tags( $support_info );
+			$support_info = wp_strip_all_tags( $support_info );
 		}
 
 		// Add leading padding, if requested.

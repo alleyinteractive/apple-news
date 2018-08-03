@@ -156,7 +156,7 @@ class Body extends Component {
 		if ( empty( $matches ) ) {
 
 			// Ensure the resulting HTML is not devoid of actual content.
-			if ( '' === trim( strip_tags( $html ) ) ) {
+			if ( '' === trim( wp_strip_all_tags( $html ) ) ) {
 				return array();
 			}
 
@@ -193,7 +193,7 @@ class Body extends Component {
 		);
 
 		// Check for conditions under which left should be added.
-		if ( '' !== trim( strip_tags( $left ) ) ) {
+		if ( '' !== trim( wp_strip_all_tags( $left ) ) ) {
 			$elements = array_merge(
 				array(
 					array(
