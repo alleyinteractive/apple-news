@@ -465,7 +465,7 @@ class Theme {
 		}
 
 		// Set the default.
-		$theme_name = \Apple_Exporter\Theme::get_active_theme_name();
+		$theme_name = self::get_active_theme_name();
 		$theme = new \Apple_Exporter\Theme();
 		$theme->set_name( $theme_name );
 		$theme->load();

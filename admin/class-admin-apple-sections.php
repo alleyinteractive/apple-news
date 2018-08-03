@@ -121,7 +121,7 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Determine if there are taxonomy mappings configured.
-		$mappings = get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY );
+		$mappings = get_option( self::TAXONOMY_MAPPING_KEY );
 		if ( empty( $mappings ) ) {
 			return array();
 		}
