@@ -1727,7 +1727,7 @@ class Theme {
 					$value = sanitize_text_field( $value );
 
 					// Ensure that the value is one of the allowed options.
-					if ( ! in_array( $value, $options[ $key ]['options'] ) ) {
+					if ( ! in_array( $value, $options[ $key ]['options'], true ) ) {
 						$this->_log_error(
 							sprintf(
 								// translators: first token is the value, second token is the setting key.
