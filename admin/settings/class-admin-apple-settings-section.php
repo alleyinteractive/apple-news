@@ -523,7 +523,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			$value = $default_settings->$key;
 			if ( isset( $_POST[ $key ] ) ) {
 				$sanitize = ( empty( $attributes['sanitize'] ) || ! is_callable( $attributes['sanitize'] ) ) ? 'sanitize_text_field' : $attributes['sanitize'];
-				$sanitized_value = call_user_func( $sanitize, wp_unslash( $_POST[ $key ] ) ); // phpcs:ignore WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+				$sanitized_value = call_user_func( $sanitize, wp_unslash( $_POST[ $key ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				if ( ! empty( $sanitized_value ) || in_array( $sanitized_value, array( 0, '0' ), true ) ) {
 					$value = $sanitized_value;
 				}

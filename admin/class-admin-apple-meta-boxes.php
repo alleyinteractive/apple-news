@@ -141,7 +141,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 					'sanitize_text_field',
 					array_map(
 						'wp_unslash',
-						$_POST['apple_news_sections'] // phpcs:ignore WordPress.VIP.ValidatedSanitizedInput.MissingUnslash, WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+						$_POST['apple_news_sections'] // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					)
 				);
 			}

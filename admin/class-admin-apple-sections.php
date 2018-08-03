@@ -455,7 +455,7 @@ class Admin_Apple_Sections extends Apple_News {
 					'sanitize_text_field',
 					array_map(
 						'wp_unslash',
-						$_POST[ $taxonomy_key ] // phpcs:ignore WordPress.VIP.ValidatedSanitizedInput.MissingUnslash, WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+						$_POST[ $taxonomy_key ] // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					)
 				);
 				foreach ( $values as $value ) {
