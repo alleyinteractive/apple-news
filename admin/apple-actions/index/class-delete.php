@@ -71,7 +71,6 @@ class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWrites
 			throw new \Apple_Actions\Action_Exception( __( 'This post has not been pushed to Apple News, cannot delete.', 'apple-news' ) );
 		}
 
-		$error = null;
 		try {
 			do_action( 'apple_news_before_delete', $remote_id, $this->id );
 			$this->get_api()->delete_article( $remote_id );
