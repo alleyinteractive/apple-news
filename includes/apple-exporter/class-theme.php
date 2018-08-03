@@ -1456,8 +1456,8 @@ class Theme {
 		}
 
 		// Handle empty meta_component_order.
-		if ( ! isset( $_POST['meta_component_order'] )
-			&& ! empty( $_POST['meta_component_inactive'] )
+		if ( ! isset( $_POST['meta_component_order'] ) // input var ok.
+			&& ! empty( $_POST['meta_component_inactive'] ) // input var ok.
 		) {
 			$this->_values['meta_component_order'] = array();
 		}

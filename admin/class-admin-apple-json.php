@@ -423,8 +423,8 @@ class Admin_Apple_JSON extends Apple_News {
 		}
 
 		// Next, check for a theme loaded in from the query string.
-		if ( ! empty( $_GET['theme'] ) ) {
-			return sanitize_text_field( wp_unslash( $_GET['theme'] ) );
+		if ( ! empty( $_GET['theme'] ) ) { // input var ok.
+			return sanitize_text_field( wp_unslash( $_GET['theme'] ) ); // input var ok.
 		}
 
 		return '';

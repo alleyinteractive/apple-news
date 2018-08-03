@@ -92,8 +92,8 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access public
 	 */
 	public function admin_page() {
-		$id     = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null;
-		$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : null;
+		$id     = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null; // input var ok.
+		$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : null; // input var ok.
 
 		switch ( $action ) {
 			case self::namespace_action( 'push' ):
@@ -127,9 +127,9 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @return mixed The result of the requested action.
 	 */
 	public function page_router() {
-		$id      = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null;
-		$action  = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : null;
-		$action2 = isset( $_GET['action2'] ) ? sanitize_text_field( wp_unslash( $_GET['action2'] ) ) : null;
+		$id      = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null; // input var ok.
+		$action  = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : null; // input var ok.
+		$action2 = isset( $_GET['action2'] ) ? sanitize_text_field( wp_unslash( $_GET['action2'] ) ) : null; // input var ok.
 
 		// Allow for bulk actions from top or bottom.
 		if ( ( empty( $action ) || '-1' === $action ) && ! empty( $action2 ) ) {
@@ -145,8 +145,8 @@ class Admin_Apple_Index_Page extends Apple_News {
 			case self::namespace_action( 'push' ): // phpcs:ignore PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
 				if ( ! $id ) {
 					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
-					if ( isset( $_GET['article'] ) ) {
-						$ids = is_array( $_GET['article'] ) ? array_map( 'absint', $_GET['article'] ) : absint( $_GET['article'] );
+					if ( isset( $_GET['article'] ) ) { // input var ok.
+						$ids = is_array( $_GET['article'] ) ? array_map( 'absint', $_GET['article'] ) : absint( $_GET['article'] ); // input var ok.
 						$url .= '&ids=' . implode( '.', $ids );
 					}
 					wp_safe_redirect( esc_url_raw( $url ) );
@@ -233,8 +233,8 @@ class Admin_Apple_Index_Page extends Apple_News {
 
 		// Add the other params.
 		foreach ( $keys as $key ) {
-			if ( ! empty( $_GET[ $key ] ) ) {
-				$params[ $key ] = urlencode( sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) );
+			if ( ! empty( $_GET[ $key ] ) ) { // input var ok.
+				$params[ $key ] = urlencode( sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) ); // input var ok.
 			}
 		}
 
