@@ -389,7 +389,9 @@ class Admin_Apple_Sections extends Apple_News {
 		$jquery_ui = $wp_scripts->query( 'jquery-ui-core' );
 		wp_enqueue_style(
 			'apple-news-jquery-ui-autocomplete',
-			'//ajax.googleapis.com/ajax/libs/jqueryui/' . $jquery_ui->ver . '/themes/smoothness/jquery-ui.min.css'
+			'https://ajax.googleapis.com/ajax/libs/jqueryui/' . $jquery_ui->ver . '/themes/smoothness/jquery-ui.min.css',
+			array(),
+			self::$version
 		);
 		wp_enqueue_style(
 			'apple-news-sections-css',
@@ -403,7 +405,8 @@ class Admin_Apple_Sections extends Apple_News {
 			'apple-news-sections-js',
 			plugin_dir_url( __FILE__ ) . '../assets/js/sections.js',
 			array( 'jquery', 'jquery-ui-autocomplete' ),
-			self::$version
+			self::$version,
+			false
 		);
 	}
 
