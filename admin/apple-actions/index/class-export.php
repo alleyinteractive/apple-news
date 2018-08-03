@@ -55,9 +55,6 @@ class Export extends Action {
 		parent::__construct( $settings );
 		$this->set_theme( $sections );
 		$this->id = $id;
-
-		// Assign instance of an active Jetpack tiled gallery installation.
-		$jetpack_tiled_gallery = Jetpack_Tiled_Gallery::instance();
 	}
 
 	/**
