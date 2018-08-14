@@ -71,7 +71,7 @@ class Facebook extends Component {
 	public static function node_matches( $node ) {
 
 		// Check for element with just facebook url.
-		if ( false !== self::_get_facebook_url( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( false !== self::get_facebook_url( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			return $node;
 		}
 
@@ -87,7 +87,7 @@ class Facebook extends Component {
 			// Ensure we have a valid facebook embed url.
 			if (
 				! empty( $fb_url )
-				&& false !== self::_get_facebook_url( $fb_url )
+				&& false !== self::get_facebook_url( $fb_url )
 			) {
 				return $node;
 			}
@@ -99,7 +99,7 @@ class Facebook extends Component {
 
 			// Ensure we have a valid Facebook embed URL.
 			if ( ! empty( $matches[1] )
-				&& false !== self::_get_facebook_url( $matches[1] )
+				&& false !== self::get_facebook_url( $matches[1] )
 			) {
 				return $node;
 			}
@@ -126,7 +126,7 @@ class Facebook extends Component {
 		}
 
 		// Try to get Facebook URL.
-		$url   = self::_get_facebook_url( wp_strip_all_tags( $html ) );
+		$url   = self::get_facebook_url( wp_strip_all_tags( $html ) );
 		$check = trim( $url );
 		if ( empty( $check ) ) {
 			return;
@@ -148,7 +148,7 @@ class Facebook extends Component {
 	 * @access private
 	 * @return string|false The Facebook URL on success, or false on failure.
 	 */
-	private static function _get_facebook_url( $text ) {
+	private static function get_facebook_url( $text ) {
 
 		// Loop through whitelisted formats looking for matches.
 		foreach ( self::$_formats as $format ) {
