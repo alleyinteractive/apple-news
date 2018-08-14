@@ -38,7 +38,7 @@ class Components extends Builder {
 		$workspace  = new Workspace( $this->content_id() );
 
 		// Loop through body components and process each.
-		foreach ( $this->_split_into_components() as $component ) {
+		foreach ( $this->split_into_components() as $component ) {
 
 			// Ensure that the component is valid.
 			$component_array = $component->to_array();
@@ -713,7 +713,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return array An array of Component objects representing the content.
 	 */
-	private function _split_into_components() {
+	private function split_into_components() {
 
 		/**
 		 * Loop though the first-level nodes of the body element. Components might
