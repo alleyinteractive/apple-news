@@ -215,11 +215,11 @@ class Request {
 
 			// Add the API response.
 			$body  = esc_html__( 'API Response', 'apple-news' ) . ":\n";
-			$body .= print_r( $response, true );
+			$body .= print_r( $response, true ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			// Add the meta sent with the API request, if set.
 			if ( ! empty( $meta ) ) {
-				$body .= "\n\n" . esc_html__( 'Request Meta', 'apple-news' ) . ":\n\n" . print_r( $meta, true );
+				$body .= "\n\n" . esc_html__( 'Request Meta', 'apple-news' ) . ":\n\n" . print_r( $meta, true ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 			}
 
 			// Note image settings.
@@ -372,4 +372,4 @@ class Request {
  * @package Apple_News
  * @subpackage Apple_Push_API\Request
  */
-class Request_Exception extends \Exception {}
+class Request_Exception extends \Exception {} // phpcs:ignore Generic.Files.OneClassPerFile.MultipleFound
