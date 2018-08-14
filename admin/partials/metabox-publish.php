@@ -17,7 +17,7 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 		?>
 	</div>
 	<?php return; ?>
-<?php endif; ?>
+<?php endif;  // phpcs:ignore Squiz.PHP.NonExecutableCode.Unreachable ?>
 <div id="apple-news-publish">
 	<?php wp_nonce_field( $publish_action, 'apple_news_nonce' ); ?>
 	<div id="apple-news-metabox-sections" class="apple-news-metabox-section">
