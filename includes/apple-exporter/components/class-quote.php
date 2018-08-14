@@ -241,9 +241,9 @@ class Quote extends Component {
 
 		// Split for pullquote vs. blockquote.
 		if ( 0 === strpos( $html, '<blockquote class="apple-news-pullquote">' ) ) {
-			$this->_build_pullquote( $text );
+			$this->build_pullquote( $text );
 		} else {
-			$this->_build_blockquote( $text );
+			$this->build_blockquote( $text );
 		}
 	}
 
@@ -313,7 +313,7 @@ class Quote extends Component {
 	 *
 	 * @access private
 	 */
-	private function _build_blockquote( $text ) {
+	private function build_blockquote( $text ) {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -350,7 +350,7 @@ class Quote extends Component {
 	 *
 	 * @access private
 	 */
-	private function _build_pullquote( $text ) {
+	private function build_pullquote( $text ) {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
