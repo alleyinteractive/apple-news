@@ -267,7 +267,7 @@ class Quote extends Component {
 	 * @access private
 	 * @return string The modified text.
 	 */
-	private function _apply_hanging_punctuation( $text ) {
+	private function apply_hanging_punctuation( $text ) {
 
 		// Trim the fat before beginning.
 		$text = trim( $text );
@@ -358,7 +358,7 @@ class Quote extends Component {
 		// Apply additional formatting to the text if hanging punctuation is set.
 		$text = $this->parser->parse( $text );
 		if ( 'yes' === $theme->get_value( 'pullquote_hanging_punctuation' ) ) {
-			$text = $this->_apply_hanging_punctuation( $text );
+			$text = $this->apply_hanging_punctuation( $text );
 		}
 
 		// Set JSON for this element.
