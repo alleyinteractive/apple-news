@@ -1523,7 +1523,7 @@ class Theme {
 		update_option( self::theme_key( $this->get_name() ), $this->_values, false );
 
 		// Add to the registry.
-		$this->_add_to_registry( $this->get_name() );
+		$this->add_to_registry( $this->get_name() );
 
 		// Refresh loaded theme, if currently in use.
 		if ( self::$_used_name === $this->get_name() ) {
@@ -1775,7 +1775,7 @@ class Theme {
 	 *
 	 * @access private
 	 */
-	private function _add_to_registry( $name ) {
+	private function add_to_registry( $name ) {
 
 		// Fetch the registry.
 		$registry = self::get_registry();
