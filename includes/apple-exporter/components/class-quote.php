@@ -369,7 +369,7 @@ class Quote extends Component {
 
 		// Determine if there is a border specified.
 		if ( 'none' !== $theme->get_value( 'pullquote_border_style' ) ) {
-			$values    = $this->_set_pullquote_border( $values );
+			$values    = $this->set_pullquote_border( $values );
 			$spec_name = 'pullquote-with-border-json';
 		} else {
 			$spec_name = 'pullquote-without-border-json';
@@ -465,7 +465,7 @@ class Quote extends Component {
 	 * @access private
 	 * @return array The modified list of token values.
 	 */
-	private function _set_pullquote_border( $values ) {
+	private function set_pullquote_border( $values ) {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
