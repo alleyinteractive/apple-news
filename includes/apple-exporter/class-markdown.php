@@ -71,7 +71,7 @@ class Markdown {
 	private function _parse_node( $node ) {
 		switch ( $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			case 'strong':
-				return $this->_parse_node_strong( $node );
+				return $this->parse_node_strong( $node );
 			case 'i':
 			case 'em':
 				return $this->_parse_node_emphasis( $node );
@@ -259,7 +259,7 @@ class Markdown {
 	 * @access private
 	 * @return string The processed node, converted to a string.
 	 */
-	private function _parse_node_strong( $node ) {
+	private function parse_node_strong( $node ) {
 
 		// If there is no text for this node, bail.
 		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
