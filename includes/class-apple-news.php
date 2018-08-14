@@ -406,7 +406,7 @@ class Apple_News {
 		}
 
 		// Clone settings, as necessary.
-		$wp_settings = $this->_clone_settings(
+		$wp_settings = $this->clone_settings(
 			$wp_settings,
 			array(
 				'blockquote_border_color' => 'pullquote_border_color',
@@ -454,7 +454,7 @@ class Apple_News {
 		}
 
 		// Clone settings, as necessary.
-		$wp_settings = $this->_clone_settings(
+		$wp_settings = $this->clone_settings(
 			$wp_settings,
 			array(
 				'caption_color'       => 'body_color',
@@ -544,7 +544,7 @@ class Apple_News {
 		}
 
 		// Clone settings, as necessary.
-		$wp_settings = $this->_clone_settings(
+		$wp_settings = $this->clone_settings(
 			$wp_settings, array(
 				'header1_color'       => 'header_color',
 				'header2_color'       => 'header_color',
@@ -797,7 +797,7 @@ class Apple_News {
 	 * @access private
 	 * @return array The modified settings array.
 	 */
-	private function _clone_settings( $wp_settings, $settings_map ) {
+	private function clone_settings( $wp_settings, $settings_map ) {
 
 		// Loop over each setting in the map and clone if conditions are favorable.
 		foreach ( $settings_map as $to => $from ) {
