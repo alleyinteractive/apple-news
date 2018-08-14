@@ -54,7 +54,7 @@ class Markdown {
 		// Loop over each DOMElement and pass off for parsing.
 		$result = '';
 		foreach ( $nodes as $node ) {
-			$result .= $this->_parse_node( $node );
+			$result .= $this->parse_node( $node );
 		}
 
 		return $result;
@@ -68,7 +68,7 @@ class Markdown {
 	 * @access private
 	 * @return string The processed content, converted to a Markdown string.
 	 */
-	private function _parse_node( $node ) {
+	private function parse_node( $node ) {
 		switch ( $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			case 'strong':
 				return $this->parse_node_strong( $node );
