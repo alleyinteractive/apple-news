@@ -160,23 +160,23 @@ class Admin_Apple_Themes extends Apple_News {
 
 		$this->_valid_actions = array(
 			'apple_news_upload_theme'        => array(
-				'callback' => array( $this, '_upload_theme' ),
+				'callback' => array( $this, 'upload_theme' ),
 				'nonce'    => 'apple_news_themes',
 			),
 			'apple_news_export_theme'        => array(
-				'callback' => array( $this, '_export_theme' ),
+				'callback' => array( $this, 'export_theme' ),
 				'nonce'    => 'apple_news_themes',
 			),
 			'apple_news_delete_theme'        => array(
-				'callback' => array( $this, '_delete_theme' ),
+				'callback' => array( $this, 'delete_theme' ),
 				'nonce'    => 'apple_news_themes',
 			),
 			'apple_news_save_edit_theme'     => array(
-				'callback' => array( $this, '_save_edit_theme' ),
+				'callback' => array( $this, 'save_edit_theme' ),
 				'nonce'    => 'apple_news_save_edit_theme',
 			),
 			'apple_news_set_theme'           => array(
-				'callback' => array( $this, '_set_theme' ),
+				'callback' => array( $this, 'set_theme' ),
 				'nonce'    => 'apple_news_themes',
 			),
 			'apple_news_load_example_themes' => array(
@@ -554,7 +554,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 *
 	 * @access private
 	 */
-	private function _delete_theme() {
+	private function delete_theme() {
 
 		// Check the nonce.
 		$action = isset( $_REQUEST['action'] )
@@ -595,7 +595,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 *
 	 * @access private
 	 */
-	private function _export_theme() {
+	private function export_theme() {
 
 		// Check the nonce.
 		$action = isset( $_REQUEST['action'] )
@@ -659,7 +659,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 *
 	 * @access private
 	 */
-	private function _save_edit_theme() {
+	private function save_edit_theme() {
 
 		// Check the nonce.
 		$action = isset( $_REQUEST['action'] )
@@ -764,7 +764,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 *
 	 * @access private
 	 */
-	private function _set_theme() {
+	private function set_theme() {
 
 		// Check the nonce.
 		$action = isset( $_REQUEST['action'] )
@@ -806,7 +806,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 *
 	 * @access private
 	 */
-	private function _upload_theme() {
+	private function upload_theme() {
 
 		// Try to handle the file upload.
 		$file = wp_import_handle_upload();
