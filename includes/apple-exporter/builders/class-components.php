@@ -107,7 +107,7 @@ class Components extends Builder {
 		}
 
 		// Build a new component and set the anchor position to AUTO.
-		$component = $this->_get_component_from_shortname(
+		$component = $this->get_component_from_shortname(
 			'blockquote',
 			'<blockquote class="apple-news-pullquote">' . $pullquote . '</blockquote>'
 		);
@@ -481,7 +481,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return Component The component extracted from the HTML.
 	 */
-	private function _get_component_from_shortname( $shortname, $html = null ) {
+	private function get_component_from_shortname( $shortname, $html = null ) {
 		return Component_Factory::get_component( $shortname, $html );
 	}
 
@@ -493,7 +493,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return array An array of components matching the node.
 	 */
-	private function _get_components_from_node( $node ) {
+	private function get_components_from_node( $node ) {
 		return Component_Factory::get_components_from_node( $node );
 	}
 
@@ -690,7 +690,7 @@ class Components extends Builder {
 			}
 
 			// Attempt to load component.
-			$component = $this->_get_component_from_shortname( $component, $content );
+			$component = $this->get_component_from_shortname( $component, $content );
 			if ( ! ( $component instanceof Component ) ) {
 				continue;
 			}
@@ -723,7 +723,7 @@ class Components extends Builder {
 		foreach ( $this->content_nodes() as $node ) {
 			$components = array_merge(
 				$components,
-				$this->_get_components_from_node( $node )
+				$this->get_components_from_node( $node )
 			);
 		}
 
