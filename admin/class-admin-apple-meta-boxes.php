@@ -196,7 +196,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		update_post_meta( $post_id, 'apple_news_pullquote_position', $pullquote_position );
 
 		// Save cover art.
-		self::_save_coverart_meta( $post_id );
+		self::save_coverart_meta( $post_id );
 	}
 
 	/**
@@ -380,7 +380,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 *
 	 * @access private
 	 */
-	private static function _save_coverart_meta( $post_id ) {
+	private static function save_coverart_meta( $post_id ) {
 
 		// Check the nonce.
 		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );
