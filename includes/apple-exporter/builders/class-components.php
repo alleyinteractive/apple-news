@@ -401,7 +401,7 @@ class Components extends Builder {
 	 * @param Component $component The component to clean up.
 	 * @access private
 	 */
-	private function _clean_up_components( &$component ) {
+	private function clean_up_components( &$component ) {
 
 		// Only process 'body' nodes.
 		if ( 'body' !== $component['role'] ) {
@@ -617,7 +617,7 @@ class Components extends Builder {
 		$new_components[] = $current;
 
 		// Perform text cleanup on each node.
-		array_walk( $new_components, array( $this, '_clean_up_components' ) );
+		array_walk( $new_components, array( $this, 'clean_up_components' ) );
 
 		// If the final node has a role of 'body', add 'body-layout-last' layout.
 		$last = count( $new_components ) - 1;
