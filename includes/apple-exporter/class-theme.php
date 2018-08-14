@@ -1241,7 +1241,7 @@ class Theme {
 
 		// If groups have not been initialized, initialize them now.
 		if ( empty( self::$_groups ) ) {
-			$this->_initialize_groups();
+			$this->initialize_groups();
 		}
 
 		return self::$_groups;
@@ -1801,7 +1801,7 @@ class Theme {
 	 *
 	 * @access private
 	 */
-	private function _initialize_groups() {
+	private function initialize_groups() {
 		self::$_groups = array(
 			'layout'          => array(
 				'label'       => __( 'Layout Spacing', 'apple-news' ),
