@@ -80,7 +80,7 @@ class Markdown {
 			case 'p':
 				return $this->parse_node_paragraph( $node );
 			case 'a':
-				return $this->_parse_node_hyperlink( $node );
+				return $this->parse_node_hyperlink( $node );
 			case 'ul':
 				return $this->parse_node_unordered_list( $node );
 			case 'ol':
@@ -154,7 +154,7 @@ class Markdown {
 	 * @access private
 	 * @return string The processed node, converted to a string.
 	 */
-	private function _parse_node_hyperlink( $node ) {
+	private function parse_node_hyperlink( $node ) {
 
 		// Set the URL from the HREF parameter on the tag.
 		$url = $node->getAttribute( 'href' );
