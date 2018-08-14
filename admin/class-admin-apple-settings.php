@@ -175,7 +175,8 @@ class Admin_Apple_Settings extends Apple_News {
 			'apple-news-select2-js',
 			plugin_dir_url( __FILE__ ) . '../assets/js/select2.full.min.js',
 			array( 'jquery' ),
-			self::$version
+			self::$version,
+			false
 		);
 
 		wp_enqueue_script(

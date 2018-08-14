@@ -331,7 +331,8 @@ class Admin_Apple_Themes extends Apple_News {
 			'apple-news-themes-js',
 			plugin_dir_url( __FILE__ ) . '../assets/js/themes.js',
 			array( 'jquery' ),
-			self::$version
+			self::$version,
+			false
 		);
 
 		wp_localize_script(
@@ -361,7 +362,8 @@ class Admin_Apple_Themes extends Apple_News {
 				'apple-news-select2-js',
 				plugin_dir_url( __FILE__ ) . '../assets/js/select2.full.min.js',
 				array( 'jquery' ),
-				self::$version
+				self::$version,
+				false
 			);
 			wp_enqueue_script(
 				'apple-news-theme-edit-js',
@@ -374,7 +376,8 @@ class Admin_Apple_Themes extends Apple_News {
 					'iris',
 					'apple-news-preview-js',
 				),
-				self::$version
+				self::$version,
+				false
 			);
 
 			wp_localize_script(

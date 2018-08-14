@@ -163,7 +163,8 @@ class Admin_Apple_Preview extends Apple_News {
 			'apple-news-preview-js',
 			plugin_dir_url( __FILE__ ) . '../assets/js/preview.js',
 			array( 'jquery' ),
-			self::$version
+			self::$version,
+			false
 		);
 	}
 }
