@@ -267,7 +267,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return int Estimated number of text lines that fit next to a square anchor.
 	 */
-	private function _anchor_lines_coefficient() {
+	private function anchor_lines_coefficient() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -430,7 +430,7 @@ class Components extends Builder {
 		}
 
 		// Get the anchor lines coefficient (lines of text for a 1:1 anchor).
-		$alc = $this->_anchor_lines_coefficient();
+		$alc = $this->anchor_lines_coefficient();
 
 		// Determine anchored component size ratio. Defaults to 1 (square).
 		$ratio = 1;
