@@ -75,7 +75,7 @@ class Components extends Builder {
 	 * @param array $components An array of Component objects to analyze.
 	 * @access private
 	 */
-	private function _add_pullquote_if_needed( &$components ) {
+	private function add_pullquote_if_needed( &$components ) {
 
 		// Must we add a pullquote?
 		$pullquote          = $this->content_setting( 'pullquote' );
@@ -730,7 +730,7 @@ class Components extends Builder {
 		// Perform additional processing after components have been created.
 		$this->_add_thumbnail_if_needed( $components );
 		$this->_anchor_components( $components );
-		$this->_add_pullquote_if_needed( $components );
+		$this->add_pullquote_if_needed( $components );
 
 		return $components;
 	}
