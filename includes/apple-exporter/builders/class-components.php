@@ -61,7 +61,7 @@ class Components extends Builder {
 		 * could change depending on the above body processing, such as if a
 		 * thumbnail was used from the body.
 		 */
-		$components = array_merge( $this->_meta_components(), $components );
+		$components = array_merge( $this->meta_components(), $components );
 
 		// Group body components to improve text flow at all orientations.
 		$components = $this->group_body_components( $components );
@@ -662,7 +662,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return array An array of Component objects representing metadata.
 	 */
-	private function _meta_components() {
+	private function meta_components() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
