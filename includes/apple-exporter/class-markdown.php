@@ -86,7 +86,7 @@ class Markdown {
 			case 'ol':
 				return $this->_parse_node_ordered_list( $node );
 			case 'li':
-				return $this->_parse_node_list_item( $node );
+				return $this->parse_node_list_item( $node );
 			case 'h1':
 			case 'h2':
 			case 'h3':
@@ -188,7 +188,7 @@ class Markdown {
 	 * @access private
 	 * @return string The processed node, converted to a string.
 	 */
-	private function _parse_node_list_item( $node ) {
+	private function parse_node_list_item( $node ) {
 
 		// If there is no text for this node, bail.
 		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
