@@ -343,7 +343,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return int The estimated number of characters per line.
 	 */
-	private function _characters_per_line_anchored() {
+	private function characters_per_line_anchored() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -468,7 +468,7 @@ class Components extends Builder {
 		}
 
 		return ceil(
-			strlen( $component['text'] ) / $this->_characters_per_line_anchored()
+			strlen( $component['text'] ) / $this->characters_per_line_anchored()
 		);
 	}
 
