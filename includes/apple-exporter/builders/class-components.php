@@ -207,7 +207,7 @@ class Components extends Builder {
 	 * @param array $components An array of Component objects to process.
 	 * @access private
 	 */
-	private function _anchor_components( &$components ) {
+	private function anchor_components( &$components ) {
 
 		// If there are not at least two components, ignore anchoring.
 		$total = count( $components );
@@ -729,7 +729,7 @@ class Components extends Builder {
 
 		// Perform additional processing after components have been created.
 		$this->_add_thumbnail_if_needed( $components );
-		$this->_anchor_components( $components );
+		$this->anchor_components( $components );
 		$this->add_pullquote_if_needed( $components );
 
 		return $components;
