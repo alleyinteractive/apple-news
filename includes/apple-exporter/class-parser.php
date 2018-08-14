@@ -67,9 +67,9 @@ class Parser {
 
 		// Fork for format.
 		if ( 'html' === $this->format ) {
-			return $this->_parse_html( $html );
+			return $this->parse_html( $html );
 		} else {
-			return $this->_parse_markdown( $html );
+			return $this->parse_markdown( $html );
 		}
 	}
 
@@ -81,7 +81,7 @@ class Parser {
 	 * @access private
 	 * @return string The content, converted to an Apple News HTML string.
 	 */
-	private function _parse_html( $html ) {
+	private function parse_html( $html ) {
 
 		// Apply formatting.
 		$parser  = new HTML();
@@ -106,7 +106,7 @@ class Parser {
 	 * @access private
 	 * @return string The content, converted to an Apple News Markdown string.
 	 */
-	private function _parse_markdown( $html ) {
+	private function parse_markdown( $html ) {
 
 		// PHP's DOMDocument doesn't like HTML5, so we must ignore errors.
 		libxml_use_internal_errors( true );
