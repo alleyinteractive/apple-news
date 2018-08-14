@@ -429,7 +429,7 @@ class Theme {
 
 		// If options have not been initialized, initialize them now.
 		if ( empty( self::$_options ) ) {
-			self::_initialize_options();
+			self::initialize_options();
 		}
 
 		return self::$_options;
@@ -552,7 +552,7 @@ class Theme {
 	 *
 	 * @access private
 	 */
-	private static function _initialize_options() {
+	private static function initialize_options() {
 		self::$_options = array(
 			'ad_frequency'                      => array(
 				'default'     => 1,
