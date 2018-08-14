@@ -460,7 +460,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return int The estimated number of lines the body text occupies.
 	 */
-	private function _get_anchor_content_lines( $component ) {
+	private function get_anchor_content_lines( $component ) {
 
 		// If the body component is empty, bail.
 		if ( empty( $component['text'] ) ) {
@@ -599,7 +599,7 @@ class Components extends Builder {
 
 				// If the current element is a body element, adjust buffer.
 				if ( 'body' === $current['role'] ) {
-					$anchor_buffer -= $this->_get_anchor_content_lines( $current );
+					$anchor_buffer -= $this->get_anchor_content_lines( $current );
 				}
 
 				// Add the node.
@@ -608,7 +608,7 @@ class Components extends Builder {
 			}
 
 			// Merge the body content from the previous node into the current node.
-			$anchor_buffer -= $this->_get_anchor_content_lines( $current );
+			$anchor_buffer -= $this->get_anchor_content_lines( $current );
 			$prev['text']  .= $current['text'];
 			$current        = $prev;
 		}
