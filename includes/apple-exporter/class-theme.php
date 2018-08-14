@@ -1180,7 +1180,7 @@ class Theme {
 		delete_option( self::theme_key( $this->get_name() ) );
 
 		// Remove the theme from the theme registry.
-		$this->_remove_from_registry( $this->get_name() );
+		$this->remove_from_registry( $this->get_name() );
 
 		// Remove from used, if necessary.
 		if ( self::$_used_name === $this->get_name() ) {
@@ -2028,7 +2028,7 @@ class Theme {
 	 *
 	 * @access private
 	 */
-	private function _remove_from_registry( $name ) {
+	private function remove_from_registry( $name ) {
 
 		// Fetch the registry.
 		$registry = self::get_registry();
