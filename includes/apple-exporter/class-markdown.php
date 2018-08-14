@@ -78,7 +78,7 @@ class Markdown {
 			case 'br':
 				return "\n";
 			case 'p':
-				return $this->_parse_node_paragraph( $node );
+				return $this->parse_node_paragraph( $node );
 			case 'a':
 				return $this->_parse_node_hyperlink( $node );
 			case 'ul':
@@ -239,7 +239,7 @@ class Markdown {
 	 * @access private
 	 * @return string The processed node, converted to a string.
 	 */
-	private function _parse_node_paragraph( $node ) {
+	private function parse_node_paragraph( $node ) {
 
 		// If there is no text for this node, bail.
 		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
