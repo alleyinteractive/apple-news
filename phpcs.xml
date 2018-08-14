@@ -6,9 +6,24 @@
 	Pass some flags to PHPCS:
 	 p flag: Show progress of the run.
 	 s flag: Show sniff codes in all reports.
-	 n flag: Do not print warnings.
 	-->
-	<arg value="psn" />
+	<arg value="ps" />
+
+	<!--
+	Colorize output
+	-->
+	<arg name="colors"/>
+
+
+	<!--
+	Shorten paths in output
+	-->
+	<arg name="basepath" value="."/>
+
+	<!--
+	Parallelize execution of tests
+	-->
+	<arg name="parallel" value="50"/>
 
 	<!--
 	Only check the PHP files.
