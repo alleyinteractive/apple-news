@@ -123,7 +123,7 @@ class Apple_News {
 
 		// Remove any URL parameters.
 		// This is important for sites using WordPress VIP or Jetpack Photon.
-		$url_parts = parse_url( $path );
+		$url_parts = wp_parse_url( $path );
 		if ( empty( $url_parts['path'] ) ) {
 			return '';
 		}
