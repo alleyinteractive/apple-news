@@ -422,7 +422,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return int The estimated number of lines the anchored component occupies.
 	 */
-	private function _get_anchor_buffer( $component ) {
+	private function get_anchor_buffer( $component ) {
 
 		// If the anchored component is empty, bail.
 		if ( empty( $component ) ) {
@@ -575,13 +575,13 @@ class Components extends Builder {
 				$temp          = $current;
 				$current       = $prev;
 				$prev          = $temp;
-				$anchor_buffer = $this->_get_anchor_buffer( $prev );
+				$anchor_buffer = $this->get_anchor_buffer( $prev );
 			} elseif ( ! empty( $current['identifier'] )
 						&& ! empty( $prev['anchor']['targetComponentIdentifier'] )
 						&& $prev['anchor']['targetComponentIdentifier']
 						=== $current['identifier']
 			) {
-				$anchor_buffer = $this->_get_anchor_buffer( $prev );
+				$anchor_buffer = $this->get_anchor_buffer( $prev );
 			}
 
 			// If the current node is not a body element, force-flatten the buffer.
