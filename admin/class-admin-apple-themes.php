@@ -155,33 +155,33 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @access public
 	 */
 	public function __construct() {
-		$this->theme_page_name = $this->plugin_domain . '-themes';
+		$this->theme_page_name      = $this->plugin_domain . '-themes';
 		$this->theme_edit_page_name = $this->plugin_domain . '-theme-edit';
 
 		$this->_valid_actions = array(
-			'apple_news_upload_theme' => array(
+			'apple_news_upload_theme'        => array(
 				'callback' => array( $this, '_upload_theme' ),
-				'nonce' => 'apple_news_themes',
+				'nonce'    => 'apple_news_themes',
 			),
-			'apple_news_export_theme' => array(
+			'apple_news_export_theme'        => array(
 				'callback' => array( $this, '_export_theme' ),
-				'nonce' => 'apple_news_themes',
+				'nonce'    => 'apple_news_themes',
 			),
-			'apple_news_delete_theme' => array(
+			'apple_news_delete_theme'        => array(
 				'callback' => array( $this, '_delete_theme' ),
-				'nonce' => 'apple_news_themes',
+				'nonce'    => 'apple_news_themes',
 			),
-			'apple_news_save_edit_theme' => array(
+			'apple_news_save_edit_theme'     => array(
 				'callback' => array( $this, '_save_edit_theme' ),
-				'nonce' => 'apple_news_save_edit_theme',
+				'nonce'    => 'apple_news_save_edit_theme',
 			),
-			'apple_news_set_theme' => array(
+			'apple_news_set_theme'           => array(
 				'callback' => array( $this, '_set_theme' ),
-				'nonce' => 'apple_news_themes',
+				'nonce'    => 'apple_news_themes',
 			),
 			'apple_news_load_example_themes' => array(
 				'callback' => array( $this, 'load_example_themes' ),
-				'nonce' => 'apple_news_themes',
+				'nonce'    => 'apple_news_themes',
 			),
 		);
 
@@ -337,8 +337,8 @@ class Admin_Apple_Themes extends Apple_News {
 		wp_localize_script(
 			'apple-news-themes-js', 'appleNewsThemes', array(
 				'deleteWarning' => __( 'Are you sure you want to delete the theme', 'apple-news' ),
-				'noNameError' => __( 'Please enter a name for the new theme.', 'apple-news' ),
-				'tooLongError' => __( 'Theme names must be 45 characters or less.', 'apple-news' ),
+				'noNameError'   => __( 'Please enter a name for the new theme.', 'apple-news' ),
+				'tooLongError'  => __( 'Theme names must be 45 characters or less.', 'apple-news' ),
 			)
 		);
 
@@ -847,7 +847,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Get the contents of the file and clean up.
 		$file_contents = file_get_contents( $file['file'] );
-		$import_data = json_decode( $file_contents, true );
+		$import_data   = json_decode( $file_contents, true );
 		wp_import_cleanup( $this->file_id );
 
 		// Try to get the theme name prior to import.

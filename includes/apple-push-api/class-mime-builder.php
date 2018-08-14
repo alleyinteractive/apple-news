@@ -185,7 +185,7 @@ class MIME_Builder {
 	 * @access public
 	 */
 	public function close() {
-		$close = '--' . $this->boundary . '--';
+		$close                = '--' . $this->boundary . '--';
 		$this->debug_content .= $close;
 		return $close;
 	}

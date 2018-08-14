@@ -59,8 +59,8 @@ class Heading extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => '#heading_level#',
-				'text' => '#text#',
+				'role'   => '#heading_level#',
+				'text'   => '#text#',
 				'format' => '#format#',
 			)
 		);
@@ -70,10 +70,10 @@ class Heading extends Component {
 			__( 'Layout', 'apple-news' ),
 			array(
 				'columnStart' => '#body_offset#',
-				'columnSpan' => '#body_column_span#',
-				'margin' => array(
+				'columnSpan'  => '#body_column_span#',
+				'margin'      => array(
 					'bottom' => 15,
-					'top' => 15,
+					'top'    => 15,
 				),
 			)
 		);
@@ -87,12 +87,12 @@ class Heading extends Component {
 					$level
 				),
 				array(
-					'fontName' => '#header' . $level . '_font#',
-					'fontSize' => '#header' . $level . '_size#',
-					'lineHeight' => '#header' . $level . '_line_height#',
-					'textColor' => '#header' . $level . '_color#',
+					'fontName'      => '#header' . $level . '_font#',
+					'fontSize'      => '#header' . $level . '_size#',
+					'lineHeight'    => '#header' . $level . '_line_height#',
+					'textColor'     => '#header' . $level . '_color#',
 					'textAlignment' => '#text_alignment#',
-					'tracking' => '#header' . $level . '_tracking#',
+					'tracking'      => '#header' . $level . '_tracking#',
 				)
 			);
 		}
@@ -128,7 +128,7 @@ class Heading extends Component {
 		if ( ! $matches ) {
 			return array(
 				array(
-					'name' => 'heading',
+					'name'  => 'heading',
 					'value' => $html,
 				),
 			);
@@ -179,8 +179,8 @@ class Heading extends Component {
 			'json',
 			array(
 				'#heading_level#' => 'heading' . $level,
-				'#text#' => $text,
-				'#format#' => $this->parser->format,
+				'#text#'          => $text,
+				'#format#'        => $this->parser->format,
 			)
 		);
 
@@ -202,7 +202,7 @@ class Heading extends Component {
 			'heading-layout',
 			'heading-layout',
 			array(
-				'#body_offset#' => $theme->get_body_offset(),
+				'#body_offset#'      => $theme->get_body_offset(),
 				'#body_column_span#' => $theme->get_body_column_span(),
 			),
 			'layout'
@@ -224,12 +224,12 @@ class Heading extends Component {
 			'default-heading-' . $level,
 			'default-heading-' . $level,
 			array(
-				'#header' . $level . '_font#' => $theme->get_value( 'header' . $level . '_font' ),
-				'#header' . $level . '_size#'  => intval( $theme->get_value( 'header' . $level . '_size' ) ),
+				'#header' . $level . '_font#'        => $theme->get_value( 'header' . $level . '_font' ),
+				'#header' . $level . '_size#'        => intval( $theme->get_value( 'header' . $level . '_size' ) ),
 				'#header' . $level . '_line_height#' => intval( $theme->get_value( 'header' . $level . '_line_height' ) ),
-				'#header' . $level . '_color#' => $theme->get_value( 'header' . $level . '_color' ),
-				'#text_alignment#' => $this->find_text_alignment(),
-				'#header' . $level . '_tracking#' => intval( $theme->get_value( 'header' . $level . '_tracking' ) ) / 100,
+				'#header' . $level . '_color#'       => $theme->get_value( 'header' . $level . '_color' ),
+				'#text_alignment#'                   => $this->find_text_alignment(),
+				'#header' . $level . '_tracking#'    => intval( $theme->get_value( 'header' . $level . '_tracking' ) ) / 100,
 			),
 			'textStyle'
 		);

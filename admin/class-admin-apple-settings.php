@@ -79,8 +79,8 @@ class Admin_Apple_Settings extends Apple_News {
 	 */
 	public function __construct() {
 		$this->loaded_settings = null;
-		$this->sections = array();
-		$this->page_name = $this->plugin_domain . '-options';
+		$this->sections        = array();
+		$this->page_name       = $this->plugin_domain . '-options';
 
 		if ( ! self::$initialized ) {
 			add_action( 'admin_init', array( $this, 'register_sections' ), 5 );
@@ -201,12 +201,12 @@ class Admin_Apple_Settings extends Apple_News {
 		if ( is_null( $this->loaded_settings ) ) {
 
 			// Initialize.
-			$settings = new Settings();
+			$settings    = new Settings();
 			$wp_settings = get_option( self::$option_name );
 
 			// Merge settings in the option with defaults.
 			foreach ( $settings->all() as $key => $value ) {
-				$wp_value = ( empty( $wp_settings[ $key ] ) )
+				$wp_value       = ( empty( $wp_settings[ $key ] ) )
 					? $value
 					: $wp_settings[ $key ];
 				$settings->$key = $wp_value;

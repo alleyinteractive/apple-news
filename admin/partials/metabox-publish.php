@@ -121,10 +121,10 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 	<?php if ( ! empty( $api_id ) ) : ?>
 		<?php
 		// Add data about the article if it exists.
-		$state = \Admin_Apple_News::get_post_status( $post->ID );
-		$share_url = get_post_meta( $post->ID, 'apple_news_api_share_url', true );
-		$created_at = get_post_meta( $post->ID, 'apple_news_api_created_at', true );
-		$created_at = empty( $created_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $created_at ) ), 'F j, h:i a' );
+		$state       = \Admin_Apple_News::get_post_status( $post->ID );
+		$share_url   = get_post_meta( $post->ID, 'apple_news_api_share_url', true );
+		$created_at  = get_post_meta( $post->ID, 'apple_news_api_created_at', true );
+		$created_at  = empty( $created_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $created_at ) ), 'F j, h:i a' );
 		$modified_at = get_post_meta( $post->ID, 'apple_news_api_modified_at', true );
 		$modified_at = empty( $modified_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $modified_at ) ), 'F j, h:i a' );
 		?>

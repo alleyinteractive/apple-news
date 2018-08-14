@@ -35,7 +35,7 @@ class Components extends Builder {
 
 		// Initialize.
 		$components = array();
-		$workspace = new Workspace( $this->content_id() );
+		$workspace  = new Workspace( $this->content_id() );
 
 		// Loop through body components and process each.
 		foreach ( $this->_split_into_components() as $component ) {
@@ -78,9 +78,9 @@ class Components extends Builder {
 	private function _add_pullquote_if_needed( &$components ) {
 
 		// Must we add a pullquote?
-		$pullquote = $this->content_setting( 'pullquote' );
+		$pullquote          = $this->content_setting( 'pullquote' );
 		$pullquote_position = $this->content_setting( 'pullquote_position' );
-		$valid_positions = array( 'top', 'middle', 'bottom' );
+		$valid_positions    = array( 'top', 'middle', 'bottom' );
 		if ( empty( $pullquote )
 			 || ! in_array( $pullquote_position, $valid_positions, true )
 		) {
@@ -168,7 +168,7 @@ class Components extends Builder {
 			 * needed in order to override the thumbnail.
 			 */
 			$workspace = new Workspace( $this->content_id() );
-			$bundles = $workspace->get_bundles();
+			$bundles   = $workspace->get_bundles();
 
 			// If we can't get the bundles, we can't search for the URL, so bail.
 			if ( empty( $bundles ) ) {
@@ -304,8 +304,8 @@ class Components extends Builder {
 		if ( empty( $anchor_json ) ) {
 			$anchor_json = array(
 				'targetAnchorPosition' => 'center',
-				'rangeStart' => 0,
-				'rangeLength' => 1,
+				'rangeStart'           => 0,
+				'rangeLength'          => 1,
 			);
 		}
 
@@ -549,10 +549,10 @@ class Components extends Builder {
 
 		// Initialize.
 		$new_components = array();
-		$cover_index = null;
-		$anchor_buffer = 0;
-		$prev = null;
-		$current = null;
+		$cover_index    = null;
+		$anchor_buffer  = 0;
+		$prev           = null;
+		$current        = null;
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -561,7 +561,7 @@ class Components extends Builder {
 		foreach ( $components as $component ) {
 
 			// Update positioning.
-			$prev = $current;
+			$prev    = $current;
 			$current = $component;
 
 			// Handle first run.
@@ -576,9 +576,9 @@ class Components extends Builder {
 					=== $current['anchor']['targetComponentIdentifier']
 			) {
 				// Switch the position of the nodes so the anchor always comes first.
-				$temp = $current;
-				$current = $prev;
-				$prev = $temp;
+				$temp          = $current;
+				$current       = $prev;
+				$prev          = $temp;
 				$anchor_buffer = $this->_get_anchor_buffer( $prev );
 			} elseif ( ! empty( $current['identifier'] )
 					   && ! empty( $prev['anchor']['targetComponentIdentifier'] )
@@ -613,8 +613,8 @@ class Components extends Builder {
 
 			// Merge the body content from the previous node into the current node.
 			$anchor_buffer -= $this->_get_anchor_content_lines( $current );
-			$prev['text'] .= $current['text'];
-			$current = $prev;
+			$prev['text']  .= $current['text'];
+			$current        = $prev;
 		}
 
 		// Add the final element from the loop in its final state.
@@ -641,13 +641,13 @@ class Components extends Builder {
 		 * parallax text scroll.
 		 */
 		$regrouped_components = array(
-			'role' => 'container',
-			'layout' => array(
-				'columnSpan' => $theme->get_layout_columns(),
-				'columnStart' => 0,
+			'role'       => 'container',
+			'layout'     => array(
+				'columnSpan'           => $theme->get_layout_columns(),
+				'columnStart'          => 0,
 				'ignoreDocumentMargin' => true,
 			),
-			'style' => array(
+			'style'      => array(
 				'backgroundColor' => $theme->get_value( 'body_background_color' ),
 			),
 			'components' => array_slice( $new_components, $cover_index + 1 ),

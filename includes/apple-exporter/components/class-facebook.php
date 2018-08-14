@@ -56,7 +56,7 @@ class Facebook extends Component {
 			__( 'JSON', 'apple-news' ),
 			array(
 				'role' => 'facebook_post',
-				'URL' => '#url#',
+				'URL'  => '#url#',
 			)
 		);
 	}
@@ -126,7 +126,7 @@ class Facebook extends Component {
 		}
 
 		// Try to get Facebook URL.
-		$url = self::_get_facebook_url( wp_strip_all_tags( $html ) );
+		$url   = self::_get_facebook_url( wp_strip_all_tags( $html ) );
 		$check = trim( $url );
 		if ( empty( $check ) ) {
 			return;

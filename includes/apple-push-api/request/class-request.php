@@ -72,7 +72,7 @@ class Request {
 		$this->default_args = apply_filters(
 			'apple_news_request_args', array(
 				'reject_unsafe_urls' => true,
-				'timeout' => 5,
+				'timeout'            => 5,
 			)
 		);
 	}
@@ -97,11 +97,11 @@ class Request {
 		// Build the post request args.
 		$args = array(
 			'headers' => array(
-				'Authorization' => $this->sign( $url, 'POST', $content ),
+				'Authorization'  => $this->sign( $url, 'POST', $content ),
 				'Content-Length' => strlen( $content ),
-				'Content-Type' => 'multipart/form-data; boundary=' . $this->mime_builder->boundary(),
+				'Content-Type'   => 'multipart/form-data; boundary=' . $this->mime_builder->boundary(),
 			),
-			'body' => $content,
+			'body'    => $content,
 			'timeout' => 30, // Required because we need to package all images.
 		);
 
@@ -133,7 +133,7 @@ class Request {
 			'headers' => array(
 				'Authorization' => $this->sign( $url, 'DELETE' ),
 			),
-			'method' => 'DELETE',
+			'method'  => 'DELETE',
 		);
 
 		// Allow filtering and merge with the default args.
@@ -214,7 +214,7 @@ class Request {
 			}
 
 			// Add the API response.
-			$body = esc_html__( 'API Response', 'apple-news' ) . ":\n";
+			$body  = esc_html__( 'API Response', 'apple-news' ) . ":\n";
 			$body .= print_r( $response, true );
 
 			// Add the meta sent with the API request, if set.
@@ -253,7 +253,7 @@ class Request {
 
 		// Check for errors with the request itself.
 		if ( is_wp_error( $response ) ) {
-			$string_errors = '';
+			$string_errors  = '';
 			$error_messages = $response->get_error_messages();
 			if ( is_array( $error_messages ) && ! empty( $error_messages ) ) {
 				$string_errors = implode( ', ', $error_messages );
@@ -264,7 +264,7 @@ class Request {
 		// Check for errors from the API.
 		$response_decoded = json_decode( $response['body'] );
 		if ( ! empty( $response_decoded->errors ) && is_array( $response_decoded->errors ) ) {
-			$message = '';
+			$message  = '';
 			$messages = array();
 			foreach ( $response_decoded->errors as $error ) {
 				// If there is a keyPath, build it into a string.
@@ -354,7 +354,7 @@ class Request {
 
 		$request_info = $verb . $url . $current_date;
 		if ( 'POST' === $verb ) {
-			$content_type = 'multipart/form-data; boundary=' . $this->mime_builder->boundary();
+			$content_type  = 'multipart/form-data; boundary=' . $this->mime_builder->boundary();
 			$request_info .= $content_type . $content;
 		}
 

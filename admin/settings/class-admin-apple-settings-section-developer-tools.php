@@ -38,19 +38,19 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 		$this->settings = array(
 			'apple_news_enable_debugging' => array(
 				'label' => __( 'Enable Debugging', 'apple-news' ),
-				'type' => array( 'no', 'yes' ),
+				'type'  => array( 'no', 'yes' ),
 			),
-			'apple_news_admin_email' => array(
-				'label' => __( 'Administrator Email', 'apple-news' ),
+			'apple_news_admin_email'      => array(
+				'label'    => __( 'Administrator Email', 'apple-news' ),
 				'required' => false,
-				'type' => 'string',
+				'type'     => 'string',
 			),
 		);
 
 		// Add the groups.
 		$this->groups = array(
 			'debugging_settings' => array(
-				'label' => __( 'Debugging Settings', 'apple-news' ),
+				'label'    => __( 'Debugging Settings', 'apple-news' ),
 				'settings' => array(
 					'apple_news_enable_debugging',
 					'apple_news_admin_email',

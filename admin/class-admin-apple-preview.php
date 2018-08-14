@@ -37,10 +37,10 @@ class Admin_Apple_Preview extends Apple_News {
 
 		// Merge plugin-level settings with theme-level settings.
 		$admin_settings = new Admin_Apple_Settings();
-		$settings = $admin_settings->fetch_settings();
+		$settings       = $admin_settings->fetch_settings();
 
 		// Determine if HTML support is enabled.
-		$settings = get_option( self::$option_name );
+		$settings     = get_option( self::$option_name );
 		$html_support = ( isset( $settings['html_support'] )
 			&& 'yes' === $settings['html_support']
 		);
@@ -61,7 +61,7 @@ class Admin_Apple_Preview extends Apple_News {
 
 				// Build the byline.
 				$author = __( 'John Doe', 'apple-news' );
-				$date = date( 'M j, Y g:i A' );
+				$date   = date( 'M j, Y g:i A' );
 				$export = new Apple_Actions\Index\Export( $settings );
 				$byline = sprintf(
 					'<div class="apple-news-byline apple-news-component apple-news-meta-component">%s</div>',

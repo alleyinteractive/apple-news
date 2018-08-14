@@ -26,7 +26,7 @@ class Advertisement extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => 'banner_advertisement',
+				'role'       => 'banner_advertisement',
 				'bannerType' => 'standard',
 			)
 		);
@@ -36,7 +36,7 @@ class Advertisement extends Component {
 			__( 'Layout', 'apple-news' ),
 			array(
 				'margin' => array(
-					'top' => 25,
+					'top'    => 25,
 					'bottom' => 25,
 				),
 			)

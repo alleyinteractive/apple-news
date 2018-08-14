@@ -218,7 +218,7 @@ class Markdown {
 	 * @return string The processed node, converted to a string.
 	 */
 	private function _parse_node_ordered_list( $node ) {
-		$this->_list_mode = 'ol';
+		$this->_list_mode  = 'ol';
 		$this->_list_index = 1;
 
 		// If there is no text for this node, bail.

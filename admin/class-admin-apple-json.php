@@ -59,11 +59,11 @@ class Admin_Apple_JSON extends Apple_News {
 		$this->json_page_name = $this->plugin_domain . '-json';
 
 		$this->valid_actions = array(
-			'apple_news_get_json' => array(),
+			'apple_news_get_json'   => array(),
 			'apple_news_reset_json' => array(
 				'callback' => array( $this, 'reset_json' ),
 			),
-			'apple_news_save_json' => array(
+			'apple_news_save_json'  => array(
 				'callback' => array( $this, 'save_json' ),
 			),
 		);
@@ -169,9 +169,9 @@ class Admin_Apple_JSON extends Apple_News {
 		$components = $this->list_components();
 
 		// Get theme info for reference purposes.
-		$themes = new Admin_Apple_Themes();
+		$themes          = new Admin_Apple_Themes();
 		$theme_admin_url = $themes->theme_admin_url();
-		$all_themes = \Apple_Exporter\Theme::get_registry();
+		$all_themes      = \Apple_Exporter\Theme::get_registry();
 
 		// Negotiate selected theme.
 		$selected_theme = $this->get_selected_theme();
@@ -332,7 +332,7 @@ class Admin_Apple_JSON extends Apple_News {
 			$key = 'apple_news_json_' . $spec->key_from_name( $spec->name );
 			if ( isset( $_POST[ $key ] ) ) {
 				$custom_spec = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
-				$result = $spec->save( $custom_spec, $theme );
+				$result      = $spec->save( $custom_spec, $theme );
 				if ( true === $result ) {
 					$updates[] = $spec->label;
 				}
@@ -371,7 +371,7 @@ class Admin_Apple_JSON extends Apple_News {
 			return array();
 		}
 
-		$classname = $this->namespace . $component;
+		$classname       = $this->namespace . $component;
 		$component_class = new $classname();
 		return $component_class->get_specs();
 	}
@@ -390,8 +390,8 @@ class Admin_Apple_JSON extends Apple_News {
 		// Make this alphabetized and pretty.
 		$components_sanitized = array();
 		foreach ( $components as $component ) {
-			$component_key = str_replace( $this->namespace, '', $component );
-			$component_name = str_replace( '_', ' ', $component_key );
+			$component_key                          = str_replace( $this->namespace, '', $component );
+			$component_name                         = str_replace( '_', ' ', $component_key );
 			$components_sanitized[ $component_key ] = $component_name;
 		}
 		ksort( $components_sanitized );

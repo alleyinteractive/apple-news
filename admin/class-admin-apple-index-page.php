@@ -104,8 +104,8 @@ class Admin_Apple_Index_Page extends Apple_News {
 					Admin_Apple_Notice::error( $e->getMessage() );
 				}
 
-				$post = get_post( $id );
-				$post_meta = get_post_meta( $id );
+				$post             = get_post( $id );
+				$post_meta        = get_post_meta( $id );
 				$enable_cover_art = ( 'yes' === $this->settings->enable_cover_art );
 				include plugin_dir_path( __FILE__ ) . 'partials/page-single-push.php';
 				break;
@@ -146,7 +146,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 				if ( ! $id ) {
 					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
 					if ( isset( $_GET['article'] ) ) { // input var ok.
-						$ids = is_array( $_GET['article'] ) ? array_map( 'absint', $_GET['article'] ) : absint( $_GET['article'] ); // input var ok.
+						$ids  = is_array( $_GET['article'] ) ? array_map( 'absint', $_GET['article'] ) : absint( $_GET['article'] ); // input var ok.
 						$url .= '&ids=' . implode( '.', $ids );
 					}
 					wp_safe_redirect( esc_url_raw( $url ) );
@@ -308,7 +308,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		// Localize strings.
 		wp_localize_script(
 			$this->plugin_slug . '_export_table_js', 'apple_news_export_table', array(
-				'reset_confirmation' => __( "Are you sure you want to reset status? Please only proceed if you're certain the post is stuck or this could reset in duplicate posts in Apple News.", 'apple-news' ),
+				'reset_confirmation'  => __( "Are you sure you want to reset status? Please only proceed if you're certain the post is stuck or this could reset in duplicate posts in Apple News.", 'apple-news' ),
 				'delete_confirmation' => __( 'Are you sure you want to delete this post from Apple News?', 'apple-news' ),
 			)
 		);

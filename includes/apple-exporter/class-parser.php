@@ -84,7 +84,7 @@ class Parser {
 	private function _parse_html( $html ) {
 
 		// Apply formatting.
-		$parser = new HTML();
+		$parser  = new HTML();
 		$content = $parser->format( $html );
 
 		/**
@@ -123,7 +123,7 @@ class Parser {
 		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 		// Perform parsing.
-		$parser = new Markdown();
+		$parser  = new Markdown();
 		$content = $parser->parse_nodes( $nodes );
 
 		/**

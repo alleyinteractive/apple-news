@@ -64,7 +64,7 @@ $themes = new \Admin_Apple_Themes(); ?>
 		<div class="theme-browser">
 			<div class="themes wp-clearfix">
 				<?php
-				$all_themes = \Apple_Exporter\Theme::get_registry();
+				$all_themes   = \Apple_Exporter\Theme::get_registry();
 				$active_theme = \Apple_Exporter\Theme::get_active_theme_name();
 				if ( empty( $all_themes ) ) :
 					?>
@@ -72,8 +72,8 @@ $themes = new \Admin_Apple_Themes(); ?>
 				<?php else : ?>
 					<?php foreach ( $all_themes as $theme ) : ?>
 						<?php
-						$active = ( $theme === $active_theme ) ? 'active' : '';
-						$aria_name = 'apple-news-theme-' . $theme . '-name';
+						$active       = ( $theme === $active_theme ) ? 'active' : '';
+						$aria_name    = 'apple-news-theme-' . $theme . '-name';
 						$theme_object = new \Apple_Exporter\Theme();
 						$theme_object->set_name( $theme );
 						$theme_object->load();

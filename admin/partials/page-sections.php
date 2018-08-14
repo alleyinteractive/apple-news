@@ -70,7 +70,7 @@
 					</td>
 					<td>
 						<?php
-							$theme_id = 'apple-news-theme-mapping-' . ( ++ $count );
+							$theme_id       = 'apple-news-theme-mapping-' . ( ++ $count );
 							$selected_theme = ( isset( $theme_mappings[ $section_id ] ) ) ? $theme_mappings[ $section_id ] : '';
 						?>
 						<select name="theme-mapping-<?php echo esc_attr( $section_id ); ?>" id="<?php echo esc_attr( $theme_id ); ?>">
