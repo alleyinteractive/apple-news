@@ -1765,7 +1765,7 @@ class Theme {
 		}
 
 		// Finally, validate JSON templates.
-		return $this->_validate_json_templates();
+		return $this->validate_json_templates();
 	}
 
 	/**
@@ -2055,7 +2055,7 @@ class Theme {
 	 * @access private
 	 * @return bool True on success, false on failure.
 	 */
-	private function _validate_json_templates() {
+	private function validate_json_templates() {
 
 		// If no JSON templates are defined, count as a success.
 		if ( empty( $this->_values['json_templates'] ) ) {
