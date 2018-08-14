@@ -357,7 +357,7 @@ class Apple_News {
 
 		// Check for the presence of blockquote-specific settings.
 		$wp_settings = get_option( self::$option_name );
-		if ( $this->_all_keys_exist(
+		if ( $this->all_keys_exist(
 			$wp_settings, array(
 				'blockquote_background_color',
 				'blockquote_border_color',
@@ -433,7 +433,7 @@ class Apple_News {
 
 		// Check for the presence of caption-specific settings.
 		$wp_settings = get_option( self::$option_name );
-		if ( $this->_all_keys_exist(
+		if ( $this->all_keys_exist(
 			$wp_settings, array(
 				'caption_color',
 				'caption_font',
@@ -775,7 +775,7 @@ class Apple_News {
 	 * @access private
 	 * @return bool True if all keys exist in the array, false if not.
 	 */
-	private function _all_keys_exist( $compare, $keys ) {
+	private function all_keys_exist( $compare, $keys ) {
 		if ( ! is_array( $compare ) || ! is_array( $keys ) ) {
 			return false;
 		}
