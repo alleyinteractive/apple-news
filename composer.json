@@ -14,7 +14,7 @@
     "automattic/vipwpcs": "^0.2.4"
   },
   "scripts": {
-    "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths $PWD/vendor/wp-coding-standards/wpcs,$PWD/vendor/wp-coding-standards/vipwpcs",
-    "post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths $PWD/vendor/wp-coding-standards/wpcs,$PWD/vendor/wp-coding-standards/vipwpcs"
+    "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths $PWD/vendor/wp-coding-standards/wpcs,$PWD/vendor/automattic/vipwpcs",
+    "post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths $PWD/vendor/wp-coding-standards/wpcs,$PWD/vendor/automattic/vipwpcs"
   }
 }
