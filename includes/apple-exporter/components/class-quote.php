@@ -340,7 +340,7 @@ class Quote extends Component {
 		$this->register_json( $spec_name, $values );
 
 		$this->set_blockquote_layout();
-		$this->_set_blockquote_style();
+		$this->set_blockquote_style();
 	}
 
 	/**
@@ -429,7 +429,7 @@ class Quote extends Component {
 	 *
 	 * @access private
 	 */
-	private function _set_blockquote_style() {
+	private function set_blockquote_style() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
