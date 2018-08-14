@@ -1475,7 +1475,7 @@ class Theme {
 
 		// Get the list of installed themes and ensure the new name isn't taken.
 		if ( self::theme_exists( $name ) ) {
-			$this->_log_error(
+			$this->log_error(
 				sprintf(
 					// translators: token is the theme name.
 					__( 'Theme name %s is already in use.', 'apple-news' ),
@@ -1609,7 +1609,7 @@ class Theme {
 
 		// If values is not an array, then the configuration is invalid.
 		if ( ! is_array( $this->_values ) ) {
-			$this->_log_error(
+			$this->log_error(
 				__(
 					'Theme values were not in array format.',
 					'apple-news'
@@ -1625,7 +1625,7 @@ class Theme {
 
 			// If the provided key is not in the valid options spec, mark invalid.
 			if ( ! isset( $options[ $key ] ) ) {
-				$this->_log_error(
+				$this->log_error(
 					sprintf(
 						// translators: token is a setting key.
 						__( 'An invalid setting was encountered: %s', 'apple-news' ),
@@ -1646,7 +1646,7 @@ class Theme {
 				case 'array':
 					// Ensure the provided value is actually an array.
 					if ( ! is_array( $value ) ) {
-						$this->_log_error(
+						$this->log_error(
 							sprintf(
 								// translators: first token is the setting key, second token is the value type.
 								__(
@@ -1672,7 +1672,7 @@ class Theme {
 
 					// Ensure the color value provided is valid.
 					if ( false === preg_match( '/#([a-f0-9]{3}){1,2}\b/i', $value ) ) {
-						$this->_log_error(
+						$this->log_error(
 							sprintf(
 								// translators: first token is a value, second token is the setting key.
 								__(
@@ -1700,7 +1700,7 @@ class Theme {
 
 					// Ensure the named font is part of the whitelist.
 					if ( ! in_array( $value, self::get_fonts(), true ) ) {
-						$this->_log_error(
+						$this->log_error(
 							sprintf(
 								// translators: first token is the value, second is the setting key.
 								__(
@@ -1728,7 +1728,7 @@ class Theme {
 
 					// Ensure that the value is one of the allowed options.
 					if ( ! in_array( $value, $options[ $key ]['options'], true ) ) {
-						$this->_log_error(
+						$this->log_error(
 							sprintf(
 								// translators: first token is the value, second token is the setting key.
 								__( 'Invalid value %1$s specified for setting %2$s', 'apple-news' ),
@@ -1755,7 +1755,7 @@ class Theme {
 			// Ensure no values were provided other than what is permissible.
 			foreach ( $this->_values['meta_component_order'] as $component ) {
 				if ( ! in_array( $component, $options['meta_component_order']['default'], true ) ) {
-					$this->_log_error(
+					$this->log_error(
 						__( 'Invalid value for meta component order', 'apple-news' )
 					);
 
@@ -2017,7 +2017,7 @@ class Theme {
 	 *
 	 * @access private
 	 */
-	private function _log_error( $message ) {
+	private function log_error( $message ) {
 		$this->_last_error = $message;
 	}
 
@@ -2096,7 +2096,7 @@ class Theme {
 
 				// Validate this spec.
 				if ( ! $spec->validate( $current_component[ $spec_key ] ) ) {
-					$this->_log_error(
+					$this->log_error(
 						sprintf(
 							// translators: token is a combination of a component key and a spec key.
 							__(
@@ -2125,7 +2125,7 @@ class Theme {
 
 		// If there are any invalid components, fail.
 		if ( ! empty( $invalid_components ) ) {
-			$this->_log_error(
+			$this->log_error(
 				__( 'The theme file contained unsupported settings', 'apple-news' )
 			);
 
