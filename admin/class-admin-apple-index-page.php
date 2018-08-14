@@ -234,7 +234,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		// Add the other params.
 		foreach ( $keys as $key ) {
 			if ( ! empty( $_GET[ $key ] ) ) { // input var ok.
-				$params[ $key ] = urlencode( sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) ); // input var ok.
+				$params[ $key ] = rawurlencode( sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) ); // input var ok.
 			}
 		}
 
