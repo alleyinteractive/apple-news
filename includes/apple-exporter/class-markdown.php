@@ -98,7 +98,7 @@ class Markdown {
 				return '';
 			case '#text':
 			default:
-				return $this->_parse_node_text( $node );
+				return $this->parse_node_text( $node );
 		}
 	}
 
@@ -279,7 +279,7 @@ class Markdown {
 	 * @access private
 	 * @return string The processed node, converted to a string.
 	 */
-	private function _parse_node_text( $node ) {
+	private function parse_node_text( $node ) {
 		return str_replace( '!', '\\!', $node->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 	}
 
