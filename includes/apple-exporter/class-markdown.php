@@ -82,7 +82,7 @@ class Markdown {
 			case 'a':
 				return $this->_parse_node_hyperlink( $node );
 			case 'ul':
-				return $this->_parse_node_unordered_list( $node );
+				return $this->parse_node_unordered_list( $node );
 			case 'ol':
 				return $this->_parse_node_ordered_list( $node );
 			case 'li':
@@ -291,7 +291,7 @@ class Markdown {
 	 * @access private
 	 * @return string The processed node, converted to a string.
 	 */
-	private function _parse_node_unordered_list( $node ) {
+	private function parse_node_unordered_list( $node ) {
 		$this->_list_mode = 'ul';
 
 		// If there is no text for this node, bail.
