@@ -126,7 +126,7 @@ class Components extends Builder {
 	 * @param array $components An array of Component objects to analyze.
 	 * @access private
 	 */
-	private function _add_thumbnail_if_needed( &$components ) {
+	private function add_thumbnail_if_needed( &$components ) {
 
 		// If a thumbnail is already defined, just return.
 		if ( $this->content_cover() ) {
@@ -728,7 +728,7 @@ class Components extends Builder {
 		}
 
 		// Perform additional processing after components have been created.
-		$this->_add_thumbnail_if_needed( $components );
+		$this->add_thumbnail_if_needed( $components );
 		$this->anchor_components( $components );
 		$this->add_pullquote_if_needed( $components );
 
