@@ -331,7 +331,7 @@ class Quote extends Component {
 		// Set component attributes.
 		// Determine if there is a border specified.
 		if ( 'none' !== $theme->get_value( 'blockquote_border_style' ) ) {
-			$values    = $this->_set_blockquote_border( $values );
+			$values    = $this->set_blockquote_border( $values );
 			$spec_name = 'blockquote-with-border-json';
 		} else {
 			$spec_name = 'blockquote-without-border-json';
@@ -339,7 +339,7 @@ class Quote extends Component {
 
 		$this->register_json( $spec_name, $values );
 
-		$this->_set_blockquote_layout();
+		$this->set_blockquote_layout();
 		$this->_set_blockquote_style();
 	}
 
@@ -391,7 +391,7 @@ class Quote extends Component {
 	 * @access private
 	 * @return array The modified list of token values.
 	 */
-	private function _set_blockquote_border( $values ) {
+	private function set_blockquote_border( $values ) {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -417,7 +417,7 @@ class Quote extends Component {
 	 *
 	 * @access private
 	 */
-	private function _set_blockquote_layout() {
+	private function set_blockquote_layout() {
 		$this->register_layout(
 			'blockquote-layout',
 			'blockquote-layout'
