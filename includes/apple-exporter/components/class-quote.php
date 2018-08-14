@@ -379,9 +379,9 @@ class Quote extends Component {
 		$this->register_json( $spec_name, $values );
 
 		// Set component attributes.
-		$this->_set_pullquote_anchor();
-		$this->_set_pullquote_layout();
-		$this->_set_pullquote_style();
+		$this->set_pullquote_anchor();
+		$this->set_pullquote_layout();
+		$this->set_pullquote_style();
 	}
 
 	/**
@@ -454,7 +454,7 @@ class Quote extends Component {
 	 *
 	 * @access private
 	 */
-	private function _set_pullquote_anchor() {
+	private function set_pullquote_anchor() {
 		$this->set_anchor_position( Component::ANCHOR_AUTO );
 	}
 
@@ -486,7 +486,7 @@ class Quote extends Component {
 	 *
 	 * @access private
 	 */
-	private function _set_pullquote_layout() {
+	private function set_pullquote_layout() {
 		$this->register_layout(
 			'pullquote-layout',
 			'pullquote-layout'
@@ -498,7 +498,7 @@ class Quote extends Component {
 	 *
 	 * @access private
 	 */
-	private function _set_pullquote_style() {
+	private function set_pullquote_style() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
