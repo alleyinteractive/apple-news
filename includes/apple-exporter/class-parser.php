@@ -63,7 +63,7 @@ class Parser {
 		 * This needs to be done here to avoid duplicating efforts
 		 * in the HTML and Markdown classes.
 		 */
-		$html = $this->_clean_html( $html );
+		$html = $this->clean_html( $html );
 
 		// Fork for format.
 		if ( 'html' === $this->format ) {
@@ -145,7 +145,7 @@ class Parser {
 	 * @access private
 	 * @return string The clean HTML
 	 */
-	private function _clean_html( $html ) {
+	private function clean_html( $html ) {
 		// Match all <a> tags via regex.
 		// We can't use DOMDocument here because some tags will be removed entirely.
 		preg_match_all( '/<a.*?>(.*?)<\/a>/m', $html, $a_tags );
