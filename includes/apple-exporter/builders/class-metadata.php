@@ -70,7 +70,7 @@ class Metadata extends Builder {
 		$meta['generatorVersion']    = $plugin_data['Version'];
 
 		// Add cover art.
-		$this->_add_cover_art( $meta );
+		$this->add_cover_art( $meta );
 
 		// Extract all video elements that include a poster element.
 		if ( preg_match_all( '/<video[^>]+poster="([^"]+)".*?>(.+?)<\/video>/s', $this->content_text(), $matches ) ) {
@@ -106,7 +106,7 @@ class Metadata extends Builder {
 	 *
 	 * @access private
 	 */
-	private function _add_cover_art( &$meta ) {
+	private function add_cover_art( &$meta ) {
 
 		// Try to get cover art meta.
 		$ca_meta = get_post_meta( $this->content_id(), 'apple_news_coverart', true );
