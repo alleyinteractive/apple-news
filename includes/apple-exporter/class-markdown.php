@@ -93,7 +93,7 @@ class Markdown {
 			case 'h4':
 			case 'h5':
 			case 'h6':
-				return $this->_parse_node_heading( $node );
+				return $this->parse_node_heading( $node );
 			case '#comment':
 				return '';
 			case '#text':
@@ -130,7 +130,7 @@ class Markdown {
 	 * @access private
 	 * @return string The processed node, converted to a string.
 	 */
-	private function _parse_node_heading( $node ) {
+	private function parse_node_heading( $node ) {
 
 		// If there is no text for this node, bail.
 		$text  = $this->parse_nodes( $node->childNodes ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
