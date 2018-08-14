@@ -42,7 +42,7 @@ class Text_Styles extends Builder {
 
 		// Determine whether to add the styles for HTML content.
 		if ( 'yes' === $this->get_setting( 'html_support' ) ) {
-			$this->_add_html_styles();
+			$this->add_html_styles();
 		}
 	}
 
@@ -88,7 +88,7 @@ class Text_Styles extends Builder {
 	 *
 	 * @access private
 	 */
-	private function _add_html_styles() {
+	private function add_html_styles() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
