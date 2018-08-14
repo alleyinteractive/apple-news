@@ -114,7 +114,7 @@ class Components extends Builder {
 		$component->set_anchor_position( Component::ANCHOR_AUTO );
 
 		// Anchor the newly created pullquote component to the target component.
-		$this->_anchor_together( $component, $components[ $position ] );
+		$this->anchor_together( $component, $components[ $position ] );
 
 		// Add component in position.
 		array_splice( $components, $position, 0, array( $component ) );
@@ -250,7 +250,7 @@ class Components extends Builder {
 
 			// If a suitable anchor target was found, link the two.
 			if ( $target_component->can_be_anchor_target() ) {
-				$this->_anchor_together( $component, $target_component );
+				$this->anchor_together( $component, $target_component );
 			}
 		}
 	}
@@ -283,7 +283,7 @@ class Components extends Builder {
 	 *
 	 * @access private
 	 */
-	private function _anchor_together( $component, $target_component ) {
+	private function anchor_together( $component, $target_component ) {
 
 		// Don't anchor something that has already been anchored.
 		if ( $target_component->is_anchor_target() ) {
