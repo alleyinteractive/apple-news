@@ -439,12 +439,12 @@ class Components extends Builder {
 		) {
 
 			// Calculate base ratio.
-			$ratio = $this->_get_image_ratio( $component['components'][0]['URL'] );
+			$ratio = $this->get_image_ratio( $component['components'][0]['URL'] );
 
 			// Add some buffer for the caption.
 			$ratio /= 1.2;
 		} elseif ( 'photo' === $component['role'] && ! empty( $component['URL'] ) ) {
-			$ratio = $this->_get_image_ratio( $component['URL'] );
+			$ratio = $this->get_image_ratio( $component['URL'] );
 		}
 
 		return ceil( $alc / $ratio );
@@ -507,7 +507,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return float An image ratio (width/height) for the given image.
 	 */
-	private function _get_image_ratio( $url ) {
+	private function get_image_ratio( $url ) {
 
 		// Strip URL formatting for easier matching.
 		$url = urldecode( $url );
