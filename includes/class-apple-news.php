@@ -341,7 +341,7 @@ class Apple_News {
 		 */
 		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['api_autosync_delete'] )
-			 && ! empty( $wp_settings['api_autosync_update'] )
+			&& ! empty( $wp_settings['api_autosync_update'] )
 		) {
 			$wp_settings['api_autosync_delete'] = $wp_settings['api_autosync_update'];
 			update_option( self::$option_name, $wp_settings, 'no' );
@@ -375,7 +375,7 @@ class Apple_News {
 
 		// Set the background color to 90% of the body background.
 		if ( ! isset( $wp_settings['blockquote_background_color'] )
-			 && isset( $wp_settings['body_background_color'] )
+			&& isset( $wp_settings['body_background_color'] )
 		) {
 
 			// Get current octets.
@@ -447,8 +447,8 @@ class Apple_News {
 
 		// Clone and modify font size, if necessary.
 		if ( ! isset( $wp_settings['caption_size'] )
-			 && isset( $wp_settings['body_size'] )
-			 && is_numeric( $wp_settings['body_size'] )
+			&& isset( $wp_settings['body_size'] )
+			&& is_numeric( $wp_settings['body_size'] )
 		) {
 			$wp_settings['caption_size'] = $wp_settings['body_size'] - 2;
 		}
@@ -537,8 +537,8 @@ class Apple_News {
 		// Check for presence of any legacy header setting.
 		$wp_settings = get_option( self::$option_name );
 		if ( empty( $wp_settings['header_font'] )
-			 && empty( $wp_settings['header_color'] )
-			 && empty( $wp_settings['header_line_height'] )
+			&& empty( $wp_settings['header_color'] )
+			&& empty( $wp_settings['header_line_height'] )
 		) {
 			return;
 		}

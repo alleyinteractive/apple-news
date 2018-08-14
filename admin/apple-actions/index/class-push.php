@@ -440,9 +440,9 @@ class Push extends API_Action {
 		 */
 		$decoded = json_decode( $json );
 		if ( ! $decoded ) {
-			 throw new \Apple_Actions\Action_Exception( __( 'The Apple News JSON is invalid and cannot be published.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( __( 'The Apple News JSON is invalid and cannot be published.', 'apple-news' ) );
 		} else {
-			 return wp_json_encode( $decoded );
+			return wp_json_encode( $decoded );
 		}
 	}
 }

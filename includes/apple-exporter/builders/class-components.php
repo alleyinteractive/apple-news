@@ -81,9 +81,7 @@ class Components extends Builder {
 		$pullquote          = $this->content_setting( 'pullquote' );
 		$pullquote_position = $this->content_setting( 'pullquote_position' );
 		$valid_positions    = array( 'top', 'middle', 'bottom' );
-		if ( empty( $pullquote )
-			 || ! in_array( $pullquote_position, $valid_positions, true )
-		) {
+		if ( empty( $pullquote ) || ! in_array( $pullquote_position, $valid_positions, true ) ) {
 			return;
 		}
 
@@ -222,9 +220,7 @@ class Components extends Builder {
 
 			// Only operate on components that are anchor targets.
 			$component = $components[ $i ];
-			if ( $component->is_anchor_target()
-				 || Component::ANCHOR_NONE === $component->get_anchor_position()
-			) {
+			if ( $component->is_anchor_target() || Component::ANCHOR_NONE === $component->get_anchor_position() ) {
 				continue;
 			}
 
@@ -322,8 +318,8 @@ class Components extends Builder {
 		// Given $component, find out the opposite position.
 		$other_position = Component::ANCHOR_LEFT;
 		if ( ( Component::ANCHOR_AUTO === $component->get_anchor_position()
-			   && 'left' !== $theme->get_value( 'body_orientation' ) )
-			 || Component::ANCHOR_LEFT === $component->get_anchor_position()
+				&& 'left' !== $theme->get_value( 'body_orientation' ) )
+				|| Component::ANCHOR_LEFT === $component->get_anchor_position()
 		) {
 			$other_position = Component::ANCHOR_RIGHT;
 		}
@@ -439,7 +435,7 @@ class Components extends Builder {
 		// Determine anchored component size ratio. Defaults to 1 (square).
 		$ratio = 1;
 		if ( 'container' === $component['role']
-			 && ! empty( $component['components'][0]['URL'] )
+			&& ! empty( $component['components'][0]['URL'] )
 		) {
 
 			// Calculate base ratio.
@@ -571,8 +567,8 @@ class Components extends Builder {
 
 			// Handle anchors.
 			if ( ! empty( $prev['identifier'] )
-				 && ! empty( $current['anchor']['targetComponentIdentifier'] )
-				 && $prev['identifier']
+				&& ! empty( $current['anchor']['targetComponentIdentifier'] )
+				&& $prev['identifier']
 					=== $current['anchor']['targetComponentIdentifier']
 			) {
 				// Switch the position of the nodes so the anchor always comes first.
@@ -581,9 +577,9 @@ class Components extends Builder {
 				$prev          = $temp;
 				$anchor_buffer = $this->_get_anchor_buffer( $prev );
 			} elseif ( ! empty( $current['identifier'] )
-					   && ! empty( $prev['anchor']['targetComponentIdentifier'] )
-					   && $prev['anchor']['targetComponentIdentifier']
-						  === $current['identifier']
+						&& ! empty( $prev['anchor']['targetComponentIdentifier'] )
+						&& $prev['anchor']['targetComponentIdentifier']
+						=== $current['identifier']
 			) {
 				$anchor_buffer = $this->_get_anchor_buffer( $prev );
 			}
@@ -630,9 +626,7 @@ class Components extends Builder {
 		}
 
 		// Determine if there is a cover in the middle of content.
-		if ( null === $cover_index
-			 || count( $new_components ) <= $cover_index + 1
-		) {
+		if ( null === $cover_index || count( $new_components ) <= $cover_index + 1 ) {
 			return $new_components;
 		}
 
@@ -675,9 +669,7 @@ class Components extends Builder {
 
 		// Attempt to get the component order.
 		$meta_component_order = $theme->get_value( 'meta_component_order' );
-		if ( empty( $meta_component_order )
-			 || ! is_array( $meta_component_order )
-		) {
+		if ( empty( $meta_component_order ) || ! is_array( $meta_component_order ) ) {
 			return array();
 		}
 
