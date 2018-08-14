@@ -752,7 +752,7 @@ class Apple_News {
 
 			// Load the theme data from the JSON configuration file.
 			$filename = dirname( __DIR__ ) . '/assets/themes/' . $slug . '.json';
-			$options  = json_decode( file_get_contents( $filename ), true );
+			$options  = json_decode( file_get_contents( $filename ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 
 			// Negotiate screenshot URL.
 			$options['screenshot_url'] = plugins_url(
