@@ -1225,7 +1225,6 @@ class Theme {
 				return floor(
 					( $this->get_layout_columns() - $this->get_body_column_span() ) / 2
 				);
-				break;
 			default:
 				return 0;
 		}
