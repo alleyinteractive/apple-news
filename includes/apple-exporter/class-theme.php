@@ -449,7 +449,7 @@ class Theme {
 			return array();
 		}
 
-		return self::_sort_registry( $registry );
+		return self::sort_registry( $registry );
 	}
 
 	/**
@@ -531,7 +531,7 @@ class Theme {
 	 *
 	 * @return array The sorted registry array.
 	 */
-	private static function _sort_registry( $registry ) {
+	private static function sort_registry( $registry ) {
 
 		// Sort the regsitry.
 		sort( $registry );
@@ -1790,7 +1790,7 @@ class Theme {
 		$registry[] = $name;
 
 		// Sort the registry.
-		$registry = self::_sort_registry( $registry );
+		$registry = self::sort_registry( $registry );
 
 		// Update the registry.
 		update_option( self::INDEX_KEY, $registry, false );
@@ -2043,7 +2043,7 @@ class Theme {
 		unset( $registry[ $key ] );
 
 		// Sort the registry.
-		$registry = self::_sort_registry( $registry );
+		$registry = self::sort_registry( $registry );
 
 		// Update the registry.
 		update_option( self::INDEX_KEY, $registry, false );
