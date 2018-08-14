@@ -64,7 +64,7 @@ class Components extends Builder {
 		$components = array_merge( $this->_meta_components(), $components );
 
 		// Group body components to improve text flow at all orientations.
-		$components = $this->_group_body_components( $components );
+		$components = $this->group_body_components( $components );
 
 		return $components;
 	}
@@ -541,7 +541,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return array
 	 */
-	private function _group_body_components( $components ) {
+	private function group_body_components( $components ) {
 
 		// Initialize.
 		$new_components = array();
