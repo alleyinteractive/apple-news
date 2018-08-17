@@ -75,6 +75,10 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			return;
 		}
 
+		if ( empty( $_REQUEST['apple_news_nonce'] ) ) {
+			return;
+		}
+
 		// Verify the post types.
 		$post_types = $this->settings->get( 'post_types' );
 		if ( ! is_array( $post_types ) ) {
