@@ -47,7 +47,8 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 == Changelog ==
 
 = 1.4.2 =
-* Bugfix: Issues with making updates via the quick edit interface are now fixed, as the publish action bails out early if the nonce is not set, which occurs when the metabox does not load. Props to @danielbachhuber for the fix.
+* Bugfix: Issues with making updates via the quick edit interface and on unsupported post types are now fixed, as the publish action bails out early if the nonce is not set, which occurs when the metabox does not load. Props to @danielbachhuber and @srtfisher for the fixes.
+* Added 'apple_news_should_post_autopublish' filter to override automatic publish settings on a per-article basis. Props to @srtfisher for the update.
 
 = 1.4.1 =
 * Bugfix: Post types that were not registered with Publish to Apple News were failing the nonce check on publish/update because the metabox was not present. Refined the save_post hook to register only for post types with Publish to Apple News support to avoid this situation.
