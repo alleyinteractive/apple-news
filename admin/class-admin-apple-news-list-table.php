@@ -447,8 +447,8 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * @access protected
 	 */
 	protected function get_publish_status_filter() {
-		return ( ! empty( $_GET['apple_news_publish_status'] ) ) // input var ok.
-			? sanitize_text_field( wp_unslash( $_GET['apple_news_publish_status'] ) ) // input var ok.
+		return ( ! empty( $_GET['apple_news_publish_status'] ) ) // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+			? sanitize_text_field( wp_unslash( $_GET['apple_news_publish_status'] ) ) // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 			: '';
 	}
 
@@ -459,8 +459,8 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * @access protected
 	 */
 	protected function get_date_from_filter() {
-		return ( ! empty( $_GET['apple_news_date_from'] ) ) // input var ok.
-			? sanitize_text_field( wp_unslash( $_GET['apple_news_date_from'] ) ) // input var ok.
+		return ( ! empty( $_GET['apple_news_date_from'] ) ) // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+			? sanitize_text_field( wp_unslash( $_GET['apple_news_date_from'] ) ) // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 			: '';
 	}
 
@@ -471,8 +471,8 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	 * @access protected
 	 */
 	protected function get_date_to_filter() {
-		return ( ! empty( $_GET['apple_news_date_to'] ) ) // input var ok.
-			? sanitize_text_field( wp_unslash( $_GET['apple_news_date_to'] ) ) // input var ok.
+		return ( ! empty( $_GET['apple_news_date_to'] ) ) // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+			? sanitize_text_field( wp_unslash( $_GET['apple_news_date_to'] ) ) // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 			: '';
 	}
 

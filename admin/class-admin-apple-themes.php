@@ -269,8 +269,8 @@ class Admin_Apple_Themes extends Apple_News {
 		// Negotiate theme object.
 		$error = '';
 		$theme = new \Apple_Exporter\Theme();
-		if ( isset( $_GET['theme'] ) ) { // input var ok.
-			$theme_name = sanitize_text_field( wp_unslash( $_GET['theme'] ) ); // input var ok.
+		if ( isset( $_GET['theme'] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+			$theme_name = sanitize_text_field( wp_unslash( $_GET['theme'] ) ); // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 			$theme->set_name( $theme_name );
 			if ( false === $theme->load() ) {
 				$error = sprintf(
