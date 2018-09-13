@@ -48,7 +48,7 @@ class Tweet extends Component {
 			__( 'JSON', 'apple-news' ),
 			array(
 				'role' => 'tweet',
-				'URL' => '#url#',
+				'URL'  => '#url#',
 			)
 		);
 
@@ -57,7 +57,7 @@ class Tweet extends Component {
 			__( 'Layout', 'apple-news' ),
 			array(
 				'margin' => array(
-					'top' => 30,
+					'top'    => 30,
 					'bottom' => 30,
 				),
 			)

@@ -46,7 +46,7 @@ class Gallery extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => '#gallery_type#',
+				'role'  => '#gallery_type#',
 				'items' => '#items#',
 			)
 		);
@@ -57,7 +57,7 @@ class Gallery extends Component {
 			array(
 				'margin' => array(
 					'bottom' => 25,
-					'top' => 25,
+					'top'    => 25,
 				),
 			)
 		);
@@ -139,7 +139,7 @@ class Gallery extends Component {
 			'json',
 			array(
 				'#gallery_type#' => $theme->get_value( 'gallery_type' ),
-				'#items#' => $items,
+				'#items#'        => $items,
 			)
 		);
 

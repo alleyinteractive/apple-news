@@ -88,8 +88,8 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Try to get sections. The get_sections call sets the transient.
 		$admin_settings = new Admin_Apple_Settings();
-		$section_api = new Section( $admin_settings->fetch_settings() );
-		$sections = $section_api->get_sections();
+		$section_api    = new Section( $admin_settings->fetch_settings() );
+		$sections       = $section_api->get_sections();
 		if ( empty( $sections ) || ! is_array( $sections ) ) {
 			$sections = array();
 			Admin_Apple_News::show_error(
@@ -127,7 +127,7 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Convert sections returned from the API into the requested format.
-		$sections = array();
+		$sections     = array();
 		$sections_raw = self::get_sections();
 		foreach ( $sections_raw as $section ) {
 
@@ -163,8 +163,8 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Loop through the mappings to determine sections.
 		$post_sections = array();
-		$term_ids = wp_list_pluck( $terms, 'term_id' );
-		$mappings = get_option( self::TAXONOMY_MAPPING_KEY );
+		$term_ids      = wp_list_pluck( $terms, 'term_id' );
+		$mappings      = get_option( self::TAXONOMY_MAPPING_KEY );
 		foreach ( $mappings as $section_id => $section_term_ids ) {
 			foreach ( $section_term_ids as $section_term_id ) {
 				if ( in_array( $section_term_id, $term_ids, true ) ) {
@@ -209,8 +209,8 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Initialize class variables.
 		$this->page_name = $this->plugin_domain . '-sections';
-		$admin_settings = new Admin_Apple_Settings();
-		$this->settings = $admin_settings->fetch_settings();
+		$admin_settings  = new Admin_Apple_Settings();
+		$this->settings  = $admin_settings->fetch_settings();
 
 		// Set up admin action callbacks for form submissions.
 		$this->valid_actions = array(
@@ -273,11 +273,11 @@ class Admin_Apple_Sections extends Apple_News {
 		// Try to get terms matching the criteria.
 		$terms = get_terms(
 			array(
-				'fields' => 'names',
+				'fields'     => 'names',
 				'hide_empty' => false,
-				'number' => 10,
-				'search' => sanitize_text_field( wp_unslash( $_GET['term'] ) ), // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
-				'taxonomy' => $taxonomy->name,
+				'number'     => 10,
+				'search'     => sanitize_text_field( wp_unslash( $_GET['term'] ) ), // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+				'taxonomy'   => $taxonomy->name,
 			)
 		);
 
@@ -333,7 +333,7 @@ class Admin_Apple_Sections extends Apple_News {
 		}
 
 		// Try to get a list of sections.
-		$section_api = new Section( $this->settings );
+		$section_api  = new Section( $this->settings );
 		$sections_raw = $section_api->get_sections();
 		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
 			wp_die( esc_html__( 'Unable to fetch a list of sections.', 'apple-news' ) );
@@ -361,10 +361,10 @@ class Admin_Apple_Sections extends Apple_News {
 			}
 		}
 
-		$theme_mappings = get_option( self::THEME_MAPPING_KEY );
-		$theme_obj = new Admin_Apple_Themes();
+		$theme_mappings  = get_option( self::THEME_MAPPING_KEY );
+		$theme_obj       = new Admin_Apple_Themes();
 		$theme_admin_url = add_query_arg( 'page', $theme_obj->theme_page_name, admin_url( 'admin.php' ) );
-		$themes = \Apple_Exporter\Theme::get_registry();
+		$themes          = \Apple_Exporter\Theme::get_registry();
 
 		// Load the partial with the form.
 		include plugin_dir_path( __FILE__ ) . 'partials/page-sections.php';
@@ -437,17 +437,17 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Try to get sections.
 		$admin_settings = new Admin_Apple_Settings();
-		$section_api = new Section( $admin_settings->fetch_settings() );
-		$sections_raw = $section_api->get_sections();
+		$section_api    = new Section( $admin_settings->fetch_settings() );
+		$sections_raw   = $section_api->get_sections();
 		if ( empty( $sections_raw ) || ! is_array( $sections_raw ) ) {
 			return;
 		}
 
 		// Loop through sections and look for mappings in POST data.
 		$taxonomy_mappings = array();
-		$theme_mappings = array();
-		$taxonomy = self::get_mapping_taxonomy();
-		$section_ids = wp_list_pluck( $sections_raw, 'id' );
+		$theme_mappings    = array();
+		$taxonomy          = self::get_mapping_taxonomy();
+		$section_ids       = wp_list_pluck( $sections_raw, 'id' );
 		foreach ( $section_ids as $section_id ) {
 
 			// Determine if there is taxonomy data for this section.
@@ -465,7 +465,7 @@ class Admin_Apple_Sections extends Apple_News {
 					$term = get_term_by( 'name', $value, $taxonomy->name );
 					if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
 						$taxonomy_mappings[ $section_id ][] = $term->term_id;
-						$taxonomy_mappings[ $section_id ] = array_unique( $taxonomy_mappings[ $section_id ] );
+						$taxonomy_mappings[ $section_id ]   = array_unique( $taxonomy_mappings[ $section_id ] );
 					}
 				}
 			}

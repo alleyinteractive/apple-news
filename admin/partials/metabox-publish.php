@@ -17,7 +17,7 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 		?>
 	</div>
 	<?php return; ?>
-<?php endif; ?>
+<?php endif;  // phpcs:ignore Squiz.PHP.NonExecutableCode.Unreachable ?>
 <div id="apple-news-publish">
 	<?php wp_nonce_field( $publish_action, 'apple_news_nonce' ); ?>
 	<div id="apple-news-metabox-sections" class="apple-news-metabox-section">
@@ -93,20 +93,20 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 	</div>
 	<?php
 	if ( 'yes' !== $this->settings->get( 'api_autosync' )
-		 && current_user_can( apply_filters( 'apple_news_publish_capability', Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) )
-		 && 'publish' === $post->post_status
-		 && empty( $api_id )
-		 && empty( $deleted )
-		 && empty( $pending )
+		&& current_user_can( apply_filters( 'apple_news_publish_capability', Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) )
+		&& 'publish' === $post->post_status
+		&& empty( $api_id )
+		&& empty( $deleted )
+		&& empty( $pending )
 	) :
 		?>
 		<input type="hidden" id="apple-news-publish-action" name="apple_news_publish_action" value="">
 		<input type="button" id="apple-news-publish-submit" name="apple_news_publish_submit" value="<?php esc_attr_e( 'Publish to Apple News', 'apple-news' ); ?>" class="button-primary" />
 		<?php
 	elseif ( 'yes' === $this->settings->get( 'api_autosync' )
-		 && empty( $api_id )
-		 && empty( $deleted )
-		 && empty( $pending )
+		&& empty( $api_id )
+		&& empty( $deleted )
+		&& empty( $pending )
 	) :
 		?>
 		<p><?php esc_html_e( 'This post will be automatically sent to Apple News on publish.', 'apple-news' ); ?></p>
@@ -121,10 +121,10 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 	<?php if ( ! empty( $api_id ) ) : ?>
 		<?php
 		// Add data about the article if it exists.
-		$state = \Admin_Apple_News::get_post_status( $post->ID );
-		$share_url = get_post_meta( $post->ID, 'apple_news_api_share_url', true );
-		$created_at = get_post_meta( $post->ID, 'apple_news_api_created_at', true );
-		$created_at = empty( $created_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $created_at ) ), 'F j, h:i a' );
+		$state       = \Admin_Apple_News::get_post_status( $post->ID );
+		$share_url   = get_post_meta( $post->ID, 'apple_news_api_share_url', true );
+		$created_at  = get_post_meta( $post->ID, 'apple_news_api_created_at', true );
+		$created_at  = empty( $created_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $created_at ) ), 'F j, h:i a' );
 		$modified_at = get_post_meta( $post->ID, 'apple_news_api_modified_at', true );
 		$modified_at = empty( $modified_at ) ? __( 'None', 'apple-news' ) : get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $modified_at ) ), 'F j, h:i a' );
 		?>

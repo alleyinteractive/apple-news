@@ -30,17 +30,17 @@ class Cover extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => 'header',
-				'layout' => 'headerPhotoLayout',
+				'role'       => 'header',
+				'layout'     => 'headerPhotoLayout',
 				'components' => array(
 					array(
-						'role' => 'photo',
+						'role'   => 'photo',
 						'layout' => 'headerPhotoLayout',
-						'URL' => '#url#',
+						'URL'    => '#url#',
 					),
 				),
-				'behavior' => array(
-					'type' => 'parallax',
+				'behavior'   => array(
+					'type'   => 'parallax',
 					'factor' => 0.8,
 				),
 			)
@@ -51,8 +51,8 @@ class Cover extends Component {
 			__( 'Layout', 'apple-news' ),
 			array(
 				'ignoreDocumentMargin' => true,
-				'columnStart' => 0,
-				'columnSpan' => '#layout_columns#',
+				'columnStart'          => 0,
+				'columnSpan'           => '#layout_columns#',
 			)
 		);
 
@@ -61,10 +61,10 @@ class Cover extends Component {
 			__( 'Below Text Layout', 'apple-news' ),
 			array(
 				'ignoreDocumentMargin' => true,
-				'columnStart' => 0,
-				'columnSpan' => '#layout_columns#',
-				'margin' => array(
-					'top' => 30,
+				'columnStart'          => 0,
+				'columnSpan'           => '#layout_columns#',
+				'margin'               => array(
+					'top'    => 30,
 					'bottom' => 0,
 				),
 			)
@@ -80,7 +80,7 @@ class Cover extends Component {
 	protected function build( $url ) {
 
 		// If we can't get a valid URL, bail.
-		$url = $this->maybe_bundle_source( $url );
+		$url   = $this->maybe_bundle_source( $url );
 		$check = trim( $url );
 		if ( empty( $check ) ) {
 			return;

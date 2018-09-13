@@ -5,11 +5,11 @@
  * @package Apple_News
  */
 
-$cover_art = get_post_meta( $post->ID, 'apple_news_coverart', true );
+$cover_art    = get_post_meta( $post->ID, 'apple_news_coverart', true );
 $orientations = array(
 	'landscape' => __( 'Landscape (4:3)', 'apple-news' ),
-	'portrait' => __( 'Portrait (3:4)', 'apple-news' ),
-	'square' => __( 'Square (1:1)', 'apple-news' ),
+	'portrait'  => __( 'Portrait (3:4)', 'apple-news' ),
+	'square'    => __( 'Square (1:1)', 'apple-news' ),
 );
 ?>
 <p class="description">
@@ -46,10 +46,10 @@ $orientations = array(
 			<?php
 			if ( ! empty( $image_id ) ) {
 				echo wp_get_attachment_image( $image_id, 'medium' );
-				$add_hidden = 'hidden';
+				$add_hidden    = 'hidden';
 				$remove_hidden = '';
 			} else {
-				$add_hidden = '';
+				$add_hidden    = '';
 				$remove_hidden = 'hidden';
 			}
 			?>

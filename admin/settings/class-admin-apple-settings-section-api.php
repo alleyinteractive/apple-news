@@ -32,42 +32,42 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 
 		// Add the settings.
 		$this->settings = array(
-			'api_channel' => array(
-				'label'   => __( 'Channel ID', 'apple-news' ),
-				'type'    => 'string',
+			'api_channel'         => array(
+				'label' => __( 'Channel ID', 'apple-news' ),
+				'type'  => 'string',
 			),
-			'api_key' => array(
-				'label'   => __( 'API Key ID', 'apple-news' ),
-				'type'    => 'string',
+			'api_key'             => array(
+				'label' => __( 'API Key ID', 'apple-news' ),
+				'type'  => 'string',
 			),
-			'api_secret' => array(
-				'label'   => __( 'API Key Secret', 'apple-news' ),
-				'type'    => 'password',
+			'api_secret'          => array(
+				'label' => __( 'API Key Secret', 'apple-news' ),
+				'type'  => 'password',
 			),
-			'api_autosync' => array(
-				'label'   => __( 'Automatically publish to Apple News when published in WordPress', 'apple-news' ),
-				'type'    => array( 'yes', 'no' ),
+			'api_autosync'        => array(
+				'label' => __( 'Automatically publish to Apple News when published in WordPress', 'apple-news' ),
+				'type'  => array( 'yes', 'no' ),
 			),
 			'api_autosync_update' => array(
-				'label'   => __( 'Automatically update in Apple News when updated in WordPress', 'apple-news' ),
-				'type'    => array( 'yes', 'no' ),
+				'label' => __( 'Automatically update in Apple News when updated in WordPress', 'apple-news' ),
+				'type'  => array( 'yes', 'no' ),
 			),
 			'api_autosync_delete' => array(
-				'label'   => __( 'Automatically delete from Apple News when deleted in WordPress', 'apple-news' ),
-				'type'    => array( 'yes', 'no' ),
+				'label' => __( 'Automatically delete from Apple News when deleted in WordPress', 'apple-news' ),
+				'type'  => array( 'yes', 'no' ),
 			),
-			'api_async' => array(
-				'label'             => __( 'Asynchronously publish to Apple News', 'apple-news' ),
-				'type'              => array( 'yes', 'no' ),
-				'description'   => $this->get_async_description(),
+			'api_async'           => array(
+				'label'       => __( 'Asynchronously publish to Apple News', 'apple-news' ),
+				'type'        => array( 'yes', 'no' ),
+				'description' => $this->get_async_description(),
 			),
 		);
 
 		// Add the groups.
 		$this->groups = array(
 			'apple_news' => array(
-				'label'       => __( 'Apple News API', 'apple-news' ),
-				'settings'    => array( 'api_channel', 'api_key', 'api_secret', 'api_autosync', 'api_autosync_update', 'api_autosync_delete', 'api_async' ),
+				'label'    => __( 'Apple News API', 'apple-news' ),
+				'settings' => array( 'api_channel', 'api_key', 'api_secret', 'api_autosync', 'api_autosync_update', 'api_autosync_delete', 'api_async' ),
 			),
 		);
 

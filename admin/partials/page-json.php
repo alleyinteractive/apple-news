@@ -96,10 +96,10 @@
 			<?php if ( ! empty( $specs ) ) : ?>
 				<?php
 				foreach ( $specs as $spec ) :
-					$field_name = 'apple_news_json_' . $spec->key_from_name( $spec->name );
+					$field_name   = 'apple_news_json_' . $spec->key_from_name( $spec->name );
 					$json_display = $spec->format_json( $spec->get_spec( $selected_theme ) );
-					$rows = substr_count( $json_display, "\n" ) + 1;
-					$editor_name = 'editor_' . str_replace( '-', '_', $field_name );
+					$rows         = substr_count( $json_display, "\n" ) + 1;
+					$editor_name  = 'editor_' . str_replace( '-', '_', $field_name );
 					$editor_style = sprintf(
 						'width: %spx; height: %spx',
 						500,

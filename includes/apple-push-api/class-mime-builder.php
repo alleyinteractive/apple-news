@@ -140,7 +140,7 @@ class MIME_Builder {
 
 		if ( is_wp_error( $request ) ) {
 			// Try file_get_contents instead. This could be a local path.
-			$contents = file_get_contents( $filepath );
+			$contents = file_get_contents( $filepath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		} else {
 			$contents = wp_remote_retrieve_body( $request );
 		}
@@ -185,7 +185,7 @@ class MIME_Builder {
 	 * @access public
 	 */
 	public function close() {
-		$close = '--' . $this->boundary . '--';
+		$close                = '--' . $this->boundary . '--';
 		$this->debug_content .= $close;
 		return $close;
 	}

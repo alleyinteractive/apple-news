@@ -51,7 +51,7 @@ class Body extends Component {
 		}
 
 		// Negotiate open and close values.
-		$open = '<' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$open  = '<' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		$close = '</' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 		if ( 'ol' === $node->nodeName || 'ul' === $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			$open .= '<li>';
@@ -76,8 +76,8 @@ class Body extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => 'body',
-				'text' => '#text#',
+				'role'   => 'body',
+				'text'   => '#text#',
 				'format' => '#format#',
 			)
 		);
@@ -87,9 +87,9 @@ class Body extends Component {
 			__( 'Layout', 'apple-news' ),
 			array(
 				'columnStart' => '#body_offset#',
-				'columnSpan' => '#body_column_span#',
-				'margin' => array(
-					'top' => 12,
+				'columnSpan'  => '#body_column_span#',
+				'margin'      => array(
+					'top'    => 12,
 					'bottom' => 12,
 				),
 			)
@@ -100,9 +100,9 @@ class Body extends Component {
 			__( 'Layout for Last Component', 'apple-news' ),
 			array(
 				'columnStart' => '#body_offset#',
-				'columnSpan' => '#body_column_span#',
-				'margin' => array(
-					'top' => 12,
+				'columnSpan'  => '#body_column_span#',
+				'margin'      => array(
+					'top'    => 12,
 					'bottom' => 30,
 				),
 			)
@@ -121,13 +121,13 @@ class Body extends Component {
 				$this->get_default_style_spec(),
 				array(
 					'dropCapStyle' => array(
-						'numberOfLines' => '#dropcap_number_of_lines#',
-						'numberOfCharacters' => '#dropcap_number_of_characters#',
-						'padding' => '#dropcap_padding#',
-						'fontName' => '#dropcap_font#',
-						'textColor' => '#dropcap_color#',
+						'numberOfLines'       => '#dropcap_number_of_lines#',
+						'numberOfCharacters'  => '#dropcap_number_of_characters#',
+						'padding'             => '#dropcap_padding#',
+						'fontName'            => '#dropcap_font#',
+						'textColor'           => '#dropcap_color#',
 						'numberOfRaisedLines' => '#dropcap_number_of_raised_lines#',
-						'backgroundColor' => '#dropcap_background_color#',
+						'backgroundColor'     => '#dropcap_background_color#',
 					),
 				)
 			)
@@ -162,7 +162,7 @@ class Body extends Component {
 
 			return array(
 				array(
-					'name' => $tag,
+					'name'  => $tag,
 					'value' => $html,
 				),
 			);
@@ -170,24 +170,24 @@ class Body extends Component {
 
 		// Split the HTML by the found element into the left and right parts.
 		list( $whole, $tag_name ) = $matches;
-		list( $left, $right ) = explode( $whole, $html, 3 );
+		list( $left, $right )     = explode( $whole, $html, 3 );
 
 		// Additional processing for list items.
 		if ( 'ol' === $tag || 'ul' === $tag ) {
-			$left = preg_replace( '/(<br\s*\/?>)+$/', '', $left );
+			$left  = preg_replace( '/(<br\s*\/?>)+$/', '', $left );
 			$right = preg_replace( '/^(<br\s*\/?>)+/', '', $right );
-			$left = preg_replace( '/\s*<li>$/is', '', trim( $left ) );
+			$left  = preg_replace( '/\s*<li>$/is', '', trim( $left ) );
 			$right = preg_replace( '/^<\/li>\s*/is', '', trim( $right ) );
 		}
 
 		// Augment left and right parts with correct opening and closing tags.
-		$left = force_balance_tags( $left . $close );
+		$left  = force_balance_tags( $left . $close );
 		$right = force_balance_tags( $open . $right );
 
 		// Start building the return value.
 		$elements = array(
 			array(
-				'name' => $tag_name,
+				'name'  => $tag_name,
 				'value' => $whole,
 			),
 		);
@@ -197,7 +197,7 @@ class Body extends Component {
 			$elements = array_merge(
 				array(
 					array(
-						'name' => $tag,
+						'name'  => $tag,
 						'value' => $left,
 					),
 				),
@@ -220,7 +220,7 @@ class Body extends Component {
 	protected function build( $html ) {
 
 		// If there is no text for this element, bail.
-		$html = $this->parser->parse( $html );
+		$html  = $this->parser->parse( $html );
 		$check = trim( $html );
 		if ( empty( $check ) ) {
 			return;
@@ -230,7 +230,7 @@ class Body extends Component {
 		$this->register_json(
 			'json',
 			array(
-				'#text#' => $html,
+				'#text#'   => $html,
 				'#format#' => $this->parser->format,
 			)
 		);
@@ -276,7 +276,7 @@ class Body extends Component {
 			'body-layout',
 			'body-layout',
 			array(
-				'#body_offset#' => $theme->get_body_offset(),
+				'#body_offset#'      => $theme->get_body_offset(),
 				'#body_column_span#' => $theme->get_body_column_span(),
 			),
 			'layout'
@@ -287,7 +287,7 @@ class Body extends Component {
 			'body-layout-last',
 			'body-layout-last',
 			array(
-				'#body_offset#' => $theme->get_body_offset(),
+				'#body_offset#'      => $theme->get_body_offset(),
 				'#body_column_span#' => $theme->get_body_column_span(),
 			)
 		);
@@ -301,17 +301,17 @@ class Body extends Component {
 	 */
 	private function get_default_style_spec() {
 		return array(
-			'textAlignment' => 'left',
-			'fontName' => '#body_font#',
-			'fontSize' => '#body_size#',
-			'tracking' => '#body_tracking#',
-			'lineHeight' => '#body_line_height#',
-			'textColor' => '#body_color#',
-			'linkStyle' => array(
+			'textAlignment'          => 'left',
+			'fontName'               => '#body_font#',
+			'fontSize'               => '#body_size#',
+			'tracking'               => '#body_tracking#',
+			'lineHeight'             => '#body_line_height#',
+			'textColor'              => '#body_color#',
+			'linkStyle'              => array(
 				'textColor' => '#body_link_color#',
 			),
 			'paragraphSpacingBefore' => 18,
-			'paragraphSpacingAfter' => 18,
+			'paragraphSpacingAfter'  => 18,
 		);
 	}
 
@@ -327,12 +327,12 @@ class Body extends Component {
 		$theme = \Apple_Exporter\Theme::get_used();
 
 		return array(
-			'#body_font#' => $theme->get_value( 'body_font' ),
-			'#body_size#' => intval( $theme->get_value( 'body_size' ) ),
-			'#body_tracking#' => intval( $theme->get_value( 'body_tracking' ) ) / 100,
+			'#body_font#'        => $theme->get_value( 'body_font' ),
+			'#body_size#'        => intval( $theme->get_value( 'body_size' ) ),
+			'#body_tracking#'    => intval( $theme->get_value( 'body_tracking' ) ) / 100,
 			'#body_line_height#' => intval( $theme->get_value( 'body_line_height' ) ),
-			'#body_color#' => $theme->get_value( 'body_color' ),
-			'#body_link_color#' => $theme->get_value( 'body_link_color' ),
+			'#body_color#'       => $theme->get_value( 'body_color' ),
+			'#body_link_color#'  => $theme->get_value( 'body_link_color' ),
 		);
 	}
 
@@ -370,12 +370,12 @@ class Body extends Component {
 
 		// Start building the custom dropcap body style.
 		$dropcap_style = array(
-			'#dropcap_font#' => $theme->get_value( 'dropcap_font' ),
-			'#dropcap_number_of_characters#' => absint( $theme->get_value( 'dropcap_number_of_characters' ) ),
-			'#dropcap_number_of_lines#' => $number_of_lines,
+			'#dropcap_font#'                   => $theme->get_value( 'dropcap_font' ),
+			'#dropcap_number_of_characters#'   => absint( $theme->get_value( 'dropcap_number_of_characters' ) ),
+			'#dropcap_number_of_lines#'        => $number_of_lines,
 			'#dropcap_number_of_raised_lines#' => absint( $theme->get_value( 'dropcap_number_of_raised_lines' ) ),
-			'#dropcap_padding#' => absint( $theme->get_value( 'dropcap_padding' ) ),
-			'#dropcap_color#' => $theme->get_value( 'dropcap_color' ),
+			'#dropcap_padding#'                => absint( $theme->get_value( 'dropcap_padding' ) ),
+			'#dropcap_color#'                  => $theme->get_value( 'dropcap_color' ),
 		);
 
 		// Add the background color, if defined.

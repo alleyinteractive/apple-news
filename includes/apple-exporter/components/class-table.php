@@ -50,10 +50,10 @@ class Table extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => 'htmltable',
-				'html' => '#html#',
+				'role'   => 'htmltable',
+				'html'   => '#html#',
 				'layout' => 'table-layout',
-				'style' => 'default-table',
+				'style'  => 'default-table',
 			)
 		);
 
@@ -73,7 +73,7 @@ class Table extends Component {
 			'default-table',
 			__( 'Table Style', 'apple-news' ),
 			array(
-				'border' => array(
+				'border'     => array(
 					'all' => array(
 						'color' => '#table_border_color#',
 						'style' => '#table_border_style#',
@@ -81,20 +81,20 @@ class Table extends Component {
 					),
 				),
 				'tableStyle' => array(
-					'cells' => array(
-						'backgroundColor' => '#table_body_background_color#',
+					'cells'       => array(
+						'backgroundColor'     => '#table_body_background_color#',
 						'horizontalAlignment' => '#table_body_horizontal_alignment#',
-						'padding' => '#table_body_padding#',
-						'textStyle' => array(
-							'fontName' => '#table_body_font#',
-							'fontSize' => '#table_body_size#',
+						'padding'             => '#table_body_padding#',
+						'textStyle'           => array(
+							'fontName'   => '#table_body_font#',
+							'fontSize'   => '#table_body_size#',
 							'lineHeight' => '#table_body_line_height#',
-							'textColor' => '#table_body_color#',
-							'tracking' => '#table_body_tracking#',
+							'textColor'  => '#table_body_color#',
+							'tracking'   => '#table_body_tracking#',
 						),
-						'verticalAlignment' => '#table_body_vertical_alignment#',
+						'verticalAlignment'   => '#table_body_vertical_alignment#',
 					),
-					'columns' => array(
+					'columns'     => array(
 						'divider' => array(
 							'color' => '#table_border_color#',
 							'style' => '#table_border_style#',
@@ -102,26 +102,26 @@ class Table extends Component {
 						),
 					),
 					'headerCells' => array(
-						'backgroundColor' => '#table_header_background_color#',
+						'backgroundColor'     => '#table_header_background_color#',
 						'horizontalAlignment' => '#table_header_horizontal_alignment#',
-						'padding' => '#table_header_padding#',
-						'textStyle' => array(
-							'fontName' => '#table_header_font#',
-							'fontSize' => '#table_header_size#',
+						'padding'             => '#table_header_padding#',
+						'textStyle'           => array(
+							'fontName'   => '#table_header_font#',
+							'fontSize'   => '#table_header_size#',
 							'lineHeight' => '#table_header_line_height#',
-							'textColor' => '#table_header_color#',
-							'tracking' => '#table_header_tracking#',
+							'textColor'  => '#table_header_color#',
+							'tracking'   => '#table_header_tracking#',
 						),
-						'verticalAlignment' => '#table_header_vertical_alignment#',
+						'verticalAlignment'   => '#table_header_vertical_alignment#',
 					),
-					'headerRows' => array(
+					'headerRows'  => array(
 						'divider' => array(
 							'color' => '#table_border_color#',
 							'style' => '#table_border_style#',
 							'width' => '#table_border_width#',
 						),
 					),
-					'rows' => array(
+					'rows'        => array(
 						'divider' => array(
 							'color' => '#table_border_color#',
 							'style' => '#table_border_style#',

@@ -169,7 +169,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		// Build the base URL.
 		$base_url = add_query_arg(
 			array(
-				'page' => $current_screen->parent_base,
+				'page'    => $current_screen->parent_base,
 				'post_id' => $item->ID,
 			),
 			get_admin_url( null, 'admin.php' )
@@ -246,11 +246,11 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	public function get_columns() {
 		return apply_filters(
 			'apple_news_export_list_columns', array(
-				'cb'                    => '<input type="checkbox">',
-				'title'             => __( 'Title', 'apple-news' ),
-				'updated_at'    => __( 'Last updated at', 'apple-news' ),
-				'status'            => __( 'Apple News Status', 'apple-news' ),
-				'sync'              => __( 'Sync Status', 'apple-news' ),
+				'cb'         => '<input type="checkbox">',
+				'title'      => __( 'Title', 'apple-news' ),
+				'updated_at' => __( 'Last updated at', 'apple-news' ),
+				'status'     => __( 'Apple News Status', 'apple-news' ),
+				'sync'       => __( 'Sync Status', 'apple-news' ),
 			)
 		);
 	}
@@ -302,14 +302,14 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		 * Set column headers. It expects an array of columns, and as second
 		 * argument an array of hidden columns, which in this case is empty.
 		 */
-		$columns = $this->get_columns();
+		$columns               = $this->get_columns();
 		$this->_column_headers = array( $columns, array(), array() );
 
 		// Build the default args for the query.
 		$current_page = $this->get_pagenum();
-		$args = array(
-			'post_type'     => $this->settings->get( 'post_types' ),
-			'post_status'   => 'publish',
+		$args         = array(
+			'post_type'      => $this->settings->get( 'post_types' ),
+			'post_status'    => 'publish',
 			'posts_per_page' => $this->per_page,
 			'offset'         => ( $current_page - 1 ) * $this->per_page,
 			'orderby'        => 'ID',
@@ -323,9 +323,9 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				case 'published':
 					$args['meta_query'] = array(
 						array(
-							'key' => 'apple_news_api_id',
+							'key'     => 'apple_news_api_id',
 							'compare' => '!=',
-							'value' => '',
+							'value'   => '',
 						),
 					);
 					break;
@@ -335,17 +335,17 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 						array(
 							'relation' => 'OR',
 							array(
-								'key' => 'apple_news_api_id',
+								'key'     => 'apple_news_api_id',
 								'compare' => 'NOT EXISTS',
 							),
 							array(
-								'key' => 'apple_news_api_id',
+								'key'     => 'apple_news_api_id',
 								'compare' => '=',
-								'value' => '',
+								'value'   => '',
 							),
 						),
 						array(
-							'key' => 'apple_news_api_deleted',
+							'key'     => 'apple_news_api_deleted',
 							'compare' => 'NOT EXISTS',
 						),
 					);
@@ -353,7 +353,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				case 'deleted':
 					$args['meta_query'] = array(
 						array(
-							'key' => 'apple_news_api_deleted',
+							'key'     => 'apple_news_api_deleted',
 							'compare' => 'EXISTS',
 						),
 					);
@@ -361,7 +361,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				case 'pending':
 					$args['meta_query'] = array(
 						array(
-							'key' => 'apple_news_api_pending',
+							'key'     => 'apple_news_api_pending',
 							'compare' => 'EXISTS',
 						),
 					);
@@ -371,7 +371,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 
 		// Add the date filters if set.
 		$date_from = $this->get_date_from_filter();
-		$date_to = $this->get_date_to_filter();
+		$date_to   = $this->get_date_to_filter();
 		if ( ! empty( $date_from ) || ! empty( $date_to ) ) {
 			$args['date_query'] = array(
 				array(
@@ -497,11 +497,11 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		// Add available statuses.
 		$publish_statuses = apply_filters(
 			'apple_news_publish_statuses', array(
-				'' => __( 'Show All Statuses', 'apple-news' ),
-				'published' => __( 'Published', 'apple-news' ),
+				''              => __( 'Show All Statuses', 'apple-news' ),
+				'published'     => __( 'Published', 'apple-news' ),
 				'not_published' => __( 'Not Published', 'apple-news' ),
-				'pending' => __( 'Pending', 'apple-news' ),
-				'deleted' => __( 'Deleted', 'apple-news' ),
+				'pending'       => __( 'Pending', 'apple-news' ),
+				'deleted'       => __( 'Deleted', 'apple-news' ),
 			)
 		);
 

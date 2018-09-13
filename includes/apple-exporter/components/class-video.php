@@ -47,8 +47,8 @@ class Video extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => 'video',
-				'URL' => '#url#',
+				'role'     => 'video',
+				'URL'      => '#url#',
 				'stillURL' => '#still_url#',
 			)
 		);

@@ -55,6 +55,9 @@ class Export extends Action {
 		parent::__construct( $settings );
 		$this->set_theme( $sections );
 		$this->id = $id;
+
+		// Assign instance of an active Jetpack tiled gallery installation.
+		$jetpack_tiled_gallery = Jetpack_Tiled_Gallery::instance();
 	}
 
 	/**
@@ -180,7 +183,7 @@ class Export extends Action {
 			 * This is because some bylines could contain hashtags!
 			 */
 			$temp_byline_placeholder = 'AUTHOR' . time();
-			$byline = str_replace( '#author#', $temp_byline_placeholder, $byline_format );
+			$byline                  = str_replace( '#author#', $temp_byline_placeholder, $byline_format );
 
 			// Attempt to parse the date format from the remaining string.
 			$matches = array();

@@ -167,27 +167,27 @@ abstract class Component {
 	 * @access public
 	 */
 	public $allowed_html = array(
-		'p' => array(),
-		'strong' => array(),
-		'b' => array(),
-		'em' => array(),
-		'i' => array(),
-		'a' => array(
+		'p'          => array(),
+		'strong'     => array(),
+		'b'          => array(),
+		'em'         => array(),
+		'i'          => array(),
+		'a'          => array(
 			'href' => array(),
 		),
-		'ul' => array(),
-		'ol' => array(),
-		'li' => array(),
-		'br' => array(),
-		'sub' => array(),
-		'sup' => array(),
-		'del' => array(),
-		's' => array(),
-		'pre' => array(),
-		'code' => array(),
-		'samp' => array(),
-		'footer' => array(),
-		'aside' => array(),
+		'ul'         => array(),
+		'ol'         => array(),
+		'li'         => array(),
+		'br'         => array(),
+		'sub'        => array(),
+		'sup'        => array(),
+		'del'        => array(),
+		's'          => array(),
+		'pre'        => array(),
+		'code'       => array(),
+		'samp'       => array(),
+		'footer'     => array(),
+		'aside'      => array(),
 		'blockquote' => array(),
 	);
 
@@ -528,7 +528,7 @@ abstract class Component {
 	protected function register_json( $spec_name, $values = array() ) {
 		$component_spec = $this->get_spec( $spec_name );
 		if ( ! empty( $component_spec ) ) {
-			$post_id = ( ! empty( $this->workspace->content_id ) )
+			$post_id    = ( ! empty( $this->workspace->content_id ) )
 				? $this->workspace->content_id
 				: 0;
 			$this->json = $component_spec->substitute_values( $values, $post_id );
@@ -551,7 +551,7 @@ abstract class Component {
 			$post_id = ( ! empty( $this->workspace->content_id ) )
 				? $this->workspace->content_id
 				: 0;
-			$json = $component_spec->substitute_values( $values, $post_id );
+			$json    = $component_spec->substitute_values( $values, $post_id );
 			$this->styles->register_style( $name, $json );
 			$this->set_json( $property, $name );
 		}
@@ -574,7 +574,7 @@ abstract class Component {
 			$post_id = ( ! empty( $this->workspace->content_id ) )
 				? $this->workspace->content_id
 				: 0;
-			$json = $component_spec->substitute_values( $values, $post_id );
+			$json    = $component_spec->substitute_values( $values, $post_id );
 			$this->component_styles->register_style( $name, $json );
 			$this->set_json( $property, $name );
 		}
@@ -596,7 +596,7 @@ abstract class Component {
 			$post_id = ( ! empty( $this->workspace->content_id ) )
 				? $this->workspace->content_id
 				: 0;
-			$json = $component_spec->substitute_values( $values, $post_id );
+			$json    = $component_spec->substitute_values( $values, $post_id );
 			$this->layouts->register_layout( $name, $json );
 			$this->set_json( $property, $name );
 		}
@@ -626,7 +626,7 @@ abstract class Component {
 		// If the body is centered, don't span the full width, but the same width of the body.
 		if ( 'center' === $theme->get_value( 'body_orientation' ) ) {
 			$col_start = floor( ( $theme->get_layout_columns() - $theme->get_body_column_span() ) / 2 );
-			$col_span = $theme->get_body_column_span();
+			$col_span  = $theme->get_body_column_span();
 		}
 
 		/**
@@ -718,8 +718,8 @@ abstract class Component {
 	 * @return string
 	 */
 	public function get_component_name() {
-		$class_name = get_class( $this );
-		$class_name_path = explode( '\\', $class_name );
+		$class_name              = get_class( $this );
+		$class_name_path         = explode( '\\', $class_name );
 		$class_name_no_namespace = end( $class_name_path );
 		return strtolower( $class_name_no_namespace );
 	}
