@@ -32,6 +32,9 @@ class Exporter_Content_Test extends WP_UnitTestCase {
 		$this->assertEquals( 'someurl.com', $content->cover() );
 	}
 
+	/**
+	 * Ensure we decode the HTML entities in URLs extracted from HTML attributes.[type]
+	 */
 	public function test_format_src_url() {
 		$this->assertEquals(
 			'https://example.com/some.mp3?one=two&query=arg',
