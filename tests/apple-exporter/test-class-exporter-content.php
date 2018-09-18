@@ -33,11 +33,9 @@ class Exporter_Content_Test extends WP_UnitTestCase {
 	}
 
 	public function test_format_src_url() {
-		$content = new \Apple_Exporter\Exporter_Content( 13, 'Title', '<p>Example content</p>' );
-
 		$this->assertEquals(
 			'https://example.com/some.mp3?one=two&query=arg',
-			$content::format_src_url( 'https://example.com/some.mp3?one=two&amp;query=arg' )
+			\Apple_Exporter\Exporter_Content::format_src_url( 'https://example.com/some.mp3?one=two&amp;query=arg' )
 		);
 	}
 
