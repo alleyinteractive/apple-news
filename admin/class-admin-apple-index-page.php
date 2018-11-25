@@ -145,7 +145,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 			case self::namespace_action( 'push' ): // phpcs:ignore PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
 				if ( ! $id ) {
 					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
-					if ( isset( $_GET['article'] ) ) { // input var ok.
+					if ( isset( $_GET['article'] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 						$ids  = is_array( $_GET['article'] ) ? array_map( 'absint', $_GET['article'] ) : absint( $_GET['article'] ); //  phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 						$url .= '&ids=' . implode( '.', $ids );
 					}
@@ -233,7 +233,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 
 		// Add the other params.
 		foreach ( $keys as $key ) {
-			if ( ! empty( $_GET[ $key ] ) ) { // input var ok.
+			if ( ! empty( $_GET[ $key ] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 				$params[ $key ] = rawurlencode( sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) ); //  phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 			}
 		}
