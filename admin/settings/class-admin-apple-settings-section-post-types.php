@@ -59,6 +59,7 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 				'type'      => $post_type_options,
 				'multiple'  => true,
 				'sanitize'  => array( $this, 'sanitize_array' ),
+				'size'      => 10,
 			);
 		}
 

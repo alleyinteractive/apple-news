@@ -106,6 +106,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			'name' => array(),
 			'multiple' => array(),
 			'id' => array(),
+			'size' => array(),
 		),
 		'option' => array(
 			'value' => array(),
@@ -268,9 +269,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 
 			// Use select2 only when there is a considerable amount of options available.
 			if ( count( $type ) > 10 ) {
-				$field = '<select class="select2 standard" id="%s" name="%s' . $multiple_name . '" ' . $multiple_attr . '>';
+				$field = '<select class="select2 standard" id="%s" name="%s' . $multiple_name . '" ' . $multiple_attr . ' size="%s">';
 			} else {
-				$field = '<select id="%s" name="%s' . $multiple_name . '" ' . $multiple_attr . '>';
+				$field = '<select id="%s" name="%s' . $multiple_name . '" ' . $multiple_attr . ' size="%s">';
 			}
 
 			foreach ( $type as $key => $option ) {
@@ -306,7 +307,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			return sprintf(
 				$field,
 				esc_attr( $name ),
-				esc_attr( $name )
+				esc_attr( $name ),
+				intval( $size )
 			);
 		} elseif ( 'hidden' === $type ) {
 			return sprintf(
