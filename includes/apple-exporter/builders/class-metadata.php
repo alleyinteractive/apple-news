@@ -50,11 +50,11 @@ class Metadata extends Builder {
 		 */
 		$post = get_post( $this->content_id() );
 		if ( ! empty( $post ) ) {
-			$post_date = date( 'c', strtotime( get_gmt_from_date( $post->post_date ) ) );
+			$post_date     = date( 'c', strtotime( get_gmt_from_date( $post->post_date ) ) );
 			$post_modified = date( 'c', strtotime( get_gmt_from_date( $post->post_modified ) ) );
 
-			$meta['dateCreated'] = $post_date;
-			$meta['dateModified'] = $post_modified;
+			$meta['dateCreated']   = $post_date;
+			$meta['dateModified']  = $post_modified;
 			$meta['datePublished'] = $post_date;
 		}
 
@@ -66,11 +66,11 @@ class Metadata extends Builder {
 
 		// Add generator information.
 		$meta['generatorIdentifier'] = sanitize_title_with_dashes( $plugin_data['Name'] );
-		$meta['generatorName'] = $plugin_data['Name'];
-		$meta['generatorVersion'] = $plugin_data['Version'];
+		$meta['generatorName']       = $plugin_data['Name'];
+		$meta['generatorVersion']    = $plugin_data['Version'];
 
 		// Add cover art.
-		$this->_add_cover_art( $meta );
+		$this->add_cover_art( $meta );
 
 		// Extract all video elements that include a poster element.
 		if ( preg_match_all( '/<video[^>]+poster="([^"]+)".*?>(.+?)<\/video>/s', $this->content_text(), $matches ) ) {
@@ -88,7 +88,7 @@ class Metadata extends Builder {
 						$meta['thumbnailURL'] = $this->maybe_bundle_source(
 							$matches[1][ $i ]
 						);
-						$meta['videoURL'] = esc_url_raw( $url );
+						$meta['videoURL']     = esc_url_raw( $url );
 
 						break;
 					}
@@ -106,7 +106,7 @@ class Metadata extends Builder {
 	 *
 	 * @access private
 	 */
-	private function _add_cover_art( &$meta ) {
+	private function add_cover_art( &$meta ) {
 
 		// Try to get cover art meta.
 		$ca_meta = get_post_meta( $this->content_id(), 'apple_news_coverart', true );
@@ -142,8 +142,8 @@ class Metadata extends Builder {
 
 			// Try to get information about the specified image.
 			$image_id = $ca_meta[ $key ];
-			$image = wp_get_attachment_metadata( $image_id );
-			$alt = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
+			$image    = wp_get_attachment_metadata( $image_id );
+			$alt      = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
 			if ( empty( $image['sizes'] ) ) {
 				continue;
 			}
@@ -174,8 +174,8 @@ class Metadata extends Builder {
 			// Add this crop to the coverArt array.
 			$meta['coverArt'][] = array(
 				'accessibilityCaption' => $alt,
-				'type' => 'image',
-				'URL' => $url,
+				'type'                 => 'image',
+				'URL'                  => $url,
 			);
 		}
 	}

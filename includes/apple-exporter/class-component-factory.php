@@ -195,7 +195,7 @@ class Component_Factory {
 			}
 
 			// We matched a single node.
-			$html = $node->ownerDocument->saveXML( $matched_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			$html     = $node->ownerDocument->saveXML( $matched_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 			$result[] = self::get_component( $shortname, $html );
 			return $result;
 		}

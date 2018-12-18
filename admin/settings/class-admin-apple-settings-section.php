@@ -102,55 +102,55 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 */
 	public static $allowed_html = array(
 		'select' => array(
-			'class' => array(),
-			'name' => array(),
+			'class'    => array(),
+			'name'     => array(),
 			'multiple' => array(),
-			'id' => array(),
-			'size' => array(),
+			'id'       => array(),
+			'size'     => array(),
 		),
 		'option' => array(
-			'value' => array(),
+			'value'    => array(),
 			'selected' => array(),
 		),
-		'input' => array(
-			'class' => array(),
-			'name' => array(),
-			'value' => array(),
+		'input'  => array(
+			'class'       => array(),
+			'name'        => array(),
+			'value'       => array(),
 			'placeholder' => array(),
-			'step' => array(),
-			'type' => array(),
-			'required' => array(),
-			'size' => array(),
-			'id' => array(),
+			'step'        => array(),
+			'type'        => array(),
+			'required'    => array(),
+			'size'        => array(),
+			'id'          => array(),
 		),
-		'br' => array(),
-		'b' => array(),
+		'br'     => array(),
+		'b'      => array(),
 		'strong' => array(),
-		'i' => array(),
-		'em' => array(),
-		'a' => array(
-			'href' => array(),
+		'i'      => array(),
+		'em'     => array(),
+		'a'      => array(
+			'href'   => array(),
 			'target' => array(),
 		),
-		'div' => array(
+		'div'    => array(
 			'class' => array(),
 		),
-		'h1' => array(
+		'h1'     => array(
 			'class' => array(),
 		),
-		'h2' => array(
+		'h2'     => array(
 			'class' => array(),
 		),
-		'h3' => array(
+		'h3'     => array(
 			'class' => array(),
 		),
-		'h4' => array(
+		'h4'     => array(
 			'class' => array(),
 		),
-		'h5' => array(
+		'h5'     => array(
 			'class' => array(),
 		),
-		'h6' => array(
+		'h6'     => array(
 			'class' => array(),
 		),
 	);
@@ -165,15 +165,15 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	 * @access public
 	 */
 	public function __construct( $page, $hidden = false, $save_action = 'apple_news_options', $section_option_name = null ) {
-		$this->page = $page;
+		$this->page                = $page;
 		self::$section_option_name = ( ! empty( $section_option_name ) ) ? $section_option_name : self::$option_name;
-		$this->save_action = $save_action;
-		$base_settings = new \Apple_Exporter\Settings();
-		self::$base_settings = $base_settings->all();
-		self::$loaded_settings = get_option( self::$section_option_name );
-		$this->settings = apply_filters( 'apple_news_section_settings', $this->settings, $page );
-		$this->groups = apply_filters( 'apple_news_section_groups', $this->groups, $page );
-		$this->hidden = $hidden;
+		$this->save_action         = $save_action;
+		$base_settings             = new \Apple_Exporter\Settings();
+		self::$base_settings       = $base_settings->all();
+		self::$loaded_settings     = get_option( self::$section_option_name );
+		$this->settings            = apply_filters( 'apple_news_section_settings', $this->settings, $page );
+		$this->groups              = apply_filters( 'apple_news_section_groups', $this->groups, $page );
+		$this->hidden              = $hidden;
 
 		// Save settings if necessary.
 		$this->save_settings();
@@ -201,8 +201,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		foreach ( $this->groups as $name => $info ) {
 			$settings = array();
 			foreach ( $info['settings'] as $name ) {
-				$settings[ $name ] = $this->settings[ $name ];
-				$settings[ $name ]['default'] = self::get_default_for( $name );
+				$settings[ $name ]             = $this->settings[ $name ];
+				$settings[ $name ]['default']  = self::get_default_for( $name );
 				$settings[ $name ]['callback'] = ( ! empty( $this->settings[ $name ]['callback'] ) ) ? $this->settings[ $name ]['callback'] : '';
 			}
 
@@ -236,7 +236,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	public function render_field( $args ) {
 		list( $name, $default_value, $callback ) = $args;
 
-		$type  = $this->get_type_for( $name );
+		$type = $this->get_type_for( $name );
 
 		// If the field has it's own render callback, use that here.
 		// This is because the options page doesn't actually use do_settings_section.
@@ -264,7 +264,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			}
 
 			// Check if we're using names as values.
-			$keys = array_keys( $type );
+			$keys              = array_keys( $type );
 			$use_name_as_value = ( array_keys( $keys ) === $keys );
 
 			// Use select2 only when there is a considerable amount of options available.
@@ -276,7 +276,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 
 			foreach ( $type as $key => $option ) {
 				$store_value = $use_name_as_value ? $option : $key;
-				$field .= "<option value='" . esc_attr( $store_value ) . "' ";
+				$field      .= "<option value='" . esc_attr( $store_value ) . "' ";
 				if ( $this->is_multiple( $name ) ) {
 					if ( in_array( $store_value, $value, true ) ) {
 						$field .= 'selected="selected"';
@@ -524,8 +524,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			// Negotiate the value.
 			$value = $default_settings->$key;
 			if ( isset( $_POST[ $key ] ) ) {
-				$sanitize = ( empty( $attributes['sanitize'] ) || ! is_callable( $attributes['sanitize'] ) ) ? 'sanitize_text_field' : $attributes['sanitize'];
-				$sanitized_value = call_user_func( $sanitize, wp_unslash( $_POST[ $key ] ) ); // phpcs:ignore WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+				$sanitize        = ( empty( $attributes['sanitize'] ) || ! is_callable( $attributes['sanitize'] ) ) ? 'sanitize_text_field' : $attributes['sanitize'];
+				$sanitized_value = call_user_func( $sanitize, wp_unslash( $_POST[ $key ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				if ( ! empty( $sanitized_value ) || in_array( $sanitized_value, array( 0, '0' ), true ) ) {
 					$value = $sanitized_value;
 				}

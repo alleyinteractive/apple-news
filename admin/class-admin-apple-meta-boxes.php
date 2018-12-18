@@ -75,6 +75,11 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			return;
 		}
 
+		// Avoid problems when the metabox doesn't load, e.g., quick edit.
+		if ( empty( $_REQUEST['apple_news_nonce'] ) ) {
+			return;
+		}
+
 		// Verify the post types.
 		$post_types = $this->settings->get( 'post_types' );
 		if ( ! is_array( $post_types ) ) {
@@ -141,7 +146,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 					'sanitize_text_field',
 					array_map(
 						'wp_unslash',
-						$_POST['apple_news_sections'] // phpcs:ignore WordPress.VIP.ValidatedSanitizedInput.MissingUnslash, WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+						$_POST['apple_news_sections'] // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					)
 				);
 			}
@@ -196,7 +201,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		update_post_meta( $post_id, 'apple_news_pullquote_position', $pullquote_position );
 
 		// Save cover art.
-		self::_save_coverart_meta( $post_id );
+		self::save_coverart_meta( $post_id );
 	}
 
 	/**
@@ -229,14 +234,14 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Only show the publish feature if the user is authorized and auto sync is not enabled.
 		// Also check if the post has been previously published and/or deleted.
-		$api_id = get_post_meta( $post->ID, 'apple_news_api_id', true );
-		$deleted = get_post_meta( $post->ID, 'apple_news_api_deleted', true );
-		$pending = get_post_meta( $post->ID, 'apple_news_api_pending', true );
-		$is_preview = get_post_meta( $post->ID, 'apple_news_is_preview', true );
-		$is_hidden = get_post_meta( $post->ID, 'apple_news_is_hidden', true );
-		$maturity_rating = get_post_meta( $post->ID, 'apple_news_maturity_rating', true );
-		$is_sponsored = get_post_meta( $post->ID, 'apple_news_is_sponsored', true );
-		$pullquote = get_post_meta( $post->ID, 'apple_news_pullquote', true );
+		$api_id             = get_post_meta( $post->ID, 'apple_news_api_id', true );
+		$deleted            = get_post_meta( $post->ID, 'apple_news_api_deleted', true );
+		$pending            = get_post_meta( $post->ID, 'apple_news_api_pending', true );
+		$is_preview         = get_post_meta( $post->ID, 'apple_news_is_preview', true );
+		$is_hidden          = get_post_meta( $post->ID, 'apple_news_is_hidden', true );
+		$maturity_rating    = get_post_meta( $post->ID, 'apple_news_maturity_rating', true );
+		$is_sponsored       = get_post_meta( $post->ID, 'apple_news_is_sponsored', true );
+		$pullquote          = get_post_meta( $post->ID, 'apple_news_pullquote', true );
 		$pullquote_position = get_post_meta( $post->ID, 'apple_news_pullquote_position', true );
 
 		// Set default values.
@@ -303,7 +308,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Add checkbox to allow override of automatic section assignment.
 		$mapping_taxonomy = Admin_Apple_Sections::get_mapping_taxonomy();
-		$sections = get_post_meta( $post_id, 'apple_news_sections', true );
+		$sections         = get_post_meta( $post_id, 'apple_news_sections', true );
 		?>
 		<div class="section-override">
 			<label for="apple-news-sections-by-taxonomy">
@@ -380,7 +385,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	 *
 	 * @access private
 	 */
-	private static function _save_coverart_meta( $post_id ) {
+	private static function save_coverart_meta( $post_id ) {
 
 		// Check the nonce.
 		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );

@@ -29,9 +29,9 @@ class Layout extends Builder {
 		return apply_filters(
 			'apple_news_layout', array(
 				'columns' => intval( $theme->get_layout_columns() ),
-				'width' => intval( $theme->get_value( 'layout_width' ) ),
-				'margin' => intval( $theme->get_value( 'layout_margin' ) ),  // Defaults to 100.
-				'gutter' => intval( $theme->get_value( 'layout_gutter' ) ),  // Defaults to 20.
+				'width'   => intval( $theme->get_value( 'layout_width' ) ),
+				'margin'  => intval( $theme->get_value( 'layout_margin' ) ),  // Defaults to 100.
+				'gutter'  => intval( $theme->get_value( 'layout_gutter' ) ),  // Defaults to 20.
 			), $this->content_id()
 		);
 	}

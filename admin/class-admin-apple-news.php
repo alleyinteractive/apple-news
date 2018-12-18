@@ -90,109 +90,109 @@ class Admin_Apple_News extends Apple_News {
 	public static function get_image_sizes() {
 		return array(
 			'apple_news_ca_landscape_12_9' => array(
-				'height' => 1374,
-				'label' => __( 'iPad Pro (12.9 in): 1832 x 1374 px', 'apple-news' ),
+				'height'      => 1374,
+				'label'       => __( 'iPad Pro (12.9 in): 1832 x 1374 px', 'apple-news' ),
 				'orientation' => 'landscape',
-				'type' => 'coverArt',
-				'width' => 1832,
+				'type'        => 'coverArt',
+				'width'       => 1832,
 			),
-			'apple_news_ca_landscape_9_7' => array(
-				'height' => 1032,
-				'label' => __( 'iPad (7.9/9.7 in): 1376 x 1032 px', 'apple-news' ),
+			'apple_news_ca_landscape_9_7'  => array(
+				'height'      => 1032,
+				'label'       => __( 'iPad (7.9/9.7 in): 1376 x 1032 px', 'apple-news' ),
 				'orientation' => 'landscape',
-				'type' => 'coverArt',
-				'width' => 1376,
+				'type'        => 'coverArt',
+				'width'       => 1376,
 			),
-			'apple_news_ca_landscape_5_5' => array(
-				'height' => 783,
-				'label' => __( 'iPhone (5.5 in): 1044 x 783 px', 'apple-news' ),
+			'apple_news_ca_landscape_5_5'  => array(
+				'height'      => 783,
+				'label'       => __( 'iPhone (5.5 in): 1044 x 783 px', 'apple-news' ),
 				'orientation' => 'landscape',
-				'type' => 'coverArt',
-				'width' => 1044,
+				'type'        => 'coverArt',
+				'width'       => 1044,
 			),
-			'apple_news_ca_landscape_4_7' => array(
-				'height' => 474,
-				'label' => __( 'iPhone (4.7 in): 632 x 474 px', 'apple-news' ),
+			'apple_news_ca_landscape_4_7'  => array(
+				'height'      => 474,
+				'label'       => __( 'iPhone (4.7 in): 632 x 474 px', 'apple-news' ),
 				'orientation' => 'landscape',
-				'type' => 'coverArt',
-				'width' => 632,
+				'type'        => 'coverArt',
+				'width'       => 632,
 			),
-			'apple_news_ca_landscape_4_0' => array(
-				'height' => 402,
-				'label' => __( 'iPhone (4 in): 536 x 402 px', 'apple-news' ),
+			'apple_news_ca_landscape_4_0'  => array(
+				'height'      => 402,
+				'label'       => __( 'iPhone (4 in): 536 x 402 px', 'apple-news' ),
 				'orientation' => 'landscape',
-				'type' => 'coverArt',
-				'width' => 536,
+				'type'        => 'coverArt',
+				'width'       => 536,
 			),
-			'apple_news_ca_portrait_12_9' => array(
-				'height' => 1496,
-				'label' => __( 'iPad Pro (12.9 in): 1122 x 1496 px', 'apple-news' ),
+			'apple_news_ca_portrait_12_9'  => array(
+				'height'      => 1496,
+				'label'       => __( 'iPad Pro (12.9 in): 1122 x 1496 px', 'apple-news' ),
 				'orientation' => 'portrait',
-				'type' => 'coverArt',
-				'width' => 1122,
+				'type'        => 'coverArt',
+				'width'       => 1122,
 			),
-			'apple_news_ca_portrait_9_7' => array(
-				'height' => 1120,
-				'label' => __( 'iPad (7.9/9.7 in): 840 x 1120 px', 'apple-news' ),
+			'apple_news_ca_portrait_9_7'   => array(
+				'height'      => 1120,
+				'label'       => __( 'iPad (7.9/9.7 in): 840 x 1120 px', 'apple-news' ),
 				'orientation' => 'portrait',
-				'type' => 'coverArt',
-				'width' => 840,
+				'type'        => 'coverArt',
+				'width'       => 840,
 			),
-			'apple_news_ca_portrait_5_5' => array(
-				'height' => 916,
-				'label' => __( 'iPhone (5.5 in): 687 x 916 px', 'apple-news' ),
+			'apple_news_ca_portrait_5_5'   => array(
+				'height'      => 916,
+				'label'       => __( 'iPhone (5.5 in): 687 x 916 px', 'apple-news' ),
 				'orientation' => 'portrait',
-				'type' => 'coverArt',
-				'width' => 687,
+				'type'        => 'coverArt',
+				'width'       => 687,
 			),
-			'apple_news_ca_portrait_4_7' => array(
-				'height' => 552,
-				'label' => __( 'iPhone (4.7 in): 414 x 552 px', 'apple-news' ),
+			'apple_news_ca_portrait_4_7'   => array(
+				'height'      => 552,
+				'label'       => __( 'iPhone (4.7 in): 414 x 552 px', 'apple-news' ),
 				'orientation' => 'portrait',
-				'type' => 'coverArt',
-				'width' => 414,
+				'type'        => 'coverArt',
+				'width'       => 414,
 			),
-			'apple_news_ca_portrait_4_0' => array(
-				'height' => 472,
-				'label' => __( 'iPhone (4 in): 354 x 472 px', 'apple-news' ),
+			'apple_news_ca_portrait_4_0'   => array(
+				'height'      => 472,
+				'label'       => __( 'iPhone (4 in): 354 x 472 px', 'apple-news' ),
 				'orientation' => 'portrait',
-				'type' => 'coverArt',
-				'width' => 354,
+				'type'        => 'coverArt',
+				'width'       => 354,
 			),
-			'apple_news_ca_square_12_9' => array(
-				'height' => 1472,
-				'label' => __( 'iPad Pro (12.9 in): 1472 x 1472 px', 'apple-news' ),
+			'apple_news_ca_square_12_9'    => array(
+				'height'      => 1472,
+				'label'       => __( 'iPad Pro (12.9 in): 1472 x 1472 px', 'apple-news' ),
 				'orientation' => 'square',
-				'type' => 'coverArt',
-				'width' => 1472,
+				'type'        => 'coverArt',
+				'width'       => 1472,
 			),
-			'apple_news_ca_square_9_7' => array(
-				'height' => 1104,
-				'label' => __( 'iPad (7.9/9.7 in): 1104 x 1104 px', 'apple-news' ),
+			'apple_news_ca_square_9_7'     => array(
+				'height'      => 1104,
+				'label'       => __( 'iPad (7.9/9.7 in): 1104 x 1104 px', 'apple-news' ),
 				'orientation' => 'square',
-				'type' => 'coverArt',
-				'width' => 1104,
+				'type'        => 'coverArt',
+				'width'       => 1104,
 			),
-			'apple_news_ca_square_5_5' => array(
-				'height' => 912,
-				'label' => __( 'iPhone (5.5 in): 912 x 912 px', 'apple-news' ),
+			'apple_news_ca_square_5_5'     => array(
+				'height'      => 912,
+				'label'       => __( 'iPhone (5.5 in): 912 x 912 px', 'apple-news' ),
 				'orientation' => 'square',
-				'type' => 'coverArt',
-				'width' => 912,
+				'type'        => 'coverArt',
+				'width'       => 912,
 			),
-			'apple_news_ca_square_4_7' => array(
-				'height' => 550,
-				'label' => __( 'iPhone (4.7 in): 550 x 550 px', 'apple-news' ),
+			'apple_news_ca_square_4_7'     => array(
+				'height'      => 550,
+				'label'       => __( 'iPhone (4.7 in): 550 x 550 px', 'apple-news' ),
 				'orientation' => 'square',
-				'type' => 'coverArt',
-				'width' => 550,
+				'type'        => 'coverArt',
+				'width'       => 550,
 			),
-			'apple_news_ca_square_4_0' => array(
-				'height' => 470,
-				'label' => __( 'iPhone (4 in): 470 x 470 px', 'apple-news' ),
+			'apple_news_ca_square_4_0'     => array(
+				'height'      => 470,
+				'label'       => __( 'iPhone (4 in): 470 x 470 px', 'apple-news' ),
 				'orientation' => 'square',
-				'type' => 'coverArt',
-				'width' => 470,
+				'type'        => 'coverArt',
+				'width'       => 470,
 			),
 		);
 	}
@@ -249,14 +249,14 @@ class Admin_Apple_News extends Apple_News {
 	 * @return string
 	 */
 	public static function get_post_status( $post_id ) {
-		$key = 'apple_news_post_state_' . $post_id;
+		$key   = 'apple_news_post_state_' . $post_id;
 		$state = get_transient( $key );
 		if ( false === $state ) {
 			// Get the state from the API.
 			// If this causes an error, display that message instead of the state.
 			try {
 				$action = new Apple_Actions\Index\Get( self::$settings, $post_id );
-				$state = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
+				$state  = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
 			} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
 				$state = $e->getMessage();
 			}

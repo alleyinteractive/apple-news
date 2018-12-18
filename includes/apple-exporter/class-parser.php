@@ -63,13 +63,13 @@ class Parser {
 		 * This needs to be done here to avoid duplicating efforts
 		 * in the HTML and Markdown classes.
 		 */
-		$html = $this->_clean_html( $html );
+		$html = $this->clean_html( $html );
 
 		// Fork for format.
 		if ( 'html' === $this->format ) {
-			return $this->_parse_html( $html );
+			return $this->parse_html( $html );
 		} else {
-			return $this->_parse_markdown( $html );
+			return $this->parse_markdown( $html );
 		}
 	}
 
@@ -81,10 +81,10 @@ class Parser {
 	 * @access private
 	 * @return string The content, converted to an Apple News HTML string.
 	 */
-	private function _parse_html( $html ) {
+	private function parse_html( $html ) {
 
 		// Apply formatting.
-		$parser = new HTML();
+		$parser  = new HTML();
 		$content = $parser->format( $html );
 
 		/**
@@ -106,7 +106,7 @@ class Parser {
 	 * @access private
 	 * @return string The content, converted to an Apple News Markdown string.
 	 */
-	private function _parse_markdown( $html ) {
+	private function parse_markdown( $html ) {
 
 		// PHP's DOMDocument doesn't like HTML5, so we must ignore errors.
 		libxml_use_internal_errors( true );
@@ -123,7 +123,7 @@ class Parser {
 		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
 
 		// Perform parsing.
-		$parser = new Markdown();
+		$parser  = new Markdown();
 		$content = $parser->parse_nodes( $nodes );
 
 		/**
@@ -145,7 +145,7 @@ class Parser {
 	 * @access private
 	 * @return string The clean HTML
 	 */
-	private function _clean_html( $html ) {
+	private function clean_html( $html ) {
 		// Match all <a> tags via regex.
 		// We can't use DOMDocument here because some tags will be removed entirely.
 		preg_match_all( '/<a.*?>(.*?)<\/a>/m', $html, $a_tags );
