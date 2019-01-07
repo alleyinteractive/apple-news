@@ -240,13 +240,16 @@ class Request {
 
 			// Add the MIME request.
 			$body .= "\n\n" . esc_html__( 'MIME request', 'apple-news' ) . ":\n" . $debug_mime_request . "\n";
+			
+			$headers = apply_filters( 'apple_news_notification_headers', '' );
 
 			// Send the email.
 			if ( ! empty( $body ) ) {
 				wp_mail(
 					$admin_email,
 					esc_html__( 'Apple News Notification', 'apple-news' ),
-					$body
+					$body,
+					$headers
 				);
 			}
 		}
