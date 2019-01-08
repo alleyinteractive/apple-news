@@ -240,7 +240,16 @@ class Request {
 
 			// Add the MIME request.
 			$body .= "\n\n" . esc_html__( 'MIME request', 'apple-news' ) . ":\n" . $debug_mime_request . "\n";
-			
+
+			/**
+			 * Add headers (such as From:) to notification messages.
+			 *
+			 * See https://developer.wordpress.org/reference/functions/wp_mail/ for documentation and examples.
+			 *
+			 * @since 4.3.0
+			 *
+			 * @param string|array $headers     Optional. Additional headers.
+			 */
 			$headers = apply_filters( 'apple_news_notification_headers', '' );
 
 			// Send the email.
