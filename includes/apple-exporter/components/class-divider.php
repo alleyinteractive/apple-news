@@ -40,7 +40,7 @@ class Divider extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => 'divider',
+				'role'   => 'divider',
 				'layout' => 'divider-layout',
 				'stroke' => array(
 					'color' => '#E6E6E6',
@@ -54,7 +54,7 @@ class Divider extends Component {
 			__( 'Layout', 'apple-news' ),
 			array(
 				'margin' => array(
-					'top' => 25,
+					'top'    => 25,
 					'bottom' => 25,
 				),
 			)

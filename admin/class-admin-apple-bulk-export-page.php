@@ -83,7 +83,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	 * @access public
 	 */
 	public function build_page() {
-		$ids = isset( $_GET['ids'] ) ? sanitize_text_field( wp_unslash( $_GET['ids'] ) ) : null;
+		$ids = isset( $_GET['ids'] ) ? sanitize_text_field( wp_unslash( $_GET['ids'] ) ) : null; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 		if ( ! $ids ) {
 			wp_safe_redirect( esc_url_raw( menu_page_url( $this->plugin_slug . '_index', false ) ) );
 			if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {
@@ -113,7 +113,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		check_ajax_referer( self::ACTION );
 
 		// Sanitize input data.
-		$id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+		$id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 
 		// Ensure the post exists and that it's published.
 		$post = get_post( $id );

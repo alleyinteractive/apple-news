@@ -3,9 +3,9 @@ Contributors: potatomaster, kevinfodness, alleyinteractive, beezwaxbuzz, gosukiw
 Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 4.0
-Tested up to: 4.9.6
+Tested up to: 4.9.8
 Requires PHP: 5.6
-Stable tag: 1.4.1
+Stable tag: 1.4.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -45,6 +45,13 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 1.4.3 =
+* Bugfix: Decodes HTML entities in URLs before performing remote file exists check for embedded media. Props to @kasparsd for the fix.
+
+= 1.4.2 =
+* Bugfix: Issues with making updates via the quick edit interface and on unsupported post types are now fixed, as the publish action bails out early if the nonce is not set, which occurs when the metabox does not load. Props to @danielbachhuber and @srtfisher for the fixes.
+* Added 'apple_news_should_post_autopublish' filter to override automatic publish settings on a per-article basis. Props to @srtfisher for the update.
 
 = 1.4.1 =
 * Bugfix: Post types that were not registered with Publish to Apple News were failing the nonce check on publish/update because the metabox was not present. Refined the save_post hook to register only for post types with Publish to Apple News support to avoid this situation.

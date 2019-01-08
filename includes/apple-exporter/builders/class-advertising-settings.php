@@ -24,17 +24,17 @@ class Advertising_Settings extends Builder {
 		$advertising_settings = array();
 
 		// Get advertising settings from the theme.
-		$theme = \Apple_Exporter\Theme::get_used();
+		$theme                = \Apple_Exporter\Theme::get_used();
 		$enable_advertisement = $theme->get_value( 'enable_advertisement' );
-		$ad_frequency = intval( $theme->get_value( 'ad_frequency' ) );
+		$ad_frequency         = intval( $theme->get_value( 'ad_frequency' ) );
 
 		if ( 'yes' === $enable_advertisement && $ad_frequency > 0 ) {
 			$advertising_settings['frequency'] = $ad_frequency;
-			$ad_margin = intval( $theme->get_value( 'ad_margin' ) );
+			$ad_margin                         = intval( $theme->get_value( 'ad_margin' ) );
 			if ( ! empty( $ad_margin ) ) {
 				$advertising_settings['layout'] = array(
 					'margin' => array(
-						'top' => $ad_margin,
+						'top'    => $ad_margin,
 						'bottom' => $ad_margin,
 					),
 				);

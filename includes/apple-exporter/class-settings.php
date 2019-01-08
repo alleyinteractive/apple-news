@@ -30,23 +30,23 @@ class Settings {
 	 * @access private
 	 */
 	private $_settings = array(
-		'api_async' => 'no',
-		'api_autosync' => 'yes',
-		'api_autosync_delete' => 'yes',
-		'api_autosync_update' => 'yes',
-		'api_channel' => '',
-		'api_key' => '',
-		'api_secret' => '',
-		'apple_news_admin_email' => '',
+		'api_async'                   => 'no',
+		'api_autosync'                => 'yes',
+		'api_autosync_delete'         => 'yes',
+		'api_autosync_update'         => 'yes',
+		'api_channel'                 => '',
+		'api_key'                     => '',
+		'api_secret'                  => '',
+		'apple_news_admin_email'      => '',
 		'apple_news_enable_debugging' => 'no',
-		'component_alerts' => 'none',
-		'enable_cover_art' => 'no',
-		'full_bleed_images' => 'no',
-		'html_support' => 'yes',
-		'json_alerts' => 'warn',
-		'post_types' => array( 'post' ),
-		'show_metabox' => 'yes',
-		'use_remote_images' => 'no',
+		'component_alerts'            => 'none',
+		'enable_cover_art'            => 'no',
+		'full_bleed_images'           => 'no',
+		'html_support'                => 'yes',
+		'json_alerts'                 => 'warn',
+		'post_types'                  => array( 'post' ),
+		'show_metabox'                => 'yes',
+		'use_remote_images'           => 'no',
 	);
 
 	/**
@@ -70,7 +70,7 @@ class Settings {
 		}
 
 		// Fall back to trying to get the setting dynamically from the theme.
-		$theme = \Apple_Exporter\Theme::get_used();
+		$theme       = \Apple_Exporter\Theme::get_used();
 		$method_name = 'get_' . $name;
 		if ( method_exists( $theme, $method_name ) ) {
 			$value = call_user_func( array( $theme, $method_name ) );

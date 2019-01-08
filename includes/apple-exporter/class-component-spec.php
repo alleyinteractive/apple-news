@@ -62,9 +62,9 @@ class Component_Spec {
 	 */
 	public function __construct( $component, $name, $label, $spec ) {
 		$this->component = $component;
-		$this->name = $name;
-		$this->label = $label;
-		$this->spec = $spec;
+		$this->name      = $name;
+		$this->label     = $label;
+		$this->spec      = $spec;
 	}
 
 	/**
@@ -106,9 +106,9 @@ class Component_Spec {
 				if ( 0 === strpos( $value, '#postmeta.' ) ) {
 
 					// Try to get the value from postmeta.
-					$meta_key = substr( $value, strlen( '#postmeta.' ), -1 );
+					$meta_key   = substr( $value, strlen( '#postmeta.' ), -1 );
 					$meta_value = (string) get_post_meta( $post_id, $meta_key, true );
-					$value = ( ! empty( $meta_value ) ) ? $meta_value : '';
+					$value      = ( ! empty( $meta_value ) ) ? $meta_value : '';
 
 					/**
 					 * Allows for filtering a postmeta value used in Apple News JSON.
@@ -131,8 +131,8 @@ class Component_Spec {
 
 					// Finally, check theme settings for the token.
 					$setting_name = trim( $value, '#' );
-					$theme = \Apple_Exporter\Theme::get_used();
-					$settings = $theme->all_settings();
+					$theme        = \Apple_Exporter\Theme::get_used();
+					$settings     = $theme->all_settings();
 					if ( isset( $settings[ $setting_name ] ) ) {
 						$value = $settings[ $setting_name ];
 					} else {
@@ -164,7 +164,7 @@ class Component_Spec {
 
 		// Iterate recursively over the built-in spec and get all the tokens.
 		// Do the same for the provided spec.
-		$new_tokens = array();
+		$new_tokens     = array();
 		$default_tokens = array();
 		$this->find_tokens( $spec, $new_tokens );
 		$this->find_tokens( $this->spec, $default_tokens );
@@ -184,8 +184,8 @@ class Component_Spec {
 
 			// If the new token references a setting by name, allow it.
 			$setting_name = trim( $token, '#' );
-			$theme = \Apple_Exporter\Theme::get_used();
-			$settings = $theme->all_settings();
+			$theme        = \Apple_Exporter\Theme::get_used();
+			$settings     = $theme->all_settings();
 			if ( isset( $settings[ $setting_name ] ) ) {
 				continue;
 			}
@@ -245,7 +245,7 @@ class Component_Spec {
 
 		// Compare this JSON to the built-in JSON.
 		// If they are the same, there is no reason to save this.
-		$custom_json = $this->format_json( $json );
+		$custom_json  = $this->format_json( $json );
 		$default_json = $this->format_json( $this->spec );
 		if ( $custom_json === $default_json ) {
 			// Delete the spec in case we've reverted back to default.
@@ -353,7 +353,7 @@ class Component_Spec {
 		}
 
 		// Determine if this spec override is defined in the theme.
-		$component_key = $this->key_from_name( $this->component );
+		$component_key  = $this->key_from_name( $this->component );
 		$theme_settings = $theme->all_settings();
 		if ( ! isset( $theme_settings['json_templates'][ $component_key ][ $this->name ] ) ) {
 			return false;

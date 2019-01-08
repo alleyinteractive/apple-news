@@ -22,9 +22,9 @@ class Admin_Apple_Index_Page_Test extends WP_UnitTestCase {
 		update_post_meta( $post_id, 'apple_news_api_errors', time() );
 
 		// Create simulated GET data
-		$_GET['post_id'] = $post_id;
-		$_GET['page'] = 'apple_news_index';
-		$_GET['action'] = 'apple_news_reset';
+		$_GET['post_id'] = $post_id; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+		$_GET['page'] = 'apple_news_index'; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+		$_GET['action'] = 'apple_news_reset'; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 
 		// Simulate the action
 		$index_page = new Admin_Apple_Index_Page( $this->settings );

@@ -89,6 +89,9 @@ class Exporter_Content {
 			$url = site_url( $url );
 		}
 
+		// Decode the HTML entities since the URL is from the src attribute.
+		$url = html_entity_decode( $url );
+
 		// Escape the URL and ensure it is valid.
 		$url = esc_url_raw( $url );
 		if ( empty( $url ) ) {

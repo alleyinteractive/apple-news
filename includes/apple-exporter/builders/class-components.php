@@ -35,10 +35,10 @@ class Components extends Builder {
 
 		// Initialize.
 		$components = array();
-		$workspace = new Workspace( $this->content_id() );
+		$workspace  = new Workspace( $this->content_id() );
 
 		// Loop through body components and process each.
-		foreach ( $this->_split_into_components() as $component ) {
+		foreach ( $this->split_into_components() as $component ) {
 
 			// Ensure that the component is valid.
 			$component_array = $component->to_array();
@@ -61,10 +61,10 @@ class Components extends Builder {
 		 * could change depending on the above body processing, such as if a
 		 * thumbnail was used from the body.
 		 */
-		$components = array_merge( $this->_meta_components(), $components );
+		$components = array_merge( $this->meta_components(), $components );
 
 		// Group body components to improve text flow at all orientations.
-		$components = $this->_group_body_components( $components );
+		$components = $this->group_body_components( $components );
 
 		return $components;
 	}
@@ -75,15 +75,13 @@ class Components extends Builder {
 	 * @param array $components An array of Component objects to analyze.
 	 * @access private
 	 */
-	private function _add_pullquote_if_needed( &$components ) {
+	private function add_pullquote_if_needed( &$components ) {
 
 		// Must we add a pullquote?
-		$pullquote = $this->content_setting( 'pullquote' );
+		$pullquote          = $this->content_setting( 'pullquote' );
 		$pullquote_position = $this->content_setting( 'pullquote_position' );
-		$valid_positions = array( 'top', 'middle', 'bottom' );
-		if ( empty( $pullquote )
-			 || ! in_array( $pullquote_position, $valid_positions, true )
-		) {
+		$valid_positions    = array( 'top', 'middle', 'bottom' );
+		if ( empty( $pullquote ) || ! in_array( $pullquote_position, $valid_positions, true ) ) {
 			return;
 		}
 
@@ -109,14 +107,14 @@ class Components extends Builder {
 		}
 
 		// Build a new component and set the anchor position to AUTO.
-		$component = $this->_get_component_from_shortname(
+		$component = $this->get_component_from_shortname(
 			'blockquote',
 			'<blockquote class="apple-news-pullquote">' . $pullquote . '</blockquote>'
 		);
 		$component->set_anchor_position( Component::ANCHOR_AUTO );
 
 		// Anchor the newly created pullquote component to the target component.
-		$this->_anchor_together( $component, $components[ $position ] );
+		$this->anchor_together( $component, $components[ $position ] );
 
 		// Add component in position.
 		array_splice( $components, $position, 0, array( $component ) );
@@ -128,7 +126,7 @@ class Components extends Builder {
 	 * @param array $components An array of Component objects to analyze.
 	 * @access private
 	 */
-	private function _add_thumbnail_if_needed( &$components ) {
+	private function add_thumbnail_if_needed( &$components ) {
 
 		// If a thumbnail is already defined, just return.
 		if ( $this->content_cover() ) {
@@ -168,7 +166,7 @@ class Components extends Builder {
 			 * needed in order to override the thumbnail.
 			 */
 			$workspace = new Workspace( $this->content_id() );
-			$bundles = $workspace->get_bundles();
+			$bundles   = $workspace->get_bundles();
 
 			// If we can't get the bundles, we can't search for the URL, so bail.
 			if ( empty( $bundles ) ) {
@@ -209,7 +207,7 @@ class Components extends Builder {
 	 * @param array $components An array of Component objects to process.
 	 * @access private
 	 */
-	private function _anchor_components( &$components ) {
+	private function anchor_components( &$components ) {
 
 		// If there are not at least two components, ignore anchoring.
 		$total = count( $components );
@@ -222,9 +220,7 @@ class Components extends Builder {
 
 			// Only operate on components that are anchor targets.
 			$component = $components[ $i ];
-			if ( $component->is_anchor_target()
-				 || Component::ANCHOR_NONE === $component->get_anchor_position()
-			) {
+			if ( $component->is_anchor_target() || Component::ANCHOR_NONE === $component->get_anchor_position() ) {
 				continue;
 			}
 
@@ -254,7 +250,7 @@ class Components extends Builder {
 
 			// If a suitable anchor target was found, link the two.
 			if ( $target_component->can_be_anchor_target() ) {
-				$this->_anchor_together( $component, $target_component );
+				$this->anchor_together( $component, $target_component );
 			}
 		}
 	}
@@ -271,7 +267,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return int Estimated number of text lines that fit next to a square anchor.
 	 */
-	private function _anchor_lines_coefficient() {
+	private function anchor_lines_coefficient() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -287,7 +283,7 @@ class Components extends Builder {
 	 *
 	 * @access private
 	 */
-	private function _anchor_together( $component, $target_component ) {
+	private function anchor_together( $component, $target_component ) {
 
 		// Don't anchor something that has already been anchored.
 		if ( $target_component->is_anchor_target() ) {
@@ -304,8 +300,8 @@ class Components extends Builder {
 		if ( empty( $anchor_json ) ) {
 			$anchor_json = array(
 				'targetAnchorPosition' => 'center',
-				'rangeStart' => 0,
-				'rangeLength' => 1,
+				'rangeStart'           => 0,
+				'rangeLength'          => 1,
 			);
 		}
 
@@ -322,8 +318,8 @@ class Components extends Builder {
 		// Given $component, find out the opposite position.
 		$other_position = Component::ANCHOR_LEFT;
 		if ( ( Component::ANCHOR_AUTO === $component->get_anchor_position()
-			   && 'left' !== $theme->get_value( 'body_orientation' ) )
-			 || Component::ANCHOR_LEFT === $component->get_anchor_position()
+				&& 'left' !== $theme->get_value( 'body_orientation' ) )
+				|| Component::ANCHOR_LEFT === $component->get_anchor_position()
 		) {
 			$other_position = Component::ANCHOR_RIGHT;
 		}
@@ -347,7 +343,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return int The estimated number of characters per line.
 	 */
-	private function _characters_per_line_anchored() {
+	private function characters_per_line_anchored() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -405,7 +401,7 @@ class Components extends Builder {
 	 * @param Component $component The component to clean up.
 	 * @access private
 	 */
-	private function _clean_up_components( &$component ) {
+	private function clean_up_components( &$component ) {
 
 		// Only process 'body' nodes.
 		if ( 'body' !== $component['role'] ) {
@@ -426,7 +422,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return int The estimated number of lines the anchored component occupies.
 	 */
-	private function _get_anchor_buffer( $component ) {
+	private function get_anchor_buffer( $component ) {
 
 		// If the anchored component is empty, bail.
 		if ( empty( $component ) ) {
@@ -434,21 +430,21 @@ class Components extends Builder {
 		}
 
 		// Get the anchor lines coefficient (lines of text for a 1:1 anchor).
-		$alc = $this->_anchor_lines_coefficient();
+		$alc = $this->anchor_lines_coefficient();
 
 		// Determine anchored component size ratio. Defaults to 1 (square).
 		$ratio = 1;
 		if ( 'container' === $component['role']
-			 && ! empty( $component['components'][0]['URL'] )
+			&& ! empty( $component['components'][0]['URL'] )
 		) {
 
 			// Calculate base ratio.
-			$ratio = $this->_get_image_ratio( $component['components'][0]['URL'] );
+			$ratio = $this->get_image_ratio( $component['components'][0]['URL'] );
 
 			// Add some buffer for the caption.
 			$ratio /= 1.2;
 		} elseif ( 'photo' === $component['role'] && ! empty( $component['URL'] ) ) {
-			$ratio = $this->_get_image_ratio( $component['URL'] );
+			$ratio = $this->get_image_ratio( $component['URL'] );
 		}
 
 		return ceil( $alc / $ratio );
@@ -464,7 +460,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return int The estimated number of lines the body text occupies.
 	 */
-	private function _get_anchor_content_lines( $component ) {
+	private function get_anchor_content_lines( $component ) {
 
 		// If the body component is empty, bail.
 		if ( empty( $component['text'] ) ) {
@@ -472,7 +468,7 @@ class Components extends Builder {
 		}
 
 		return ceil(
-			strlen( $component['text'] ) / $this->_characters_per_line_anchored()
+			strlen( $component['text'] ) / $this->characters_per_line_anchored()
 		);
 	}
 
@@ -485,7 +481,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return Component The component extracted from the HTML.
 	 */
-	private function _get_component_from_shortname( $shortname, $html = null ) {
+	private function get_component_from_shortname( $shortname, $html = null ) {
 		return Component_Factory::get_component( $shortname, $html );
 	}
 
@@ -497,7 +493,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return array An array of components matching the node.
 	 */
-	private function _get_components_from_node( $node ) {
+	private function get_components_from_node( $node ) {
 		return Component_Factory::get_components_from_node( $node );
 	}
 
@@ -511,7 +507,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return float An image ratio (width/height) for the given image.
 	 */
-	private function _get_image_ratio( $url ) {
+	private function get_image_ratio( $url ) {
 
 		// Strip URL formatting for easier matching.
 		$url = urldecode( $url );
@@ -545,14 +541,14 @@ class Components extends Builder {
 	 * @access private
 	 * @return array
 	 */
-	private function _group_body_components( $components ) {
+	private function group_body_components( $components ) {
 
 		// Initialize.
 		$new_components = array();
-		$cover_index = null;
-		$anchor_buffer = 0;
-		$prev = null;
-		$current = null;
+		$cover_index    = null;
+		$anchor_buffer  = 0;
+		$prev           = null;
+		$current        = null;
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
@@ -561,7 +557,7 @@ class Components extends Builder {
 		foreach ( $components as $component ) {
 
 			// Update positioning.
-			$prev = $current;
+			$prev    = $current;
 			$current = $component;
 
 			// Handle first run.
@@ -571,21 +567,21 @@ class Components extends Builder {
 
 			// Handle anchors.
 			if ( ! empty( $prev['identifier'] )
-				 && ! empty( $current['anchor']['targetComponentIdentifier'] )
-				 && $prev['identifier']
+				&& ! empty( $current['anchor']['targetComponentIdentifier'] )
+				&& $prev['identifier']
 					=== $current['anchor']['targetComponentIdentifier']
 			) {
 				// Switch the position of the nodes so the anchor always comes first.
-				$temp = $current;
-				$current = $prev;
-				$prev = $temp;
-				$anchor_buffer = $this->_get_anchor_buffer( $prev );
+				$temp          = $current;
+				$current       = $prev;
+				$prev          = $temp;
+				$anchor_buffer = $this->get_anchor_buffer( $prev );
 			} elseif ( ! empty( $current['identifier'] )
-					   && ! empty( $prev['anchor']['targetComponentIdentifier'] )
-					   && $prev['anchor']['targetComponentIdentifier']
-						  === $current['identifier']
+						&& ! empty( $prev['anchor']['targetComponentIdentifier'] )
+						&& $prev['anchor']['targetComponentIdentifier']
+						=== $current['identifier']
 			) {
-				$anchor_buffer = $this->_get_anchor_buffer( $prev );
+				$anchor_buffer = $this->get_anchor_buffer( $prev );
 			}
 
 			// If the current node is not a body element, force-flatten the buffer.
@@ -603,7 +599,7 @@ class Components extends Builder {
 
 				// If the current element is a body element, adjust buffer.
 				if ( 'body' === $current['role'] ) {
-					$anchor_buffer -= $this->_get_anchor_content_lines( $current );
+					$anchor_buffer -= $this->get_anchor_content_lines( $current );
 				}
 
 				// Add the node.
@@ -612,16 +608,16 @@ class Components extends Builder {
 			}
 
 			// Merge the body content from the previous node into the current node.
-			$anchor_buffer -= $this->_get_anchor_content_lines( $current );
-			$prev['text'] .= $current['text'];
-			$current = $prev;
+			$anchor_buffer -= $this->get_anchor_content_lines( $current );
+			$prev['text']  .= $current['text'];
+			$current        = $prev;
 		}
 
 		// Add the final element from the loop in its final state.
 		$new_components[] = $current;
 
 		// Perform text cleanup on each node.
-		array_walk( $new_components, array( $this, '_clean_up_components' ) );
+		array_walk( $new_components, array( $this, 'clean_up_components' ) );
 
 		// If the final node has a role of 'body', add 'body-layout-last' layout.
 		$last = count( $new_components ) - 1;
@@ -630,9 +626,7 @@ class Components extends Builder {
 		}
 
 		// Determine if there is a cover in the middle of content.
-		if ( null === $cover_index
-			 || count( $new_components ) <= $cover_index + 1
-		) {
+		if ( null === $cover_index || count( $new_components ) <= $cover_index + 1 ) {
 			return $new_components;
 		}
 
@@ -641,13 +635,13 @@ class Components extends Builder {
 		 * parallax text scroll.
 		 */
 		$regrouped_components = array(
-			'role' => 'container',
-			'layout' => array(
-				'columnSpan' => $theme->get_layout_columns(),
-				'columnStart' => 0,
+			'role'       => 'container',
+			'layout'     => array(
+				'columnSpan'           => $theme->get_layout_columns(),
+				'columnStart'          => 0,
 				'ignoreDocumentMargin' => true,
 			),
-			'style' => array(
+			'style'      => array(
 				'backgroundColor' => $theme->get_value( 'body_background_color' ),
 			),
 			'components' => array_slice( $new_components, $cover_index + 1 ),
@@ -668,16 +662,14 @@ class Components extends Builder {
 	 * @access private
 	 * @return array An array of Component objects representing metadata.
 	 */
-	private function _meta_components() {
+	private function meta_components() {
 
 		// Get information about the currently loaded theme.
 		$theme = \Apple_Exporter\Theme::get_used();
 
 		// Attempt to get the component order.
 		$meta_component_order = $theme->get_value( 'meta_component_order' );
-		if ( empty( $meta_component_order )
-			 || ! is_array( $meta_component_order )
-		) {
+		if ( empty( $meta_component_order ) || ! is_array( $meta_component_order ) ) {
 			return array();
 		}
 
@@ -698,7 +690,7 @@ class Components extends Builder {
 			}
 
 			// Attempt to load component.
-			$component = $this->_get_component_from_shortname( $component, $content );
+			$component = $this->get_component_from_shortname( $component, $content );
 			if ( ! ( $component instanceof Component ) ) {
 				continue;
 			}
@@ -721,7 +713,7 @@ class Components extends Builder {
 	 * @access private
 	 * @return array An array of Component objects representing the content.
 	 */
-	private function _split_into_components() {
+	private function split_into_components() {
 
 		/**
 		 * Loop though the first-level nodes of the body element. Components might
@@ -731,14 +723,14 @@ class Components extends Builder {
 		foreach ( $this->content_nodes() as $node ) {
 			$components = array_merge(
 				$components,
-				$this->_get_components_from_node( $node )
+				$this->get_components_from_node( $node )
 			);
 		}
 
 		// Perform additional processing after components have been created.
-		$this->_add_thumbnail_if_needed( $components );
-		$this->_anchor_components( $components );
-		$this->_add_pullquote_if_needed( $components );
+		$this->add_thumbnail_if_needed( $components );
+		$this->anchor_components( $components );
+		$this->add_pullquote_if_needed( $components );
 
 		return $components;
 	}

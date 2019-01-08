@@ -35,7 +35,7 @@ class Component_Layouts extends Builder {
 	 */
 	public function __construct( $content, $settings ) {
 		parent::__construct( $content, $settings );
-		$this->layouts  = array();
+		$this->layouts = array();
 	}
 
 	/**
@@ -121,10 +121,10 @@ class Component_Layouts extends Builder {
 
 			// Cache settings.
 			$body_orientation = $theme->get_value( 'body_orientation' );
-			$body_offset = $theme->get_body_offset();
+			$body_offset      = $theme->get_body_offset();
 			$alignment_offset = $theme->get_alignment_offset();
 			$body_column_span = $theme->get_body_column_span();
-			$layout_columns = $theme->get_layout_columns();
+			$layout_columns   = $theme->get_layout_columns();
 
 			/**
 			 * Find out the starting column. This is easy enough if we are anchoring

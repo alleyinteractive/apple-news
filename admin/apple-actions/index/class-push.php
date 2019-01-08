@@ -99,8 +99,8 @@ class Push extends API_Action {
 			throw new \Apple_Actions\Action_Exception( __( 'Could not find post with id ', 'apple-news' ) . $this->id );
 		}
 
-		$api_time = get_post_meta( $this->id, 'apple_news_api_modified_at', true );
-		$api_time = strtotime( get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $api_time ) ) ) );
+		$api_time   = get_post_meta( $this->id, 'apple_news_api_modified_at', true );
+		$api_time   = strtotime( get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $api_time ) ) ) );
 		$local_time = strtotime( $post->post_modified );
 
 		$in_sync = $api_time >= $local_time;
@@ -214,15 +214,15 @@ class Push extends API_Action {
 			}
 
 			// Get the isPreview setting.
-			$is_preview = (bool) get_post_meta( $this->id, 'apple_news_is_preview', true );
+			$is_preview                = (bool) get_post_meta( $this->id, 'apple_news_is_preview', true );
 			$meta['data']['isPreview'] = $is_preview;
 
 			// Get the isHidden setting.
-			$is_hidden = (bool) get_post_meta( $this->id, 'apple_news_is_hidden', true );
+			$is_hidden                = (bool) get_post_meta( $this->id, 'apple_news_is_hidden', true );
 			$meta['data']['isHidden'] = $is_hidden;
 
 			// Get the isSponsored setting.
-			$is_sponsored = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
+			$is_sponsored                = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
 			$meta['data']['isSponsored'] = $is_sponsored;
 
 			// Get the maturity rating setting.
@@ -314,7 +314,7 @@ class Push extends API_Action {
 	private function process_errors( $errors ) {
 		// Get the current alert settings.
 		$component_alerts = $this->get_setting( 'component_alerts' );
-		$json_alerts = $this->get_setting( 'json_alerts' );
+		$json_alerts      = $this->get_setting( 'json_alerts' );
 
 		// Initialize the alert message.
 		$alert_message = '';
@@ -388,7 +388,7 @@ class Push extends API_Action {
 
 			// Throw an exception.
 			throw new \Apple_Actions\Action_Exception( $alert_message );
-		} else if ( ( 'warn' === $component_alerts && ! empty( $errors[0]['component_errors'] ) )
+		} elseif ( ( 'warn' === $component_alerts && ! empty( $errors[0]['component_errors'] ) )
 			|| ( 'warn' === $json_alerts && ! empty( $errors[0]['json_errors'] ) ) ) {
 				\Admin_Apple_Notice::error( $alert_message, $user_id );
 		}
@@ -416,7 +416,7 @@ class Push extends API_Action {
 	 */
 	private function generate_article() {
 
-		$export_action = new Export( $this->settings, $this->id, $this->sections );
+		$export_action  = new Export( $this->settings, $this->id, $this->sections );
 		$this->exporter = $export_action->fetch_exporter();
 		$this->exporter->generate();
 
@@ -440,9 +440,9 @@ class Push extends API_Action {
 		 */
 		$decoded = json_decode( $json );
 		if ( ! $decoded ) {
-			 throw new \Apple_Actions\Action_Exception( __( 'The Apple News JSON is invalid and cannot be published.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( __( 'The Apple News JSON is invalid and cannot be published.', 'apple-news' ) );
 		} else {
-			 return wp_json_encode( $decoded );
+			return wp_json_encode( $decoded );
 		}
 	}
 }

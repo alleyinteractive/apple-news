@@ -52,7 +52,7 @@ abstract class Builder {
 	 * @access public
 	 */
 	public function __construct( $content, $settings ) {
-		$this->content = $content;
+		$this->content  = $content;
 		$this->settings = $settings;
 	}
 

@@ -26,8 +26,8 @@ class Title extends Component {
 			'json',
 			__( 'JSON', 'apple-news' ),
 			array(
-				'role' => 'title',
-				'text' => '#text#',
+				'role'   => 'title',
+				'text'   => '#text#',
 				'format' => 'html',
 			)
 		);
@@ -36,11 +36,11 @@ class Title extends Component {
 			'default-title',
 			__( 'Style', 'apple-news' ),
 			array(
-				'fontName' => '#header1_font#',
-				'fontSize' => '#header1_size#',
-				'lineHeight' => '#header1_line_height#',
-				'tracking' => '#header1_tracking#',
-				'textColor' => '#header1_color#',
+				'fontName'      => '#header1_font#',
+				'fontSize'      => '#header1_size#',
+				'lineHeight'    => '#header1_line_height#',
+				'tracking'      => '#header1_tracking#',
+				'textColor'     => '#header1_color#',
 				'textAlignment' => '#text_alignment#',
 			)
 		);
@@ -50,7 +50,7 @@ class Title extends Component {
 			__( 'Layout', 'apple-news' ),
 			array(
 				'margin' => array(
-					'top' => 30,
+					'top'    => 30,
 					'bottom' => 0,
 				),
 			)
@@ -96,12 +96,12 @@ class Title extends Component {
 			'default-title',
 			'default-title',
 			array(
-				'#header1_font#' => $theme->get_value( 'header1_font' ),
-				'#header1_size#' => intval( $theme->get_value( 'header1_size' ) ),
+				'#header1_font#'        => $theme->get_value( 'header1_font' ),
+				'#header1_size#'        => intval( $theme->get_value( 'header1_size' ) ),
 				'#header1_line_height#' => intval( $theme->get_value( 'header1_line_height' ) ),
-				'#header1_tracking#' => intval( $theme->get_value( 'header1_tracking' ) ) / 100,
-				'#header1_color#' => $theme->get_value( 'header1_color' ),
-				'#text_alignment#' => $this->find_text_alignment(),
+				'#header1_tracking#'    => intval( $theme->get_value( 'header1_tracking' ) ) / 100,
+				'#header1_color#'       => $theme->get_value( 'header1_color' ),
+				'#text_alignment#'      => $this->find_text_alignment(),
 			),
 			'textStyle'
 		);

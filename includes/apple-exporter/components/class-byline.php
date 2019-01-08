@@ -35,11 +35,11 @@ class Byline extends Component {
 			__( 'Style', 'apple-news' ),
 			array(
 				'textAlignment' => '#text_alignment#',
-				'fontName' => '#byline_font#',
-				'fontSize' => '#byline_size#',
-				'lineHeight' => '#byline_line_height#',
-				'tracking' => '#byline_tracking#',
-				'textColor' => '#byline_color#',
+				'fontName'      => '#byline_font#',
+				'fontSize'      => '#byline_size#',
+				'lineHeight'    => '#byline_line_height#',
+				'tracking'      => '#byline_tracking#',
+				'textColor'     => '#byline_color#',
 			)
 		);
 
@@ -48,7 +48,7 @@ class Byline extends Component {
 			__( 'Layout', 'apple-news' ),
 			array(
 				'margin' => array(
-					'top' => 10,
+					'top'    => 10,
 					'bottom' => 10,
 				),
 			)
@@ -94,12 +94,12 @@ class Byline extends Component {
 			'default-byline',
 			'default-byline',
 			array(
-				'#text_alignment#' => $this->find_text_alignment(),
-				'#byline_font#' => $theme->get_value( 'byline_font' ),
-				'#byline_size#' => intval( $theme->get_value( 'byline_size' ) ),
+				'#text_alignment#'     => $this->find_text_alignment(),
+				'#byline_font#'        => $theme->get_value( 'byline_font' ),
+				'#byline_size#'        => intval( $theme->get_value( 'byline_size' ) ),
 				'#byline_line_height#' => intval( $theme->get_value( 'byline_line_height' ) ),
-				'#byline_tracking#' => intval( $theme->get_value( 'byline_tracking' ) ) / 100,
-				'#byline_color#' => $theme->get_value( 'byline_color' ),
+				'#byline_tracking#'    => intval( $theme->get_value( 'byline_tracking' ) ) / 100,
+				'#byline_color#'       => $theme->get_value( 'byline_color' ),
 			),
 			'textStyle'
 		);
