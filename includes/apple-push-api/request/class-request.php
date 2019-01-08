@@ -246,7 +246,7 @@ class Request {
 			 *
 			 * See https://developer.wordpress.org/reference/functions/wp_mail/ for documentation and examples.
 			 *
-			 * @since 4.3.0
+			 * @since x.x.x
 			 *
 			 * @param string|array $headers     Optional. Additional headers.
 			 */
