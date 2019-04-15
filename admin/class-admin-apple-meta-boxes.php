@@ -55,7 +55,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			// Register assets used by the meta box.
 			add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 
-			// Refresh the nonce after the user re-authenticates due to a wp_auth_check() to avoid failing check_admin_referrer()
+			// Refresh the nonce after the user re-authenticates due to a wp_auth_check() to avoid failing check_admin_referrer().
 			add_action( 'wp_refresh_nonces', array( $this, 'refresh_nonce' ), 20, 1 );
 		}
 	}
@@ -210,8 +210,8 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	/**
 	 * Filters the Heartbeat response to refresh the apple_news_nonce
 	 *
-	 * @param $response array Heartbeat response
-	 * @return array Filtered Heartbeat $response
+	 * @param array $response Heartbeat response.
+	 * @return array Filtered Heartbeat $response.
 	 * @access public
 	 */
 	public function refresh_nonce( $response ) {
