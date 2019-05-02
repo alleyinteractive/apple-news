@@ -1,5 +1,13 @@
-# Tell Travis to use new container-based infrastructure
-sudo: false
+# Travis CI (MIT License) configuration file for Publish to Apple News
+# @link https://travis-ci.org/
+
+# Xenial image has PHP versions 5.6,7.1,7.2 pre-installed
+dist: xenial
+
+# Xenial does not start mysql by default
+services:
+  - mysql
+  - memcached
 
 # Declare project language.
 # @link http://about.travis-ci.org/docs/user/languages/php/
@@ -10,23 +18,29 @@ branches:
   only:
     - master
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - ./vendor
+    - node_modules
+
 # Git clone depth.
 git:
   depth: 1
 
 matrix:
+  fast_finish: true
   include:
-    - php: 5.6
+    - php: 7.2
+      env: WP_VERSION=latest PHP_LINT=1 WP_PHPCS=1
+    - php: 7.1
       env: WP_VERSION=latest PHP_LINT=1
     - php: 7.0
       env: WP_VERSION=latest PHP_LINT=1
-    - php: 7.1
+    - php: 5.6
       env: WP_VERSION=latest PHP_LINT=1
     - php: 7.2
-      env: WP_VERSION=latest PHP_LINT=1 WP_PHPCS=1
-    - php: 7.2
       env: WP_VERSION=nightly
-  fast_finish: true
 
 # Use this to prepare your build for testing.
 # e.g. copy database configurations, environment variables, etc.
@@ -55,37 +69,41 @@ before_script:
 
   # Install Composer dependencies.
   - composer install
-  - export PATH=$PATH:`pwd`/vendor/bin/
-  - phpenv rehash
 
-  # For debugging.
-  - which phpunit
-  - phpunit --version
-  - which phpcs
-  - phpcs --version
-  - pwd
-  - echo $PATH
+  # Set up phpcs.
+  - |
+    if [[ "$WP_PHPCS" == "1" ]] ; then
+      composer global require automattic/vipwpcs
+      phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs,$HOME/.composer/vendor/automattic/vipwpcs
+    fi
 
 # Run test script commands.
 # Default is specific to project language.
 # All commands must exit with code 0 on success. Anything else is considered failure.
 script:
-    # Search for PHP syntax errors.
-    #
-    # Only need to run this once per PHP version.
-    - if [[ "$PHP_LINT" == "1" ]]; then find . -type "f" -iname "*.php" -not -path "./vendor/*" | xargs -L "1" php -l; fi
-
-    # WordPress Coding Standards.
-    #
-    # These are the same across PHP and WordPress, so we need to run them only once.
-    #
-    # @link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
-    # @link http://pear.php.net/package/PHP_CodeSniffer/
-    - if [[ "$WP_PHPCS" == "1" ]]; then phpcs -v; fi
-
-    # Test the plugin's unit tests
-    - phpunit
-    - phpunit -c multisite.xml
+  # Search for PHP syntax errors.
+  #
+  # Only need to run this once per PHP version.
+  - |
+    if [[ "$PHP_LINT" == "1" ]] ; then
+      find . -type "f" -iname "*.php" -not -path "./vendor/*" | xargs -L "1" php -l
+    fi
+  # WordPress Coding Standards.
+  #
+  # These are the same across PHP and WordPress, so we need to run them only once.
+  #
+  # @link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+  # @link http://pear.php.net/package/PHP_CodeSniffer/
+  - |
+    if [[ "$WP_PHPCS" == "1" ]] ; then
+      phpcs
+    fi
+  # Run the plugin's unit tests, both in single and multisite.
+  - |
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      phpunit
+      WP_MULTISITE=1 phpunit
+    fi
 
 # Receive notifications for build results.
 # @link http://docs.travis-ci.com/user/notifications/#Email-notifications

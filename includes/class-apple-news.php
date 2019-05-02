@@ -39,7 +39,7 @@ class Apple_News {
 	 * @var string
 	 * @access public
 	 */
-	public static $version = '1.4.3';
+	public static $version = '1.4.4';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.
@@ -245,7 +245,9 @@ class Apple_News {
 
 		// Localize scripts.
 		wp_localize_script(
-			$this->plugin_slug . '_cover_art_js', 'apple_news_cover_art', array(
+			$this->plugin_slug . '_cover_art_js',
+			'apple_news_cover_art',
+			array(
 				'image_sizes'        => Admin_Apple_News::get_image_sizes(),
 				'image_too_small'    => esc_html__( 'You must select an image that is at least the height and width specified above.', 'apple-news' ),
 				'media_modal_button' => esc_html__( 'Select image', 'apple-news' ),
@@ -358,7 +360,8 @@ class Apple_News {
 		// Check for the presence of blockquote-specific settings.
 		$wp_settings = get_option( self::$option_name );
 		if ( $this->all_keys_exist(
-			$wp_settings, array(
+			$wp_settings,
+			array(
 				'blockquote_background_color',
 				'blockquote_border_color',
 				'blockquote_border_style',
@@ -434,7 +437,8 @@ class Apple_News {
 		// Check for the presence of caption-specific settings.
 		$wp_settings = get_option( self::$option_name );
 		if ( $this->all_keys_exist(
-			$wp_settings, array(
+			$wp_settings,
+			array(
 				'caption_color',
 				'caption_font',
 				'caption_line_height',
@@ -545,7 +549,8 @@ class Apple_News {
 
 		// Clone settings, as necessary.
 		$wp_settings = $this->clone_settings(
-			$wp_settings, array(
+			$wp_settings,
+			array(
 				'header1_color'       => 'header_color',
 				'header2_color'       => 'header_color',
 				'header3_color'       => 'header_color',

@@ -40,11 +40,13 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 
 		// Build the post types to display.
 		$post_types = apply_filters(
-			'apple_news_post_types', get_post_types(
+			'apple_news_post_types',
+			get_post_types(
 				array(
 					'public'  => true,
 					'show_ui' => true,
-				), 'objects'
+				),
+				'objects'
 			)
 		);
 

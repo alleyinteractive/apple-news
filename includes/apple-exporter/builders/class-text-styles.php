@@ -95,7 +95,8 @@ class Text_Styles extends Builder {
 
 		// Add style for <code> tags.
 		$this->register_style(
-			'default-tag-code', array(
+			'default-tag-code',
+			array(
 				'fontName'   => $theme->get_value( 'monospaced_font' ),
 				'fontSize'   => intval( $theme->get_value( 'monospaced_size' ) ),
 				'tracking'   => intval( $theme->get_value( 'monospaced_tracking' ) ) / 100,
@@ -106,7 +107,8 @@ class Text_Styles extends Builder {
 
 		// Add style for <pre> tags.
 		$this->register_style(
-			'default-tag-pre', array(
+			'default-tag-pre',
+			array(
 				'textAlignment'          => 'left',
 				'fontName'               => $theme->get_value( 'monospaced_font' ),
 				'fontSize'               => intval( $theme->get_value( 'monospaced_size' ) ),
@@ -120,7 +122,8 @@ class Text_Styles extends Builder {
 
 		// Add style for <samp> tags.
 		$this->register_style(
-			'default-tag-samp', array(
+			'default-tag-samp',
+			array(
 				'fontName'   => $theme->get_value( 'monospaced_font' ),
 				'fontSize'   => intval( $theme->get_value( 'monospaced_size' ) ),
 				'tracking'   => intval( $theme->get_value( 'monospaced_tracking' ) ) / 100,

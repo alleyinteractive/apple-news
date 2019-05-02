@@ -372,7 +372,9 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Localize the JS file for meta boxes.
 		wp_localize_script(
-			$this->plugin_slug . '_meta_boxes_js', 'apple_news_meta_boxes', array(
+			$this->plugin_slug . '_meta_boxes_js',
+			'apple_news_meta_boxes',
+			array(
 				'publish_action' => self::PUBLISH_ACTION,
 			)
 		);

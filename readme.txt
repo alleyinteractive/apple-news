@@ -3,9 +3,9 @@ Contributors: potatomaster, kevinfodness, alleyinteractive, beezwaxbuzz, gosukiw
 Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 4.0
-Tested up to: 4.9.8
+Tested up to: 5.1.1
 Requires PHP: 5.6
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -45,6 +45,12 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 1.4.4 =
+* Enhancement: Added the apple_news_notification_headers filter to allow headers to be added to the notification email message. Props to @paulschreiber for the addition.
+* Bugfix: Improved handling of UTF-8 multibyte characters to provide better support for the French language.
+* Updated the description that appears below the section selection checkboxes to more accurately explain the current behavior.
+* Updated to the latest version of the phpcs and vipwpcs standards, resolving most issues, while whitelisting some rules for resolution in the next version. Props to @paulschreiber for doing most of the work here.
 
 = 1.4.3 =
 * Bugfix: Decodes HTML entities in URLs before performing remote file exists check for embedded media. Props to @kasparsd for the fix.

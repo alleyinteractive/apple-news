@@ -70,7 +70,8 @@ class Request {
 
 		// Set the default WordPress HTTP API args.
 		$this->default_args = apply_filters(
-			'apple_news_request_args', array(
+			'apple_news_request_args',
+			array(
 				'reject_unsafe_urls' => true,
 				'timeout'            => 5,
 			)
@@ -246,7 +247,7 @@ class Request {
 			 *
 			 * See https://developer.wordpress.org/reference/functions/wp_mail/ for documentation and examples.
 			 *
-			 * @since x.x.x
+			 * @since 1.4.4
 			 *
 			 * @param string|array $headers     Optional. Additional headers.
 			 */

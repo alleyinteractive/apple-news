@@ -82,7 +82,8 @@ class Admin_Apple_Async extends Apple_News {
 					// translators: token is the post title.
 					__( 'Article %s is no longer published and cannot be pushed to Apple News.', 'apple-news' ),
 					$post->post_title
-				), $user_id
+				),
+				$user_id
 			);
 			return;
 		}

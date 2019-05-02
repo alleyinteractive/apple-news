@@ -63,7 +63,8 @@ class Jetpack_Tiled_Gallery {
 		 * builtin handling for the default WP galleries.
 		 */
 		add_filter(
-			'jetpack_tiled_gallery_types', function() {
+			'jetpack_tiled_gallery_types',
+			function() {
 				return array();
 			}
 		);

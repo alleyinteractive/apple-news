@@ -312,10 +312,12 @@ class Admin_Apple_Themes extends Apple_News {
 	 */
 	public function register_assets( $hook ) {
 		if ( ! in_array(
-			$hook, array(
+			$hook,
+			array(
 				'apple-news_page_apple-news-themes',
 				'admin_page_apple-news-theme-edit',
-			), true
+			),
+			true
 		) ) {
 			return;
 		}
@@ -336,7 +338,9 @@ class Admin_Apple_Themes extends Apple_News {
 		);
 
 		wp_localize_script(
-			'apple-news-themes-js', 'appleNewsThemes', array(
+			'apple-news-themes-js',
+			'appleNewsThemes',
+			array(
 				'deleteWarning' => __( 'Are you sure you want to delete the theme', 'apple-news' ),
 				'noNameError'   => __( 'Please enter a name for the new theme.', 'apple-news' ),
 				'tooLongError'  => __( 'Theme names must be 45 characters or less.', 'apple-news' ),
@@ -381,7 +385,9 @@ class Admin_Apple_Themes extends Apple_News {
 			);
 
 			wp_localize_script(
-				'apple-news-theme-edit-js', 'appleNewsThemeEdit', array(
+				'apple-news-theme-edit-js',
+				'appleNewsThemeEdit',
+				array(
 					'fontNotice' => __( 'Font preview is only available on macOS', 'apple-news' ),
 				)
 			);

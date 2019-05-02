@@ -307,7 +307,9 @@ class Admin_Apple_Index_Page extends Apple_News {
 
 		// Localize strings.
 		wp_localize_script(
-			$this->plugin_slug . '_export_table_js', 'apple_news_export_table', array(
+			$this->plugin_slug . '_export_table_js',
+			'apple_news_export_table',
+			array(
 				'reset_confirmation'  => __( "Are you sure you want to reset status? Please only proceed if you're certain the post is stuck or this could reset in duplicate posts in Apple News.", 'apple-news' ),
 				'delete_confirmation' => __( 'Are you sure you want to delete this post from Apple News?', 'apple-news' ),
 			)

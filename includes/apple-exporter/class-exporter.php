@@ -67,10 +67,10 @@ class Exporter {
 	 * @access public
 	 */
 	public function __construct( $content, $workspace = null, $settings = null ) {
-		$this->content    = $content;
-		$this->workspace  = $workspace ?: new Workspace( $this->content_id() );
-		$this->settings   = $settings ?: new Settings();
-		$this->builders   = array();
+		$this->content   = $content;
+		$this->workspace = $workspace ?: new Workspace( $this->content_id() );
+		$this->settings  = $settings ?: new Settings();
+		$this->builders  = array();
 	}
 
 	/**
