@@ -105,12 +105,7 @@ class Quote extends Component {
 			'blockquote-layout',
 			__( 'Blockquote Layout', 'apple-news' ),
 			array(
-				'contentInset' => array(
-					'bottom' => true,
-					'left'   => true,
-					'right'  => true,
-					'top'    => true,
-				),
+				'padding' => 20
 			)
 		);
 
