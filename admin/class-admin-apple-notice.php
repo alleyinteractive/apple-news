@@ -124,6 +124,11 @@ class Admin_Apple_Notice {
 	 */
 	public static function show() {
 
+		// If we are on a single page and the block editor is in use, don't trigger this functionality.
+		if ( apple_news_block_editor_is_active_for_post() ) {
+			return;
+		}
+
 		// Check for notices.
 		$notices = self::get_user_meta( get_current_user_id() );
 		if ( empty( $notices ) || ! is_array( $notices ) ) {

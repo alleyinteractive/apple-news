@@ -133,6 +133,38 @@ function apple_news_block_editor_is_active() {
 }
 
 /**
+ * Check if Block Editor is active for a given post ID.
+ *
+ * @param int $post_id Optional. The post ID to check. Defaults to the current post ID.
+ * @return bool
+ */
+function apple_news_block_editor_is_active_for_post( $post_id = 0 ) {
+
+	// If get_current_screen is not defined, we can't get info about the view, so bail out.
+	if ( ! function_exists( 'get_current_screen' ) ) {
+		return false;
+	}
+
+	// Only return true if we are on the post add/edit screen.
+	$screen = get_current_screen();
+	if ( empty( $screen->base ) || 'post' !== $screen->base ) {
+		return false;
+	}
+
+	// If the post ID isn't specified, pull the current post ID.
+	if ( empty( $post_id ) ) {
+		$post_id = get_the_ID();
+	}
+
+	// If the post ID isn't defined, bail out.
+	if ( empty( $post_id ) ) {
+		return false;
+	}
+
+	return use_block_editor_for_post( $post_id );
+}
+
+/**
  * Check if Classic Editor plugin is active.
  *
  * @return bool
