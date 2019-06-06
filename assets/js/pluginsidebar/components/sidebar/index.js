@@ -59,6 +59,7 @@ class Sidebar extends React.PureComponent {
     super(props);
 
     this.state = {
+      notifications: [],
       sections: [],
       settings: {
         enableCoverArt: false,
@@ -74,6 +75,18 @@ class Sidebar extends React.PureComponent {
     this.fetchSections();
     this.fetchSettings();
     this.fetchPublishState();
+    this.fetchNotifications();
+  }
+
+  /**
+   * Fetch Apple News notifications for the current user.
+   */
+  fetchNotifications() {
+    const path = '/apple-news/v1/get-notifications';
+
+    apiFetch({ path })
+      .then((notifications) => (this.setState({ notifications })))
+      .catch((error) => console.error(error)); /* eslint-disable-line no-console */
   }
 
   /**
@@ -179,6 +192,7 @@ class Sidebar extends React.PureComponent {
     } = this.props;
 
     const {
+      notifications,
       sections,
       settings: {
         enableCoverArt,
@@ -217,6 +231,11 @@ class Sidebar extends React.PureComponent {
         title={__('Publish to Apple News Options', 'apple-news')}
       >
         <div className="components-panel__body is-opened">
+          {notifications.map((notification) => (
+            <div key={notification.message}>
+              {`${notification.type}: ${notification.message}`}
+            </div>
+          ))}
           <h3>Sections</h3>
           {
             sections.map(({ id, name }) => (
