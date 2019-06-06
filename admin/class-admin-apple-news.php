@@ -255,9 +255,13 @@ class Admin_Apple_News extends Apple_News {
 	 * @access public
 	 */
 	public static function show_error( $message ) {
-		echo '<div class="apple-news-notice apple-news-notice-error"><p>'
-			. esc_html( $message )
-			. '</p></div>';
+		if ( apple_news_block_editor_is_active_for_post() ) {
+			Admin_Apple_Notice::error( $message );
+		} else {
+			echo '<div class="apple-news-notice apple-news-notice-error"><p>'
+				. esc_html( $message )
+				. '</p></div>';
+		}
 	}
 
 	/**

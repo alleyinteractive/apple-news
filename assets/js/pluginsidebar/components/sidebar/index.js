@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types';
 import ImagePicker from '../imagePicker';
+import Notifications from '../notifications';
 
 const {
   apiFetch,
@@ -59,7 +60,6 @@ class Sidebar extends React.PureComponent {
     super(props);
 
     this.state = {
-      notifications: [],
       sections: [],
       settings: {
         enableCoverArt: false,
@@ -75,18 +75,6 @@ class Sidebar extends React.PureComponent {
     this.fetchSections();
     this.fetchSettings();
     this.fetchPublishState();
-    this.fetchNotifications();
-  }
-
-  /**
-   * Fetch Apple News notifications for the current user.
-   */
-  fetchNotifications() {
-    const path = '/apple-news/v1/get-notifications';
-
-    apiFetch({ path })
-      .then((notifications) => (this.setState({ notifications })))
-      .catch((error) => console.error(error)); /* eslint-disable-line no-console */
   }
 
   /**
@@ -192,7 +180,6 @@ class Sidebar extends React.PureComponent {
     } = this.props;
 
     const {
-      notifications,
       sections,
       settings: {
         enableCoverArt,
@@ -200,7 +187,10 @@ class Sidebar extends React.PureComponent {
       },
       publishState,
     } = this.state;
-    const selectedSectionsArray = JSON.parse(selectedSections || '[]');
+    const selectedSectionsRaw = JSON.parse(selectedSections);
+    const selectedSectionsArray = Array.isArray(selectedSectionsRaw)
+      ? selectedSectionsRaw
+      : [];
     const parsedCoverArt = JSON.parse(coverArt || '{}');
     const coverArtOrientation = parsedCoverArt.orientation || 'landscape';
     const coverArtSizes = [
@@ -231,24 +221,18 @@ class Sidebar extends React.PureComponent {
         title={__('Publish to Apple News Options', 'apple-news')}
       >
         <div className="components-panel__body is-opened">
-          {notifications.map((notification) => (
-            <div key={notification.message}>
-              {`${notification.type}: ${notification.message}`}
-            </div>
-          ))}
+          <Notifications />
           <h3>Sections</h3>
-          {
-            sections.map(({ id, name }) => (
-              <CheckboxControl
-                key={id}
-                label={name}
-                checked={- 1 !== selectedSectionsArray.indexOf(id)}
-                onChange={
-                  (checked) => this.updateSelectedSections(checked, id)
-                }
-              />
-            ))
-          }
+          {Array.isArray(sections) && sections.map(({ id, name }) => (
+            <CheckboxControl
+              key={id}
+              label={name}
+              checked={- 1 !== selectedSectionsArray.indexOf(id)}
+              onChange={
+                (checked) => this.updateSelectedSections(checked, id)
+              }
+            />
+          ))}
           <p>
             <em>
               {
