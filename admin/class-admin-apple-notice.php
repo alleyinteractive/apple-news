@@ -32,6 +32,16 @@ class Admin_Apple_Notice {
 	}
 
 	/**
+	 * Get the admin notice(s).
+	 *
+	 * @access public
+	 */
+	public static function get() {
+		$notices = self::get_user_meta( get_current_user_id() );
+		return ( ! empty( $notices ) && is_array( $notices ) ) ? $notices : [];
+	}
+
+	/**
 	 * Check if any notices exist for the current user.
 	 *
 	 * @access public

@@ -22,8 +22,9 @@ require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-preview.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-json.php';
 // REST Includes
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-sections.php';
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-settings.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-notifications.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-published-state.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-settings.php';
 
 /**
  * Entry-point class for the plugin.
