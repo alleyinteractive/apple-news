@@ -99,7 +99,7 @@ class Admin_Apple_News extends Apple_News {
 				'apple_news_coverart'           => [
 					'sanitize_callback' => 'apple_news_sanitize_coverart_data',
 					'show_in_rest'      => [
-						'prepare_callback' => 'wp_json_encode',
+						'prepare_callback' => 'apple_news_json_encode',
 					],
 				],
 				'apple_news_is_hidden'          => [
@@ -117,7 +117,7 @@ class Admin_Apple_News extends Apple_News {
 				'apple_news_sections'           => [
 					'sanitize_callback' => 'apple_news_sanitize_selected_sections',
 					'show_in_rest'      => [
-						'prepare_callback' => 'wp_json_encode',
+						'prepare_callback' => 'apple_news_json_encode',
 					],
 				],
 			];

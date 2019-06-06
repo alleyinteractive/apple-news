@@ -8,6 +8,17 @@
  */
 
 /**
+ * Prepares a meta value, stored as an array, as JSON to be returned in the REST response.
+ *
+ * @param mixed $value The value to transform.
+ *
+ * @return false|string False on failure, JSON string on success.
+ */
+function apple_news_json_encode( $value ) {
+	return wp_json_encode( $value );
+}
+
+/**
  * Register meta for posts or terms with sensible defaults and sanitization.
  *
  * @throws InvalidArgumentException For unmet requirements.
@@ -78,8 +89,26 @@ function apple_news_sanitize_coverart_data( $meta_value ) {
 		return $meta_value;
 	}
 
-	// TODO: Add sanitization/validation here.
-	return json_decode( $meta_value, true );
+	// Get an array of image size keys for use in validating the meta.
+	$image_sizes = array_keys( Admin_Apple_News::get_image_sizes() );
+
+	// Construct the meta value from the array of image sizes.
+	$raw_value = json_decode( $meta_value, true );
+	$sanitized_value = [];
+	foreach ( $image_sizes as $image_size ) {
+		if ( ! empty( $raw_value[ $image_size ] ) && is_int( $raw_value[ $image_size ] ) ) {
+			$sanitized_value[ $image_size ] = $raw_value[ $image_size ];
+		}
+	}
+
+	// Add the orientation, if it is set.
+	if ( ! empty( $raw_value['orientation'] )
+		&& in_array( $raw_value['orientation'], [ 'landscape', 'portrait', 'square' ], true )
+	) {
+		$sanitized_value['orientation'] = $raw_value['orientation'];
+	}
+
+	return $sanitized_value;
 }
 
 /**

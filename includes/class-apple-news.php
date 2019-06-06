@@ -363,13 +363,7 @@ class Apple_News {
 	 * @param mixed     $prev_value Optional. If specified, only update existing.
 	 * @return null|bool True if the conditions are ripe for the fix, otherwise the existing value of $check.
 	 */
-	public function filter_update_post_metadata(
-		$check,
-		$object_id,
-		$meta_key,
-		$meta_value,
-		$prev_value
-	) {
+	public function filter_update_post_metadata( $check, $object_id, $meta_key, $meta_value, $prev_value ) {
 		if ( empty( $prev_value ) ) {
 			$old_value = get_metadata( 'post', $object_id, $meta_key );
 			if ( 1 === count( $old_value ) ) {
