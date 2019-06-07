@@ -36,6 +36,8 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
+    "dompurify": "^1.0.10",
     "prop-types": "^15.7.2"
   }
 }

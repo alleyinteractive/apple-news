@@ -220,7 +220,10 @@ class Sidebar extends React.PureComponent {
         name="publish-to-apple-news"
         title={__('Publish to Apple News Options', 'apple-news')}
       >
-        <div className="components-panel__body is-opened">
+        <div
+          className="components-panel__body is-opened"
+          id="apple-news-publish"
+        >
           <Notifications />
           <h3>Sections</h3>
           {Array.isArray(sections) && sections.map(({ id, name }) => (

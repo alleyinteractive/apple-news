@@ -1,5 +1,7 @@
 /* global React, wp */
 
+import dompurify from 'dompurify';
+
 /**
  * A component to render Apple News notifications.
  */
@@ -34,7 +36,7 @@ export default class Notifications extends React.PureComponent {
 
     // Loop over the array of notifications and determine which ones we need to clear.
     const toClear = notifications
-      .filter((notification) => false === notification.dismissable);
+      .filter((notification) => false === notification.dismissible);
 
     // Ensure there are items to be cleared.
     if (0 === toClear.length) {
@@ -76,17 +78,34 @@ export default class Notifications extends React.PureComponent {
    */
   render() {
     const {
+      Fragment,
+    } = React;
+    const {
+      components: {
+        Notice,
+      },
+    } = wp;
+    const {
       notifications,
     } = this.state;
 
     return (
-      <ul>
+      <Fragment>
         {notifications.map((notification) => (
-          <li key={notification.message}>
-            {`${notification.type}: ${notification.message}`}
-          </li>
+          <Notice
+            isDismissible={true === notification.dismissible}
+            key={notification.message}
+            onRemove={() => console.log(notification.message)} // eslint-disable-line
+            status={notification.type}
+          >
+            <p
+              dangerouslySetInnerHTML={{ // eslint-disable-line react/no-danger
+                __html: dompurify.sanitize(notification.message),
+              }}
+            />
+          </Notice>
         ))}
-      </ul>
+      </Fragment>
     );
   }
 }
