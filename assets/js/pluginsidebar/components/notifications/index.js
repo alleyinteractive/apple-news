@@ -15,7 +15,31 @@ export default class Notifications extends React.PureComponent {
    * Actions to take after the component mounted.
    */
   componentDidMount() {
+    const {
+      data: {
+        subscribe,
+      },
+    } = wp;
+
+    // Kick off the initial fetch of notifications.
     this.fetchNotifications();
+
+    // When the post is published or updated, we refresh notifications.
+    subscribe(() => {
+      const {
+        data: {
+          select,
+        },
+      } = wp;
+
+      // If the update is anything other than a successful save, bail out.
+      if (! select('core/editor').didPostSaveRequestSucceed()) {
+        return;
+      }
+
+      // Re-fetch notifications.
+      this.fetchNotifications();
+    });
   }
 
   /**
@@ -36,7 +60,7 @@ export default class Notifications extends React.PureComponent {
 
     // Loop over the array of notifications and determine which ones we need to clear.
     const toClear = notifications
-      .filter((notification) => false === notification.dismissible);
+      .filter((notification) => true !== notification.dismissible);
 
     // Ensure there are items to be cleared.
     if (0 === toClear.length) {
@@ -56,6 +80,18 @@ export default class Notifications extends React.PureComponent {
 
   /**
    * Fetches notifications for the current user via the REST API.
+   *
+   * Once notifications have been fetched, triggers an action to clear
+   * notifications that should time out after a 1s delay. This covers
+   * scenarios like a publish success or publish error message, where
+   * they should display until the next update. Because the mechanism
+   * for subscribing to updates in Gutenberg is a blunt instrument,
+   * and several update actions are triggered in rapid succession, there
+   * is not a reliable method to say "is the action that just completed
+   * the post save action that resulted in Apple News updating" so we
+   * need to pad it out a bit to avoid race conditions and/or the
+   * message disappearing immediately after being shown before the user
+   * can read it.
    */
   fetchNotifications() {
     const {
@@ -64,8 +100,19 @@ export default class Notifications extends React.PureComponent {
     const path = '/apple-news/v1/get-notifications';
     apiFetch({ path })
       .then((notifications) => {
-        if (Array.isArray(notifications) && 0 < notifications.length) {
-          this.setState({ notifications }, this.clearNotifications);
+        if (Array.isArray(notifications)) {
+          if (0 < notifications.length) {
+            this.setState(
+              {
+                notifications,
+              },
+              () => setTimeout(this.clearNotifications, 1000)
+            );
+          } else {
+            this.setState({
+              notifications,
+            });
+          }
         }
       })
       .catch((error) => console.error(error)); /* eslint-disable-line no-console */
