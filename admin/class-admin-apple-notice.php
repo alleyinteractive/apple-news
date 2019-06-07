@@ -26,7 +26,7 @@ class Admin_Apple_Notice {
 	 * check to ensure that the notification objects match, then clears them
 	 * according to the following rules:
 	 *
-	 * - If a notification is set to be dismissable, sets the dismissed flag
+	 * - If a notification is set to be dismissible, sets the dismissed flag
 	 *   to true.
 	 * - If a notification is not set to be dismisslable, removes the
 	 *   notification entirely.
@@ -71,7 +71,7 @@ class Admin_Apple_Notice {
 					ksort( $notice );
 					if ( in_array( wp_json_encode( $notice ), $notifications, true ) ) {
 						$updated = true;
-						if ( ! empty( $notice['dismissable'] ) && true === $notice['dismissable'] ) {
+						if ( ! empty( $notice['dismissible'] ) && true === $notice['dismissible'] ) {
 							$notice['dismissed'] = true;
 						} else {
 							return null;
@@ -97,11 +97,11 @@ class Admin_Apple_Notice {
 	 *
 	 * @param string $message     The message to be displayed.
 	 * @param int    $user_id     The user ID for which to display the message.
-	 * @param bool   $dismissable Whether the message is dismissable (dismissed state stored in DB).
+	 * @param bool   $dismissible Whether the message is dismissible (dismissed state stored in DB).
 	 * @access public
 	 */
-	public static function error( $message, $user_id = null, $dismissable = false ) {
-		self::message( $message, 'error', $user_id, $dismissable );
+	public static function error( $message, $user_id = null, $dismissible = false ) {
+		self::message( $message, 'error', $user_id, $dismissible );
 	}
 
 	/**
@@ -130,11 +130,11 @@ class Admin_Apple_Notice {
 	 *
 	 * @param string $message     The message to be displayed.
 	 * @param int    $user_id     The user ID for which to display the message.
-	 * @param bool   $dismissable Whether the message is dismissable (dismissed state stored in DB).
+	 * @param bool   $dismissible Whether the message is dismissible (dismissed state stored in DB).
 	 * @access public
 	 */
-	public static function info( $message, $user_id = null, $dismissable = false ) {
-		self::message( $message, 'warning', $user_id, $dismissable );
+	public static function info( $message, $user_id = null, $dismissible = false ) {
+		self::message( $message, 'warning', $user_id, $dismissible );
 	}
 
 	/**
@@ -143,10 +143,10 @@ class Admin_Apple_Notice {
 	 * @param string $message     The message to be displayed.
 	 * @param string $type        The type of message to display.
 	 * @param int    $user_id     The user ID for which to display the message.
-	 * @param bool   $dismissable Whether the message is dismissable (dismissed state stored in DB).
+	 * @param bool   $dismissible Whether the message is dismissible (dismissed state stored in DB).
 	 * @access public
 	 */
-	public static function message( $message, $type, $user_id = null, $dismissable = false ) {
+	public static function message( $message, $type, $user_id = null, $dismissible = false ) {
 
 		// Default to the current user, if no ID was specified.
 		if ( empty( $user_id ) ) {
@@ -175,7 +175,7 @@ class Admin_Apple_Notice {
 		self::add_user_meta(
 			$user_id,
 			array(
-				'dismissable' => $dismissable,
+				'dismissible' => $dismissible,
 				'dismissed'   => false,
 				'message'     => $message,
 				'type'        => $type,
@@ -237,8 +237,8 @@ class Admin_Apple_Notice {
 				self::show_notice( $notice['message'], $type );
 			}
 
-			// If the notice is dismissable, ensure it persists in the DB.
-			if ( ! empty( $notice['dismissable'] ) ) {
+			// If the notice is dismissible, ensure it persists in the DB.
+			if ( ! empty( $notice['dismissible'] ) ) {
 				$updated_notices[] = $notice;
 			}
 		}
@@ -254,11 +254,11 @@ class Admin_Apple_Notice {
 	 *
 	 * @param string $message     The message to be displayed.
 	 * @param int    $user_id     The user ID for which to display the message.
-	 * @param bool   $dismissable Whether the message is dismissable (dismissed state stored in DB).
+	 * @param bool   $dismissible Whether the message is dismissible (dismissed state stored in DB).
 	 * @access public
 	 */
-	public static function success( $message, $user_id = null, $dismissable = false ) {
-		self::message( $message, 'success', $user_id, $dismissable );
+	public static function success( $message, $user_id = null, $dismissible = false ) {
+		self::message( $message, 'success', $user_id, $dismissible );
 	}
 
 	/**
