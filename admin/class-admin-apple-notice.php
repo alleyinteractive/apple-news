@@ -20,6 +20,79 @@ class Admin_Apple_Notice {
 	const KEY = 'apple_news_notice';
 
 	/**
+	 * Clear one or more admin notices.
+	 *
+	 * Accepts an array of notification objects to clear. First performs a
+	 * check to ensure that the notification objects match, then clears them
+	 * according to the following rules:
+	 *
+	 * - If a notification is set to be dismissable, sets the dismissed flag
+	 *   to true.
+	 * - If a notification is not set to be dismisslable, removes the
+	 *   notification entirely.
+	 *
+	 * @access public
+	 *
+	 * @param array $notifications Notification objects to clear.
+	 * @return bool True if notifications were cleared, false if they were not.
+	 */
+	public static function clear( $notifications ) {
+		// Ensure a user is logged in before proceeding.
+		$current_user = get_current_user_id();
+		if ( empty( $current_user ) ) {
+			return false;
+		}
+
+		// Ensure we were given a non-empty array of notifications to clear.
+		if ( empty( $notifications ) || ! is_array( $notifications ) ) {
+			return false;
+		}
+
+		// Ensure the user has notices to compare to.
+		$notices = self::get_user_meta( $current_user );
+		if ( empty( $notices ) || ! is_array( $notices ) ) {
+			return false;
+		}
+
+		// Sort and JSON-encode the removal array to simplify comparison.
+		$notifications = array_map(
+			function( $value ) {
+				ksort( $value );
+				return wp_json_encode( $value );
+			},
+			$notifications
+		);
+
+		// Build an updated array of notices.
+		$updated = false;
+		$notices = array_filter(
+			array_map(
+				function ( $notice ) use ( $notifications, &$updated ) {
+					ksort( $notice );
+					if ( in_array( wp_json_encode( $notice ), $notifications, true ) ) {
+						$updated = true;
+						if ( ! empty( $notice['dismissable'] ) && true === $notice['dismissable'] ) {
+							$notice['dismissed'] = true;
+						} else {
+							return null;
+						}
+					}
+
+					return $notice;
+				},
+				$notices
+			)
+		);
+
+		// If there are no changes, bail out.
+		if ( ! $updated ) {
+			return false;
+		}
+
+		return false !== self::update_user_meta( $current_user, $notices );
+	}
+
+	/**
 	 * Add an error message.
 	 *
 	 * @param string $message     The message to be displayed.
