@@ -106,6 +106,46 @@ export default class Notifications extends React.PureComponent {
   }
 
   /**
+   * A callback for a dismiss action on a notification.
+   * @param {object} notification - The notification to mark as dismissed.
+   */
+  dismissNotification(notification) {
+    const {
+      apiFetch,
+    } = wp;
+    const {
+      notifications,
+    } = this.state;
+
+    // Send the request to the API to clear the notification.
+    apiFetch({
+      data: {
+        toClear: [notification],
+      },
+      method: 'POST',
+      path: '/apple-news/v1/clear-notifications',
+    })
+      .then(() => {
+        // Set the notification to dismissed and update state.
+        const updatedNotifications = notifications.map((compare) => {
+          // If the notification doesn't match, return as-is.
+          if (JSON.stringify(compare) !== JSON.stringify(notification)) {
+            return compare;
+          }
+
+          return {
+            ...compare,
+            dismissed: true,
+          };
+        });
+        this.setState({
+          notifications: updatedNotifications,
+        });
+      })
+      .catch((error) => console.error(error)); /* eslint-disable-line no-console */
+  }
+
+  /**
    * Fetches notifications for the current user via the REST API.
    */
   fetchNotifications() {
@@ -151,13 +191,16 @@ export default class Notifications extends React.PureComponent {
       notifications,
     } = this.state;
 
+    const visibleNotifications = notifications
+      .filter((notification) => true !== notification.dismissed);
+
     return (
       <Fragment>
-        {notifications.map((notification) => (
+        {visibleNotifications.map((notification) => (
           <Notice
             isDismissible={true === notification.dismissible}
             key={notification.message}
-            onRemove={() => console.log(notification.message)} // eslint-disable-line
+            onRemove={() => this.dismissNotification(notification)}
             status={notification.type}
           >
             <p

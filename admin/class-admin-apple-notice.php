@@ -28,7 +28,7 @@ class Admin_Apple_Notice {
 	 *
 	 * - If a notification is set to be dismissible, sets the dismissed flag
 	 *   to true.
-	 * - If a notification is not set to be dismisslable, removes the
+	 * - If a notification is not set to be dismissible, removes the
 	 *   notification entirely.
 	 *
 	 * @access public
