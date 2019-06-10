@@ -107,18 +107,6 @@ export default class Notifications extends React.PureComponent {
 
   /**
    * Fetches notifications for the current user via the REST API.
-   *
-   * Once notifications have been fetched, triggers an action to clear
-   * notifications that should time out after a 1s delay. This covers
-   * scenarios like a publish success or publish error message, where
-   * they should display until the next update. Because the mechanism
-   * for subscribing to updates in Gutenberg is a blunt instrument,
-   * and several update actions are triggered in rapid succession, there
-   * is not a reliable method to say "is the action that just completed
-   * the post save action that resulted in Apple News updating" so we
-   * need to pad it out a bit to avoid race conditions and/or the
-   * message disappearing immediately after being shown before the user
-   * can read it.
    */
   fetchNotifications() {
     const {
@@ -133,7 +121,7 @@ export default class Notifications extends React.PureComponent {
               {
                 notifications,
               },
-              () => setTimeout(this.clearNotifications, 1000)
+              this.clearNotifications
             );
           } else {
             this.setState({
