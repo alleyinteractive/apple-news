@@ -1,5 +1,4 @@
 <?php
-global $post;
 /**
  * Entry point for the plugin.
  *
