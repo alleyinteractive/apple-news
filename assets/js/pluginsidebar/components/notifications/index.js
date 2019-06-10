@@ -8,7 +8,9 @@ import dompurify from 'dompurify';
 export default class Notifications extends React.PureComponent {
   // Set default state.
   state = {
+    modified: 0,
     notifications: [],
+    unsubscribe: undefined,
   };
 
   /**
@@ -17,6 +19,7 @@ export default class Notifications extends React.PureComponent {
   componentDidMount() {
     const {
       data: {
+        select,
         subscribe,
       },
     } = wp;
@@ -25,21 +28,45 @@ export default class Notifications extends React.PureComponent {
     this.fetchNotifications();
 
     // When the post is published or updated, we refresh notifications.
-    subscribe(() => {
+    const unsubscribe = subscribe(() => {
       const {
-        data: {
-          select,
-        },
-      } = wp;
+        modified,
+      } = this.state;
 
-      // If the update is anything other than a successful save, bail out.
-      if (! select('core/editor').didPostSaveRequestSucceed()) {
+      // If the modified date has not changed, bail out.
+      const newModified = select('core/editor')
+        .getEditedPostAttribute('modified');
+      if (modified === newModified) {
         return;
       }
 
-      // Re-fetch notifications.
-      this.fetchNotifications();
+      // Update the modified date in state and fetch notifications.
+      this.setState(
+        {
+          modified: newModified,
+        },
+        this.fetchNotifications
+      );
     });
+
+    // Add the last modified date and unsubscribe to state.
+    this.setState({
+      modified: select('core/editor').getEditedPostAttribute('modified'),
+      unsubscribe,
+    });
+  }
+
+  /**
+   * De-initializes functionality before the component is destroyed.
+   */
+  componentWillUnmount() {
+    const {
+      unsubscribe,
+    } = this.state;
+
+    if (unsubscribe) {
+      unsubscribe();
+    }
   }
 
   /**
