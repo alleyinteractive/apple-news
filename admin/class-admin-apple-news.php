@@ -259,7 +259,7 @@ class Admin_Apple_News extends Apple_News {
 		if ( apple_news_block_editor_is_active_for_post() ) {
 			Admin_Apple_Notice::error( $message );
 		} else {
-			echo '<div class="apple-news-notice apple-news-notice-error"><p>'
+			echo '<div class="apple-news-notice apple-news-notice-error" role="alert"><p>'
 				. esc_html( $message )
 				. '</p></div>';
 		}

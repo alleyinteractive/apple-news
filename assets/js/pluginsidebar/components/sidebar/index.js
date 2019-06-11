@@ -226,16 +226,21 @@ class Sidebar extends React.PureComponent {
         >
           <Notifications />
           <h3>Sections</h3>
-          {Array.isArray(sections) && sections.map(({ id, name }) => (
-            <CheckboxControl
-              key={id}
-              label={name}
-              checked={- 1 !== selectedSectionsArray.indexOf(id)}
-              onChange={
-                (checked) => this.updateSelectedSections(checked, id)
-              }
-            />
-          ))}
+          {Array.isArray(sections) && (
+            <ul className="apple-news-sections">
+              {sections.map(({ id, name }) => (
+                <li key={id}>
+                  <CheckboxControl
+                    label={name}
+                    checked={- 1 !== selectedSectionsArray.indexOf(id)}
+                    onChange={
+                      (checked) => this.updateSelectedSections(checked, id)
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
           <p>
             <em>
               {
