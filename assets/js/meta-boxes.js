@@ -2,6 +2,7 @@
 	'use strict';
 
 	var $assign_by_taxonomy = $( '#apple-news-sections-by-taxonomy' );
+	var $exclude_post = $( '#apple-news-is-excluded' );
 
 	// Listen for clicks on the submit button.
 	$( '#apple-news-publish-submit' ).click(function ( e ) {
@@ -53,4 +54,15 @@
 			.addClass( 'apple-news-metabox-section-collapsed' )
 			.removeClass( 'apple-news-metabox-section-visible' );
 	} );
+
+	// Listen for changes to the "exclude post" checkbox.
+	if ( $exclude_post.length ) {
+		$exclude_post.on( 'change', function () {
+			if ( $( this ).is( ':checked' ) ) {
+				$( '.apple-news-metabox-section:not(#apple-news-metabox-exclude,.apple-news-metabox-section-collapsable),#apple-news-publish > h3,#apple-news-publish > p' ).hide();
+			} else {
+				$( '.apple-news-metabox-section:not(.apple-news-metabox-section-collapsable),#apple-news-publish > h3,#apple-news-publish > p' ).show();
+			}
+		} ).change();
+	}
 })( jQuery, window );

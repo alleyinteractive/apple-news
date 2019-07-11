@@ -20,6 +20,28 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 <?php endif;  // phpcs:ignore Squiz.PHP.NonExecutableCode.Unreachable ?>
 <div id="apple-news-publish">
 	<?php wp_nonce_field( $publish_action, 'apple_news_nonce' ); ?>
+	<?php
+	// Show the exclusion option if set for autosync and not already published to Apple News.
+	global $current_screen;
+	if (
+		'yes' === $this->settings->get( 'api_autosync' )
+		&& ! get_post_meta( $post->ID, 'apple_news_api_id', true )
+		// @todo Remove Gutenberg exclusion once the metadata timing bug is fixed.
+		// @see https://github.com/alleyinteractive/apple-news/issues/590
+		&& ! ( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() )
+		&& ! ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() )
+	) :
+	?>
+		<div id="apple-news-metabox-exclude" class="apple-news-metabox-section">
+			<h3><?php esc_html_e( 'Exclude from Apple News', 'apple-news' ); ?></h3>
+			<label for="apple-news-is-excluded">
+				<input id="apple-news-is-excluded" name="apple_news_is_excluded" type="checkbox" value="1" <?php checked( $is_excluded ); ?>>
+				<?php esc_html_e( 'Check this to exclude this article from Apple News entirely.', 'apple-news' ); ?>
+			</label>
+		</div>
+	<?php
+	endif;
+	?>
 	<div id="apple-news-metabox-sections" class="apple-news-metabox-section">
 		<h3><?php esc_html_e( 'Sections', 'apple-news' ); ?></h3>
 		<?php Admin_Apple_Meta_Boxes::build_sections_override( $post->ID ); ?>

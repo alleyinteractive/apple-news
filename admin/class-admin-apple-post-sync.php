@@ -94,6 +94,11 @@ class Admin_Apple_Post_Sync {
 			return;
 		}
 
+		// Check if the post has been marked for exclusion from auto-publication.
+		// @fixme When Gutenberg is active, sometimes this is not set at the right time.
+		// @see https://github.com/alleyinteractive/apple-news/issues/590
+		$excluded = (bool) get_post_meta( $id, 'apple_news_is_excluded', true );
+
 		/**
 		 * Ability to override the autopublishing of posts on a per-post level.
 		 *
@@ -101,7 +106,7 @@ class Admin_Apple_Post_Sync {
 		 * @param int     $post_id Post ID.
 		 * @param WP_Post $post Post object.
 		 */
-		$should_autopublish = (bool) apply_filters( 'apple_news_should_post_autopublish', true, $id, $post );
+		$should_autopublish = (bool) apply_filters( 'apple_news_should_post_autopublish', ! $excluded, $id, $post );
 
 		// Bail if the filter returns false.
 		if ( ! $should_autopublish ) {
