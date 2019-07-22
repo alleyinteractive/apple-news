@@ -12,8 +12,9 @@ const {
     compose,
   },
   components: {
-    PanelBody,
+    Button,
     CheckboxControl,
+    PanelBody,
     SelectControl,
     TextareaControl,
   },
@@ -58,20 +59,22 @@ class Sidebar extends React.PureComponent {
     post: PropTypes.shape({}).isRequired,
   };
 
+  /**
+   * Set initial state.
+   * @type {object}
+   */
+  state = {
+    autoAssignCategories: false,
+    sections: [],
+    selectedSectionsPrev: null,
+    settings: {},
+    publishState: '',
+  };
+
   constructor(props) {
     super(props);
 
-    this.state = {
-      autoAssignCategories: false,
-      sections: [],
-      selectedSectionsPrev: null,
-      settings: {
-        enableCoverArt: false,
-        adminUrl: '',
-      },
-      publishState: '',
-    };
-
+    this.publishPost = this.publishPost.bind(this);
     this.updateSelectedSections = this.updateSelectedSections.bind(this);
   }
 
@@ -79,24 +82,6 @@ class Sidebar extends React.PureComponent {
     this.fetchSections();
     this.fetchSettings();
     this.fetchPublishState();
-    this.setAutoCategoryState();
-  }
-
-  /**
-   * Set initial checkbox state for category auto.
-   *
-   * @return  {boolean}  state for autoAssignCategories
-   */
-  setAutoCategoryState() {
-    const {
-      meta: {
-        selectedSections,
-      },
-    } = this.props;
-
-    this.setState({
-      autoAssignCategories: 'null' === selectedSections,
-    });
   }
 
   /**
@@ -105,8 +90,18 @@ class Sidebar extends React.PureComponent {
   fetchSettings() {
     const path = '/apple-news/v1/get-settings';
 
+    const {
+      meta: {
+        selectedSections,
+      },
+    } = this.props;
+
     apiFetch({ path })
-      .then((settings) => (this.setState({ settings })))
+      .then((settings) => this.setState({
+        autoAssignCategories: 'null' === selectedSections
+          && true === settings.automaticAssignment,
+        settings,
+      }))
       .catch((error) => console.error(error)); /* eslint-disable-line no-console */
   }
 
@@ -133,6 +128,29 @@ class Sidebar extends React.PureComponent {
     apiFetch({ path })
       .then(({ publishState }) => (this.setState({ publishState })))
       .catch((error) => console.error(error)); /* eslint-disable-line no-console */
+  }
+
+  /**
+   * Sends a request to the REST API to publish the post.
+   */
+  publishPost() {
+    const {
+      post: {
+        id = 0,
+      } = {},
+    } = this.props;
+
+    const path = '/apple-news/v1/publish';
+
+    apiFetch({
+      data: {
+        id,
+      },
+      method: 'POST',
+      path,
+    })
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error)); // eslint-disable-line no-console
   }
 
   /**
@@ -230,13 +248,21 @@ class Sidebar extends React.PureComponent {
       autoAssignCategories,
       sections,
       settings: {
+        adminUrl,
+        apiAutosync,
+        apiAutosyncDelete,
+        apiAutosyncUpdate,
         automaticAssignment,
         enableCoverArt,
-        adminUrl,
       },
       selectedSectionsPrev,
       publishState,
     } = this.state;
+
+    const {
+      Fragment,
+    } = React;
+
     const selectedSectionsRaw = 'null' !== selectedSections
       ? JSON.parse(selectedSections)
       : '';
@@ -523,27 +549,45 @@ class Sidebar extends React.PureComponent {
             )
           }
         </PanelBody>
-        {'' !== publishState && 'N/A' !== publishState ? (
-          <PanelBody
-            initialOpen={false}
-            title={__('Apple News Publish Information', 'apple-news')}
-          >
-            <h4>{__('API Id', 'apple-news')}</h4>
-            <p>{apiId}</p>
-            <h4>{__('Created On', 'apple-news')}</h4>
-            <p>{dateCreated}</p>
-            <h4>{__('Last Updated On', 'apple-news')}</h4>
-            <p>{dateModified}</p>
-            <h4>{__('Share URL', 'apple-news')}</h4>
-            <p>{shareUrl}</p>
-            <h4>{__('Revision', 'apple-news')}</h4>
-            <p>{revision}</p>
-            <h4>{__('Publish State', 'apple-news')}</h4>
-            <p>{publishState}</p>
-          </PanelBody>
-        ) : (
-          <div>Publish Me!</div>
-        )}
+        <PanelBody
+          initialOpen={false}
+          title={__('Apple News Publish Information', 'apple-news')}
+        >
+          {'' !== publishState && 'N/A' !== publishState ? (
+            <Fragment>
+              <h4>{__('API Id', 'apple-news')}</h4>
+              <p>{apiId}</p>
+              <h4>{__('Created On', 'apple-news')}</h4>
+              <p>{dateCreated}</p>
+              <h4>{__('Last Updated On', 'apple-news')}</h4>
+              <p>{dateModified}</p>
+              <h4>{__('Share URL', 'apple-news')}</h4>
+              <p>{shareUrl}</p>
+              <h4>{__('Revision', 'apple-news')}</h4>
+              <p>{revision}</p>
+              <h4>{__('Publish State', 'apple-news')}</h4>
+              <p>{publishState}</p>
+              {! apiAutosyncUpdate && (
+                <Button isPrimary>
+                  {__('Update', 'apple-news')}
+                </Button>
+              )}
+              {! apiAutosyncDelete && (
+                <Button isDestructive>
+                  {__('Delete', 'apple-news')}
+                </Button>
+              )}
+            </Fragment>
+          ) : (
+            <Fragment>
+              {! apiAutosync && (
+                <Button isPrimary onClick={this.publishPost}>
+                  {__('Publish', 'apple-news')}
+                </Button>
+              )}
+            </Fragment>
+          )}
+        </PanelBody>
       </PluginSidebar>
     );
   }

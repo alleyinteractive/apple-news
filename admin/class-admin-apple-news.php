@@ -26,6 +26,7 @@ require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-clear-no
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-notifications.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-published-state.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-settings.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-publish.php';
 
 /**
  * Entry-point class for the plugin.
