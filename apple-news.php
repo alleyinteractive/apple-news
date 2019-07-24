@@ -179,3 +179,14 @@ function apple_news_is_classic_editor_plugin_active() {
 
     return false;
 }
+
+/**
+ * Given a user ID, a post ID, and an action, determines whether a user can
+ * perform the action or not.
+ *
+ * @param int    $post_id The ID of the post to check.
+ * @param string $action  The action to check. One of 'publish', 'update', 'delete'.
+ * @param int    $user_id The user ID to check.
+ *
+ * @return bool True if the user can perform the action, false otherwise.
+ */
