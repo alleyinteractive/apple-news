@@ -1,6 +1,6 @@
 <?php
 /**
- * A custom endpoint for publishing a post to Apple News.
+ * A custom endpoint for updating a post on Apple News.
  *
  * @package Apple_News
  */
@@ -14,13 +14,13 @@ use \WP_Error;
 use \WP_REST_Request;
 
 /**
- * Handle a REST POST request to the /apple-news/v1/publish endpoint.
+ * Handle a REST POST request to the /apple-news/v1/update endpoint.
  *
  * @param WP_REST_Request $data Data from query args.
  *
- * @return array|WP_Error Response to the request - either data about a successfully published article, or error.
+ * @return array|WP_Error Response to the request - either data about a successfully updated article, or error.
  */
-function rest_post_publish( $data ) {
+function rest_post_update( $data ) {
 
 	// Ensure there is a post ID provided in the data.
 	$id = $data->get_param( 'id' );
@@ -46,12 +46,12 @@ function rest_post_publish( $data ) {
 		);
 	}
 
-	// Ensure the user can publish this type of post.
+	// Ensure the user can update published posts for this post type.
 	$post_type = get_post_type_object( get_post_type( $post ) );
-	if ( ! current_user_can( $post_type->cap->publish_posts ) ) {
+	if ( ! current_user_can( $post_type->cap->edit_published_posts ) ) {
 		return new WP_Error(
 			'apple_news_failed_cap_check',
-			esc_html__( 'Your user account is not permitted to publish this post to Apple News.', 'apple-news' ),
+			esc_html__( 'Your user account is not permitted to update this post on Apple News.', 'apple-news' ),
 			[
 				'status' => 401,
 			]
@@ -64,24 +64,24 @@ function rest_post_publish( $data ) {
 	) {
 		return new WP_Error(
 			'apple_news_failed_cap_check',
-			esc_html__( 'Your user account is not permitted to publish this post to Apple News.', 'apple-news' ),
+			esc_html__( 'Your user account is not permitted to update this post on Apple News.', 'apple-news' ),
 			[
 				'status' => 401,
 			]
 		);
 	}
 
-	// Try to publish the article to the API.
+	// Try to update the article via the API.
 	$action = new Push( Admin_Apple_News::$settings, $id );
 	try {
 		$action->perform();
 
-		// Negotiate the message based on whether publish will happen asynchronously or not.
+		// Negotiate the message based on whether update will happen asynchronously or not.
 		if ( 'yes' === Admin_Apple_News::$settings->api_async ) {
-			$message = __( 'Your article will be pushed shortly.', 'apple-news' );
+			$message = __( 'Your article will be updated shortly.', 'apple-news' );
 			Admin_Apple_Notice::success( $message );
 		} else {
-			$message = __( 'Your article has been pushed successfully!', 'apple-news' );
+			$message = __( 'Your article has been updated successfully!', 'apple-news' );
 		}
 
 		// Return the success message in the JSON response also.
@@ -94,7 +94,7 @@ function rest_post_publish( $data ) {
 
 		// Return the error message in the JSON response also.
 		return new WP_Error(
-			'apple_news_publish_failed',
+			'apple_news_update_failed',
 			$e->getMessage()
 		);
 	}
@@ -108,10 +108,10 @@ add_action(
 		// Register route count argument.
 		register_rest_route(
 			'apple-news/v1',
-			'/publish',
+			'/update',
 			[
 				'methods'  => 'POST',
-				'callback' => __NAMESPACE__ . '\rest_post_publish',
+				'callback' => __NAMESPACE__ . '\rest_post_update',
 			]
 		);
 	}
