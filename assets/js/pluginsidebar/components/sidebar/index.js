@@ -74,7 +74,9 @@ class Sidebar extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.deletePost = this.deletePost.bind(this);
     this.publishPost = this.publishPost.bind(this);
+    this.updatePost = this.updatePost.bind(this);
     this.updateSelectedSections = this.updateSelectedSections.bind(this);
   }
 
@@ -82,6 +84,29 @@ class Sidebar extends React.PureComponent {
     this.fetchSections();
     this.fetchSettings();
     this.fetchPublishState();
+  }
+
+  /**
+   * Sends a request to the REST API to delete the post.
+   */
+  deletePost() {
+    const {
+      post: {
+        id = 0,
+      } = {},
+    } = this.props;
+
+    const path = '/apple-news/v1/delete';
+
+    apiFetch({
+      data: {
+        id,
+      },
+      method: 'POST',
+      path,
+    })
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error)); // eslint-disable-line no-console
   }
 
   /**
@@ -141,6 +166,29 @@ class Sidebar extends React.PureComponent {
     } = this.props;
 
     const path = '/apple-news/v1/publish';
+
+    apiFetch({
+      data: {
+        id,
+      },
+      method: 'POST',
+      path,
+    })
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error)); // eslint-disable-line no-console
+  }
+
+  /**
+   * Sends a request to the REST API to update the post.
+   */
+  updatePost() {
+    const {
+      post: {
+        id = 0,
+      } = {},
+    } = this.props;
+
+    const path = '/apple-news/v1/update';
 
     apiFetch({
       data: {
@@ -568,12 +616,12 @@ class Sidebar extends React.PureComponent {
               <h4>{__('Publish State', 'apple-news')}</h4>
               <p>{publishState}</p>
               {! apiAutosyncUpdate && (
-                <Button isPrimary>
+                <Button isPrimary onClick={this.updatePost}>
                   {__('Update', 'apple-news')}
                 </Button>
               )}
               {! apiAutosyncDelete && (
-                <Button isDestructive>
+                <Button isDestructive onClick={this.deletePost}>
                   {__('Delete', 'apple-news')}
                 </Button>
               )}
