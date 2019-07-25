@@ -76,6 +76,7 @@ class Sidebar extends React.PureComponent {
     sections: [],
     selectedSectionsPrev: null,
     settings: {},
+    userCanPublish: false,
   };
 
   constructor(props) {
@@ -100,6 +101,7 @@ class Sidebar extends React.PureComponent {
     this.fetchSections();
     this.fetchSettings();
     this.fetchPublishState();
+    this.fetchUserCanPublish();
   }
 
   /**
@@ -198,6 +200,20 @@ class Sidebar extends React.PureComponent {
 
     apiFetch({ path })
       .then(({ publishState }) => (this.setState({ publishState })))
+      .catch((error) => console.error(error)); /* eslint-disable-line no-console */
+  }
+
+  /**
+   * Fetch whether the current user can publish to Apple News.
+   */
+  fetchUserCanPublish() {
+    const {
+      post,
+    } = this.props;
+    const path = `/apple-news/v1/user-can-publish/${post.id}`;
+
+    apiFetch({ path })
+      .then(({ userCanPublish }) => (this.setState({ userCanPublish })))
       .catch((error) => console.error(error)); /* eslint-disable-line no-console */
   }
 
@@ -384,6 +400,9 @@ class Sidebar extends React.PureComponent {
 
     const {
       onUpdate,
+      post: {
+        status = '',
+      } = {},
     } = this.props;
 
     const {
@@ -404,6 +423,7 @@ class Sidebar extends React.PureComponent {
         shareUrl = '',
         revision = '',
       },
+      publishState,
       sections,
       settings: {
         adminUrl,
@@ -414,7 +434,7 @@ class Sidebar extends React.PureComponent {
         enableCoverArt,
       },
       selectedSectionsPrev,
-      publishState,
+      userCanPublish,
     } = this.state;
 
     const selectedSectionsRaw = 'null' !== selectedSections
@@ -734,41 +754,45 @@ class Sidebar extends React.PureComponent {
               </Fragment>
             )}
           </PanelBody>
-          {loading ? (
-            <Spinner />
-          ) : (
+          {'publish' === status && userCanPublish && (
             <Fragment>
-              {'' !== publishState && 'N/A' !== publishState ? (
-                <Fragment>
-                  {! apiAutosyncUpdate && (
-                    <Button
-                      isPrimary
-                      onClick={this.updatePost}
-                      style={{ margin: '1em' }}
-                    >
-                      {__('Update', 'apple-news')}
-                    </Button>
-                  )}
-                  {! apiAutosyncDelete && (
-                    <Button
-                      isDefault
-                      onClick={this.deletePost}
-                      style={{ margin: '1em' }}
-                    >
-                      {__('Delete', 'apple-news')}
-                    </Button>
-                  )}
-                </Fragment>
+              {loading ? (
+                <Spinner />
               ) : (
                 <Fragment>
-                  {! apiAutosync && (
-                    <Button
-                      isPrimary
-                      onClick={this.publishPost}
-                      style={{ margin: '1em' }}
-                    >
-                      {__('Publish', 'apple-news')}
-                    </Button>
+                  {'' !== publishState && 'N/A' !== publishState ? (
+                    <Fragment>
+                      {! apiAutosyncUpdate && (
+                        <Button
+                          isPrimary
+                          onClick={this.updatePost}
+                          style={{ margin: '1em' }}
+                        >
+                          {__('Update', 'apple-news')}
+                        </Button>
+                      )}
+                      {! apiAutosyncDelete && (
+                        <Button
+                          isDefault
+                          onClick={this.deletePost}
+                          style={{ margin: '1em' }}
+                        >
+                          {__('Delete', 'apple-news')}
+                        </Button>
+                      )}
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      {! apiAutosync && (
+                        <Button
+                          isPrimary
+                          onClick={this.publishPost}
+                          style={{ margin: '1em' }}
+                        >
+                          {__('Publish', 'apple-news')}
+                        </Button>
+                      )}
+                    </Fragment>
                   )}
                 </Fragment>
               )}

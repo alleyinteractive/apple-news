@@ -10,6 +10,7 @@ use \Admin_Apple_News;
 use \Admin_Apple_Notice;
 use \Apple_Actions\Action_Exception;
 use \Apple_Actions\Index\Delete;
+use \Apple_News;
 use \WP_Error;
 use \WP_REST_Request;
 
@@ -46,22 +47,8 @@ function rest_post_delete( $data ) {
 		);
 	}
 
-	// Ensure the user can delete this type of post.
-	$post_type = get_post_type_object( get_post_type( $post ) );
-	if ( ! current_user_can( $post_type->cap->delete_published_posts ) ) {
-		return new WP_Error(
-			'apple_news_failed_cap_check',
-			esc_html__( 'Your user account is not permitted to delete this post from Apple News.', 'apple-news' ),
-			[
-				'status' => 401,
-			]
-		);
-	}
-
-	// If this post is not owned by this user, ensure the user has the right to delete others' posts.
-	if ( get_current_user_id() !== (int) $post->post_author
-		&& ! current_user_can( $post_type->cap->delete_others_posts )
-	) {
+	// Ensure the user is authorized to make changes to Apple News posts.
+	if ( ! current_user_can( apply_filters( 'apple_news_publish_capability', Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) ) ) {
 		return new WP_Error(
 			'apple_news_failed_cap_check',
 			esc_html__( 'Your user account is not permitted to delete this post from Apple News.', 'apple-news' ),

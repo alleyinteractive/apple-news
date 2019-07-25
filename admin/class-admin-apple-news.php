@@ -29,6 +29,7 @@ require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-sett
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-publish.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-sections.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-update.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-user-can-publish.php';
 
 /**
  * Entry-point class for the plugin.
