@@ -33,6 +33,15 @@
 			</tr>
 			<?php endif; ?>
 			<tr>
+				<th scope="row"><?php esc_html_e( 'Paid?', 'apple-news' ); ?></th>
+				<td>
+					<label for="apple-news-is-paid">
+						<input id="apple-news-is-paid" name="apple_news_is_paid" type="checkbox" value="1" <?php checked( $post_meta['apple_news_is_paid'][0] ); ?>>
+						<?php esc_html_e( 'Check this to indicate that viewing the article requires a paid subscription.', 'apple-news' ); ?>
+					</label>
+				</td>
+			</tr>
+			<tr>
 				<th scope="row"><?php esc_html_e( 'Preview?', 'apple-news' ); ?></th>
 				<td>
 					<label for="apple-news-is-preview">

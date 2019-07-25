@@ -111,6 +111,9 @@ class Admin_Apple_News extends Apple_News {
 				'apple_news_is_hidden'          => [
 					'type' => 'boolean',
 				],
+				'apple_news_is_paid'            => [
+					'type' => 'boolean',
+				],
 				'apple_news_is_preview'         => [
 					'type' => 'boolean',
 				],

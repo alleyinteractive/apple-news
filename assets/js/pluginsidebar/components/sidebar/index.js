@@ -42,6 +42,7 @@ class Sidebar extends React.PureComponent {
   // Define PropTypes for this component.
   static propTypes = {
     meta: PropTypes.shape({
+      isPaid: PropTypes.bool,
       isPreview: PropTypes.bool,
       isHidden: PropTypes.bool,
       isSponsored: PropTypes.bool,
@@ -409,6 +410,7 @@ class Sidebar extends React.PureComponent {
       autoAssignCategories,
       loading,
       meta: {
+        isPaid = false,
         isPreview = false,
         isHidden = false,
         isSponsored = false,
@@ -546,6 +548,16 @@ class Sidebar extends React.PureComponent {
                 }
               </em>
             </p>
+            <h3>{__('Paid Article', 'apple-news')}</h3>
+            <CheckboxControl
+              // eslint-disable-next-line max-len
+              label={__('Check this to indicate that viewing the article requires a paid subscription.', 'apple-news')}
+              onChange={(value) => onUpdate(
+                'apple_news_is_paid',
+                value
+              )}
+              checked={isPaid}
+            />
             <h3>{__('Preview Article', 'apple-news')}</h3>
             <CheckboxControl
               // eslint-disable-next-line max-len
@@ -808,6 +820,7 @@ export default compose([
   withSelect((select) => {
     const editor = select('core/editor');
     const {
+      apple_news_is_paid: isPaid,
       apple_news_is_preview: isPreview,
       apple_news_is_hidden: isHidden,
       apple_news_is_sponsored: isSponsored,
@@ -827,6 +840,7 @@ export default compose([
 
     return {
       meta: {
+        isPaid,
         isPreview,
         isHidden,
         isSponsored,

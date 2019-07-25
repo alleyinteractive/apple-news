@@ -28,6 +28,13 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 			<p class="description"><?php esc_html_e( 'Select the sections in which to publish this article. If none are selected, it will be published to the default section.', 'apple-news' ); ?></p>
 		</div>
 	</div>
+	<div id="apple-news-metabox-is-paid" class="apple-news-metabox-section">
+		<h3><?php esc_html_e( 'Paid?', 'apple-news' ); ?></h3>
+		<label for="apple-news-is-paid">
+			<input id="apple-news-is-paid" name="apple_news_is_paid" type="checkbox" value="1" <?php checked( $is_paid ); ?>>
+			<?php esc_html_e( 'Check this to indicate that viewing the article requires a paid subscription.', 'apple-news' ); ?>
+		</label>
+	</div>
 	<div id="apple-news-metabox-is-preview" class="apple-news-metabox-section">
 		<h3><?php esc_html_e( 'Preview?', 'apple-news' ); ?></h3>
 		<label for="apple-news-is-preview">

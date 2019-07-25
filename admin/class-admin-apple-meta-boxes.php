@@ -155,6 +155,13 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			delete_post_meta( $post_id, 'apple_news_sections' );
 		}
 
+		if ( ! empty( $_POST['apple_news_is_paid'] ) && 1 === intval( $_POST['apple_news_is_paid'] ) ) {
+			$is_paid = true;
+		} else {
+			$is_paid = false;
+		}
+		update_post_meta( $post_id, 'apple_news_is_paid', $is_paid );
+
 		if ( ! empty( $_POST['apple_news_is_preview'] ) && 1 === intval( $_POST['apple_news_is_preview'] ) ) {
 			$is_preview = true;
 		} else {
@@ -243,6 +250,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$api_id             = get_post_meta( $post->ID, 'apple_news_api_id', true );
 		$deleted            = get_post_meta( $post->ID, 'apple_news_api_deleted', true );
 		$pending            = get_post_meta( $post->ID, 'apple_news_api_pending', true );
+		$is_paid            = get_post_meta( $post->ID, 'apple_news_is_paid', true );
 		$is_preview         = get_post_meta( $post->ID, 'apple_news_is_preview', true );
 		$is_hidden          = get_post_meta( $post->ID, 'apple_news_is_hidden', true );
 		$maturity_rating    = get_post_meta( $post->ID, 'apple_news_maturity_rating', true );
