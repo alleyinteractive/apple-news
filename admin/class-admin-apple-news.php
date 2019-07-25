@@ -26,6 +26,7 @@ require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-delete.p
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-notifications.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-published-state.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-settings.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-modify-post.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-publish.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-sections.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-update.php';

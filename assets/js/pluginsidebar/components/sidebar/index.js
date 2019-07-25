@@ -63,6 +63,7 @@ class Sidebar extends React.PureComponent {
     }).isRequired,
     onUpdate: PropTypes.func.isRequired,
     post: PropTypes.shape({}).isRequired,
+    refreshPost: PropTypes.func.isRequired,
   };
 
   /**
@@ -72,7 +73,6 @@ class Sidebar extends React.PureComponent {
   state = {
     autoAssignCategories: false,
     loading: false,
-    meta: {},
     publishState: '',
     sections: [],
     selectedSectionsPrev: null,
@@ -90,15 +90,6 @@ class Sidebar extends React.PureComponent {
   }
 
   componentDidMount() {
-    const {
-      meta = {},
-    } = this.props;
-
-    // Save meta to state, because it can be updated via REST event handlers outside of Gutenberg.
-    this.setState({
-      meta,
-    });
-
     this.fetchSections();
     this.fetchSettings();
     this.fetchPublishState();
@@ -115,47 +106,7 @@ class Sidebar extends React.PureComponent {
       } = {},
     } = this.props;
 
-    const path = '/apple-news/v1/delete';
-
-    this.setState({
-      loading: true,
-    });
-
-    apiFetch({
-      data: {
-        id,
-      },
-      method: 'POST',
-      path,
-    })
-      .then((data) => {
-        const {
-          apiId = '',
-          dateCreated = '',
-          dateModified = '',
-          publishState = '',
-          revision = '',
-          shareUrl = '',
-        } = data;
-
-        const {
-          meta,
-        } = this.state;
-
-        this.setState({
-          loading: false,
-          meta: {
-            ...meta,
-            apiId,
-            dateCreated,
-            dateModified,
-            revision,
-            shareUrl,
-          },
-          publishState,
-        });
-      })
-      .catch((error) => console.log(error)); // eslint-disable-line no-console
+    this.modifyPost(id, 'delete');
   }
 
   /**
@@ -219,16 +170,14 @@ class Sidebar extends React.PureComponent {
   }
 
   /**
-   * Sends a request to the REST API to publish the post.
+   * Sends a request to the REST API to modify the post.
    */
-  publishPost() {
+  modifyPost(id, operation) {
     const {
-      post: {
-        id = 0,
-      } = {},
+      refreshPost,
     } = this.props;
 
-    const path = '/apple-news/v1/publish';
+    const path = `/apple-news/v1/${operation}`;
 
     this.setState({
       loading: true,
@@ -243,32 +192,36 @@ class Sidebar extends React.PureComponent {
     })
       .then((data) => {
         const {
-          apiId = '',
-          dateCreated = '',
-          dateModified = '',
           publishState = '',
-          revision = '',
-          shareUrl = '',
         } = data;
 
-        const {
-          meta,
-        } = this.state;
+        refreshPost();
 
         this.setState({
           loading: false,
-          meta: {
-            ...meta,
-            apiId,
-            dateCreated,
-            dateModified,
-            revision,
-            shareUrl,
-          },
           publishState,
         });
       })
-      .catch((error) => console.log(error)); // eslint-disable-line no-console
+      .catch(() => {
+        refreshPost();
+
+        this.setState({
+          loading: false,
+        });
+      });
+  }
+
+  /**
+   * Sends a request to the REST API to publish the post.
+   */
+  publishPost() {
+    const {
+      post: {
+        id = 0,
+      } = {},
+    } = this.props;
+
+    this.modifyPost(id, 'publish');
   }
 
   /**
@@ -281,47 +234,7 @@ class Sidebar extends React.PureComponent {
       } = {},
     } = this.props;
 
-    const path = '/apple-news/v1/update';
-
-    this.setState({
-      loading: true,
-    });
-
-    apiFetch({
-      data: {
-        id,
-      },
-      method: 'POST',
-      path,
-    })
-      .then((data) => {
-        const {
-          apiId = '',
-          dateCreated = '',
-          dateModified = '',
-          publishState = '',
-          revision = '',
-          shareUrl = '',
-        } = data;
-
-        const {
-          meta,
-        } = this.state;
-
-        this.setState({
-          loading: false,
-          meta: {
-            ...meta,
-            apiId,
-            dateCreated,
-            dateModified,
-            revision,
-            shareUrl,
-          },
-          publishState,
-        });
-      })
-      .catch((error) => console.log(error)); // eslint-disable-line no-console
+    this.modifyPost(id, 'update');
   }
 
   /**
@@ -401,14 +314,6 @@ class Sidebar extends React.PureComponent {
 
     const {
       onUpdate,
-      post: {
-        status = '',
-      } = {},
-    } = this.props;
-
-    const {
-      autoAssignCategories,
-      loading,
       meta: {
         isPaid = false,
         isPreview = false,
@@ -425,6 +330,14 @@ class Sidebar extends React.PureComponent {
         shareUrl = '',
         revision = '',
       },
+      post: {
+        status = '',
+      } = {},
+    } = this.props;
+
+    const {
+      autoAssignCategories,
+      loading,
       publishState,
       sections,
       settings: {
@@ -866,6 +779,9 @@ export default compose([
           [metaKey]: metaValue,
         },
       });
+    },
+    refreshPost: () => {
+      dispatch('core/editor').refreshPost();
     },
   })),
 ])(Sidebar);
