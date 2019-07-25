@@ -344,13 +344,13 @@ class Admin_Apple_Notice {
 	 * Handle getting user meta across potential hosting platforms.
 	 *
 	 * @param int $user_id The user ID for which to retrieve meta.
-	 * @access private
+	 * @access public
 	 * @return array An array of values for the key.
 	 */
-	private static function get_user_meta( $user_id ) {
+	public static function get_user_meta( $user_id ) {
 
 		// Negotiate meta value.
-		if ( defined( 'WPCOM_IS_VIP_ENV' ) && true === WPCOM_IS_VIP_ENV ) {
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) && true === WPCOM_IS_VIP_ENV && function_exists( 'get_user_attribute' ) ) {
 			$meta_value = get_user_attribute( $user_id, self::KEY );
 		} else {
 			$meta_value = get_user_meta( $user_id, self::KEY, true ); // phpcs:ignore WordPress.VIP.RestrictedFunctions.user_meta_get_user_meta

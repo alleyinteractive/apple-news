@@ -78,15 +78,17 @@ function rest_post_update( $data ) {
 
 		// Negotiate the message based on whether update will happen asynchronously or not.
 		if ( 'yes' === Admin_Apple_News::$settings->api_async ) {
-			$message = __( 'Your article will be updated shortly.', 'apple-news' );
-			Admin_Apple_Notice::success( $message );
-		} else {
-			$message = __( 'Your article has been updated successfully!', 'apple-news' );
+			Admin_Apple_Notice::success( __( 'Your article will be updated shortly.', 'apple-news' ) );
 		}
 
-		// Return the success message in the JSON response also.
 		return [
-			'message' => $message,
+			'apiId'        => get_post_meta( $id, 'apple_news_api_id', true ),
+			'dateCreated'  => get_post_meta( $id, 'apple_news_api_created_at', true ),
+			'dateModified' => get_post_meta( $id, 'apple_news_api_modified_at', true ),
+			'messages'     => Admin_Apple_Notice::get_user_meta( get_current_user_id() ),
+			'publishState' => Admin_Apple_News::get_post_status( $id ),
+			'revision'     => get_post_meta( $id, 'apple_news_api_revision', true ),
+			'shareUrl'     => get_post_meta( $id, 'apple_news_api_share_url', true ),
 		];
 	} catch ( Action_Exception $e ) {
 		// Add the error message to the list of messages to display to the user using normal means.
