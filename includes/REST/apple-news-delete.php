@@ -85,7 +85,6 @@ function rest_post_delete( $data ) {
 			'apiId'        => get_post_meta( $id, 'apple_news_api_id', true ),
 			'dateCreated'  => get_post_meta( $id, 'apple_news_api_created_at', true ),
 			'dateModified' => get_post_meta( $id, 'apple_news_api_modified_at', true ),
-			'messages'     => Admin_Apple_Notice::get_user_meta( get_current_user_id() ),
 			'publishState' => Admin_Apple_News::get_post_status( $id ),
 			'revision'     => get_post_meta( $id, 'apple_news_api_revision', true ),
 			'shareUrl'     => get_post_meta( $id, 'apple_news_api_share_url', true ),

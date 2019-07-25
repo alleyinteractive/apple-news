@@ -344,10 +344,10 @@ class Admin_Apple_Notice {
 	 * Handle getting user meta across potential hosting platforms.
 	 *
 	 * @param int $user_id The user ID for which to retrieve meta.
-	 * @access public
+	 * @access private
 	 * @return array An array of values for the key.
 	 */
-	public static function get_user_meta( $user_id ) {
+	private static function get_user_meta( $user_id ) {
 
 		// Negotiate meta value.
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && true === WPCOM_IS_VIP_ENV && function_exists( 'get_user_attribute' ) ) {
