@@ -1,7 +1,5 @@
 /* global React, wp */
 
-/* eslint-disable react/no-unused-state */
-
 import PropTypes from 'prop-types';
 import ImagePicker from '../imagePicker';
 import Notifications from '../notifications';
@@ -20,6 +18,8 @@ const {
     TextareaControl,
   },
   data: {
+    select,
+    subscribe,
     withDispatch,
     withSelect,
   },
@@ -73,10 +73,13 @@ class Sidebar extends React.PureComponent {
   state = {
     autoAssignCategories: false,
     loading: false,
+    modified: 0,
+    notifications: [],
     publishState: '',
     sections: [],
     selectedSectionsPrev: null,
     settings: {},
+    unsubscribe: undefined,
     userCanPublish: false,
   };
 
@@ -89,11 +92,62 @@ class Sidebar extends React.PureComponent {
     this.updateSelectedSections = this.updateSelectedSections.bind(this);
   }
 
+  /**
+   * Actions to be taken after the component has mounted.
+   */
   componentDidMount() {
+    this.subscribeToChanges();
+    this.fetchNotifications();
+    this.fetchPublishState();
     this.fetchSections();
     this.fetchSettings();
-    this.fetchPublishState();
     this.fetchUserCanPublish();
+  }
+
+  /**
+   * De-initializes functionality before the component is destroyed.
+   */
+  componentWillUnmount() {
+    const {
+      unsubscribe,
+    } = this.state;
+
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  }
+
+  /**
+   * Clears notifications that should be displayed once and automatically removed.
+   */
+  clearNotifications() {
+    const {
+      notifications,
+    } = this.state;
+
+    // Ensure we have an array to loop over.
+    if (! Array.isArray(notifications)) {
+      return;
+    }
+
+    // Loop over the array of notifications and determine which ones we need to clear.
+    const toClear = notifications
+      .filter((notification) => true !== notification.dismissible);
+
+    // Ensure there are items to be cleared.
+    if (0 === toClear.length) {
+      return;
+    }
+
+    // Send the request to the API to clear the notifications.
+    apiFetch({
+      data: {
+        toClear,
+      },
+      method: 'POST',
+      path: '/apple-news/v1/clear-notifications',
+    })
+      .catch((error) => console.error(error)); // eslint-disable-line no-console
   }
 
   /**
@@ -107,6 +161,94 @@ class Sidebar extends React.PureComponent {
     } = this.props;
 
     this.modifyPost(id, 'delete');
+  }
+
+  /**
+   * A callback for a dismiss action on a notification.
+   * @param {object} notification - The notification to mark as dismissed.
+   */
+  dismissNotification(notification) {
+    const {
+      notifications,
+    } = this.state;
+
+    // Send the request to the API to clear the notification.
+    apiFetch({
+      data: {
+        toClear: [notification],
+      },
+      method: 'POST',
+      path: '/apple-news/v1/clear-notifications',
+    })
+      .then(() => {
+        // Set the notification to dismissed and update state.
+        const updatedNotifications = notifications.map((compare) => {
+          // If the notification doesn't match, return as-is.
+          if (JSON.stringify(compare) !== JSON.stringify(notification)) {
+            return compare;
+          }
+
+          return {
+            ...compare,
+            dismissed: true,
+          };
+        });
+        this.setState({
+          notifications: updatedNotifications,
+        });
+      })
+      .catch((error) => console.error(error)); // eslint-disable-line no-console
+  }
+
+  /**
+   * Fetches notifications for the current user via the REST API.
+   */
+  fetchNotifications() {
+    const path = '/apple-news/v1/get-notifications';
+
+    apiFetch({ path })
+      .then((notifications) => {
+        if (Array.isArray(notifications)) {
+          if (0 < notifications.length) {
+            this.setState(
+              {
+                notifications,
+              },
+              this.clearNotifications
+            );
+          } else {
+            this.setState({
+              notifications,
+            });
+          }
+        }
+      })
+      .catch((error) => console.error(error)); // eslint-disable-line no-console
+  }
+
+  /**
+   * Fetch published state.
+   */
+  fetchPublishState() {
+    const {
+      post,
+    } = this.props;
+    const path = `/apple-news/v1/get-published-state/${post.id}`;
+
+    apiFetch({ path })
+      .then(({ publishState }) => (this.setState({ publishState })))
+      .catch((error) => console.error(error)); /* eslint-disable-line no-console */
+  }
+
+  /**
+   * Fetch Apple News Sections
+   */
+  fetchSections() {
+    const path = '/apple-news/v1/sections';
+
+    apiFetch({ path })
+      .then((sections) => (this.setState({ sections })))
+      .catch((error) => console.error(error)); /* eslint-disable-line no-console */
   }
 
   /**
@@ -127,31 +269,6 @@ class Sidebar extends React.PureComponent {
           && true === settings.automaticAssignment,
         settings,
       }))
-      .catch((error) => console.error(error)); /* eslint-disable-line no-console */
-  }
-
-  /**
-   * Fetch Apple News Sections
-   */
-  fetchSections() {
-    const path = '/apple-news/v1/sections';
-
-    apiFetch({ path })
-      .then((sections) => (this.setState({ sections })))
-      .catch((error) => console.error(error)); /* eslint-disable-line no-console */
-  }
-
-  /**
-   * Fetch published state.
-   */
-  fetchPublishState() {
-    const {
-      post,
-    } = this.props;
-    const path = `/apple-news/v1/get-published-state/${post.id}`;
-
-    apiFetch({ path })
-      .then(({ publishState }) => (this.setState({ publishState })))
       .catch((error) => console.error(error)); /* eslint-disable-line no-console */
   }
 
@@ -197,6 +314,8 @@ class Sidebar extends React.PureComponent {
 
         refreshPost();
 
+        this.fetchNotifications();
+
         this.setState({
           loading: false,
           publishState,
@@ -204,6 +323,8 @@ class Sidebar extends React.PureComponent {
       })
       .catch(() => {
         refreshPost();
+
+        this.fetchNotifications();
 
         this.setState({
           loading: false,
@@ -222,6 +343,39 @@ class Sidebar extends React.PureComponent {
     } = this.props;
 
     this.modifyPost(id, 'publish');
+  }
+
+  /**
+   * Subscribes to changes in the post to take actions when something changes.
+   */
+  subscribeToChanges() {
+    // When the post is published or updated, we refresh notifications.
+    const unsubscribe = subscribe(() => {
+      const {
+        modified,
+      } = this.state;
+
+      // If the modified date has not changed, bail out.
+      const newModified = select('core/editor')
+        .getEditedPostAttribute('modified');
+      if (modified === newModified) {
+        return;
+      }
+
+      // Update the modified date in state and fetch notifications.
+      this.setState(
+        {
+          modified: newModified,
+        },
+        this.fetchNotifications
+      );
+    });
+
+    // Add the last modified date and unsubscribe to state.
+    this.setState({
+      modified: select('core/editor').getEditedPostAttribute('modified'),
+      unsubscribe,
+    });
   }
 
   /**
@@ -338,6 +492,7 @@ class Sidebar extends React.PureComponent {
     const {
       autoAssignCategories,
       loading,
+      notifications,
       publishState,
       sections,
       settings: {
@@ -402,7 +557,10 @@ class Sidebar extends React.PureComponent {
             className="components-panel__body is-opened"
             id="apple-news-publish"
           >
-            <Notifications />
+            <Notifications
+              dismissNotification={this.dismissNotification}
+              notifications={notifications}
+            />
             <h3>Sections</h3>
             {automaticAssignment && [
               <CheckboxControl
@@ -730,8 +888,8 @@ class Sidebar extends React.PureComponent {
 }
 
 export default compose([
-  withSelect((select) => {
-    const editor = select('core/editor');
+  withSelect((selector) => {
+    const editor = selector('core/editor');
     const {
       apple_news_is_paid: isPaid,
       apple_news_is_preview: isPreview,

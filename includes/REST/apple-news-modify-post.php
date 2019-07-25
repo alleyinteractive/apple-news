@@ -90,9 +90,16 @@ function modify_post( $post_id, $operation ) {
 	try {
 		$action->perform();
 
-		// Negotiate the message based on whether the operation will happen asynchronously or not.
+		// Set any additional notifications that might be required.
 		if ( 'yes' === Admin_Apple_News::$settings->api_async ) {
 			Admin_Apple_Notice::success( __( 'Your changes will be applied shortly.', 'apple-news' ) );
+		} elseif ( 'delete' === $operation ) {
+			Admin_Apple_Notice::success(
+				sprintf(
+					__( 'Article %s has been successfully deleted from Apple News!', 'apple-news' ),
+					$post->post_title
+				)
+			);
 		}
 
 		return [
