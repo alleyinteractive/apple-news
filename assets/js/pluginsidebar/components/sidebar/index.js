@@ -24,6 +24,10 @@ const {
   },
   editPost: {
     PluginSidebar,
+    PluginSidebarMoreMenuItem,
+  },
+  element: {
+    Fragment,
   },
   i18n: {
     __,
@@ -273,6 +277,9 @@ class Sidebar extends React.PureComponent {
    * @returns {object} JSX component markup.
    */
   render() {
+    const target = 'publish-to-apple-news';
+    const label = __('Apple News Options', 'apple-news');
+
     const {
       meta: {
         isPreview = false,
@@ -307,19 +314,19 @@ class Sidebar extends React.PureComponent {
       publishState,
     } = this.state;
 
-    const {
-      Fragment,
-    } = React;
-
     const selectedSectionsRaw = 'null' !== selectedSections
       ? JSON.parse(selectedSections)
       : '';
+
     const selectedSectionsArray = Array.isArray(selectedSectionsRaw)
       ? selectedSectionsRaw
       : [];
+
     const parsedCoverArt = '' !== coverArt && 'null' !== coverArt
       ? JSON.parse(coverArt) : {};
+
     const coverArtOrientation = parsedCoverArt.orientation || 'landscape';
+
     const coverArtSizes = [
       {
         title: __('iPad Pro (12.9 in): 1832 x 1374 px', 'apple-news'),
@@ -342,301 +349,307 @@ class Sidebar extends React.PureComponent {
         key: `apple_news_ca_${coverArtOrientation}_4_0`,
       },
     ];
+
     return (
-      <PluginSidebar
-        name="publish-to-apple-news"
-        title={__('Publish to Apple News Options', 'apple-news')}
-      >
-        <div
-          className="components-panel__body is-opened"
-          id="apple-news-publish"
+      <Fragment>
+        <PluginSidebarMoreMenuItem target={target}>
+          {label}
+        </PluginSidebarMoreMenuItem>
+        <PluginSidebar
+          name={target}
+          title={__('Publish to Apple News Options', 'apple-news')}
         >
-          <Notifications />
-          <h3>Sections</h3>
-          {automaticAssignment && [
-            <CheckboxControl
-              label={__('Assign sections by category', 'apple-news')}
-              checked={autoAssignCategories}
-              onChange={
-                (checked) => {
-                  this.setState({
-                    autoAssignCategories: checked,
-                  });
-                  if (checked) {
+          <div
+            className="components-panel__body is-opened"
+            id="apple-news-publish"
+          >
+            <Notifications />
+            <h3>Sections</h3>
+            {automaticAssignment && [
+              <CheckboxControl
+                label={__('Assign sections by category', 'apple-news')}
+                checked={autoAssignCategories}
+                onChange={
+                  (checked) => {
                     this.setState({
-                      selectedSectionsPrev: selectedSections || null,
+                      autoAssignCategories: checked,
                     });
-                    onUpdate(
-                      'apple_news_sections',
-                      null
-                    );
-                  } else {
-                    onUpdate(
-                      'apple_news_sections',
-                      selectedSectionsPrev
-                    );
-                    this.setState({
-                      selectedSectionsPrev: null,
-                    });
+                    if (checked) {
+                      this.setState({
+                        selectedSectionsPrev: selectedSections || null,
+                      });
+                      onUpdate(
+                        'apple_news_sections',
+                        null
+                      );
+                    } else {
+                      onUpdate(
+                        'apple_news_sections',
+                        selectedSectionsPrev
+                      );
+                      this.setState({
+                        selectedSectionsPrev: null,
+                      });
+                    }
                   }
                 }
-              }
-            />,
-            <hr />,
-          ]}
-          {(! autoAssignCategories || ! automaticAssignment) && [
-            <h4>Manual Section Selection</h4>,
-            Array.isArray(sections) && (
-              <ul className="apple-news-sections">
-                {sections.map(({ id, name }) => (
-                  <li key={id}>
-                    <CheckboxControl
-                      label={name}
-                      checked={- 1 !== selectedSectionsArray.indexOf(id)}
-                      onChange={
-                        (checked) => this.updateSelectedSections(checked, id)
-                      }
-                    />
-                  </li>
-                ))}
-              </ul>
-            ),
-          ]}
-          <p>
-            <em>
-              {
-                // eslint-disable-next-line max-len
-                __('Select the sections in which to publish this article. If none are selected, it will be published to the default section.', 'apple-news')
-              }
-            </em>
-          </p>
-          <h3>{__('Preview Article', 'apple-news')}</h3>
-          <CheckboxControl
-            // eslint-disable-next-line max-len
-            label={__('Check this to publish the article as a draft.', 'apple-news')}
-            onChange={(value) => onUpdate(
-              'apple_news_is_preview',
-              value
-            )}
-            checked={isPreview}
-          />
-          <h3>Hidden Article</h3>
-          <CheckboxControl
-            // eslint-disable-next-line max-len
-            label={__('Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news')}
-            onChange={(value) => onUpdate(
-              'apple_news_is_hidden',
-              value
-            )}
-            checked={isHidden}
-          />
-          <h3>Sponsored Article</h3>
-          <CheckboxControl
-            // eslint-disable-next-line max-len
-            label={__('Check this to indicate this article is sponsored content.', 'apple-news')}
-            onChange={(value) => onUpdate(
-              'apple_news_is_sponsored',
-              value
-            )}
-            checked={isSponsored}
-          />
-        </div>
-        <PanelBody
-          initialOpen={false}
-          title={__('Maturity Rating', 'apple-news')}
-        >
-          <SelectControl
-            label={__('Select Maturity Rating', 'apple-news')}
-            value={maturityRating}
-            options={[
-              { label: '', value: '' },
-              { label: __('Kids', 'apple-news'), value: 'KIDS' },
-              { label: __('Mature', 'apple-news'), value: 'MATURE' },
-              { label: __('General', 'apple-news'), value: 'GENERAL' },
+              />,
+              <hr />,
             ]}
-            onChange={(value) => onUpdate(
-              'apple_news_maturity_rating',
-              value
-            )}
-          />
-          <p>
-            <em>
-              Select the optional maturity rating for this post.
-            </em>
-          </p>
-        </PanelBody>
-        <PanelBody
-          initialOpen={false}
-          title={__('Pull Quote', 'apple_news')}
-        >
-          <TextareaControl
-            label={__('Description', 'apple_news')}
-            value={pullquoteText}
-            onChange={(value) => onUpdate(
-              'apple_news_pullquote',
-              value
-            )}
-            // eslint-disable-next-line max-len
-            placeholder="A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic."
-          />
-          <p>
-            <em>
-              This is optional and can be left blank.
-            </em>
-          </p>
-          <SelectControl
-            label={__('Pull Quote Position', 'apple-news')}
-            value={pullquotePosition || 'middle'}
-            options={[
-              { label: __('top', 'apple-news'), value: 'top' },
-              { label: __('middle', 'apple-news'), value: 'middle' },
-              { label: __('bottom', 'apple-news'), value: 'bottom' },
+            {(! autoAssignCategories || ! automaticAssignment) && [
+              <h4>Manual Section Selection</h4>,
+              Array.isArray(sections) && (
+                <ul className="apple-news-sections">
+                  {sections.map(({ id, name }) => (
+                    <li key={id}>
+                      <CheckboxControl
+                        label={name}
+                        checked={- 1 !== selectedSectionsArray.indexOf(id)}
+                        onChange={
+                          (checked) => this.updateSelectedSections(checked, id)
+                        }
+                      />
+                    </li>
+                  ))}
+                </ul>
+              ),
             ]}
-            onChange={(value) => onUpdate(
-              'apple_news_pullquote_position',
-              value
-            )}
-          />
-          <p>
-            <em>
-              {
-                // eslint-disable-next-line max-len
-                __('The position in the article where the pull quote will appear.', 'apple-news')
-              }
-            </em>
-          </p>
-        </PanelBody>
-        <PanelBody
-          initialOpen={false}
-          title={__('Cover Art', 'apple-news')}
-        >
-          {
-            enableCoverArt ? (
-              <div>
-                <p>
-                  <em>
-                    <a href="https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html">
-                      {__('Cover Art', 'apple-news')}
-                    </a>
-                    {
-                      // eslint-disable-next-line max-len
-                      __(' will represent your article if editorially chosen for Featured Stories. Cover Art must include your channel logo with text at 24 pt minimum that is related to the headline. The image provided must match the dimensions listed. Limit submissions to 1-3 articles per day.', 'apple-news')
-                    }
-                  </em>
-                </p>
-                <SelectControl
-                  label={__('Orientation', 'apple-news')}
-                  value={coverArtOrientation}
-                  options={[
-                    /* eslint-disable max-len */
-                    { label: __('Landscape (4:3)', 'apple-news'), value: 'landscape' },
-                    { label: __('Portrait (3:4)', 'apple-news'), value: 'portrait' },
-                    { label: __('Square (1:1)', 'apple-news'), value: 'square' },
-                    /* eslint-enable */
-                  ]}
-                  onChange={(value) => {
-                    const mediaKeys = Object
-                      .keys(parsedCoverArt)
-                      .filter((key) => 'orientation' !== key);
-                    const updatedOrientation = {
-                      orientation: value,
-                    };
-
-                    const updatedCoverArt = mediaKeys.reduce((acc, curr) => {
-                      const newKey = curr.replace(coverArtOrientation, value);
-                      return {
-                        [newKey]: parsedCoverArt[curr],
-                        ...acc,
-                      };
-                    }, updatedOrientation);
-
-                    onUpdate(
-                      'apple_news_coverart',
-                      JSON.stringify(updatedCoverArt)
-                    );
-                  }}
-                />
-                <p>
-                  <em>
-                    {
-                      // eslint-disable-next-line max-len
-                      __('Note: You must provide the largest size (iPad Pro 12.9 in) in order for your submission to be considered.', 'apple-news')
-                    }
-                  </em>
-
-                </p>
+            <p>
+              <em>
+                {
+                  // eslint-disable-next-line max-len
+                  __('Select the sections in which to publish this article. If none are selected, it will be published to the default section.', 'apple-news')
+                }
+              </em>
+            </p>
+            <h3>{__('Preview Article', 'apple-news')}</h3>
+            <CheckboxControl
+              // eslint-disable-next-line max-len
+              label={__('Check this to publish the article as a draft.', 'apple-news')}
+              onChange={(value) => onUpdate(
+                'apple_news_is_preview',
+                value
+              )}
+              checked={isPreview}
+            />
+            <h3>Hidden Article</h3>
+            <CheckboxControl
+              // eslint-disable-next-line max-len
+              label={__('Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news')}
+              onChange={(value) => onUpdate(
+                'apple_news_is_hidden',
+                value
+              )}
+              checked={isHidden}
+            />
+            <h3>Sponsored Article</h3>
+            <CheckboxControl
+              // eslint-disable-next-line max-len
+              label={__('Check this to indicate this article is sponsored content.', 'apple-news')}
+              onChange={(value) => onUpdate(
+                'apple_news_is_sponsored',
+                value
+              )}
+              checked={isSponsored}
+            />
+          </div>
+          <PanelBody
+            initialOpen={false}
+            title={__('Maturity Rating', 'apple-news')}
+          >
+            <SelectControl
+              label={__('Select Maturity Rating', 'apple-news')}
+              value={maturityRating}
+              options={[
+                { label: '', value: '' },
+                { label: __('Kids', 'apple-news'), value: 'KIDS' },
+                { label: __('Mature', 'apple-news'), value: 'MATURE' },
+                { label: __('General', 'apple-news'), value: 'GENERAL' },
+              ]}
+              onChange={(value) => onUpdate(
+                'apple_news_maturity_rating',
+                value
+              )}
+            />
+            <p>
+              <em>
+                Select the optional maturity rating for this post.
+              </em>
+            </p>
+          </PanelBody>
+          <PanelBody
+            initialOpen={false}
+            title={__('Pull Quote', 'apple_news')}
+          >
+            <TextareaControl
+              label={__('Description', 'apple_news')}
+              value={pullquoteText}
+              onChange={(value) => onUpdate(
+                'apple_news_pullquote',
+                value
+              )}
+              // eslint-disable-next-line max-len
+              placeholder="A pull quote is a key phrase, quotation, or excerpt that has been pulled from an article and used as a graphic element, serving to entice readers into the article or to highlight a key topic."
+            />
+            <p>
+              <em>
+                This is optional and can be left blank.
+              </em>
+            </p>
+            <SelectControl
+              label={__('Pull Quote Position', 'apple-news')}
+              value={pullquotePosition || 'middle'}
+              options={[
+                { label: __('top', 'apple-news'), value: 'top' },
+                { label: __('middle', 'apple-news'), value: 'middle' },
+                { label: __('bottom', 'apple-news'), value: 'bottom' },
+              ]}
+              onChange={(value) => onUpdate(
+                'apple_news_pullquote_position',
+                value
+              )}
+            />
+            <p>
+              <em>
+                {
+                  // eslint-disable-next-line max-len
+                  __('The position in the article where the pull quote will appear.', 'apple-news')
+                }
+              </em>
+            </p>
+          </PanelBody>
+          <PanelBody
+            initialOpen={false}
+            title={__('Cover Art', 'apple-news')}
+          >
+            {
+              enableCoverArt ? (
                 <div>
-                  {
-                    coverArtSizes.map((item) => (
-                      <div>
-                        <h4>{item.title}</h4>
-                        <ImagePicker
-                          metaKey={item.key}
-                          onUpdate={
-                            (metaKey, value) => this.updateSelectCoverArtImage(
-                              metaKey,
-                              value
-                            )
-                          }
-                          value={parsedCoverArt[item.key]}
-                        />
-                      </div>
-                    ))
-                  }
+                  <p>
+                    <em>
+                      <a href="https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/CoverArt.html">
+                        {__('Cover Art', 'apple-news')}
+                      </a>
+                      {
+                        // eslint-disable-next-line max-len
+                        __(' will represent your article if editorially chosen for Featured Stories. Cover Art must include your channel logo with text at 24 pt minimum that is related to the headline. The image provided must match the dimensions listed. Limit submissions to 1-3 articles per day.', 'apple-news')
+                      }
+                    </em>
+                  </p>
+                  <SelectControl
+                    label={__('Orientation', 'apple-news')}
+                    value={coverArtOrientation}
+                    options={[
+                      /* eslint-disable max-len */
+                      { label: __('Landscape (4:3)', 'apple-news'), value: 'landscape' },
+                      { label: __('Portrait (3:4)', 'apple-news'), value: 'portrait' },
+                      { label: __('Square (1:1)', 'apple-news'), value: 'square' },
+                      /* eslint-enable */
+                    ]}
+                    onChange={(value) => {
+                      const mediaKeys = Object
+                        .keys(parsedCoverArt)
+                        .filter((key) => 'orientation' !== key);
+                      const updatedOrientation = {
+                        orientation: value,
+                      };
+
+                      const updatedCoverArt = mediaKeys.reduce((acc, curr) => {
+                        const newKey = curr.replace(coverArtOrientation, value);
+                        return {
+                          [newKey]: parsedCoverArt[curr],
+                          ...acc,
+                        };
+                      }, updatedOrientation);
+
+                      onUpdate(
+                        'apple_news_coverart',
+                        JSON.stringify(updatedCoverArt)
+                      );
+                    }}
+                  />
+                  <p>
+                    <em>
+                      {
+                        // eslint-disable-next-line max-len
+                        __('Note: You must provide the largest size (iPad Pro 12.9 in) in order for your submission to be considered.', 'apple-news')
+                      }
+                    </em>
+
+                  </p>
+                  <div>
+                    {
+                      coverArtSizes.map((item) => (
+                        <div>
+                          <h4>{item.title}</h4>
+                          <ImagePicker
+                            metaKey={item.key}
+                            onUpdate={(metaKey, value) => this
+                              .updateSelectCoverArtImage(
+                                metaKey,
+                                value
+                              )
+                            }
+                            value={parsedCoverArt[item.key]}
+                          />
+                        </div>
+                      ))
+                    }
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <p>
+                  <em>
+                    {__('Cover Art must be enabled on the ', 'apple-news')}
+                    <a href={adminUrl}>
+                      {__('settings page', 'apple-news')}
+                    </a>
+                  </em>
+                </p>
+              )
+            }
+          </PanelBody>
+          <PanelBody
+            initialOpen={false}
+            title={__('Apple News Publish Information', 'apple-news')}
+          >
+            {'' !== publishState && 'N/A' !== publishState ? (
+              <Fragment>
+                <h4>{__('API Id', 'apple-news')}</h4>
+                <p>{apiId}</p>
+                <h4>{__('Created On', 'apple-news')}</h4>
+                <p>{dateCreated}</p>
+                <h4>{__('Last Updated On', 'apple-news')}</h4>
+                <p>{dateModified}</p>
+                <h4>{__('Share URL', 'apple-news')}</h4>
+                <p>{shareUrl}</p>
+                <h4>{__('Revision', 'apple-news')}</h4>
+                <p>{revision}</p>
+                <h4>{__('Publish State', 'apple-news')}</h4>
+                <p>{publishState}</p>
+                {! apiAutosyncUpdate && (
+                  <Button isPrimary onClick={this.updatePost}>
+                    {__('Update', 'apple-news')}
+                  </Button>
+                )}
+                {! apiAutosyncDelete && (
+                  <Button isDestructive onClick={this.deletePost}>
+                    {__('Delete', 'apple-news')}
+                  </Button>
+                )}
+              </Fragment>
             ) : (
-              <p>
-                <em>
-                  {__('Cover Art must be enabled on the ', 'apple-news')}
-                  <a href={adminUrl}>
-                    {__('settings page', 'apple-news')}
-                  </a>
-                </em>
-              </p>
-            )
-          }
-        </PanelBody>
-        <PanelBody
-          initialOpen={false}
-          title={__('Apple News Publish Information', 'apple-news')}
-        >
-          {'' !== publishState && 'N/A' !== publishState ? (
-            <Fragment>
-              <h4>{__('API Id', 'apple-news')}</h4>
-              <p>{apiId}</p>
-              <h4>{__('Created On', 'apple-news')}</h4>
-              <p>{dateCreated}</p>
-              <h4>{__('Last Updated On', 'apple-news')}</h4>
-              <p>{dateModified}</p>
-              <h4>{__('Share URL', 'apple-news')}</h4>
-              <p>{shareUrl}</p>
-              <h4>{__('Revision', 'apple-news')}</h4>
-              <p>{revision}</p>
-              <h4>{__('Publish State', 'apple-news')}</h4>
-              <p>{publishState}</p>
-              {! apiAutosyncUpdate && (
-                <Button isPrimary onClick={this.updatePost}>
-                  {__('Update', 'apple-news')}
-                </Button>
-              )}
-              {! apiAutosyncDelete && (
-                <Button isDestructive onClick={this.deletePost}>
-                  {__('Delete', 'apple-news')}
-                </Button>
-              )}
-            </Fragment>
-          ) : (
-            <Fragment>
-              {! apiAutosync && (
-                <Button isPrimary onClick={this.publishPost}>
-                  {__('Publish', 'apple-news')}
-                </Button>
-              )}
-            </Fragment>
-          )}
-        </PanelBody>
-      </PluginSidebar>
+              <Fragment>
+                {! apiAutosync && (
+                  <Button isPrimary onClick={this.publishPost}>
+                    {__('Publish', 'apple-news')}
+                  </Button>
+                )}
+              </Fragment>
+            )}
+          </PanelBody>
+        </PluginSidebar>
+      </Fragment>
     );
   }
 }
