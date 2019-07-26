@@ -105,6 +105,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 						),
 					),
 					'isHidden' => false,
+					'isPaid' => false,
 					'isPreview' => false,
 					'isSponsored' => false,
 				)
@@ -142,6 +143,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			array(
 				'data' => array(
 					'isHidden' => true,
+					'isPaid' => false,
 					'isPreview' => false,
 					'isSponsored' => false,
 				)
@@ -217,6 +219,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			array(
 				'data' => array(
 					'isHidden' => false,
+					'isPaid' => false,
 					'isPreview' => true,
 					'isSponsored' => false,
 				)
@@ -254,6 +257,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			array(
 				'data' => array(
 					'isHidden' => false,
+					'isPaid' => false,
 					'isPreview' => false,
 					'isSponsored' => true,
 				)
@@ -291,6 +295,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			array(
 				'data' => array(
 					'isHidden' => false,
+					'isPaid' => false,
 					'isPreview' => false,
 					'isSponsored' => false,
 					'maturityRating' => 'MATURE'
@@ -330,6 +335,7 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			array(
 				'data' => array(
 					'isHidden' => false,
+					'isPaid' => false,
 					'isPreview' => false,
 					'isSponsored' => false,
 				),
