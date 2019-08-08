@@ -133,8 +133,9 @@ class SoundCloud_Test extends Component_TestCase {
 		// Test Heading
 		$this->assertEquals(
 			[
-				'role' => 'heading2',
-				'text' => 'SONG NAME - Band Name',
+				'role'   => 'heading2',
+				'text'   => 'SONG NAME - Band Name',
+				'format' => 'html',
 			],
 			$component->to_array()['components'][0]
 		);

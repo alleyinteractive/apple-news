@@ -103,8 +103,9 @@ class WP_Embed_Test extends Component_TestCase {
 		// Test Heading
 		$this->assertEquals(
 			[
-				'role' => 'heading2',
-				'text' => 'WordPress Embed: Blog Post Title.',
+				'role'   => 'heading2',
+				'text'   => 'WordPress Embed: Blog Post Title.',
+				'format' => 'html',
 			],
 			$component->to_array()['components'][0]
 		);
