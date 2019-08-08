@@ -28,9 +28,10 @@ class WP_Embed extends Component {
 	 */
 	public static function node_matches( $node ) {
 
-		// Match the src attribute against a flickr regex
+		// Match the src attribute against node classnames
 		if (
 			'figure' === $node->nodeName && self::node_has_class( $node, 'is-type-wp-embed' )
+			|| 'iframe' === $node->nodeName && self::node_has_class( $node, 'wp-embedded-content' )
 		) {
 			return $node;
 		}
@@ -88,6 +89,12 @@ class WP_Embed extends Component {
 				$parsed_url = wp_parse_url( $url );
 				$caption = '<a href="' . esc_url( $url ) . '">' . sprintf( esc_html__( 'View on %s.', 'apple-news' ), esc_html( $parsed_url['host'] ) ) . '</a>';
 
+				// Classic Editor.
+				if (  preg_match( '#<iframe.*?title="(.*?)".*?src="(.*?)"(.*?)>#', $html, $title_matches ) ) {
+					$title = sprintf( esc_html__( 'WordPress Embed: %s.', 'apple-news' ), esc_html( $title_matches[1] ) );
+				}
+
+				// Gutenberg Editor.
 				if ( preg_match( '#<\s*?a href\b[^>]*>(.*?)</a\b[^>]*>#s', $html, $title_matches ) ) {
 					$title = sprintf( esc_html__( 'WordPress Embed: %s.', 'apple-news' ), esc_html( $title_matches[1] ) );
 				}
@@ -98,8 +105,9 @@ class WP_Embed extends Component {
 			'layout'          => 'embed-layout',
 			'#components#'    => [
 				[
-					'role' => 'heading2',
-					'text' => $title,
+					'role'   => 'heading2',
+					'text'   => $title,
+					'format' => 'html',
 				],
 				[
 					'role'      => 'body',

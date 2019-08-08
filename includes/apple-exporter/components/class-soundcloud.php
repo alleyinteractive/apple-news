@@ -19,6 +19,17 @@ namespace Apple_Exporter\Components;
 class SoundCloud extends Component {
 
 	/**
+	 * Spotify URLs to validate.
+	 *
+	 * @return void
+	 */
+	public static function validateUrl( $url = '' ) {
+		return (
+			preg_match( '#https?:\/\/(?:w\.|www\.|)soundcloud\.com\/player\/[^"\']++#', $url )
+		);
+	}
+
+	/**
 	 * Look for node matches for this component.
 	 *
 	 * @param \DOMElement $node The node to examine for matches.
@@ -28,9 +39,10 @@ class SoundCloud extends Component {
 	 */
 	public static function node_matches( $node ) {
 
-		// Match the src attribute against a flickr regex
+		// Match the src attribute against a classname (gutenberg) or soundcloud regex (classic)
 		if (
 			'figure' === $node->nodeName && self::node_has_class( $node, 'is-provider-soundcloud' )
+			|| $node->hasChildNodes() && 'iframe' === $node->childNodes[0]->nodeName && self::validateUrl( $node->childNodes[0]->getAttribute( 'src' ) )
 		) {
 			return $node;
 		}
@@ -98,8 +110,9 @@ class SoundCloud extends Component {
 		$registration_array = [
 			'#components#' => [
 				[
-					'role' => 'heading2',
-					'text' => $title,
+					'role'   => 'heading2',
+					'text'   => $title,
+					'format' => 'html',
 				],
 			],
 		];
