@@ -27,7 +27,7 @@ class Spotify_Test extends Component_TestCase {
 	 */
 	public function data_transform() {
 		return [
-			[ 'https://open.spotify.com/embed/track/4Wu4BIrP199NeG4DREWw8E?si=ljvW4ls1QYagWo1Ib9nYsw' ],
+			[ 'https://open.spotify.com/embed/track/999999999' ],
 		];
 	}
 
@@ -40,7 +40,7 @@ class Spotify_Test extends Component_TestCase {
 	 * @return array The modified JSON.
 	 */
 	public function filter_apple_news_spotify_json( $json ) {
-		$json['URL'] = 'https://open.spotify.com/embed/track/4Wu4BIrP199NeG4DREWw8E?si=ljvW4ls1QYagWo1Ib9nYsw';
+		$json['URL'] = 'https://open.spotify.com/embed/track/999999999';
 
 		return $json;
 	}
@@ -54,7 +54,7 @@ class Spotify_Test extends Component_TestCase {
 
 		// Setup.
 		$component = new Spotify(
-			'https://open.spotify.com/embed/track/4Wu4BIrP199NeG4DREWw8E?si=ljvW4ls1QYagWo1Ib9nYsw',
+			'https://open.spotify.com/embed/track/999999999',
 			null,
 			$this->settings,
 			$this->styles,
@@ -68,7 +68,7 @@ class Spotify_Test extends Component_TestCase {
 		// Test.
 		$result = $component->to_array();
 		$this->assertEquals(
-			'https://open.spotify.com/embed/track/4Wu4BIrP199NeG4DREWw8E?si=ljvW4ls1QYagWo1Ib9nYsw',
+			'https://open.spotify.com/embed/track/999999999',
 			$result['URL']
 		);
 
@@ -93,7 +93,7 @@ class Spotify_Test extends Component_TestCase {
 		// Setup. Test Block without Caption
 		$component = new Spotify(
 			'<figure class="wp-block-embed-spotify wp-block-embed is-type-rich is-provider-spotify wp-embed-aspect-9-16 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
-			<iframe title="Spotify Embed: dontbesoblue" width="300" height="380" allowtransparency="true" frameborder="0" allow="encrypted-media" src="https://open.spotify.com/embed/track/4Wu4BIrP199NeG4DREWw8E?si=ljvW4ls1QYagWo1Ib9nYsw"></iframe>
+			<iframe title="Spotify Embed: Band Name" width="300" height="380" allowtransparency="true" frameborder="0" allow="encrypted-media" src="https://open.spotify.com/embed/track/999999999"></iframe>
 			</div></figure>',
 			null,
 			$this->settings,
@@ -105,7 +105,7 @@ class Spotify_Test extends Component_TestCase {
 		$this->assertEquals(
 			[
 				'role' => 'heading2',
-				'text' => 'Spotify Embed: dontbesoblue',
+				'text' => 'Spotify Embed: Band Name',
 			],
 			$component->to_array()['components'][0]
 		);
@@ -114,7 +114,7 @@ class Spotify_Test extends Component_TestCase {
 		$this->assertEquals(
 			[
 				'role'      => 'body',
-				'text'      => '<a href="https://open.spotify.com/embed/track/4Wu4BIrP199NeG4DREWw8E?si=ljvW4ls1QYagWo1Ib9nYsw">View on Spotify.</a>',
+				'text'      => '<a href="https://open.spotify.com/embed/track/999999999">View on Spotify.</a>',
 				'format'    => 'html',
 				'textStyle' => [
 					'fontSize' => 14,
@@ -126,7 +126,7 @@ class Spotify_Test extends Component_TestCase {
 		// Setup. Embed generate caption from data.
 		$component = new Spotify(
 			'<figure class="wp-block-embed-spotify wp-block-embed is-type-rich is-provider-spotify wp-embed-aspect-9-16 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
-			<iframe title="Spotify Embed: dontbesoblue" width="300" height="380" allowtransparency="true" frameborder="0" allow="encrypted-media" src="https://open.spotify.com/embed/track/4Wu4BIrP199NeG4DREWw8E?si=ljvW4ls1QYagWo1Ib9nYsw"></iframe>
+			<iframe title="Spotify Embed: Band Name" width="300" height="380" allowtransparency="true" frameborder="0" allow="encrypted-media" src="https://open.spotify.com/embed/track/999999999"></iframe>
 			</div><figcaption>Spotify Caption</figcaption></figure>',
 			null,
 			$this->settings,
@@ -138,7 +138,7 @@ class Spotify_Test extends Component_TestCase {
 		$this->assertEquals(
 			[
 				'role' => 'heading2',
-				'text' => 'Spotify Embed: dontbesoblue',
+				'text' => 'Spotify Embed: Band Name',
 			],
 			$component->to_array()['components'][0]
 		);
@@ -161,7 +161,7 @@ class Spotify_Test extends Component_TestCase {
 		$this->assertEquals(
 			[
 				'role'      => 'body',
-				'text'      => '<a href="https://open.spotify.com/embed/track/4Wu4BIrP199NeG4DREWw8E?si=ljvW4ls1QYagWo1Ib9nYsw">View on Spotify.</a>',
+				'text'      => '<a href="https://open.spotify.com/embed/track/999999999">View on Spotify.</a>',
 				'format'    => 'html',
 				'textStyle' => [
 					'fontSize' => 14,
