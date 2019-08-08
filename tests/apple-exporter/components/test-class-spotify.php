@@ -50,7 +50,7 @@ class Spotify_Test extends Component_TestCase {
 	 *
 	 * @access public
 	 */
-	public function testFilter() {
+	public function testFilterSpotify() {
 
 		// Setup.
 		$component = new Spotify(
@@ -88,7 +88,7 @@ class Spotify_Test extends Component_TestCase {
 	 *
 	 * @access public
 	 */
-	public function testTransform( $url ) {
+	public function testTransformSpotify( $url ) {
 
 		// Setup. Test Block without Caption
 		$component = new Spotify(

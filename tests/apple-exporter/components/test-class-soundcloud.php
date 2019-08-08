@@ -39,7 +39,7 @@ class SoundCloud_Test extends Component_TestCase {
 	 * @access public
 	 * @return array The modified JSON.
 	 */
-	public function filter_apple_news_soundclound_json( $json ) {
+	public function filter_apple_news_soundcloud_json( $json ) {
 		$json['URL'] = 'https://w.soundcloud.com/player/999999999';
 
 		return $json;
@@ -61,14 +61,12 @@ class SoundCloud_Test extends Component_TestCase {
 			$this->layouts
 		);
 		add_filter(
-			'apple_news_soundclound_json',
-			[ $this, 'filter_apple_news_soundclound_json' ]
+			'apple_news_soundcloud_json',
+			[ $this, 'filter_apple_news_soundcloud_json' ]
 		);
 
 		// Test.
 		$result = $component->to_array();
-		var_dump( $result );
-		die();
 		$this->assertEquals(
 			'https://w.soundcloud.com/player/999999999',
 			$result['URL']
@@ -76,8 +74,8 @@ class SoundCloud_Test extends Component_TestCase {
 
 		// Teardown.
 		remove_filter(
-			'apple_news_soundclound_json',
-			[ $this, 'filter_apple_news_soundclound_json' ]
+			'apple_news_soundcloud_json',
+			[ $this, 'filter_apple_news_soundcloud_json' ]
 		);
 	}
 
@@ -90,7 +88,7 @@ class SoundCloud_Test extends Component_TestCase {
 	 *
 	 * @access public
 	 */
-	public function testTransform( $url ) {
+	public function testTransformSoundCloud( $url ) {
 
 		// Setup. Test Block without Caption
 		$component = new SoundCloud(

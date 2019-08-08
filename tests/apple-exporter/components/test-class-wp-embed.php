@@ -27,7 +27,7 @@ class WP_Embed_Test extends Component_TestCase {
 	 */
 	public function data_transform() {
 		return [
-			[ 'https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/' ],
+			[ 'https://test-url.com/blog-post-url-slug' ],
 		];
 	}
 
@@ -40,7 +40,7 @@ class WP_Embed_Test extends Component_TestCase {
 	 * @return array The modified JSON.
 	 */
 	public function filter_apple_news_wp_embed_json( $json ) {
-		$json['URL'] = 'https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/';
+		$json['URL'] = 'https://test-url.com/blog-post-url-slug';
 
 		return $json;
 	}
@@ -50,11 +50,11 @@ class WP_Embed_Test extends Component_TestCase {
 	 *
 	 * @access public
 	 */
-	public function testFilter() {
+	public function testFilterWPEmbed() {
 
 		// Setup.
 		$component = new WP_Embed(
-			'https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/',
+			'https://test-url.com/blog-post-url-slug',
 			null,
 			$this->settings,
 			$this->styles,
@@ -68,7 +68,7 @@ class WP_Embed_Test extends Component_TestCase {
 		// Test.
 		$result = $component->to_array();
 		$this->assertEquals(
-			'https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/',
+			'https://test-url.com/blog-post-url-slug',
 			$result['URL']
 		);
 
@@ -88,12 +88,12 @@ class WP_Embed_Test extends Component_TestCase {
 	 *
 	 * @access public
 	 */
-	public function testTransform( $url ) {
+	public function testTransformWPEmbed( $url ) {
 
 		// Setup. Heading for embed.
 		$component = new WP_Embed(
 			'<figure class="wp-block-embed-wordpress wp-block-embed is-type-wp-embed is-provider-alley"><div class="wp-block-embed__wrapper">
-			<blockquote class="wp-embedded-content" data-secret="laxVbHVh5h" style="display: none;"><a href="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/">What’s To Come At WordCamp for Publishers 2019</a></blockquote><iframe title="“What’s To Come At WordCamp for Publishers 2019” — Alley" class="wp-embedded-content" sandbox="allow-scripts" security="restricted" src="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/embed/#?secret=laxVbHVh5h" data-secret="laxVbHVh5h" width="500" height="346" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></div></figure>',
+			<blockquote class="wp-embedded-content" data-secret="laxVbHVh5h" style="display: none;"><a href="https://test-url.com/blog-post-url-slug">Blog Post Title</a></blockquote><iframe title="Blog Post Title" class="wp-embedded-content" sandbox="allow-scripts" security="restricted" src="https://test-url.com/blog-post-url-slugembed/#?secret=laxVbHVh5h" data-secret="laxVbHVh5h" width="500" height="346" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></div></figure>',
 			null,
 			$this->settings,
 			$this->styles,
@@ -104,7 +104,7 @@ class WP_Embed_Test extends Component_TestCase {
 		$this->assertEquals(
 			[
 				'role' => 'heading2',
-				'text' => 'WordPress Embed: What’s To Come At WordCamp for Publishers 2019.',
+				'text' => 'WordPress Embed: Blog Post Title.',
 			],
 			$component->to_array()['components'][0]
 		);
@@ -112,7 +112,7 @@ class WP_Embed_Test extends Component_TestCase {
 		// Setup. Embed generate caption from data.
 		$component = new WP_Embed(
 			'<figure class="wp-block-embed-wordpress wp-block-embed is-type-wp-embed is-provider-alley"><div class="wp-block-embed__wrapper">
-			<blockquote class="wp-embedded-content" data-secret="laxVbHVh5h" style="display: none;"><a href="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/">What’s To Come At WordCamp for Publishers 2019</a></blockquote><iframe title="“What’s To Come At WordCamp for Publishers 2019” — Alley" class="wp-embedded-content" sandbox="allow-scripts" security="restricted" src="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/embed/#?secret=laxVbHVh5h" data-secret="laxVbHVh5h" width="500" height="346" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></div></figure>',
+			<blockquote class="wp-embedded-content" data-secret="laxVbHVh5h" style="display: none;"><a href="https://test-url.com/blog-post-url-slug">Blog Post Title</a></blockquote><iframe title="Blog Post Title" class="wp-embedded-content" sandbox="allow-scripts" security="restricted" src="https://test-url.com/blog-post-url-slugembed/#?secret=laxVbHVh5h" data-secret="laxVbHVh5h" width="500" height="346" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></div></figure>',
 			null,
 			$this->settings,
 			$this->styles,
@@ -123,7 +123,7 @@ class WP_Embed_Test extends Component_TestCase {
 		$this->assertEquals(
 			[
 				'role'      => 'body',
-				'text'      => '<a href="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/">View on alley.co.</a>',
+				'text'      => '<a href="https://test-url.com/blog-post-url-slug">View on test-url.com.</a>',
 				'format'    => 'html',
 				'textStyle' => [
 					'fontSize' => 14,
