@@ -104,6 +104,7 @@ class SoundCloud_Test extends Component_TestCase {
 			[
 				'role' => 'heading2',
 				'text' => 'SONG NAME - Band Name',
+				'format' => 'html',
 			],
 			$component->to_array()['components'][0]
 		);
