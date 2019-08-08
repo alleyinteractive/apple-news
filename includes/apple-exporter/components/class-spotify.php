@@ -25,7 +25,7 @@ class Spotify extends Component {
 	 */
 	public static function validateUrl( $url = '' ) {
 		return (
-			preg_match( '/https?:\/\/(?:embed\.|open\.)(?:spotify\.com\/)(?:track\/|\?uri=spotify:track:)((\w|-){22})/', $url )
+			preg_match( '#https?:\/\/(?:play\.|open\.)(?:)spotify\.com\/#', $url )
 		);
 	}
 
