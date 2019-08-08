@@ -26,9 +26,9 @@ class WP_Embed_Test extends Component_TestCase {
 	 * @return array An array of test data
 	 */
 	public function data_transform() {
-		return array(
-			array( 'https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/' ),
-		);
+		return [
+			[ 'https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/' ],
+		];
 	}
 
 	/**
@@ -62,7 +62,7 @@ class WP_Embed_Test extends Component_TestCase {
 		);
 		add_filter(
 			'apple_news_wp_embed_json',
-			array( $this, 'filter_apple_news_wp_embed_json' )
+			[ $this, 'filter_apple_news_wp_embed_json' ]
 		);
 
 		// Test.
@@ -75,7 +75,7 @@ class WP_Embed_Test extends Component_TestCase {
 		// Teardown.
 		remove_filter(
 			'apple_news_wp_embed_json',
-			array( $this, 'filter_apple_news_wp_embed_json' )
+			[ $this, 'filter_apple_news_wp_embed_json' ]
 		);
 	}
 
@@ -90,7 +90,7 @@ class WP_Embed_Test extends Component_TestCase {
 	 */
 	public function testTransform( $url ) {
 
-		// Setup. Single photo, no article caption, full-view caption
+		// Setup. Heading for embed.
 		$component = new WP_Embed(
 			'<figure class="wp-block-embed-wordpress wp-block-embed is-type-wp-embed is-provider-alley"><div class="wp-block-embed__wrapper">
 			<blockquote class="wp-embedded-content" data-secret="laxVbHVh5h" style="display: none;"><a href="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/">What’s To Come At WordCamp for Publishers 2019</a></blockquote><iframe title="“What’s To Come At WordCamp for Publishers 2019” — Alley" class="wp-embedded-content" sandbox="allow-scripts" security="restricted" src="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/embed/#?secret=laxVbHVh5h" data-secret="laxVbHVh5h" width="500" height="346" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></div></figure>',
@@ -102,14 +102,14 @@ class WP_Embed_Test extends Component_TestCase {
 
 		// Test Heading
 		$this->assertEquals(
-			array(
+			[
 				'role' => 'heading2',
 				'text' => 'WordPress Embed: What’s To Come At WordCamp for Publishers 2019.',
-			),
-			$component->to_array()['components'][0] // Photo component
+			],
+			$component->to_array()['components'][0]
 		);
 
-		// Setup. Single photo, article caption, full-view caption
+		// Setup. Embed generate caption from data.
 		$component = new WP_Embed(
 			'<figure class="wp-block-embed-wordpress wp-block-embed is-type-wp-embed is-provider-alley"><div class="wp-block-embed__wrapper">
 			<blockquote class="wp-embedded-content" data-secret="laxVbHVh5h" style="display: none;"><a href="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/">What’s To Come At WordCamp for Publishers 2019</a></blockquote><iframe title="“What’s To Come At WordCamp for Publishers 2019” — Alley" class="wp-embedded-content" sandbox="allow-scripts" security="restricted" src="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/embed/#?secret=laxVbHVh5h" data-secret="laxVbHVh5h" width="500" height="346" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></div></figure>',
@@ -121,14 +121,14 @@ class WP_Embed_Test extends Component_TestCase {
 
 		// Test for Caption
 		$this->assertEquals(
-			array(
+			[
 				'role'      => 'body',
 				'text'      => '<a href="https://alley.co/news/whats-to-come-at-wordcamp-for-publishers-2019/">View on alley.co.</a>',
 				'format'    => 'html',
 				'textStyle' => [
 					'fontSize' => 14,
 				],
-			),
+			],
 			$component->to_array()['components'][1]
 		);
 	}
