@@ -221,7 +221,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 		// Setup.
 		$apple_news = new Apple_News();
 		delete_option( $apple_news::$option_name );
-		update_option( 'use_remote_images', 'yes' );
+		update_option( 'use_remote_images', 'no' );
 		$default_settings = $this->settings->all();
 		$apple_news->migrate_settings();
 
@@ -230,7 +230,7 @@ class Apple_News_Test extends WP_UnitTestCase {
 		$this->assertNotEquals( $default_settings, $migrated_settings );
 
 		// Ensure the migrated settings match what we expect.
-		$default_settings['use_remote_images'] = 'yes';
+		$default_settings['use_remote_images'] = 'no';
 		$this->assertEquals( $default_settings, $migrated_settings );
 	}
 

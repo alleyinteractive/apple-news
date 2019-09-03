@@ -339,7 +339,7 @@ HTML;
 			$json['components'][1]['components'][2]['role']
 		);
 		$this->assertEquals(
-			'bundle://filename.jpg',
+			'http://someurl.com/filename.jpg',
 			$json['components'][1]['components'][2]['URL']
 		);
 		$this->assertEquals(

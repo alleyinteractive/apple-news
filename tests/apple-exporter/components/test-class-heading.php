@@ -89,7 +89,7 @@ HTML;
 		$this->assertEquals(
 			array(
 				'role'   => 'photo',
-				'URL'    => 'bundle://example-image.jpg',
+				'URL'    => 'http://example.org/example-image.jpg',
 				'layout' => 'full-width-image',
 			),
 			$json['components'][1]['components'][1]
