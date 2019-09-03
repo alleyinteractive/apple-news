@@ -46,7 +46,7 @@ class Settings {
 		'json_alerts'                 => 'warn',
 		'post_types'                  => array( 'post' ),
 		'show_metabox'                => 'yes',
-		'use_remote_images'           => 'no',
+		'use_remote_images'           => 'yes',
 	);
 
 	/**
