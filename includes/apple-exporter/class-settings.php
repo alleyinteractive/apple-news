@@ -29,7 +29,7 @@ class Settings {
 	 * @var array
 	 * @access private
 	 */
-	private $_settings = array(
+	private $settings = array(
 		'api_async'                   => 'no',
 		'api_autosync'                => 'yes',
 		'api_autosync_delete'         => 'yes',
@@ -65,8 +65,8 @@ class Settings {
 		}
 
 		// Check for regular settings.
-		if ( isset( $this->_settings[ $name ] ) ) {
-			return $this->_settings[ $name ];
+		if ( isset( $this->settings[ $name ] ) ) {
+			return $this->settings[ $name ];
 		}
 
 		// Fall back to trying to get the setting dynamically from the theme.
@@ -118,7 +118,7 @@ class Settings {
 		}
 
 		// Check for regular settings.
-		if ( isset( $this->_settings[ $name ] ) ) {
+		if ( isset( $this->settings[ $name ] ) ) {
 			return true;
 		}
 
@@ -134,7 +134,7 @@ class Settings {
 	 * @access public
 	 */
 	public function __set( $name, $value ) {
-		$this->_settings[ $name ] = $value;
+		$this->settings[ $name ] = $value;
 	}
 
 	/**
@@ -144,7 +144,7 @@ class Settings {
 	 * @return array The array of all settings defined in this class.
 	 */
 	public function all() {
-		return $this->_settings;
+		return $this->settings;
 	}
 
 	/**

@@ -48,8 +48,8 @@ class Admin_Apple_Post_Sync {
 			|| 'yes' === $this->settings->get( 'api_autosync_update' )
 		) {
 			// This needs to happen after meta boxes save.
-			if ( apple_news_block_editor_is_active() ) { // check if GB is active
-				add_action( 'rest_after_insert_post', [ $this, 'do_publish_from_rest' ]);
+			if ( apple_news_block_editor_is_active() ) {
+				add_action( 'rest_after_insert_post', [ $this, 'do_publish_from_rest' ] );
 			} else {
 				add_action( 'save_post', [ $this, 'do_publish' ], 99, 2 );
 			}
@@ -61,6 +61,12 @@ class Admin_Apple_Post_Sync {
 		}
 	}
 
+	/**
+	 * An action callback for rest_after_insert_post. Handles the publish action.
+	 *
+	 * @since 2.0.0
+	 * @param WP_Post $post The post object to publish.
+	 */
 	public function do_publish_from_rest( $post ) {
 		$this->do_publish( $post->ID, $post );
 	}

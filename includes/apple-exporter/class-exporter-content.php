@@ -231,7 +231,7 @@ class Exporter_Content {
 		libxml_clear_errors( true );
 
 		// Find the first-level nodes of the body tag.
-		return $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		return $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes;
 	}
 
 }

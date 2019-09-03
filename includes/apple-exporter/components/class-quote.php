@@ -26,7 +26,7 @@ class Quote extends Component {
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
-		return ( 'blockquote' === $node->nodeName || ( isset( $node->firstChild->tagName ) && 'blockquote' === $node->firstChild->tagName ) ) ? $node : null; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		return ( 'blockquote' === $node->nodeName || ( isset( $node->firstChild->tagName ) && 'blockquote' === $node->firstChild->tagName ) ) ? $node : null;
 	}
 
 	/**
@@ -236,7 +236,7 @@ class Quote extends Component {
 		preg_match( $string_match, $html, $matches );
 		$this->text_alignment = 3 === count( $matches ) && $matches[1] ? $matches[1] : 'left';
 		$this->text_alignment = 'wide' === $this->text_alignment ? 'center' : $this->text_alignment;
-		$text = isset( $matches[2] ) ? $matches[2] : $matches[1];
+		$text                 = isset( $matches[2] ) ? $matches[2] : $matches[1];
 
 		// If there is no text for this element, bail.
 		$check = trim( $text );
@@ -331,7 +331,7 @@ class Quote extends Component {
 			'#blockquote_background_color#' => $theme->get_value( 'blockquote_background_color' ),
 			'#text#'                        => $this->parser->parse( $text ),
 			'#format#'                      => $this->parser->format,
-			'#default_blockquote#'          => 'default-blockquote' . '-' . $this->text_alignment,
+			'#default_blockquote#'          => 'default-blockquote-' . $this->text_alignment,
 		);
 
 		// Set component attributes.
@@ -438,11 +438,11 @@ class Quote extends Component {
 	private function set_blockquote_style() {
 
 		// Get information about the currently loaded theme.
-		$theme = \Apple_Exporter\Theme::get_used();
-		$textAlignment = $this->find_text_alignment( $this->text );
+		$theme          = \Apple_Exporter\Theme::get_used();
+		$text_alignment = $this->find_text_alignment( $this->text );
 
 		$this->register_style(
-			'default-blockquote' . '-' . $textAlignment,
+			'default-blockquote-' . $text_alignment,
 			'default-blockquote',
 			array(
 				'#blockquote_font#'        => $theme->get_value( 'blockquote_font' ),

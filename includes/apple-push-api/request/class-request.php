@@ -282,8 +282,8 @@ class Request {
 			foreach ( $response_decoded->errors as $error ) {
 				// If there is a keyPath, build it into a string.
 				$key_path = '';
-				if ( ! empty( $error->keyPath ) && is_array( $error->keyPath ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
-					foreach ( $error->keyPath as $i => $path ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+				if ( ! empty( $error->keyPath ) && is_array( $error->keyPath ) ) {
+					foreach ( $error->keyPath as $i => $path ) {
 						if ( $i > 0 ) {
 							$key_path .= "->$path";
 						} else {
@@ -291,7 +291,7 @@ class Request {
 						}
 					}
 
-					$key_path = " (keyPath $key_path)"; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+					$key_path = " (keyPath $key_path)";
 				}
 
 				// Add the code, message and keyPath.
@@ -385,4 +385,4 @@ class Request {
  * @package Apple_News
  * @subpackage Apple_Push_API\Request
  */
-class Request_Exception extends \Exception {} // phpcs:ignore Generic.Files.OneClassPerFile.MultipleFound
+class Request_Exception extends \Exception {} // phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound

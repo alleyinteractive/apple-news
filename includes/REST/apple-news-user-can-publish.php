@@ -4,6 +4,7 @@
  *
  * @package Apple_News
  */
+
 namespace Apple_News\REST;
 
 use \Apple_News;

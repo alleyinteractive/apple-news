@@ -27,7 +27,7 @@ class Text_Styles extends Builder {
 	 * @access private
 	 * @var array
 	 */
-	private $_styles = array();
+	private $styles = array();
 
 	/**
 	 * Constructor.
@@ -61,7 +61,7 @@ class Text_Styles extends Builder {
 		 *
 		 * @param array $styles The styles to be filtered.
 		 */
-		return apply_filters( 'apple_news_text_styles', $this->_styles );
+		return apply_filters( 'apple_news_text_styles', $this->styles );
 	}
 
 	/**
@@ -75,12 +75,12 @@ class Text_Styles extends Builder {
 	public function register_style( $name, $values ) {
 
 		// Only register once, since styles have unique names.
-		if ( array_key_exists( $name, $this->_styles ) ) {
+		if ( array_key_exists( $name, $this->styles ) ) {
 			return;
 		}
 
 		// Register the style.
-		$this->_styles[ $name ] = $values;
+		$this->styles[ $name ] = $values;
 	}
 
 	/**

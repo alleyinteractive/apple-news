@@ -120,7 +120,7 @@ class Parser {
 		libxml_use_internal_errors( false );
 
 		// Find the first-level nodes of the body tag.
-		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes;
 
 		// Perform parsing.
 		$parser  = new Markdown();

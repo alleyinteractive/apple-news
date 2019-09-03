@@ -24,7 +24,7 @@ class HTML {
 	 * @access private
 	 * @var array
 	 */
-	private $_allowed_html = array(
+	private $allowed_html = array(
 		'a'          => array(
 			'href' => true,
 		),
@@ -71,7 +71,7 @@ class HTML {
 		$html = preg_replace( '/<script[^>]*?>.*?<\/script>/', '', $html );
 
 		// Strip out all tags and attributes other than what is allowed.
-		$html = wp_kses( $html, $this->_allowed_html );
+		$html = wp_kses( $html, $this->allowed_html );
 
 		// Remove any tempty tags.
 		$html = preg_replace( '/<([a-z0-9]+)[^>]*>\s*<\/\1>/', '', $html );

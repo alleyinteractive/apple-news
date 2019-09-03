@@ -39,7 +39,7 @@ class Theme {
 	 * @access private
 	 * @var array
 	 */
-	private static $_fonts = array(
+	private static $fonts = array(
 		'AcademyEngravedLetPlain',
 		'AlNile-Bold',
 		'AlNile',
@@ -333,14 +333,14 @@ class Theme {
 	 *
 	 * @var array
 	 */
-	private static $_groups = array();
+	private static $groups = array();
 
 	/**
 	 * Theme options configuration.
 	 *
 	 * @var array
 	 */
-	private static $_options = array();
+	private static $options = array();
 
 	/**
 	 * Theme in current usage.
@@ -348,7 +348,7 @@ class Theme {
 	 * @access private
 	 * @var self
 	 */
-	private static $_used;
+	private static $used;
 
 	/**
 	 * Theme name in current usage.
@@ -356,7 +356,7 @@ class Theme {
 	 * @access private
 	 * @var string
 	 */
-	private static $_used_name;
+	private static $used_name;
 
 	/**
 	 * Tracks whether a dropcap was applied or not.
@@ -372,7 +372,7 @@ class Theme {
 	 * @access private
 	 * @var string
 	 */
-	private $_last_error = '';
+	private $last_error = '';
 
 	/**
 	 * The name of this theme.
@@ -380,7 +380,7 @@ class Theme {
 	 * @access private
 	 * @var string
 	 */
-	private $_name = '';
+	private $name = '';
 
 	/**
 	 * Values for theme options for this theme.
@@ -388,7 +388,7 @@ class Theme {
 	 * @access private
 	 * @var array
 	 */
-	private $_values = array();
+	private $values = array();
 
 	/**
 	 * Gets the active theme name.
@@ -416,7 +416,7 @@ class Theme {
 		 *
 		 * @param array $fonts An array of TrueType font names.
 		 */
-		return apply_filters( 'apple_news_fonts_list', self::$_fonts );
+		return apply_filters( 'apple_news_fonts_list', self::$fonts );
 	}
 
 	/**
@@ -428,11 +428,11 @@ class Theme {
 	public static function get_options() {
 
 		// If options have not been initialized, initialize them now.
-		if ( empty( self::$_options ) ) {
+		if ( empty( self::$options ) ) {
 			self::initialize_options();
 		}
 
-		return self::$_options;
+		return self::$options;
 	}
 
 	/**
@@ -460,8 +460,8 @@ class Theme {
 	public static function get_used() {
 
 		// Determine if a theme is already set.
-		if ( ! empty( self::$_used ) && self::$_used instanceof self ) {
-			return self::$_used;
+		if ( ! empty( self::$used ) && self::$used instanceof self ) {
+			return self::$used;
 		}
 
 		// Set the default.
@@ -471,7 +471,7 @@ class Theme {
 		$theme->load();
 		$theme->use_this();
 
-		return self::$_used;
+		return self::$used;
 	}
 
 	/**
@@ -553,7 +553,7 @@ class Theme {
 	 * @access private
 	 */
 	private static function initialize_options() {
-		self::$_options = array(
+		self::$options = array(
 			'ad_frequency'                      => array(
 				'default'     => 1,
 				'description' => __( 'A number between 1 and 10 defining the frequency for automatically inserting Banner Advertisement components into articles. For more information, see the <a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/Apple_News_Format_Ref/AdvertisingSettings.html#//apple_ref/doc/uid/TP40015408-CH93-SW1" target="_blank">Apple News Format Reference</a>.', 'apple-news' ),
@@ -1183,9 +1183,9 @@ class Theme {
 		$this->remove_from_registry( $this->get_name() );
 
 		// Remove from used, if necessary.
-		if ( self::$_used_name === $this->get_name() ) {
-			self::$_used_name = null;
-			self::$_used      = null;
+		if ( self::$used_name === $this->get_name() ) {
+			self::$used_name = null;
+			self::$used      = null;
 		}
 	}
 
@@ -1239,11 +1239,11 @@ class Theme {
 	public function get_groups() {
 
 		// If groups have not been initialized, initialize them now.
-		if ( empty( self::$_groups ) ) {
+		if ( empty( self::$groups ) ) {
 			$this->initialize_groups();
 		}
 
-		return self::$_groups;
+		return self::$groups;
 	}
 
 	/**
@@ -1253,7 +1253,7 @@ class Theme {
 	 * @return string The text of the last error.
 	 */
 	public function get_last_error() {
-		return $this->_last_error;
+		return $this->last_error;
 	}
 
 	/**
@@ -1274,11 +1274,11 @@ class Theme {
 	public function get_name() {
 
 		// If no name is set, use the default.
-		if ( empty( $this->_name ) ) {
-			$this->_name = __( 'Default', 'apple-news' );
+		if ( empty( $this->name ) ) {
+			$this->name = __( 'Default', 'apple-news' );
 		}
 
-		return $this->_name;
+		return $this->name;
 	}
 
 	/**
@@ -1292,8 +1292,8 @@ class Theme {
 	public function get_value( $option ) {
 
 		// Attempt to return the value from the values array.
-		if ( isset( $this->_values[ $option ] ) ) {
-			return $this->_values[ $option ];
+		if ( isset( $this->values[ $option ] ) ) {
+			return $this->values[ $option ];
 		}
 
 		// Attempt to fall back to the default.
@@ -1317,12 +1317,12 @@ class Theme {
 		foreach ( self::get_options() as $option => $option_config ) {
 
 			// If the option is not specified, it is using the default.
-			if ( ! isset( $this->_values[ $option ] ) ) {
+			if ( ! isset( $this->values[ $option ] ) ) {
 				continue;
 			}
 
 			// If the values don't match, it is not using the default.
-			if ( $this->_values[ $option ] !== $option_config['default'] ) {
+			if ( $this->values[ $option ] !== $option_config['default'] ) {
 				return false;
 			}
 		}
@@ -1362,21 +1362,21 @@ class Theme {
 			// Convert the format of the value based on type.
 			switch ( $options[ $key ]['type'] ) {
 				case 'float':
-					$this->_values[ $key ] = (float) $value;
+					$this->values[ $key ] = (float) $value;
 					break;
 				case 'integer':
-					$this->_values[ $key ] = (int) $value;
+					$this->values[ $key ] = (int) $value;
 					break;
 				default:
-					$this->_values[ $key ] = $value;
+					$this->values[ $key ] = $value;
 					break;
 			}
 		}
 
 		// Loop over local values and remove any that aren't present in loaded data.
-		foreach ( $this->_values as $key => $value ) {
+		foreach ( $this->values as $key => $value ) {
 			if ( ! isset( $values[ $key ] ) ) {
-				unset( $this->_values[ $key ] );
+				unset( $this->values[ $key ] );
 			}
 		}
 
@@ -1394,14 +1394,14 @@ class Theme {
 		check_admin_referer( 'apple_news_save_edit_theme' );
 
 		// Remove all configured values except for JSON templates.
-		if ( ! empty( $this->_values['json_templates'] )
-			&& is_array( $this->_values['json_templates'] )
+		if ( ! empty( $this->values['json_templates'] )
+			&& is_array( $this->values['json_templates'] )
 		) {
-			$this->_values = array(
-				'json_templates' => $this->_values['json_templates'],
+			$this->values = array(
+				'json_templates' => $this->values['json_templates'],
 			);
 		} else {
-			$this->_values = array();
+			$this->values = array();
 		}
 
 		// Loop through options and extract each from postdata.
@@ -1422,7 +1422,7 @@ class Theme {
 			switch ( $option['type'] ) {
 				case 'array':
 					if ( is_array( $_POST[ $option_key ] ) ) {
-						$this->_values[ $option_key ] = array_map(
+						$this->values[ $option_key ] = array_map(
 							'sanitize_text_field',
 							array_map(
 								'wp_unslash',
@@ -1434,17 +1434,17 @@ class Theme {
 					break;
 
 				case 'float':
-					$this->_values[ $option_key ] = floatval( $_POST[ $option_key ] );
+					$this->values[ $option_key ] = floatval( $_POST[ $option_key ] );
 
 					break;
 
 				case 'integer':
-					$this->_values[ $option_key ] = intval( $_POST[ $option_key ] );
+					$this->values[ $option_key ] = intval( $_POST[ $option_key ] );
 
 					break;
 
 				default:
-					$this->_values[ $option_key ] = sanitize_text_field(
+					$this->values[ $option_key ] = sanitize_text_field(
 						wp_unslash(
 							$_POST[ $option_key ]
 						)
@@ -1458,7 +1458,7 @@ class Theme {
 		if ( ! isset( $_POST['meta_component_order'] ) // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 			&& ! empty( $_POST['meta_component_inactive'] ) // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
 		) {
-			$this->_values['meta_component_order'] = array();
+			$this->values['meta_component_order'] = array();
 		}
 	}
 
@@ -1498,7 +1498,7 @@ class Theme {
 		$old_theme->delete();
 
 		// Refresh used if in active use.
-		if ( $old_name === self::$_used_name ) {
+		if ( $old_name === self::$used_name ) {
 			$this->use_this();
 		}
 
@@ -1519,13 +1519,13 @@ class Theme {
 		}
 
 		// Save the theme.
-		update_option( self::theme_key( $this->get_name() ), $this->_values, false );
+		update_option( self::theme_key( $this->get_name() ), $this->values, false );
 
 		// Add to the registry.
 		$this->add_to_registry( $this->get_name() );
 
 		// Refresh loaded theme, if currently in use.
-		if ( self::$_used_name === $this->get_name() ) {
+		if ( self::$used_name === $this->get_name() ) {
 			$this->use_this();
 		}
 
@@ -1559,7 +1559,7 @@ class Theme {
 	 * @param string $name The name to set.
 	 */
 	public function set_name( $name ) {
-		$this->_name = $name;
+		$this->name = $name;
 	}
 
 	/**
@@ -1574,14 +1574,14 @@ class Theme {
 	public function set_value( $option, $value ) {
 
 		// Attempt to change the value.
-		$starting_values          = $this->_values;
-		$this->_values[ $option ] = $value;
+		$starting_values         = $this->values;
+		$this->values[ $option ] = $value;
 		if ( $this->validate() ) {
 			return true;
 		}
 
 		// Change was unsuccessful, so revert to old values.
-		$this->_values = $starting_values;
+		$this->values = $starting_values;
 
 		return false;
 	}
@@ -1592,14 +1592,14 @@ class Theme {
 	 * @access public
 	 */
 	public function use_this() {
-		self::$_used_name = $this->get_name();
-		self::$_used      = $this;
+		self::$used_name = $this->get_name();
+		self::$used      = $this;
 	}
 
 	/**
 	 * Sanitizes and validates the values array.
 	 *
-	 * If an error is encountered, it will be saved in the $_last_error property.
+	 * If an error is encountered, it will be saved in the $last_error property.
 	 *
 	 * @access public
 	 * @return bool True if the values are valid, false if not.
@@ -1607,7 +1607,7 @@ class Theme {
 	public function validate() {
 
 		// If values is not an array, then the configuration is invalid.
-		if ( ! is_array( $this->_values ) ) {
+		if ( ! is_array( $this->values ) ) {
 			$this->log_error(
 				__(
 					'Theme values were not in array format.',
@@ -1620,7 +1620,7 @@ class Theme {
 
 		// Loop through provided values and check each.
 		$options = self::get_options();
-		foreach ( $this->_values as $key => &$value ) {
+		foreach ( $this->values as $key => &$value ) {
 
 			// If the provided key is not in the valid options spec, mark invalid.
 			if ( ! isset( $options[ $key ] ) ) {
@@ -1749,10 +1749,10 @@ class Theme {
 		}
 
 		// Validate meta_component_order separately.
-		if ( ! empty( $this->_values['meta_component_order'] ) ) {
+		if ( ! empty( $this->values['meta_component_order'] ) ) {
 
 			// Ensure no values were provided other than what is permissible.
-			foreach ( $this->_values['meta_component_order'] as $component ) {
+			foreach ( $this->values['meta_component_order'] as $component ) {
 				if ( ! in_array( $component, $options['meta_component_order']['default'], true ) ) {
 					$this->log_error(
 						__( 'Invalid value for meta component order', 'apple-news' )
@@ -1801,7 +1801,7 @@ class Theme {
 	 * @access private
 	 */
 	private function initialize_groups() {
-		self::$_groups = array(
+		self::$groups = array(
 			'layout'          => array(
 				'label'       => __( 'Layout Spacing', 'apple-news' ),
 				'description' => __( 'The spacing for the base layout of the exported articles', 'apple-news' ),
@@ -2017,7 +2017,7 @@ class Theme {
 	 * @access private
 	 */
 	private function log_error( $message ) {
-		$this->_last_error = $message;
+		$this->last_error = $message;
 	}
 
 	/**
@@ -2057,7 +2057,7 @@ class Theme {
 	private function validate_json_templates() {
 
 		// If no JSON templates are defined, count as a success.
-		if ( empty( $this->_values['json_templates'] ) ) {
+		if ( empty( $this->values['json_templates'] ) ) {
 			return true;
 		}
 
@@ -2067,7 +2067,7 @@ class Theme {
 		$components = $component_factory::get_components();
 
 		// Iterate over components and look for customized JSON for each.
-		$invalid_components = $this->_values['json_templates'];
+		$invalid_components = $this->values['json_templates'];
 		foreach ( $components as $component_class ) {
 
 			// Negotiate the component key.
@@ -2075,14 +2075,14 @@ class Theme {
 			$component_key = $component->get_component_name();
 
 			// Determine if this component key is defined in this theme.
-			if ( empty( $this->_values['json_templates'][ $component_key ] )
-				|| ! is_array( $this->_values['json_templates'][ $component_key ] )
+			if ( empty( $this->values['json_templates'][ $component_key ] )
+				|| ! is_array( $this->values['json_templates'][ $component_key ] )
 			) {
 				continue;
 			}
 
 			// Loop through component key and validate.
-			$current_component = &$this->_values['json_templates'][ $component_key ];
+			$current_component = &$this->values['json_templates'][ $component_key ];
 			$specs             = $component->get_specs();
 			foreach ( $specs as $spec_key => $spec ) {
 

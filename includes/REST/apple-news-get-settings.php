@@ -4,7 +4,9 @@
  *
  * @package Apple_News
  */
+
 namespace Apple_News\REST;
+
 /**
  * Get API response.
  *
@@ -18,7 +20,7 @@ function get_settings_response( $data ) {
 
 	// Compile non-sensitive plugin settings into a JS-friendly format and return.
 	$admin_settings = new \Admin_Apple_Settings();
-	$settings = $admin_settings->fetch_settings();
+	$settings       = $admin_settings->fetch_settings();
 	return [
 		'adminUrl'            => esc_url_raw( admin_url( 'admin.php?page=apple-news-options' ) ),
 		'automaticAssignment' => ! empty( get_option( 'apple_news_section_taxonomy_mappings' ) ),

@@ -425,8 +425,8 @@ class Admin_Apple_JSON extends Apple_News {
 		}
 
 		// Next, check for a theme loaded in from the query string.
-		if ( ! empty( $_GET['theme'] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
-			return sanitize_text_field( wp_unslash( $_GET['theme'] ) ); // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+		if ( ! empty( $_GET['theme'] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
+			return sanitize_text_field( wp_unslash( $_GET['theme'] ) ); // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
 		}
 
 		return '';

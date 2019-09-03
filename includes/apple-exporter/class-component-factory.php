@@ -197,13 +197,13 @@ class Component_Factory {
 			}
 
 			// We matched a single node.
-			$html     = $node->ownerDocument->saveXML( $matched_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			$html     = $node->ownerDocument->saveXML( $matched_node );
 			$result[] = self::get_component( $shortname, $html );
 			return $result;
 		}
 		// Nothing found. Maybe it's a container element?
 		if ( $node->hasChildNodes() ) {
-			foreach ( $node->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			foreach ( $node->childNodes as $child ) {
 				$result = array_merge( $result, self::get_components_from_node( $child, $node ) );
 			}
 			// Remove all nulls from the array.
@@ -216,8 +216,8 @@ class Component_Factory {
 		 * Others nodes without a match are almost always just stray empty text nodes
 		 * that are always safe to remove. Paragraphs should also be ignored for this reason.
 		 */
-		if ( empty( $result ) && ( ! empty( $node->tagName ) && 'p' !== $node->tagName ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
-			self::$workspace->log_error( 'component_errors', $node->tagName ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( empty( $result ) && ( ! empty( $node->tagName ) && 'p' !== $node->tagName ) ) {
+			self::$workspace->log_error( 'component_errors', $node->tagName );
 		}
 
 		return $result;

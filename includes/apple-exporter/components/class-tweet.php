@@ -27,16 +27,16 @@ class Tweet extends Component {
 
 		// Handling for a Gutenberg Twitter embed.
 		if (
-			'figure' === $node->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			'figure' === $node->nodeName
 			&& self::node_has_class( $node, 'wp-block-embed-twitter' )
 		) {
 			return $node;
 		}
 
 		// Check if the body of a node is solely a tweet URL.
-		$is_twitter_url = 'p' === $node->nodeName && preg_match( // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$is_twitter_url = 'p' === $node->nodeName && preg_match(
 			'#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i',
-			trim( $node->nodeValue ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			trim( $node->nodeValue )
 		);
 
 		if ( self::node_has_class( $node, 'twitter-tweet' ) || $is_twitter_url ) {

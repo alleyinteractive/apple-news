@@ -23,7 +23,7 @@ class Divider extends Component {
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
-		if ( 'hr' === $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( 'hr' === $node->nodeName ) {
 			return $node;
 		}
 

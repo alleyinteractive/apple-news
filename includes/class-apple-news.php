@@ -55,7 +55,7 @@ class Apple_News {
 	 * @var bool
 	 * @access private
 	 */
-	private static $_is_initialized;
+	private static $is_initialized;
 
 	/**
 	 * Plugin domain.
@@ -79,7 +79,7 @@ class Apple_News {
 	 * @var array
 	 * @access private
 	 */
-	private $_contexts = array(
+	private $contexts = array(
 		'post.php',
 		'post-new.php',
 		'toplevel_page_apple_news_index',
@@ -182,15 +182,15 @@ class Apple_News {
 	public static function is_initialized() {
 
 		// Look up required information in plugin settings, if necessary.
-		if ( null === self::$_is_initialized ) {
-			$settings              = get_option( self::$option_name );
-			self::$_is_initialized = ( ! empty( $settings['api_channel'] )
+		if ( null === self::$is_initialized ) {
+			$settings             = get_option( self::$option_name );
+			self::$is_initialized = ( ! empty( $settings['api_channel'] )
 				&& ! empty( $settings['api_key'] )
 				&& ! empty( $settings['api_secret'] )
 			);
 		}
 
-		return self::$_is_initialized;
+		return self::$is_initialized;
 	}
 
 	/**
@@ -237,7 +237,7 @@ class Apple_News {
 		}
 
 		// Ensure we are in an appropriate context.
-		if ( ! in_array( $hook, $this->_contexts, true ) ) {
+		if ( ! in_array( $hook, $this->contexts, true ) ) {
 			return;
 		}
 

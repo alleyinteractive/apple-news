@@ -290,7 +290,7 @@ abstract class Component {
 		libxml_clear_errors( true );
 
 		// Find the first-level nodes of the body tag.
-		$element = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$element = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
 		$html    = $dom->saveHTML( $element );
 		return preg_replace( '#<[^/>][^>]*></[^>]+>#', '', $html );
 	}
@@ -740,7 +740,7 @@ abstract class Component {
 	protected static function remote_file_exists( $node ) {
 
 		// Try to get a URL from the src attribute of the HTML.
-		$html = $node->ownerDocument->saveXML( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$html = $node->ownerDocument->saveXML( $node );
 		$path = self::url_from_src( $html );
 		if ( empty( $path ) ) {
 			return false;
@@ -775,8 +775,7 @@ abstract class Component {
 			return '';
 		}
 
-		// Loop through matches, returning the first valid URL found.
-		// Matching on src=
+		// Loop through matches, returning the first valid URL found, matching on src=.
 		foreach ( $matches[1] as $url ) {
 
 			// Run the URL through the formatter.
@@ -788,7 +787,7 @@ abstract class Component {
 			}
 		}
 
-		// Matching on background-image:url
+		// Matching on background-image:url.
 		foreach ( $matches[2] as $url ) {
 
 			// Run the URL through the formatter.
@@ -804,10 +803,10 @@ abstract class Component {
 	}
 
 	/**
-	 * Get iframe/embed node
+	 * Get iframe/embed node.
 	 *
-	 * @param [mixed] $node $node object
-	 * @return boolean $has_figure_iframe
+	 * @param \DOMElement $node The node to examine.
+	 * @return bool True if the figure is an iframe.
 	 */
 	public static function is_embed_figure( $node ) {
 

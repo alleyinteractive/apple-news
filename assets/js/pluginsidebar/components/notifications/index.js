@@ -51,6 +51,7 @@ export default class Notifications extends React.PureComponent {
             status={notification.type}
           >
             <p
+              // phpcs:ignore WordPressVIPMinimum.JS.DangerouslySetInnerHTML.Found
               dangerouslySetInnerHTML={{ // eslint-disable-line react/no-danger
                 __html: dompurify.sanitize(notification.message),
               }}

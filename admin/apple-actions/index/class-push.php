@@ -214,7 +214,7 @@ class Push extends API_Action {
 			}
 
 			// Get the isPreview setting.
-			$is_paid                   = (bool) get_post_meta( $this->id, 'apple_news_is_paid', true );
+			$is_paid                = (bool) get_post_meta( $this->id, 'apple_news_is_paid', true );
 			$meta['data']['isPaid'] = $is_paid;
 
 			// Get the isPreview setting.

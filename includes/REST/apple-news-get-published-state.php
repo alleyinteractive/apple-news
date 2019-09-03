@@ -4,7 +4,9 @@
  *
  * @package Apple_News
  */
+
 namespace Apple_News\REST;
+
 /**
  * Get API response.
  *
@@ -12,13 +14,13 @@ namespace Apple_News\REST;
  * @return array updated response.
  */
 function get_published_state_response( $data ) {
-  $response = [];
+	$response = [];
 
 	if ( ! empty( get_current_user_id() ) ) {
 		$response['publishState'] = \Admin_Apple_News::get_post_status( $data['id'] );
 	}
 
-  return $response;
+	return $response;
 }
 
 /**

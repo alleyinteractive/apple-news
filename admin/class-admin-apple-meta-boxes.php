@@ -314,7 +314,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		foreach ( $sections as $section ) {
 			?>
 			<div class="section">
-				<input id="apple-news-section-<?php echo esc_attr( $section->id ); ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ); ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ); ?>> <?php /* phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar */ ?>
+				<input id="apple-news-section-<?php echo esc_attr( $section->id ); ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ); ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ); ?>>
 				<label for="apple-news-section-<?php echo esc_attr( $section->id ); ?>"><?php echo esc_html( $section->name ); ?></label>
 			</div>
 			<?php

@@ -19,7 +19,7 @@ add_action(
 			[
 				'methods'  => 'POST',
 				'callback' => function( $data ) {
-					$body = json_decode( $data->get_body(), true );
+					$body          = json_decode( $data->get_body(), true );
 					$notifications = ! empty( $body['toClear'] ) && is_array( $body['toClear'] )
 						? $body['toClear']
 						: [];

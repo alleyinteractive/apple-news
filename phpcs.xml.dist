@@ -34,19 +34,22 @@
 
 	<rule ref="WordPress">
 		<exclude-pattern>assets/</exclude-pattern>
+		<exclude-pattern>webpack.config.js</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress-VIP-Go" />
 
-	<rule ref="WordPress.WP.I18n">
-		<properties>
-			<!--
-			Verify that the text_domain is set to the desired text-domain.
-			Multiple valid text domains can be provided as a comma-delimited list.
-			 -->
-			<property name="text_domain" type="array" value="apple-news" />
-		</properties>
-	</rule>
+  <rule ref="Generic.PHP.ForbiddenFunctions">
+    <properties>
+      <!--
+      WordPress.com VIP does not propagate wp_cache_set data across datacenters,
+      largely to avoid attempting to propagate large (>50k) data for batcache.
+      -->
+      <property name="forbiddenFunctions" type="array">
+        <element key="wp_cache_add" value="wp_cache_set"/>
+      </property>
+    </properties>
+  </rule>
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
@@ -54,20 +57,34 @@
 		</properties>
 	</rule>
 
-	<rule ref="Generic.PHP.ForbiddenFunctions">
-		<properties>
-			<!--
-			WordPress.com VIP does not propagate wp_cache_set data across datacenters,
-			largely to avoid attempting to propagate large (>50k) data for batcache.
-			-->
-			<property name="forbiddenFunctions" type="array">
-				<element key="wp_cache_add" value="wp_cache_set"/>
-			</property>
-		</properties>
-	</rule>
+  <rule ref="WordPress.NamingConventions.ValidVariableName">
+    <properties>
+      <property name="customPropertiesWhitelist" type="array">
+        <element value="childNodes" />
+        <element value="firstChild" />
+        <element value="isDefault" />
+        <element value="keyPath" />
+        <element value="nodeName" />
+        <element value="nodeType" />
+        <element value="nodeValue" />
+        <element value="ownerDocument" />
+        <element value="tagName" />
+      </property>
+    </properties>
+  </rule>
 
-	<!-- Turn off a few newly added or renamed rules until we put fixes in place. -->
-	<!-- We will target version 2.0.0 for these fixes. -->
+  <rule ref="WordPress.WP.I18n">
+    <properties>
+      <!--
+      Verify that the text_domain is set to the desired text-domain.
+      Multiple valid text domains can be provided as a comma-delimited list.
+       -->
+      <property name="text_domain" type="array" value="apple-news" />
+    </properties>
+  </rule>
+
+  <!-- Turn off a few newly added or renamed rules until we put fixes in place. -->
+	<!-- We will target version 2.1.0 for these fixes. -->
 	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod.Found">
 		<severity>0</severity>
 	</rule>
@@ -81,9 +98,6 @@
 		<severity>0</severity>
 	</rule>
 	<rule ref="WordPress.Security.NonceVerification.NoNonceVerification">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPress.WP.GlobalVariablesOverride.OverrideProhibited">
 		<severity>0</severity>
 	</rule>
 	<rule ref="WordPressVIPMinimum.Files.IncludingFile.UsingVariable">
@@ -122,4 +136,7 @@
 	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.UnusedVariable">
 		<severity>0</severity>
 	</rule>
+  <rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
+    <severity>0</severity>
+  </rule>
 </ruleset>

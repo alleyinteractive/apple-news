@@ -34,7 +34,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * @var array
 	 * @access private
 	 */
-	private $_valid_actions;
+	private $valid_actions;
 
 	/**
 	 * Renders a theme option field for use in a form.
@@ -158,7 +158,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$this->theme_page_name      = $this->plugin_domain . '-themes';
 		$this->theme_edit_page_name = $this->plugin_domain . '-theme-edit';
 
-		$this->_valid_actions = array(
+		$this->valid_actions = array(
 			'apple_news_upload_theme'        => array(
 				'callback' => array( $this, 'upload_theme' ),
 				'nonce'    => 'apple_news_themes',
@@ -203,18 +203,18 @@ class Admin_Apple_Themes extends Apple_News {
 		$action = isset( $_REQUEST['action'] )
 			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
 			: null;
-		if ( ( empty( $action ) || ! array_key_exists( $action, $this->_valid_actions ) ) ) {
+		if ( ( empty( $action ) || ! array_key_exists( $action, $this->valid_actions ) ) ) {
 			return;
 		}
 
 		// Check the nonce.
-		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
+		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
 
 		// Call the callback for the action for further processing.
-		if ( isset( $this->_valid_actions[ $action ]['callback'] )
-			&& is_callable( $this->_valid_actions[ $action ]['callback'] )
+		if ( isset( $this->valid_actions[ $action ]['callback'] )
+			&& is_callable( $this->valid_actions[ $action ]['callback'] )
 		) {
-			call_user_func( $this->_valid_actions[ $action ]['callback'] );
+			call_user_func( $this->valid_actions[ $action ]['callback'] );
 		}
 	}
 
@@ -269,8 +269,8 @@ class Admin_Apple_Themes extends Apple_News {
 		// Negotiate theme object.
 		$error = '';
 		$theme = new \Apple_Exporter\Theme();
-		if ( isset( $_GET['theme'] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
-			$theme_name = sanitize_text_field( wp_unslash( $_GET['theme'] ) ); // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+		if ( isset( $_GET['theme'] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
+			$theme_name = sanitize_text_field( wp_unslash( $_GET['theme'] ) ); // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
 			$theme->set_name( $theme_name );
 			if ( false === $theme->load() ) {
 				$error = sprintf(
@@ -566,7 +566,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$action = isset( $_REQUEST['action'] )
 			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
 			: null;
-		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
+		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
 
 		// Attempt to get the name of the theme from postdata.
 		if ( empty( $name ) && ! empty( $_POST['apple_news_theme'] ) ) {
@@ -607,7 +607,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$action = isset( $_REQUEST['action'] )
 			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
 			: null;
-		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
+		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
 
 		// Get the theme name from POST data.
 		if ( ! empty( $_POST['apple_news_theme'] ) ) {
@@ -671,7 +671,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$action = isset( $_REQUEST['action'] )
 			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
 			: null;
-		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
+		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
 
 		// Create a theme object.
 		$theme = new \Apple_Exporter\Theme();
@@ -776,7 +776,7 @@ class Admin_Apple_Themes extends Apple_News {
 		$action = isset( $_REQUEST['action'] )
 			? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) )
 			: null;
-		check_admin_referer( $this->_valid_actions[ $action ]['nonce'] );
+		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
 
 		// Get the theme name from postdata.
 		if ( ! empty( $_POST['apple_news_active_theme'] ) ) {

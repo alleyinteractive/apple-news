@@ -37,30 +37,30 @@ class Body extends Component {
 	 *
 	 * @param \DOMElement $node The node to examine for matches.
 	 * @access public
-	 * @return \DOMElement|null The node on success, or null on no match.
+	 * @return array|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
 		// We are only interested in p, pre, ul and ol.
-		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ), true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( ! in_array( $node->nodeName, array( 'p', 'pre', 'ul', 'ol' ), true ) ) {
 			return null;
 		}
 
 		// If the node is p, ul or ol AND it's empty, just ignore.
-		if ( empty( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( empty( $node->nodeValue ) ) {
 			return null;
 		}
 
 		// Negotiate open and close values.
-		$open  = '<' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
-		$close = '</' . $node->nodeName . '>'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
-		if ( 'ol' === $node->nodeName || 'ul' === $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$open  = '<' . $node->nodeName . '>';
+		$close = '</' . $node->nodeName . '>';
+		if ( 'ol' === $node->nodeName || 'ul' === $node->nodeName ) {
 			$open .= '<li>';
 			$close = '</li>' . $close;
 		}
 
 		return self::split_unsupported_elements(
-			$node->ownerDocument->saveXML( $node ), // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
-			$node->nodeName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			$node->ownerDocument->saveXML( $node ),
+			$node->nodeName,
 			$open,
 			$close
 		);

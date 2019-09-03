@@ -8,7 +8,9 @@
  * @link    http://github.com/alleyinteractive/apple-news
  * @since   0.2.0
  * @package WP_Plugin
- *
+ */
+
+/*
  * Plugin Name: Publish to Apple News
  * Plugin URI:  http://github.com/alleyinteractive/apple-news
  * Description: Export and sync posts to Apple format.
@@ -104,22 +106,22 @@ function apple_news_is_exporting() {
 function apple_news_block_editor_is_active() {
 	$active = true;
 
-    // Gutenberg plugin is installed and activated.
-    $gutenberg = ! ( false === has_filter( 'replace_editor', 'gutenberg_init' ) );
+	// Gutenberg plugin is installed and activated.
+	$gutenberg = ! ( false === has_filter( 'replace_editor', 'gutenberg_init' ) );
 
-    // Block editor since 5.0.
-    $block_editor = version_compare( $GLOBALS['wp_version'], '5.0-beta', '>' );
+	// Block editor since 5.0.
+	$block_editor = version_compare( $GLOBALS['wp_version'], '5.0-beta', '>' );
 
-    if ( ! $gutenberg && ! $block_editor ) {
-        $active = false;
-    }
+	if ( ! $gutenberg && ! $block_editor ) {
+		$active = false;
+	}
 
-    if ( $active && apple_news_is_classic_editor_plugin_active() ) {
-        $editor_option       = get_option( 'classic-editor-replace' );
-        $block_editor_active = array( 'no-replace', 'block' );
+	if ( $active && apple_news_is_classic_editor_plugin_active() ) {
+		$editor_option       = get_option( 'classic-editor-replace' );
+		$block_editor_active = array( 'no-replace', 'block' );
 
-        $active = in_array( $editor_option, $block_editor_active, true );
-    }
+		$active = in_array( $editor_option, $block_editor_active, true );
+	}
 
 	/**
 	 * Overrides whether Apple News thinks the block editor is active or not.
@@ -169,15 +171,15 @@ function apple_news_block_editor_is_active_for_post( $post_id = 0 ) {
  * @return bool
  */
 function apple_news_is_classic_editor_plugin_active() {
-    if ( ! function_exists( 'is_plugin_active' ) ) {
-        include_once ABSPATH . 'wp-admin/includes/plugin.php';
-    }
+	if ( ! function_exists( 'is_plugin_active' ) ) {
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
 
-    if ( is_plugin_active( 'classic-editor/classic-editor.php' ) ) {
-        return true;
-    }
+	if ( is_plugin_active( 'classic-editor/classic-editor.php' ) ) {
+		return true;
+	}
 
-    return false;
+	return false;
 }
 
 /**

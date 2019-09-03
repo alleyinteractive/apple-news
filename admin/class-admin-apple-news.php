@@ -20,7 +20,7 @@ require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-sections.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-themes.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-preview.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-json.php';
-// REST Includes
+// REST Includes.
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-clear-notifications.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-delete.php';
 require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-notifications.php';

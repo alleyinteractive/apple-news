@@ -35,7 +35,7 @@ class Embed_Generic extends Component {
 
 		// Check for Gutenberg-style embeds, which have a helpful signature.
 		if ( 'figure' === $node->nodeName
-			&& false !== strpos( $node->getAttribute('class'), 'wp-block-embed-' )
+			&& false !== strpos( $node->getAttribute( 'class' ), 'wp-block-embed-' )
 		) {
 			return $node;
 		}
@@ -48,7 +48,7 @@ class Embed_Generic extends Component {
 		// Check for paragraphs containing iframes.
 		if ( 'p' === $node->nodeName
 			&& $node->hasChildNodes()
-			&& 'iframe' === $node->childNodes->item(0)->nodeName
+			&& 'iframe' === $node->childNodes->item( 0 )->nodeName
 		) {
 			return $node;
 		}
@@ -77,7 +77,7 @@ class Embed_Generic extends Component {
 			'embed-generic-layout',
 			__( 'Embed (generic) Layout', 'apple-news' ),
 			[
-				'margin'      => [
+				'margin' => [
 					'top'    => 15,
 					'bottom' => 15,
 				],
@@ -102,12 +102,13 @@ class Embed_Generic extends Component {
 		if ( preg_match( '/wp-block-embed-([0-9a-zA-Z-]+)/', $html, $matches ) ) {
 			$provider = $matches[1];
 		} else {
-			/* Define a map of domain names to provider slugs to check for as a best guess.
+			/*
+			 * Define a map of domain names to provider slugs to check for as a best guess.
 			 * This list is intentionally organized from most specific to least specific, so do not
 			 * alphabetize it! The logic here is that a block may contain references to amazon.com either
 			 * in-text or via links to Amazon services (AWS, S3, etc) but actually be an embed for a
 			 * different provider. Therefore, we will only consider an embed to be from "generic" providers
-			 * like Amazon or Imgur if no other, more specifc, providers were matched first.
+			 * like Amazon or Imgur if no other, more specific, providers were matched first.
 			 */
 			$provider_map = [
 				'animoto.com'      => 'animoto',

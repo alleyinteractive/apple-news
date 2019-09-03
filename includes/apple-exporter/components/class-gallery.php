@@ -77,20 +77,20 @@ class Gallery extends Component {
 		$dom->loadHTML( '<?xml encoding="UTF-8">' . $html );
 		libxml_clear_errors();
 		libxml_use_internal_errors( false );
-		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$nodes = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes;
 
 		// Determine if we have items.
-		if ( ! $nodes || ! $nodes->item( 0 )->childNodes ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( ! $nodes || ! $nodes->item( 0 )->childNodes ) {
 			return;
 		}
 
 		// Loop through items and construct slides.
 		$theme = \Apple_Exporter\Theme::get_used();
 		$items = array();
-		foreach ( $nodes->item( 0 )->childNodes as $item ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		foreach ( $nodes->item( 0 )->childNodes as $item ) {
 
 			// Convert item into HTML for regex matching.
-			$item_html = $item->ownerDocument->saveXML( $item ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			$item_html = $item->ownerDocument->saveXML( $item );
 
 			// Try to get URL.
 			if ( ! preg_match( '/src="([^"]+)"/', $item_html, $matches ) ) {
@@ -113,7 +113,7 @@ class Gallery extends Component {
 			if ( $caption && $caption->length ) {
 				$content['caption'] = array(
 					'text' => sanitize_text_field(
-						trim( $caption->item( 0 )->nodeValue ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+						trim( $caption->item( 0 )->nodeValue )
 					),
 				);
 			}

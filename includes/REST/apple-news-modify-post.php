@@ -4,6 +4,7 @@
  *
  * @package Apple_News
  */
+
 namespace Apple_News\REST;
 
 use \Admin_Apple_News;
@@ -76,7 +77,7 @@ function modify_post( $post_id, $operation ) {
 			$action = new Push( Admin_Apple_News::$settings, $post_id );
 			break;
 		case 'delete':
-			$action = new Delete( Admin_Apple_News::$settings, $post_id );
+			$action = new Delete( Admin_Apple_News::$settings, $post_id ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_delete
 			break;
 		default:
 			$message = __( 'You specified an invalid API operation.', 'apple-news' );
@@ -85,7 +86,6 @@ function modify_post( $post_id, $operation ) {
 				'apple_news_bad_operation',
 				$message
 			);
-			break;
 	}
 	try {
 		$action->perform();
@@ -96,6 +96,7 @@ function modify_post( $post_id, $operation ) {
 		} elseif ( 'delete' === $operation ) {
 			Admin_Apple_Notice::success(
 				sprintf(
+					// translators: The title of the article.
 					__( 'Article %s has been successfully deleted from Apple News!', 'apple-news' ),
 					$post->post_title
 				)

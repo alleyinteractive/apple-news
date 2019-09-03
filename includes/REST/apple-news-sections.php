@@ -1,30 +1,31 @@
 <?php
 /**
- * This adds custom endpoints for perspective posts.
+ * This adds custom endpoints for working with sections.
  *
  * @package Apple_News
  */
+
 namespace Apple_News\REST;
+
 /**
  * Get API response.
  *
- * @param array $data data from query args.
- * @return array updated response.
+ * @return array An array of information about sections.
  */
 function get_sections_response() {
-  $sections = \Admin_Apple_Sections::get_sections();
-  $response = [];
+	$sections = \Admin_Apple_Sections::get_sections();
+	$response = [];
 
-  if ( ! empty( $sections ) && ! empty( get_current_user_id() ) ) {
-    foreach ( $sections as $section ) {
-      $response[] = [
-        'id'      => esc_html( 'https://news-api.apple.com/sections/' . $section->id ),
-        'name'    => esc_html( $section->name ),
-      ];
-    }
-  }
+	if ( ! empty( $sections ) && ! empty( get_current_user_id() ) ) {
+		foreach ( $sections as $section ) {
+			$response[] = [
+				'id'   => esc_html( 'https://news-api.apple.com/sections/' . $section->id ),
+				'name' => esc_html( $section->name ),
+			];
+		}
+	}
 
-  return $response;
+	return $response;
 }
 
 /**

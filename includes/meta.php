@@ -93,7 +93,7 @@ function apple_news_sanitize_coverart_data( $meta_value ) {
 	$image_sizes = array_keys( Admin_Apple_News::get_image_sizes() );
 
 	// Construct the meta value from the array of image sizes.
-	$raw_value = json_decode( $meta_value, true );
+	$raw_value       = json_decode( $meta_value, true );
 	$sanitized_value = [];
 	foreach ( $image_sizes as $image_size ) {
 		if ( ! empty( $raw_value[ $image_size ] ) && is_int( $raw_value[ $image_size ] ) ) {

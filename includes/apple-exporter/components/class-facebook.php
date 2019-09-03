@@ -32,7 +32,7 @@ class Facebook extends Component {
 	 * @access private
 	 * @var array
 	 */
-	private static $_url_signatures = array(
+	private static $url_signatures = array(
 		'/data-href="([^"]+)"/i',
 		'/<(?:fb:)?post\s.*?href="([^"]+)"/i',
 	);
@@ -64,20 +64,20 @@ class Facebook extends Component {
 
 		// Handling for a Gutenberg Facebook embed.
 		if (
-			'figure' === $node->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			'figure' === $node->nodeName
 			&& self::node_has_class( $node, 'wp-block-embed-facebook' )
 		) {
 			return $node;
 		}
 
 		// Check for element with just a Facebook url.
-		if ( false !== self::get_facebook_url( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		if ( false !== self::get_facebook_url( $node->nodeValue ) ) {
 			return $node;
 		}
 
 		// Handling for a rendered Facebook embed.
 		if (
-			'div' === $node->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+			'div' === $node->nodeName
 			&& self::node_has_class( $node, 'fb-post' )
 		) {
 
@@ -94,7 +94,7 @@ class Facebook extends Component {
 		}
 
 		// Handling for a rendered WordPress.com Facebook embed.
-		$html = $node->ownerDocument->saveXML( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar
+		$html = $node->ownerDocument->saveXML( $node );
 		if ( preg_match( '/<(?:fb:)?post\s.*?href="([^"]+)"/i', $html, $matches ) ) {
 
 			// Ensure we have a valid Facebook embed URL.
@@ -118,7 +118,7 @@ class Facebook extends Component {
 	protected function build( $html ) {
 
 		// Check for href properties on rendered embeds.
-		foreach ( self::$_url_signatures as $signature ) {
+		foreach ( self::$url_signatures as $signature ) {
 			if ( preg_match( $signature, $html, $matches ) ) {
 				$html = $matches[1];
 				break;
