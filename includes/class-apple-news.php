@@ -200,8 +200,8 @@ class Apple_News {
 	 */
 	public function __construct() {
 		add_action(
-			'admin_enqueue_scripts',
-			[ $this, 'action_admin_enqueue_scripts' ]
+			'enqueue_block_editor_assets',
+			[ $this, 'enqueue_block_editor_scripts' ]
 		);
 		add_action(
 			'plugins_loaded',
