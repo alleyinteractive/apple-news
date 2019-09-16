@@ -237,7 +237,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 	public function add_meta_boxes( $post ) {
 
 		// If the block editor is active, do not add meta boxes.
-		if ( use_block_editor_for_post( $post->ID ) ) {
+		if ( function_exists( 'use_block_editor_for_post' ) && use_block_editor_for_post( $post->ID ) ) {
 			return;
 		}
 

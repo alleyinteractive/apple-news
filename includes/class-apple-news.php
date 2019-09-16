@@ -222,7 +222,12 @@ class Apple_News {
 	 *
 	 * @access public
 	 */
-	public function action_admin_enqueue_scripts( $hook ) {
+	public function enqueue_block_editor_scripts( $hook ) {
+
+		// Bail if gutenberg is not enabled.
+		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+			return;
+		}
 
 		// If the block editor is active, add PluginSidebar.
 		if ( get_the_ID() && use_block_editor_for_post( get_the_ID() ) ) {
