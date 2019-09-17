@@ -81,7 +81,7 @@ class Admin_Apple_Post_Sync {
 			|| ! in_array( $post->post_type, $this->settings->post_types, true )
 			|| ( ! current_user_can( apply_filters( 'apple_news_publish_capability', Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) )
 				&& ! ( defined( 'DOING_CRON' ) && DOING_CRON ) )
-			|| function_exists( 'has_blocks' ) && has_blocks( $post )
+			|| ( function_exists( 'has_blocks' ) && has_blocks( $post ) )
 		) {
 			return;
 		}
