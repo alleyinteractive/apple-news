@@ -890,8 +890,9 @@ class Sidebar extends React.PureComponent {
 export default compose([
   withSelect((selector) => {
     const editor = selector('core/editor');
-    const meta = editor && editor.getEditedPostAttribute ?
-      editor.getEditedPostAttribute('meta') || {} : {};
+    const meta = editor && editor.getEditedPostAttribute
+      ? editor.getEditedPostAttribute('meta') || {}
+      : {};
     const {
       apple_news_is_paid: isPaid = false,
       apple_news_is_preview: isPreview = false,
@@ -909,8 +910,9 @@ export default compose([
       apple_news_api_revision: revision = '',
     } = meta;
 
-    const postId = editor && editor.getCurrentPostId ?
-      editor.getCurrentPostId() : 0;
+    const postId = editor && editor.getCurrentPostId
+      ? editor.getCurrentPostId()
+      : 0;
 
     return {
       meta: {
