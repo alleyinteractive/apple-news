@@ -46,6 +46,12 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
+= 2.0.2 =
+* Bugfix: Adds check for some 5.0.0+ functions before attempting to execute.
+* Bugfix: Adds fallback and additional checks for sidebarPlugin retrieval of post meta.
+* Bugfix: Only makes REST request for post save when Gutenberg is enabled.
+* Enhancement: Enqueues block editor scripts with `enqueue_block_editor_assets`.
+
 = 2.0.1 =
 * Bugfix: Including the built pluginSidebar.js files with the WordPress.org distribution which were erroneously left off.
 
