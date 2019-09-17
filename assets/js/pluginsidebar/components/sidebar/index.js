@@ -890,24 +890,27 @@ class Sidebar extends React.PureComponent {
 export default compose([
   withSelect((selector) => {
     const editor = selector('core/editor');
+    const meta = editor && editor.getEditedPostAttribute ?
+      editor.getEditedPostAttribute('meta') || {} : {};
     const {
-      apple_news_is_paid: isPaid,
-      apple_news_is_preview: isPreview,
-      apple_news_is_hidden: isHidden,
-      apple_news_is_sponsored: isSponsored,
-      apple_news_maturity_rating: maturityRating,
-      apple_news_pullquote: pullquoteText,
-      apple_news_pullquote_position: pullquotePosition,
-      apple_news_sections: selectedSections,
-      apple_news_coverart: coverArt,
-      apple_news_api_id: apiId,
-      apple_news_api_created_at: dateCreated,
-      apple_news_api_modified_at: dateModified,
-      apple_news_api_share_url: shareUrl,
-      apple_news_api_revision: revision,
-    } = editor.getEditedPostAttribute('meta');
+      apple_news_is_paid: isPaid = false,
+      apple_news_is_preview: isPreview = false,
+      apple_news_is_hidden: isHidden = false,
+      apple_news_is_sponsored: isSponsored = false,
+      apple_news_maturity_rating: maturityRating = '',
+      apple_news_pullquote: pullquoteText = '',
+      apple_news_pullquote_position: pullquotePosition = '',
+      apple_news_sections: selectedSections = '',
+      apple_news_coverart: coverArt = {},
+      apple_news_api_id: apiId = '',
+      apple_news_api_created_at: dateCreated = '',
+      apple_news_api_modified_at: dateModified = '',
+      apple_news_api_share_url: shareUrl = '',
+      apple_news_api_revision: revision = '',
+    } = meta;
 
-    const postId = editor.getCurrentPostId();
+    const postId = editor && editor.getCurrentPostId ?
+      editor.getCurrentPostId() : 0;
 
     return {
       meta: {
@@ -927,7 +930,7 @@ export default compose([
         revision,
         postId,
       },
-      post: editor.getCurrentPost(),
+      post: editor && editor.getCurrentPost ? editor.getCurrentPost() : {},
     };
   }),
   withDispatch((dispatch) => ({
