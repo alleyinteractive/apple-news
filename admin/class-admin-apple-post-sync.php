@@ -48,7 +48,6 @@ class Admin_Apple_Post_Sync {
 			|| 'yes' === $this->settings->get( 'api_autosync_update' )
 		) {
 			// This needs to happen after meta boxes save.
-			add_action( 'rest_after_insert_post', [ $this, 'do_publish_from_rest' ] );
 			add_action( 'save_post', [ $this, 'do_publish' ], 99, 2 );
 		}
 
@@ -56,16 +55,6 @@ class Admin_Apple_Post_Sync {
 		if ( 'yes' === $this->settings->get( 'api_autosync_delete' ) ) {
 			add_action( 'before_delete_post', array( $this, 'do_delete' ) );
 		}
-	}
-
-	/**
-	 * An action callback for rest_after_insert_post. Handles the publish action.
-	 *
-	 * @since 2.0.0
-	 * @param WP_Post $post The post object to publish.
-	 */
-	public function do_publish_from_rest( $post ) {
-		$this->do_publish( $post->ID, $post );
 	}
 
 	/**

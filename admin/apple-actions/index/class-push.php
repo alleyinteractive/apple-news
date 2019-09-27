@@ -24,6 +24,14 @@ use \Apple_Actions\API_Action;
 class Push extends API_Action {
 
 	/**
+	 * Checksum for current article being exported.
+	 *
+	 * @var string
+	 * @access private
+	 */
+	private $checksum;
+
+	/**
 	 * Current content ID being exported.
 	 *
 	 * @var int
@@ -86,26 +94,81 @@ class Push extends API_Action {
 	}
 
 	/**
+	 * Generate a checksum against the article JSON with certain fields ignored.
+	 *
+	 * @param string $json    The JSON to turn into a checksum.
+	 * @param array  $meta    Optional. Metadata for the article. Defaults to empty array.
+	 * @param array  $bundles Optional. Any bundles that will be sent with the article. Defaults to empty array.
+	 * @param bool   $force   Optional. Allows bypass of local cache for checksum.
+	 *
+	 * @return string The checksum for the JSON.
+	 */
+	private function generate_checksum( $json, $meta = [], $bundles = [], $force = false ) {
+		// Use cached checksum, if it exists, and if force is false.
+		if ( ! $force && ! empty( $this->checksum ) ) {
+			return $this->checksum;
+		}
+
+		// Try to decode the JSON object.
+		$json = json_decode( $json, true );
+		if ( empty( $json ) ) {
+			return '';
+		}
+
+		// Remove any fields from JSON that might change but not affect the article itself, like dates and plugin version.
+		unset( $json['metadata']['dateCreated'] );
+		unset( $json['metadata']['dateModified'] );
+		unset( $json['metadata']['datePublished'] );
+		unset( $json['metadata']['generatorVersion'] );
+
+		// Add meta and bundles so we can checksum the whole thing.
+		$json['checksum']['meta']    = $meta;
+		$json['checksum']['bundles'] = $bundles;
+
+		// Calculate the checksum as a hex value and cache it.
+		$this->checksum = dechex( absint( crc32( wp_json_encode( $json ) ) ) );
+
+		return $this->checksum;
+	}
+
+	/**
 	 * Check if the post is in sync before updating in Apple News.
 	 *
 	 * @access private
+	 * @param string $json    The JSON for this article to check if it is in sync.
+	 * @param array  $meta    Optional. Metadata for the article. Defaults to empty array.
+	 * @param array  $bundles Optional. Any bundles that will be sent with the article. Defaults to empty array.
 	 * @return boolean
 	 * @throws \Apple_Actions\Action_Exception If the post could not be found.
 	 */
-	private function is_post_in_sync() {
-		$post = get_post( $this->id );
+	private function is_post_in_sync( $json, $meta = [], $bundles = [] ) {
+		$in_sync = true;
 
+		// Ensure the post (still) exists. Async operations might result in this function being run against a non-existent post.
+		$post = get_post( $this->id );
 		if ( ! $post ) {
 			throw new \Apple_Actions\Action_Exception( __( 'Could not find post with id ', 'apple-news' ) . $this->id );
 		}
 
-		$api_time   = get_post_meta( $this->id, 'apple_news_api_modified_at', true );
-		$api_time   = strtotime( get_date_from_gmt( date( 'Y-m-d H:i:s', strtotime( $api_time ) ) ) );
-		$local_time = strtotime( $post->post_modified );
+		// Compare checksums to determine whether the article is in sync or not.
+		$current_checksum = get_post_meta( $this->id, 'apple_news_article_checksum', true );
+		$new_checksum     = $this->generate_checksum( $json, $meta, $bundles );
+		if ( empty( $current_checksum ) || $current_checksum !== $new_checksum ) {
+			$in_sync = false;
+		}
 
-		$in_sync = $api_time >= $local_time;
-
-		return apply_filters( 'apple_news_is_post_in_sync', $in_sync, $this->id, $api_time, $local_time );
+		/**
+		 * Allows for custom logic to determine if a post is in sync or not.
+		 *
+		 * @since 2.0.2 Added the $post_id, $json, $meta, and $bundles parameters.
+		 *
+		 * @param bool   $in_sync Whether the current post is in sync or not.
+		 * @param int    $post_id The ID of the post being checked.
+		 * @param string $json    The JSON for the current article.
+		 * @param array  $meta    Metadata for the current article.
+		 * @param array  $bundles Any bundles that will be sent with the current article.
+		 */
+		return apply_filters( 'apple_news_is_post_in_sync', $in_sync, $this->id, $json, $meta, $bundles );
 	}
 
 	/**
@@ -159,17 +222,6 @@ class Push extends API_Action {
 			);
 		}
 
-		// Ignore if the post is already in sync.
-		if ( $this->is_post_in_sync() ) {
-			throw new \Apple_Actions\Action_Exception(
-				sprintf(
-					// Translators: Placeholder is a post ID.
-					__( 'Skipped push of article %d because it is already in sync.', 'apple-news' ),
-					$this->id
-				)
-			);
-		}
-
 		/**
 		 * The generate_article function uses Exporter->generate, so we MUST
 		 * clean the workspace before and after its usage.
@@ -195,46 +247,57 @@ class Push extends API_Action {
 			$bundles = array();
 		}
 
-		try {
-			// If there's an API ID, update, otherwise create.
-			$remote_id = get_post_meta( $this->id, 'apple_news_api_id', true );
-			$result    = null;
+		// If there's an API ID, update, otherwise create.
+		$remote_id = get_post_meta( $this->id, 'apple_news_api_id', true );
+		$result    = null;
 
-			do_action( 'apple_news_before_push', $this->id );
+		do_action( 'apple_news_before_push', $this->id );
 
-			// Populate optional metadata.
-			$meta = array(
-				'data' => array(),
+		// Populate optional metadata.
+		$meta = array(
+			'data' => array(),
+		);
+
+		// Set sections.
+		if ( ! empty( $this->sections ) ) {
+			sort( $this->sections );
+			$meta['data']['links'] = array( 'sections' => $this->sections );
+		}
+
+		// Get the isPreview setting.
+		$is_paid                = (bool) get_post_meta( $this->id, 'apple_news_is_paid', true );
+		$meta['data']['isPaid'] = $is_paid;
+
+		// Get the isPreview setting.
+		$is_preview                = (bool) get_post_meta( $this->id, 'apple_news_is_preview', true );
+		$meta['data']['isPreview'] = $is_preview;
+
+		// Get the isHidden setting.
+		$is_hidden                = (bool) get_post_meta( $this->id, 'apple_news_is_hidden', true );
+		$meta['data']['isHidden'] = $is_hidden;
+
+		// Get the isSponsored setting.
+		$is_sponsored                = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
+		$meta['data']['isSponsored'] = $is_sponsored;
+
+		// Get the maturity rating setting.
+		$maturity_rating = get_post_meta( $this->id, 'apple_news_maturity_rating', true );
+		if ( ! empty( $maturity_rating ) ) {
+			$meta['data']['maturityRating'] = $maturity_rating;
+		}
+
+		// Ignore if the post is already in sync.
+		if ( $this->is_post_in_sync( $json, $meta, $bundles ) ) {
+			throw new \Apple_Actions\Action_Exception(
+				sprintf(
+				// Translators: Placeholder is a post ID.
+					__( 'Skipped push of article %d because it is already in sync.', 'apple-news' ),
+					$this->id
+				)
 			);
+		}
 
-			// Set sections.
-			if ( ! empty( $this->sections ) ) {
-				sort( $this->sections );
-				$meta['data']['links'] = array( 'sections' => $this->sections );
-			}
-
-			// Get the isPreview setting.
-			$is_paid                = (bool) get_post_meta( $this->id, 'apple_news_is_paid', true );
-			$meta['data']['isPaid'] = $is_paid;
-
-			// Get the isPreview setting.
-			$is_preview                = (bool) get_post_meta( $this->id, 'apple_news_is_preview', true );
-			$meta['data']['isPreview'] = $is_preview;
-
-			// Get the isHidden setting.
-			$is_hidden                = (bool) get_post_meta( $this->id, 'apple_news_is_hidden', true );
-			$meta['data']['isHidden'] = $is_hidden;
-
-			// Get the isSponsored setting.
-			$is_sponsored                = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
-			$meta['data']['isSponsored'] = $is_sponsored;
-
-			// Get the maturity rating setting.
-			$maturity_rating = get_post_meta( $this->id, 'apple_news_maturity_rating', true );
-			if ( ! empty( $maturity_rating ) ) {
-				$meta['data']['maturityRating'] = $maturity_rating;
-			}
-
+		try {
 			if ( $remote_id ) {
 				// Update the current article from the API in case the revision changed.
 				$this->get();
@@ -264,6 +327,9 @@ class Push extends API_Action {
 
 			// Clear the cache for post status.
 			delete_transient( 'apple_news_post_state_' . $this->id );
+
+			// Update the checksum for the article JSON version.
+			update_post_meta( $this->id, 'apple_news_article_checksum', $this->generate_checksum( $json, $meta, $bundles ) );
 
 			do_action( 'apple_news_after_push', $this->id, $result );
 		} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
