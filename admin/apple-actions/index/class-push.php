@@ -290,7 +290,7 @@ class Push extends API_Action {
 		if ( $this->is_post_in_sync( $json, $meta, $bundles ) ) {
 			throw new \Apple_Actions\Action_Exception(
 				sprintf(
-				// Translators: Placeholder is a post ID.
+					// Translators: Placeholder is a post ID.
 					__( 'Skipped push of article %d because it is already in sync.', 'apple-news' ),
 					$this->id
 				)

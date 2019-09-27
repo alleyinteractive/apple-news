@@ -1,7 +1,7 @@
 <?php
 
+use \Apple_Actions\Action_Exception;
 use \Apple_Actions\Index\Push as Push;
-use \Apple_Actions\Action_Exception as Action_Exception;
 use \Apple_Exporter\Settings as Settings;
 use \Prophecy\Argument as Argument;
 
@@ -566,5 +566,68 @@ class Admin_Action_Index_Push_Test extends WP_UnitTestCase {
 			'apple_news_get_errors',
 			array( $this, 'filterAppleNewsGetErrors' )
 		);
+	}
+
+	/**
+	 * Tests the behavior of the is_post_in_sync function to ensure that
+	 * posts are only sync'd when necessary.
+	 */
+	public function test_is_post_in_sync() {
+		// Mock the API.
+		$response = $this->dummy_response();
+		$api = $this->prophet->prophesize( '\Apple_Push_API\API' );
+		$api->post_article_to_channel( Argument::cetera() )
+			->willReturn( $response )
+			->shouldBeCalled();
+
+		// Create a test post.
+		$post_id = $this->factory->post->create();
+
+		// Test the initial push.
+		$action = new Push( $this->settings, $post_id );
+		$action->set_api( $api->reveal() );
+		$action->perform();
+
+		// Ensure that the push completed and the data was saved.
+		$this->assertEquals( $response->data->id, get_post_meta( $post_id, 'apple_news_api_id', true ) );
+		$this->assertEquals( $response->data->createdAt, get_post_meta( $post_id, 'apple_news_api_created_at', true ) );
+		$this->assertEquals( $response->data->modifiedAt, get_post_meta( $post_id, 'apple_news_api_modified_at', true ) );
+		$this->assertEquals( $response->data->shareUrl, get_post_meta( $post_id, 'apple_news_api_share_url', true ) );
+		$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_deleted', true ) );
+		$this->assertNotEmpty( get_post_meta( $post_id, 'apple_news_article_checksum', true ) );
+
+		// Run the push again, and this time it should bail out because it is in sync.
+		$action = new Push( $this->settings, $post_id );
+		$action->set_api( $api->reveal() );
+		try {
+			$action->perform();
+		} catch ( Action_Exception $e ) {
+			$this->assertEquals(
+				sprintf( 'Skipped push of article %d because it is already in sync.', $post_id ),
+				$e->getMessage()
+			);
+		}
+
+		// Mock the response for updating the article.
+		$api = $this->prophet->prophesize( '\Apple_Push_API\API' );
+		$api->get_article( Argument::cetera() )
+			->willReturn( $response )
+			->shouldBeCalled();
+		$api->update_article( Argument::cetera() )
+			->willReturn( $response )
+			->shouldBeCalled();
+
+		// Update the post and ensure it posts and updates the checksum.
+		$previous_checksum = get_post_meta( $post_id, 'apple_news_article_checksum', true );
+		$post = get_post( $post_id );
+		$post->post_title = 'Updated post title.';
+		wp_update_post( $post );
+		$action = new Push( $this->settings, $post_id );
+		$action->set_api( $api->reveal() );
+		$action->perform();
+		$new_checksum = get_post_meta( $post_id, 'apple_news_article_checksum', true );
+		$this->assertNotEmpty( $previous_checksum );
+		$this->assertNotEmpty( $new_checksum );
+		$this->assertNotEquals( $previous_checksum, $new_checksum );
 	}
 }
