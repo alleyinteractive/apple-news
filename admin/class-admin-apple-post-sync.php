@@ -77,11 +77,24 @@ class Admin_Apple_Post_Sync {
 	 * @access public
 	 */
 	public function do_publish( $id, $post ) {
-		if ( 'publish' !== $post->post_status
-			|| ! in_array( $post->post_type, $this->settings->post_types, true )
-			|| ( ! current_user_can( apply_filters( 'apple_news_publish_capability', Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) )
-				&& ! ( defined( 'DOING_CRON' ) && DOING_CRON ) )
-			|| ( function_exists( 'has_blocks' ) && has_blocks( $post ) )
+		// Only publish published posts.
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		// Only publish posts that are part of the configured Apple News post types.
+		if ( ! in_array( $post->post_type, $this->settings->post_types, true ) ) {
+			return;
+		}
+
+		// Only publish the post if the current user is authorized to do so *or* if run in a cron context.
+		if ( ! ( defined( 'DOING_CRON' ) && DOING_CRON ) &&
+			! current_user_can(
+				apply_filters(
+					'apple_news_publish_capability',
+					Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type )
+				)
+			)
 		) {
 			return;
 		}
