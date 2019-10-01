@@ -516,14 +516,13 @@ class Sidebar extends React.PureComponent {
       ? selectedSectionsRaw
       : [];
 
-    // Expects potentially an empty object,
-    // a string, or a null string from props.
-    // Contains object fallback if post type is not enabled,
-    // but still enables Gutenberg.
-    const parsedCoverArt = 0 !== Object.entries(coverArt).length
-      && '' !== coverArt
-      && 'null' !== coverArt
-      ? JSON.parse(coverArt) : {};
+    // Ensure we can parse the coverArt, else return empty object.
+    let parsedCoverArt;
+    try {
+      parsedCoverArt = JSON.parse(coverArt);
+    } catch (err) {
+      parsedCoverArt = {};
+    }
 
     const coverArtOrientation = parsedCoverArt.orientation || 'landscape';
 
