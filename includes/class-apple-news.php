@@ -225,7 +225,11 @@ class Apple_News {
 	public function enqueue_block_editor_scripts( $hook ) {
 
 		// Bail if gutenberg is not enabled.
-		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+		// Or if the post type is not active from settings.
+		if (
+			! function_exists( 'use_block_editor_for_post' )
+			|| ! in_array( get_post_type(), Admin_Apple_Settings_Section::$loaded_settings['post_types'], true )
+		) {
 			return;
 		}
 
