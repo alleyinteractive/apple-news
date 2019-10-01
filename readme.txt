@@ -46,6 +46,9 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
+= 2.0.3 =
+* Bugfix: Resolves fatal error when trying to load posts that aren't active in some cases.
+
 = 2.0.2 =
 * Bugfix: Adds check for some 5.0.0+ functions before attempting to execute.
 * Bugfix: Adds fallback and additional checks for sidebarPlugin retrieval of post meta.
