@@ -3,6 +3,8 @@
 import PropTypes from 'prop-types';
 import ImagePicker from '../imagePicker';
 import Notifications from '../notifications';
+import safeJsonParseArray from 'util/safeJsonParseArray';
+import safeJsonParseObject from 'util/safeJsonParseObject';
 
 const {
   apiFetch,
@@ -405,7 +407,7 @@ class Sidebar extends React.PureComponent {
       },
     } = this.props;
 
-    let parsedCoverArt = JSON.parse(coverArt);
+    let parsedCoverArt = safeJsonParseObject(coverArt);
 
     if (! value) {
       delete parsedCoverArt[metaKey];
@@ -438,7 +440,7 @@ class Sidebar extends React.PureComponent {
       },
     } = this.props;
     // Need to default to [], else JSON parse fails
-    const selectedSectionsArray = JSON.parse(selectedSections) || [];
+    const selectedSectionsArray = safeJsonParseArray(selectedSections);
 
     const selectedArrayDefault = Array.isArray(selectedSectionsArray)
       ? JSON.stringify([...selectedSectionsArray, name]) : null;
@@ -507,22 +509,8 @@ class Sidebar extends React.PureComponent {
       userCanPublish,
     } = this.state;
 
-    const selectedSectionsRaw = 'null' !== selectedSections
-      && '' !== selectedSections
-      ? JSON.parse(selectedSections)
-      : '';
-
-    const selectedSectionsArray = Array.isArray(selectedSectionsRaw)
-      ? selectedSectionsRaw
-      : [];
-
-    // Ensure we can parse the coverArt, else return empty object.
-    let parsedCoverArt;
-    try {
-      parsedCoverArt = JSON.parse(coverArt);
-    } catch (err) {
-      parsedCoverArt = {};
-    }
+    const selectedSectionsArray = safeJsonParseArray(selectedSections);
+    const parsedCoverArt = safeJsonParseObject(coverArt);
 
     const coverArtOrientation = parsedCoverArt.orientation || 'landscape';
 

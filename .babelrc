@@ -5,7 +5,8 @@
       "module-resolver",
       {
         "alias": {
-          "components": "./assets/js/components"
+          "components": "./assets/js/components",
+          "util": "./assets/js/util"
         },
         "root": ["./"]
       }
