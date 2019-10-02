@@ -10,7 +10,7 @@ const {
   apiFetch,
   compose: {
     compose,
-  },
+  } = {},
   components: {
     Button,
     CheckboxControl,
@@ -18,23 +18,23 @@ const {
     SelectControl,
     Spinner,
     TextareaControl,
-  },
+  } = {},
   data: {
     select,
     subscribe,
     withDispatch,
     withSelect,
-  },
+  } = {},
   editPost: {
     PluginSidebar,
     PluginSidebarMoreMenuItem,
-  },
+  } = {},
   element: {
     Fragment,
-  },
+  } = {},
   i18n: {
     __,
-  },
+  } = {},
 } = wp;
 
 /**
@@ -262,7 +262,7 @@ class Sidebar extends React.PureComponent {
     const {
       meta: {
         selectedSections,
-      },
+      } = {},
     } = this.props;
 
     apiFetch({ path })
@@ -404,7 +404,7 @@ class Sidebar extends React.PureComponent {
       onUpdate,
       meta: {
         coverArt,
-      },
+      } = {},
     } = this.props;
 
     let parsedCoverArt = safeJsonParseObject(coverArt);
@@ -437,7 +437,7 @@ class Sidebar extends React.PureComponent {
       onUpdate,
       meta: {
         selectedSections,
-      },
+      } = {},
     } = this.props;
     // Need to default to [], else JSON parse fails
     const selectedSectionsArray = safeJsonParseArray(selectedSections);
@@ -485,7 +485,7 @@ class Sidebar extends React.PureComponent {
         dateModified = '',
         shareUrl = '',
         revision = '',
-      },
+      } = {},
       post: {
         status = '',
       } = {},
@@ -504,7 +504,7 @@ class Sidebar extends React.PureComponent {
         apiAutosyncUpdate,
         automaticAssignment,
         enableCoverArt,
-      },
+      } = {},
       selectedSectionsPrev,
       userCanPublish,
     } = this.state;

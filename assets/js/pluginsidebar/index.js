@@ -3,13 +3,17 @@
 import Icon from './components/icon';
 import Sidebar from './components/sidebar';
 
-const {
-  plugins: {
-    registerPlugin,
-  },
-} = wp;
+if ('undefined' !== typeof wp) {
+  const {
+    plugins: {
+      registerPlugin = null,
+    } = {},
+  } = wp;
 
-registerPlugin('publish-to-apple-news', {
-  icon: <Icon />,
-  render: Sidebar,
-});
+  if ('function' === typeof registerPlugin) {
+    registerPlugin('publish-to-apple-news', {
+      icon: <Icon />,
+      render: Sidebar,
+    });
+  }
+}
