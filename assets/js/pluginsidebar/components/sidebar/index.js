@@ -1,10 +1,10 @@
 /* global React, wp */
 
 import PropTypes from 'prop-types';
-import ImagePicker from '../imagePicker';
-import Notifications from '../notifications';
 import safeJsonParseArray from 'util/safeJsonParseArray';
 import safeJsonParseObject from 'util/safeJsonParseObject';
+import ImagePicker from '../imagePicker';
+import Notifications from '../notifications';
 
 const {
   apiFetch,

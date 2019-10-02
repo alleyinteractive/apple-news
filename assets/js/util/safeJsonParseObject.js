@@ -11,10 +11,10 @@ export default function safeJsonParseObject(value) {
   const parsedValue = safeJsonParse(value);
 
   // Make absolutely sure that the object is a standard object.
-  if (null === parsedValue ||
-    'object' !== typeof parsedValue ||
-    Array.isArray(parsedValue) ||
-    0 !== JSON.stringify(parsedValue).indexOf('{')
+  if (null === parsedValue
+    || 'object' !== typeof parsedValue
+    || Array.isArray(parsedValue)
+    || 0 !== JSON.stringify(parsedValue).indexOf('{')
   ) {
     return {};
   }
