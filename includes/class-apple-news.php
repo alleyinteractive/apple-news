@@ -228,7 +228,7 @@ class Apple_News {
 	 */
 	public function action_admin_enqueue_scripts( $hook ) {
 		// Ensure we are in an appropriate context.
-		if ( ! in_array( $hook, $this->_contexts, true ) ) {
+		if ( ! in_array( $hook, $this->contexts, true ) ) {
 			return;
 		}
 
