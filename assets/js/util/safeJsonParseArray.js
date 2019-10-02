@@ -1,4 +1,4 @@
-import safeJsonParse from './safejsonParse';
+import safeJsonParse from './safeJsonParse';
 
 /**
  * Given a value, run JSON.parse on it, but if parsing fails, or if
