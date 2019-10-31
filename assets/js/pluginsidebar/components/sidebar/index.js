@@ -615,7 +615,7 @@ class Sidebar extends React.PureComponent {
             <h3>{__('Paid Article', 'apple-news')}</h3>
             <CheckboxControl
               // eslint-disable-next-line max-len
-              label={__('Check this to indicate that viewing the article requires a paid subscription.', 'apple-news')}
+              label={__('Check this to indicate that viewing the article requires a paid subscription. Note that Apple must approve your channel for paid content before using this feature.', 'apple-news')}
               onChange={(value) => onUpdate(
                 'apple_news_is_paid',
                 value

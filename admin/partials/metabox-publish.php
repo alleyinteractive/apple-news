@@ -32,7 +32,7 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 		<h3><?php esc_html_e( 'Paid?', 'apple-news' ); ?></h3>
 		<label for="apple-news-is-paid">
 			<input id="apple-news-is-paid" name="apple_news_is_paid" type="checkbox" value="1" <?php checked( $is_paid ); ?>>
-			<?php esc_html_e( 'Check this to indicate that viewing the article requires a paid subscription.', 'apple-news' ); ?>
+			<?php esc_html_e( 'Check this to indicate that viewing the article requires a paid subscription. Note that Apple must approve your channel for paid content before using this feature.', 'apple-news' ); ?>
 		</label>
 	</div>
 	<div id="apple-news-metabox-is-preview" class="apple-news-metabox-section">
