@@ -326,6 +326,19 @@ HTML
 				'Jill Bolte Taylor: My stroke of insight',
 			],
 
+			// Gutenberg: TikTok embed.
+			[
+				<<<HTML
+<figure class="wp-block-embed-tiktok wp-block-embed is-type-video is-provider-tiktok"><div class="wp-block-embed__wrapper">
+<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@dynamic_wallpaper/video/6778286193776938241" data-video-id="6778286193776938241" style="max-width: 605px;min-width: 325px;"> <section><a target="_blank" title="@dynamic_wallpaper" href="https://www.tiktok.com/@dynamic_wallpaper">@dynamic_wallpaper</a> <p>そうゆうアプリがあるから無断転載じゃないよ</p> <a target="_blank" title="♬ Monster - LUM!X" href="https://www.tiktok.com/music/Monster-6764388127734761473">♬ Monster – LUM!X</a> </section>
+</blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+</div></figure>
+HTML
+				,
+				'https://www.tiktok.com/@dynamic_wallpaper/video/6778286193776938241',
+				'TikTok',
+			],
+
 			// Gutenberg: Tumblr embed.
 			[
 				<<<HTML
