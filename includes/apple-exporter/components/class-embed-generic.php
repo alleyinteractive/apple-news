@@ -152,7 +152,9 @@ class Embed_Generic extends Component {
 		}
 
 		// Fork for iframe handling vs. not. Non-iframe detection is less straightforward, so it is best-effort.
-		if ( false !== strpos( $html, '<iframe' ) && $provider !== 'tiktok' ) {
+		if ( 'tiktok' === $provider && preg_match( '/<blockquote[^>]+?cite=[\'"]([^\'"]+)/', $html, $matches ) ) {
+			$url = $matches[1];
+		} elseif ( false !== strpos( $html, '<iframe' ) ) {
 			// Try to get the source URL.
 			if ( preg_match( '/<iframe[^>]+?src=[\'"]([^\'"]+)/', $html, $matches ) ) {
 				$url = $matches[1];
@@ -162,9 +164,6 @@ class Embed_Generic extends Component {
 			if ( preg_match( '/<iframe[^>]+?title=[\'"]([^\'"]+)/', $html, $matches ) ) {
 				$title = $matches[1];
 			}
-		} elseif ( $provider === 'tiktok' && preg_match( '/<blockquote[^>]+?cite=[\'"]([^\'"]+)/', $html, $matches ) ) {
-			//TikTok stores the source URL in the blockquote cite attribute.
-			$url = $matches[1];
 		} elseif ( preg_match( '/data-(?:url|href)=[\'"]([^\'"]+)/', $html, $matches ) ) {
 			$url = $matches[1];
 		} elseif ( preg_match( '/<a[^>]+?href=[\'"]([^\'"]+)/', $html, $matches ) ) {

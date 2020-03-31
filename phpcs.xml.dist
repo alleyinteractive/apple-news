@@ -12,8 +12,8 @@
 	<!-- Strip the filepaths down to the relevant bit. -->
 	<arg name="basepath" value="./" />
 
-	<!-- Check only 1 file simultaneously. -->
-	<arg name="parallel" value="1" />
+	<!-- Check 8 files simultaneously. -->
+	<arg name="parallel" value="8" />
 
 	<!-- Only check JS and PHP files. -->
 	<arg name="extensions" value="js,php" />
@@ -85,9 +85,15 @@
 
   <!-- Turn off a few newly added or renamed rules until we put fixes in place. -->
 	<!-- We will target version 2.1.0 for these fixes. -->
+  <rule ref="Generic.Arrays.DisallowShortArraySyntax.Found">
+    <severity>0</severity>
+  </rule>
 	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod.Found">
 		<severity>0</severity>
 	</rule>
+  <rule ref="WordPress.DateTime.RestrictedFunctions.date_date">
+    <severity>0</severity>
+  </rule>
 	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_query">
 		<severity>0</severity>
 	</rule>
@@ -97,6 +103,9 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
 		<severity>0</severity>
 	</rule>
+  <rule ref="WordPress.PHP.DisallowShortTernary.Found">
+    <severity>0</severity>
+  </rule>
 	<rule ref="WordPress.Security.NonceVerification.NoNonceVerification">
 		<severity>0</severity>
 	</rule>

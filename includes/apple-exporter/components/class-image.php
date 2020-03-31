@@ -27,10 +27,10 @@ class Image extends Component {
 	public static function node_matches( $node ) {
 
 		$has_image_child = false;
-		// If this is a figure and it has children, see if we can find an image
+		// If this is a figure and it has children, see if we can find an image.
 		if ( $node->hasChildNodes() && 'figure' === $node->tagName ) {
 			foreach ( $node->childNodes as $child ) {
-				if ( 'img' === $child->tagName ) {
+				if ( 'img' === $child->nodeName ) {
 					$has_image_child = true;
 				}
 			}
