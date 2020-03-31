@@ -299,7 +299,7 @@ class Request {
 					'%s%s%s%s',
 					$error->code,
 					( ! empty( $error->message ) ) ? ' - ' : '',
-					$error->message,
+					( ! empty( $error->message ) ) ? $error->message : '',
 					$key_path
 				);
 			}

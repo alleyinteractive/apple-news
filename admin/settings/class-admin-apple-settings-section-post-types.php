@@ -57,10 +57,11 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 			}
 
 			$this->settings['post_types'] = array(
-				'label'    => __( 'Post Types', 'apple-news' ),
-				'type'     => $post_type_options,
-				'multiple' => true,
-				'sanitize' => array( $this, 'sanitize_array' ),
+				'label'     => __( 'Post Types', 'apple-news' ),
+				'type'      => $post_type_options,
+				'multiple'  => true,
+				'sanitize'  => array( $this, 'sanitize_array' ),
+				'size'      => 10,
 			);
 		}
 

@@ -32,17 +32,20 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 
 		// Add the settings.
 		$this->settings = array(
-			'api_channel'         => array(
-				'label' => __( 'Channel ID', 'apple-news' ),
-				'type'  => 'string',
+			'api_channel' => array(
+				'label'   => __( 'Channel ID', 'apple-news' ),
+				'type'    => 'string',
+				'size'    => 40,
 			),
-			'api_key'             => array(
-				'label' => __( 'API Key ID', 'apple-news' ),
-				'type'  => 'string',
+			'api_key' => array(
+				'label'   => __( 'API Key ID', 'apple-news' ),
+				'type'    => 'string',
+				'size'    => 40,
 			),
-			'api_secret'          => array(
-				'label' => __( 'API Key Secret', 'apple-news' ),
-				'type'  => 'password',
+			'api_secret' => array(
+				'label'   => __( 'API Key Secret', 'apple-news' ),
+				'type'    => 'password',
+				'size'    => 40,
 			),
 			'api_autosync'        => array(
 				'label' => __( 'Automatically publish to Apple News when published in WordPress', 'apple-news' ),
