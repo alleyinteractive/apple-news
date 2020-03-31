@@ -39,7 +39,7 @@ class Apple_News {
 	 * @var string
 	 * @access public
 	 */
-	public static $version = '2.0.3';
+	public static $version = '2.0.4';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.
