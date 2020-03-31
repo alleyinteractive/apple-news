@@ -48,6 +48,7 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 = 2.0.4 =
 * Bump "tested up to" tag to 5.4.
+* Upgrades node version used for compiling assets to version 12, and patches vulnerabilities reported via npm audit.
 * Adds TikTok compatibility to the generic embed handler (props to @hrkhal for the fix).
 * Fixes an undefined property notice when there is an error but no error message (props to @khoipro for the fix).
 * Adds size attributes to select fields and API configuration fields for better readability (props to @paulschreiber for the fix).
