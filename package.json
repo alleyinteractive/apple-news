@@ -4,7 +4,7 @@
   "license": "GPLv3",
   "main": "index.php",
   "engines": {
-    "node": "8",
+    "node": "12",
     "npm": "6"
   },
   "scripts": {
@@ -20,7 +20,7 @@
     "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^25.2.4",
     "babel-loader": "^8.0.4",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -31,13 +31,13 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
-    "jest": "^23.6.0",
+    "jest": "^25.2.4",
     "webpack": "^4.10.2",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "dompurify": "^1.0.10",
+    "dompurify": "^2.0.8",
     "prop-types": "^15.7.2"
   }
 }

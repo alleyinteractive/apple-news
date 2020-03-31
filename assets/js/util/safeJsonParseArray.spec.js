@@ -1,3 +1,5 @@
+/* global describe, expect, it */
+
 import safeJsonParseArray from './safeJsonParseArray';
 
 describe('safeJsonParseArray', () => {
