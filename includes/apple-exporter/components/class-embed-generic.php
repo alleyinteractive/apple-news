@@ -138,6 +138,7 @@ class Embed_Generic extends Component {
 				'wordpress.tv'     => 'wordpress-tv',
 				'reddit.com'       => 'reddit',
 				'imgur.com'        => 'imgur',
+				'tiktok.com'       => 'tiktok',
 				'amazon.com'       => 'amazon-kindle',
 			];
 
@@ -226,6 +227,9 @@ class Embed_Generic extends Component {
 				break;
 			case 'wordpress-tv':
 				$provider = 'WordPress.tv';
+				break;
+			case 'tiktok':
+				$provider = 'TikTok';
 				break;
 			default:
 				$provider = __( 'the original site', 'apple-news' );
