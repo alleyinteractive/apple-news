@@ -48,7 +48,12 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 = 2.0.4 =
 * Bump "tested up to" tag to 5.4.
-* TBD
+* Adds TikTok compatibility to the generic embed handler (props to @hrkhal for the fix).
+* Fixes an undefined property notice when there is an error but no error message (props to @khoipro for the fix).
+* Adds size attributes to select fields and API configuration fields for better readability (props to @paulschreiber for the fix).
+* Fixes a bug where captions were not being correctly read from images.
+* Adds a warning for the isPaid flag to prevent confusion if a channel is not set up for paid content.
+* Fixes a bug where settings are not initialized to an array when the plugin is loaded via code.
 
 = 2.0.3 =
 * Bugfix: Resolves fatal error when trying to load posts that aren't active in some cases.
