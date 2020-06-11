@@ -50,6 +50,13 @@ class Body extends Component {
 			return null;
 		}
 
+		// Remove p nodes with &nbsp; as the only character
+		// This could only be selected by typing Shift+Opt+Space
+		// https://stackoverflow.com/questions/247135/using-xpath-to-search-text-containing-nbsp
+		if ( 'p' == $node->nodeName && ' ' == $node->nodeValue ) {
+			return null;
+		}
+
 		// Negotiate open and close values.
 		$open  = '<' . $node->nodeName . '>';
 		$close = '</' . $node->nodeName . '>';
