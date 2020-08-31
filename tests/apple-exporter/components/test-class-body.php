@@ -317,7 +317,7 @@ HTML;
 HTML;
 		$file = dirname( dirname( __DIR__ ) ) . '/data/test-image.jpg';
 		$cover = $this->factory->attachment->create_upload_object( $file );
-		$content = new Exporter_Content( 3, 'Title', $content, null, $cover );
+		$content = new Exporter_Content( 3, 'Title', $content, '', null, $cover );
 
 		// Run the export.
 		$exporter = new Exporter( $content, null, $this->settings );

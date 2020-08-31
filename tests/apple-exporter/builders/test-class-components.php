@@ -76,6 +76,7 @@ class Component_Tests extends WP_UnitTestCase {
 			1,
 			'My Title',
 			'<p>Hello, World!</p>',
+            '',
 			null,
 			$cover,
 			'Author Name'

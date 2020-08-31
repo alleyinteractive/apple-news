@@ -111,6 +111,7 @@ class Component_Factory {
 		self::register_component( 'cover', '\\Apple_Exporter\\Components\\Cover' );
 		self::register_component( 'title', '\\Apple_Exporter\\Components\\Title' );
 		self::register_component( 'byline', '\\Apple_Exporter\\Components\\Byline' );
+		self::register_component( 'slug', '\\Apple_Exporter\\Components\\Slug' );
 		self::register_component( 'advertisement', '\\Apple_Exporter\\Components\\Advertisement' );
 
 		// Allow built-in components and order to be overridden.

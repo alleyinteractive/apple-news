@@ -156,6 +156,13 @@
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-byline', 'byline_tracking', 'letter-spacing', 'px', $( '#byline_size' ).val() / 100 );
 		appleNewsSetCSS( '.apple-news-preview div.apple-news-byline', 'byline_color', 'color', null, null );
 
+		// Slug
+		appleNewsSetCSS( '.apple-news-preview div.apple-news-slug', 'slug_font', 'font-family', null, null );
+		appleNewsSetCSS( '.apple-news-preview div.apple-news-slug', 'slug_size', 'font-size', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview div.apple-news-slug', 'slug_line_height', 'line-height', 'px', null );
+		appleNewsSetCSS( '.apple-news-preview div.apple-news-slug', 'slug_tracking', 'letter-spacing', 'px', $( '#slug_size' ).val() / 100 );
+		appleNewsSetCSS( '.apple-news-preview div.apple-news-slug', 'slug_color', 'color', null, null );
+
 		// Headings
 		appleNewsSetCSS( '.apple-news-preview h1', 'header1_font', 'font-family', null, null );
 		appleNewsSetCSS( '.apple-news-preview h1', 'header1_size', 'font-size', 'px', .75 );

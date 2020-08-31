@@ -39,6 +39,7 @@ class Metadata_Test extends WP_UnitTestCase {
 			1,
 			'My Title',
 			'<p>Hello, World!</p>',
+            '',
 			null,
 			'/etc/somefile.jpg'
 		);
@@ -176,6 +177,7 @@ class Metadata_Test extends WP_UnitTestCase {
 			1,
 			'My Title',
 			'<p>Hello, World!</p>',
+            '',
 			null,
 			'http://someurl.com/somefile.jpg'
 		);
@@ -212,6 +214,7 @@ class Metadata_Test extends WP_UnitTestCase {
 			$post_id,
 			$title,
 			$content,
+            '',
 			null,
 			'/etc/somefile.jpg'
 		);
@@ -249,6 +252,7 @@ class Metadata_Test extends WP_UnitTestCase {
 			1,
 			'My Title',
 			'<p>Hello, World!</p>',
+            '',
 			'This is an intro.'
 		);
 		$builder = new Metadata( $content, $this->settings );
@@ -278,6 +282,7 @@ class Metadata_Test extends WP_UnitTestCase {
 			1,
 			'My Title',
 			'<p>Hello, World!</p>',
+            '',
 			'This is an intro.',
 			'/etc/somefile.jpg'
 		);
@@ -312,6 +317,7 @@ class Metadata_Test extends WP_UnitTestCase {
 			1,
 			'My Title',
 			'<p>Hello, World!</p>',
+            'slug',
 			'This is an intro.',
 			'http://someurl.com/somefile.jpg'
 		);

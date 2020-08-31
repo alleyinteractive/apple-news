@@ -24,7 +24,7 @@ class Exporter_Content_Test extends WP_UnitTestCase {
 	}
 
 	public function testCompleteContent() {
-		$content  = new \Apple_Exporter\Exporter_Content( 3, 'Title', '<p>Example content</p>', 'some intro', 'someurl.com' );
+		$content  = new \Apple_Exporter\Exporter_Content( 3, 'Title', '<p>Example content</p>', null, 'some intro', 'someurl.com' );
 		$this->assertEquals( '3', $content->id() );
 		$this->assertEquals( 'Title', $content->title() );
 		$this->assertEquals( '<p>Example content</p>', $content->content() );

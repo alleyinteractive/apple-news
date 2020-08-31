@@ -49,6 +49,11 @@ class Admin_Apple_Preview extends Apple_News {
 		<div class="apple-news-preview">
 			<?php
 				// Build sample content.
+				$slug = sprintf(
+					'<div class="apple-news-slug apple-news-component apple-news-meta-component">%s</div>',
+					__( 'Slug', 'apple-news' )
+				);
+
 				$title = sprintf(
 					'<h1 class="apple-news-title apple-news-component apple-news-meta-component">%s</h1>',
 					__( 'Sample Article', 'apple-news' )
