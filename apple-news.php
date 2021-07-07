@@ -46,6 +46,12 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// Conditionally include WP-CLI commands.
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once __DIR__ . '/cli/class-apple-news-cli-command.php';
+	\WP_CLI::add_command( 'apple-news', 'Apple_News_CLI_Command' );
+}
+
 /**
  * Activate the plugin.
  */
