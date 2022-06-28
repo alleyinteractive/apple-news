@@ -43,7 +43,7 @@ abstract class Component_TestCase extends WP_UnitTestCase {
 		$dom = new \DOMDocument();
 		libxml_use_internal_errors( true );
 		$dom->loadHTML( '<?xml encoding="utf-8" ?>' . $html );
-		libxml_clear_errors( true );
+		libxml_clear_errors();
 
 		// Find the first-level nodes of the body tag.
 		return $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
