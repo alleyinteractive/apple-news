@@ -27,8 +27,8 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 		<?php
 		printf(
 			/* translators: First token is opening a tag, second is closing a tag */
-			esc_html__( 'You must enter your API information on the %1$ssettings page%2$s before using Publish to Apple News.', 'apple-news' ),
-			'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-options' ) ) . '">',
+			esc_html__( 'You must fill in the fields API Channel, API Key and API Secret on the section "Apple News Key for Lower Environments" on %1$s"Network > Settings > Network Settings"%2$s page before using Publish to Apple News.', 'apple-news' ),
+			'<a href="' . esc_url( network_admin_url( 'settings.php?page=network_models' ) ) . '">',
 			'</a>'
 		);
 		?>

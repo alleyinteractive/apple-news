@@ -44,6 +44,15 @@ class Admin_Apple_News extends Apple_News {
 	public static $settings;
 
 	/**
+	 * MS-1077: Array to store posts blocked for outbound syndication.
+	 * This collection is filled up considering value of the field
+	 * "Remove this post from outbound syndication feeds" available on
+	 * Post Edit Settings > Distribution tab.
+	 * @var string
+	 */
+	const EXCLUDED_POSTS_OPTION = 'applenews_feed_excluded_posts';
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -205,6 +214,112 @@ class Admin_Apple_News extends Apple_News {
 				}
 			}
 		}
+
+		/**
+		 * MS-1077: Add a "Distribution" tab to the post settings Fieldmanager
+		 * group if it does not exists and add the field "Remove this post from outbound syndication feeds"
+		 * checkbox, default checked.
+		 */
+		add_filter( 'lakana_post_settings_group_children', array( $this, 'filter_post_settings_group_children' ) );
+		add_filter( 'update_post_metadata', array( $this, 'save_post_excluded_option_value' ), 10, 4 ); // Intercept saving value exclude_from_feeds to post meta.
+		add_filter( 'fm_preload_alter_values', array( $this, 'get_post_excluded_option_value' ), 10, 2 );
+	}
+
+
+	/**
+	 * Retrieve the value for the field "Remove this post from outbound syndication feeds"
+	 * on "Distribution" post settings group.
+	 *
+	 * This value is retrieved from an option, rather than a post meta field, so we
+	 * have to construct the value for rendering.
+	 *
+	 * @param mixed              $value Value of a Fieldmanager field being retrieved.
+	 * @param Fieldmanager_Field $field Field being retrieved.
+	 * @return mixed Updated field value.
+	 */
+	public function get_post_excluded_option_value( $value, $field ) {
+		if ( $field->name !== 'exclude_from_feeds' ) {
+			return $value;
+		}
+
+		return self::is_post_blocked_for_outbound_syndication( $field->data_id );
+	}
+
+	/**
+	 * Return if the provided post ID is excluded from Apple News feeds.
+	 *
+	 * @param int $post_id The post ID to check.
+	 * @return bool True if the post is excluded, false otherwise.
+	 */
+	public static function is_post_blocked_for_outbound_syndication( int $post_id ): bool {
+		return in_array( $post_id, get_option( self::EXCLUDED_POSTS_OPTION, [] ), true );
+	}
+
+	/**
+	 * Add a "Distribution" tab to the post settings Fieldmanager group if
+	 * it does not existand add the "Remove this post from outbound
+	 * syndication feeds" checkbox default checked.
+	 *
+	 * @param array $children Group children.
+	 * @return array Updated group children.
+	 */
+	public function filter_post_settings_group_children( $children ): array {
+		if ( empty( $children['distribution'] ) ) {
+			$children['distribution'] = new Fieldmanager_Group(
+				[
+					'label'          => __( 'Distribution', 'external-feed-syndication' ),
+					'add_to_prefix'  => false,
+					'serialize_data' => false,
+					'children'       => [],
+				]
+			);
+		}
+
+		$children['distribution']->add_child(
+			new Fieldmanager_Checkbox(
+				[
+					'name'  => 'exclude_from_feeds',
+					'label' => __( 'Remove this post from outbound syndication feeds.', 'external-feed-syndication' ),
+					'default_value' => 1,
+				]
+			)
+		);
+
+		return $children;
+	}
+
+	/**
+	 * Intercept saving value exclude_from_feeds of this field to post meta.
+	 *
+	 * @param null   $null       Short-circuit parameter, returning a non-null value will prevent saving.
+	 * @param int    $post_id    Current post ID.
+	 * @param string $meta_key   Name of meta key being updated.
+	 * @param mixed  $meta_value Value to update for meta key.
+	 * @return null|mixed Null to save to database, or saved value otherwise.
+	 */
+	public function save_post_excluded_option_value( $null, $post_id, $meta_key, $meta_value ) {
+
+		if ( $meta_key !== 'exclude_from_feeds' ) {
+			return $null;
+		}
+
+		$excluded = boolval( $meta_value );
+		$excluded_posts = get_option( self::EXCLUDED_POSTS_OPTION, [] );
+
+		// Add post to the excluded list, if selected and not already included.
+		if ( $excluded && ! in_array( $post_id, $excluded_posts, true ) ) {
+			array_push( $excluded_posts, $post_id );
+			update_option( self::EXCLUDED_POSTS_OPTION, $excluded_posts );
+		}
+
+		// Remove post from the excluded list, if previously included but unselected here.
+		if ( ! $excluded && in_array( $post_id, $excluded_posts, true ) ) {
+			$excluded_posts = array_diff( $excluded_posts, [ $post_id ] );
+			update_option( self::EXCLUDED_POSTS_OPTION, $excluded_posts );
+		}
+
+		// Return a non-null value to prevent being saved to post meta.
+		return $excluded;
 	}
 
 	/**

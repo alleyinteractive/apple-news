@@ -34,7 +34,7 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 		$this->settings = [
 			'api_config_file'       => [
 				// translators: tokens fill in <a> tags.
-				'description' => sprintf( __( 'Having trouble? %1$sEnter the contents of your .papi file manually%2$s.', 'apple-news' ), '<a href="#api_config_file">', '</a>' ),
+				'description' => sprintf( __( 'Having trouble? %1$sEnter the contents of your .papi file manually%2$s or fill in the fields API Channel, API Key and API Secret on the section "Apple News Key for Lower Environments" on "Network > Settings > Network Settings" page.', 'apple-news' ), '<a href="#api_config_file">', '</a>' ),
 				'type'        => 'file',
 			],
 			'api_config_file_input' => [

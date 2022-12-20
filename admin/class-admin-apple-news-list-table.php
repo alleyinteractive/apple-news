@@ -75,6 +75,14 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			case 'sync':
 				$default = $this->get_synced_status_for( $post );
 				break;
+
+			/**
+			 * MS-1077: Column to show if the field "Remove this post from outbound syndication feeds"
+			 * is checked on the Post Settings > Distribution tab making the post blocked for outbound syndication.
+			 */
+			case 'blocked':
+				$default = $this->get_blocked_status_for( $post );
+				break;
 		}
 
 		/**
@@ -153,6 +161,22 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Get status of whether the post is blocked for outbound syndication.
+	 *
+	 * Controlled by the field "Remove this post from outbound syndication feeds"
+	 * available on Post Settings > Distribution tab.
+	 *
+	 * @param \WP_Post $post The post to analyze.
+	 * @access private
+	 * @return string Yes or No depending on whether the post is blocked.
+	 */
+	function get_blocked_status_for( $post ) {
+		return Admin_Apple_News::is_post_blocked_for_outbound_syndication( $post->ID )
+			? '<b>' . __( 'Yes', 'apple-news' ) . '</b>'
+			: __( 'No', 'apple-news' );
+	}
+
+	/**
 	 * This method is responsible for what is rendered in any column with a
 	 * name/slug of 'title'.
 	 *
@@ -190,14 +214,26 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			),
 		];
 
-		// Only add push if the article is not pending publish.
-		$pending = get_post_meta( $item->ID, 'apple_news_api_pending', true );
-		if ( empty( $pending ) ) {
-			$actions['push'] = sprintf(
-				"<a href='%s'>%s</a>",
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'push', $base_url ) ),
-				esc_html__( 'Publish', 'apple-news' )
+		/**
+		 * MS-1077: Does not show the "Publish" button if the field "Remove this post from outbound syndication feeds"
+		 * is checked on the Post Settings > Distribution tab. It shows a link to the Post Edit > Distribution tab instead.
+		 */
+		if ( Admin_Apple_News::is_post_blocked_for_outbound_syndication( $item->ID ) ) {
+			$actions['edit'] = sprintf(
+				"<a href='%s#fm-post_settings-0-distribution-0-tab' target='_blank'>%s</a>",
+				esc_url( get_edit_post_link( $item->ID ) ),
+				esc_html__( 'Edit Distribution Settings', 'apple-news' )
 			);
+		} else {
+			// Only add Publish button if the article is not pending publish
+			$pending = get_post_meta( $item->ID, 'apple_news_api_pending', true );
+			if ( empty( $pending ) ) {
+				$actions['push'] = sprintf(
+					"<a href='%s'>%s</a>",
+					esc_url( Admin_Apple_Index_Page::action_query_params( 'push', $base_url ) ),
+					esc_html__( 'Publish', 'apple-news' )
+				);
+			}
 		}
 
 		// If the article is pending, add a reset action in case it's stuck.
@@ -241,10 +277,16 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		return apply_filters(
 			'apple_news_column_title',
 			sprintf(
-				'%1$s <span>(id:%2$s)</span> %3$s',
+				'%1$s <span>(id:%2$s)%3$s</span> %4$s',
 				esc_html( $item->post_title ),
 				absint( $item->ID ),
-				$this->row_actions( $actions ) // Can't be escaped but all elements are fully escaped above.
+				/**
+				 *  MS-1077: Mark the article with message "Unable to publish..." if the field
+				 * "Remove this post from outbound syndication feeds" is checked on the
+				 * Post Settings > Distribution tab making the post blocked for outbound syndication.
+				 */
+				Admin_Apple_News::is_post_blocked_for_outbound_syndication( $item->ID ) ? ' <b>' . __('Unable to publish - Marked as removed for outbound syndication feeds', 'apple-news' ) . '</b>' : '',
+				$this->row_actions( $actions ), // Can't be escaped but all elements are fully escaped above.
 			),
 			$item,
 			$actions
@@ -271,6 +313,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				'title'      => __( 'Title', 'apple-news' ),
 				'updated_at' => __( 'Last updated at', 'apple-news' ),
 				'status'     => __( 'Apple News Status', 'apple-news' ),
+				'blocked'    => __( 'Removed from outbound syndication', 'apple-news' ), // MS-1077: Column to show if the article if blocked for outbound syndication.
 				'sync'       => __( 'Sync Status', 'apple-news' ),
 			]
 		);

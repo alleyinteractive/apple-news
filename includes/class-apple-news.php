@@ -344,7 +344,7 @@ class Apple_News {
 		if ( ! self::is_initialized() ) {
 			return new WP_Error(
 				'apple_news_bad_operation',
-				__( 'You must enter your API information on the settings page before using Publish to Apple News.', 'apple-news' ),
+				__( 'You must fill in the fields API Channel, API Key and API Secret on the section "Apple News Key for Lower Environments" on "Network > Settings > Network Settings" page before using Publish to Apple News.', 'apple-news' ),
 				[
 					'status' => 400,
 				]

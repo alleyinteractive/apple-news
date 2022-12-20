@@ -91,6 +91,23 @@ class Admin_Apple_Async extends Apple_News {
 			return;
 		}
 
+		/**
+		 * MS-1077: Server-side guard to avoid pushing the article if the field
+		 * "Remove this post from outbound syndication feeds" is checked on the
+		 * Post Settings > Distribution tab.
+		 */
+		if ( Admin_Apple_News::is_post_blocked_for_outbound_syndication( $post_id ) ) {
+			Admin_Apple_Notice::error(
+				sprintf(
+					// translators: token is the post title.
+					__( 'Article %s is excluded from outbound syndication feeds and cannot be pushed to Apple News.', 'apple-news' ),
+					$post->post_title
+				),
+				$user_id
+			);
+			return;
+		}
+
 		$action = new Apple_Actions\Index\Push( $this->settings, $post_id );
 		try {
 			$action->perform( true, $user_id );
