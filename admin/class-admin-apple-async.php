@@ -92,9 +92,10 @@ class Admin_Apple_Async extends Apple_News {
 		}
 
 		/**
-		 * MS-1077: Server-side guard to avoid pushing the article if the field
+		 * Server-side guard to avoid pushing the article if the field
 		 * "Remove this post from outbound syndication feeds" is checked on the
 		 * Post Settings > Distribution tab.
+		 * Button Publish won't be displayed on the article list, but we never know.
 		 */
 		if ( Admin_Apple_News::is_post_blocked_for_outbound_syndication( $post_id ) ) {
 			Admin_Apple_Notice::error(

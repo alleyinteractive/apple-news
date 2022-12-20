@@ -8,27 +8,6 @@
  *
  * @package Apple_News
  */
-
-// Guarantee that the settings form was submitted before taking any action.
-if ( isset( $_REQUEST['apple_news_excluded_posts_action'] ) ) {
-	$currently_excluded_posts_ids = get_option( Admin_Apple_News::EXCLUDED_POSTS_OPTION, [] );
-	$request_excluded_posts_ids = $_REQUEST[Admin_Apple_News::EXCLUDED_POSTS_OPTION];
-
-	// Add a guard to guarantee that all post ids are integers otherwise in_array won't work - we never know, right?
-	$currently_excluded_posts_ids = array_map( 'intval', $currently_excluded_posts_ids );
-	$request_excluded_posts_ids = array_map( 'intval', $request_excluded_posts_ids ?? [] );
-
-	// Remove from the currently excluded posts ids the ones that weren't checked on the form.
-	foreach( $currently_excluded_posts_ids as $key => $current_excluded_post_id ) {
-		if ( ! in_array( $current_excluded_post_id, $request_excluded_posts_ids, true ) ) {
-			unset( $currently_excluded_posts_ids[ $key ] );
-		}
-	}
-
-	// Update the option with the new list of excluded posts ids.
-	update_option( Admin_Apple_News::EXCLUDED_POSTS_OPTION, $currently_excluded_posts_ids );
-}
-
 ?>
 <div class="wrap apple-news-settings">
 	<h1><?php esc_html_e( 'Manage Settings', 'apple-news' ); ?></h1>
@@ -67,15 +46,8 @@ if ( isset( $_REQUEST['apple_news_excluded_posts_action'] ) ) {
 
 				echo '<ul class="apple-news-settings-excluded-posts">';
 
-				// action control hidden field
-				echo '<input type="hidden" name="apple_news_excluded_posts_action" value="1" />';
-
-				// nonce field
-				wp_nonce_field( 'apple_news_excluded_posts_action', 'apple_news_excluded_posts_nonce' );
-
 				foreach ( $excluded_posts as $i => $excluded_post ) {
 					echo '<li>' .
-						'<input type="checkbox" checked id="excluded-post-' . esc_attr( $i ) . '" name="' . esc_attr( Admin_Apple_News::EXCLUDED_POSTS_OPTION ) . '[]" value="' . esc_attr( $excluded_post->ID ) .'">' .
 						' <label for="excluded-post-' . esc_attr( $i ) . '">' . esc_html( get_the_title( $excluded_post ) ) . '</label>' .
 						' &nbsp;<a href="' . esc_url( get_permalink(  $excluded_post->ID ) ) .'">' . esc_html__( 'View Post' ) . '</a>' .
 						' &nbsp;<a href="' . esc_url( get_edit_post_link( $excluded_post->ID ) ) . '#fm-post_settings-0-distribution-0-tab">' . esc_html__( 'Edit Distribution Settings' ) . '</a>' .

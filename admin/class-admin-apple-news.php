@@ -44,7 +44,7 @@ class Admin_Apple_News extends Apple_News {
 	public static $settings;
 
 	/**
-	 * MS-1077: Array to store posts blocked for outbound syndication.
+	 * Collection to store posts blocked for outbound syndication.
 	 * This collection is filled up considering value of the field
 	 * "Remove this post from outbound syndication feeds" available on
 	 * Post Edit Settings > Distribution tab.
@@ -216,9 +216,9 @@ class Admin_Apple_News extends Apple_News {
 		}
 
 		/**
-		 * MS-1077: Add a "Distribution" tab to the post settings Fieldmanager
-		 * group if it does not exists and add the field "Remove this post from outbound syndication feeds"
-		 * checkbox, default checked.
+		 * Add a "Distribution" tab to the post settings Fieldmanager
+		 * group if it does not exists and add the field
+		 * "Remove this post from outbound syndication feeds"checkbox, default checked.
 		 */
 		add_filter( 'lakana_post_settings_group_children', array( $this, 'filter_post_settings_group_children' ) );
 		add_filter( 'update_post_metadata', array( $this, 'save_post_excluded_option_value' ), 10, 4 ); // Intercept saving value exclude_from_feeds to post meta.

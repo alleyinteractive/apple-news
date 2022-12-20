@@ -77,7 +77,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				break;
 
 			/**
-			 * MS-1077: Column to show if the field "Remove this post from outbound syndication feeds"
+			 * Column to show if the field "Remove this post from outbound syndication feeds"
 			 * is checked on the Post Settings > Distribution tab making the post blocked for outbound syndication.
 			 */
 			case 'blocked':
@@ -215,7 +215,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		];
 
 		/**
-		 * MS-1077: Does not show the "Publish" button if the field "Remove this post from outbound syndication feeds"
+		 * Does not show the "Publish" button if the field "Remove this post from outbound syndication feeds"
 		 * is checked on the Post Settings > Distribution tab. It shows a link to the Post Edit > Distribution tab instead.
 		 */
 		if ( Admin_Apple_News::is_post_blocked_for_outbound_syndication( $item->ID ) ) {
@@ -281,7 +281,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				esc_html( $item->post_title ),
 				absint( $item->ID ),
 				/**
-				 *  MS-1077: Mark the article with message "Unable to publish..." if the field
+				 *  Mark the article with message "Unable to publish..." if the field
 				 * "Remove this post from outbound syndication feeds" is checked on the
 				 * Post Settings > Distribution tab making the post blocked for outbound syndication.
 				 */
@@ -313,7 +313,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				'title'      => __( 'Title', 'apple-news' ),
 				'updated_at' => __( 'Last updated at', 'apple-news' ),
 				'status'     => __( 'Apple News Status', 'apple-news' ),
-				'blocked'    => __( 'Removed from outbound syndication', 'apple-news' ), // MS-1077: Column to show if the article if blocked for outbound syndication.
+				'blocked'    => __( 'Removed from outbound syndication', 'apple-news' ), // Column to show if the article if blocked for outbound syndication.
 				'sync'       => __( 'Sync Status', 'apple-news' ),
 			]
 		);
