@@ -285,7 +285,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				 * "Remove this post from outbound syndication feeds" is checked on the
 				 * Post Settings > Distribution tab making the post blocked for outbound syndication.
 				 */
-				Admin_Apple_News::is_post_blocked_for_outbound_syndication( $item->ID ) ? ' <b>' . __('Unable to publish - Marked as removed for outbound syndication feeds', 'apple-news' ) . '</b>' : '',
+				Admin_Apple_News::is_post_blocked_for_outbound_syndication( $item->ID ) ? '<br><br><i><b>' . __('Unable to publish', 'apple-news' ) . '</b> - ' . __('Blocked for outbound syndication feeds on the Post Distribution Settings', 'apple-news' ) . '</i>' : '',
 				$this->row_actions( $actions ), // Can't be escaped but all elements are fully escaped above.
 			),
 			$item,
@@ -313,7 +313,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 				'title'      => __( 'Title', 'apple-news' ),
 				'updated_at' => __( 'Last updated at', 'apple-news' ),
 				'status'     => __( 'Apple News Status', 'apple-news' ),
-				'blocked'    => __( 'Removed from outbound syndication', 'apple-news' ), // Column to show if the article if blocked for outbound syndication.
+				'blocked'    => __( 'Blocked for outbound syndication', 'apple-news' ), // Column to show if the article if blocked for outbound syndication.
 				'sync'       => __( 'Sync Status', 'apple-news' ),
 			]
 		);
