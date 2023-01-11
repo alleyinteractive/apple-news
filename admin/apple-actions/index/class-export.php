@@ -606,7 +606,7 @@ class Export extends Action {
 				// Standardize newline characters to "\n".
 				$result = str_replace( [ "\r\n", "\r" ], "\n", $matches[0] );
 				// Replace any new line characters with a <br />.
-				$result = preg_replace( '/\n/', "<br />", $result );
+				$result = preg_replace( '/\n/', '<br />', $result );
 
 				return $result;
 			},
@@ -631,10 +631,10 @@ class Export extends Action {
 
 		// Reconvert the pre tags to strong tags now that they're safely on the other side of `wpautop`.
 		$content = preg_replace(
-      '/<p><pre flag="wpautop-skip">(.*)<\/pre><\/p>/',
-      '<p><strong>$1</strong></p>',
-      $content
-    );
+			'/<p><pre flag="wpautop-skip">(.*)<\/pre><\/p>/',
+			'<p><strong>$1</strong></p>',
+			$content
+		);
 
 		// Clean up the HTML a little.
 		$content = $this->remove_tags( $content );

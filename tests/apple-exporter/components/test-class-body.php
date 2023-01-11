@@ -298,61 +298,60 @@ HTML
 	/**
 	 * A data provider for the test_strong_br function.
 	 *
-	 *
 	 * @return array An array of arrays representing function arguments.
 	 */
 	public function data_strong_br() {
 		return [
-				// Implicit line break.
-				[
-					<<<HTML
+			// Implicit line break.
+			[
+				<<<HTML
 <strong>Line 1
 
 Line 2</strong>
 HTML
 					,
-					'<p><strong>Line 1<br /><br />Line 2</strong></p>',
-				],
-				// Two brs.
-				[
-					<<<HTML
+				'<p><strong>Line 1<br /><br />Line 2</strong></p>',
+			],
+			// Two brs.
+			[
+				<<<HTML
 <strong>Line 1<br><br>Line 2</strong>
 HTML
-					,
-					'<p><strong>Line 1<br /><br />Line 2</strong></p>',
-				],
-				// Three brs.
-				[
-					<<<HTML
+				,
+				'<p><strong>Line 1<br /><br />Line 2</strong></p>',
+			],
+			// Three brs.
+			[
+				<<<HTML
 <strong>Line 1<br><br><br>Line 2</strong>
 HTML
-					,
-					'<p><strong>Line 1<br /><br /><br />Line 2</strong></p>',
-				],
-				// Two newline breaks.
-				[
-					<<<HTML
+				,
+				'<p><strong>Line 1<br /><br /><br />Line 2</strong></p>',
+			],
+			// Two newline breaks.
+			[
+				<<<HTML
 <strong>Line 1\n\nLine 2</strong>
 HTML
-					,
-					'<p><strong>Line 1<br /><br />Line 2</strong></p>',
-				],
-				// Carriage return and newline treated as single br.
-				[
-					<<<HTML
+				,
+				'<p><strong>Line 1<br /><br />Line 2</strong></p>',
+			],
+			// Carriage return and newline combo treated as single br.
+			[
+				<<<HTML
 <strong>Line 1\r\nLine 2</strong>
 HTML
-					,
-					'<p><strong>Line 1<br />Line 2</strong></p>',
-				],
-				// Single carriage return.
-				[
-					<<<HTML
+				,
+				'<p><strong>Line 1<br />Line 2</strong></p>',
+			],
+			// Single carriage return.
+			[
+				<<<HTML
 <strong>Line 1\rLine 2</strong>
 HTML
-					,
-					'<p><strong>Line 1<br />Line 2</strong></p>',
-				],
+				,
+				'<p><strong>Line 1<br />Line 2</strong></p>',
+			],
 		];
 	}
 
@@ -638,8 +637,8 @@ HTML;
 	 *
 	 * @dataProvider data_strong_br
 	 *
-	 * @param string $link        The link, which will be added as the href parameter in an anchor tag in the test post that the test creates.
-	 * @param bool   $should_work Whether the link is expected to work in Apple News Format or not.
+	 * @param string $content  The post content html.
+	 * @param bool   $expected The anticipated json component text output.
 	 */
 	public function test_strong_br( $content, $expected ) {
 		$post_id = self::factory()->post->create( [ 'post_content' => $content ] );
