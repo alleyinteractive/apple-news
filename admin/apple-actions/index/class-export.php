@@ -598,12 +598,43 @@ class Export extends Action {
 		// Replace Brightcove shortcodes and Gutenberg blocks with video tags.
 		$content = $this->format_brightcove( $content );
 
+		// Might be worth confirming there are strong tags before searching for this specific a pattern...
+		// Convert /n and /r between strong tags to brs in preperation for next `preg_replace`.
+		$content = preg_replace_callback(
+			'/<strong>(?:\r|\n)*.*(?:\r|\n)*.*(?:\r|\n)*<\/strong>/',
+			function ( $matches ) {
+				// Standardize newline characters to "\n".
+				$result = str_replace( [ "\r\n", "\r" ], "\n", $matches[0] );
+				// Replace any new line characters with a <br />.
+				$result = preg_replace( '/\n/', "<br />", $result );
+
+				return $result;
+			},
+			$content
+		);
+
+		// Regex for strong tags with multiple brs.
+		// Convert them to pre tags with flag attr.
+		// `wpautop` skips pre tags, will allow us to sneak multiple brs past it.
+		$content = preg_replace(
+			'/<strong>(.*)((?:<br\s*\/?>\s*){2,})(.*)<\/strong>/',
+			'<p><pre flag="wpautop-skip">$1$2$3</pre></p>',
+			$content
+		);
+
 		/**
 		 * The post_content is not raw HTML, as WordPress editor cleans up
 		 * paragraphs and new lines, so we need to transform the content to
 		 * HTML. We use 'the_content' filter for that.
 		 */
 		$content = apply_filters( 'the_content', $content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+
+		// Reconvert the pre tags to strong tags now that they're safely on the other side of `wpautop`.
+		$content = preg_replace(
+      '/<p><pre flag="wpautop-skip">(.*)<\/pre><\/p>/',
+      '<p><strong>$1</strong></p>',
+      $content
+    );
 
 		// Clean up the HTML a little.
 		$content = $this->remove_tags( $content );
