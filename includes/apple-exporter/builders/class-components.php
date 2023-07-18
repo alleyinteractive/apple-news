@@ -231,7 +231,7 @@ class Components extends Builder {
 		}
 
 		// If none was found, do not add.
-		if ( ! $components[ $position ]->can_be_anchor_target() ) {
+		if ( ! isset($components[ $position ]) || ! $components[ $position ]->can_be_anchor_target() ) {
 			return;
 		}
 
