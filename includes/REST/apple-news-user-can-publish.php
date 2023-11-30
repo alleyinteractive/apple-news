@@ -7,7 +7,7 @@
 
 namespace Apple_News\REST;
 
-use \Apple_News;
+use Apple_News;
 
 /**
  * Get API response.

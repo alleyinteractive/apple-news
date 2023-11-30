@@ -11,7 +11,7 @@
 
 namespace Apple_Exporter\Components;
 
-use \Apple_Exporter\Exporter_Content;
+use Apple_Exporter\Exporter_Content;
 
 /**
  * A class which is used to transform video elements into Apple News format.
@@ -32,10 +32,10 @@ class Video extends Component {
 			// Is this a gutenberg video block?
 			( self::node_has_class( $node, 'wp-block-video' )
 				&& $node->hasChildNodes()
-				&& 'video' === $node->firstChild->nodeName
+				&& 'video' === $node->firstChild->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			)
 			// Or is this a stand-alone video tag?
-			|| 'video' === $node->nodeName
+			|| 'video' === $node->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		) {
 			return $node;
 		}

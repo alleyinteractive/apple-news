@@ -5,7 +5,7 @@
  * @package Apple_News
  */
 
-use Apple_Exporter\Settings as Settings;
+use Apple_Exporter\Settings;
 
 /**
  * Describes a WordPress setting section

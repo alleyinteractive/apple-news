@@ -11,13 +11,13 @@
 
 namespace Apple_Exporter\Builders;
 
-use \Apple_Exporter\Component_Factory;
-use \Apple_Exporter\Components\Component;
-use \Apple_Exporter\Components\Image;
-use \Apple_Exporter\Workspace;
-use \Apple_Exporter\Theme;
-use \Apple_News;
-use \DOMNode;
+use Apple_Exporter\Component_Factory;
+use Apple_Exporter\Components\Component;
+use Apple_Exporter\Components\Image;
+use Apple_Exporter\Workspace;
+use Apple_Exporter\Theme;
+use Apple_News;
+use DOMNode;
 
 /**
  * A class for organizing content into components.
@@ -96,7 +96,7 @@ class Components extends Builder {
 		}
 
 		// Look for potential anchor targets.
-		for ( $position = $start; $position < $total; $position ++ ) {
+		for ( $position = $start; $position < $total; $position++ ) {
 			if ( $components[ $position ]->can_be_anchor_target() ) {
 				break;
 			}
@@ -234,7 +234,7 @@ class Components extends Builder {
 		}
 
 		// Loop through components and search for anchor mappings.
-		for ( $i = 0; $i < $total; $i ++ ) {
+		for ( $i = 0; $i < $total; $i++ ) {
 
 			// Only operate on components that are anchor targets.
 			$component = $components[ $i ];
@@ -257,7 +257,7 @@ class Components extends Builder {
 			while ( ! $target_component->can_be_anchor_target() ) {
 
 				// Determine whether it is possible to seek forward.
-				$offset ++;
+				$offset++;
 				if ( empty( $components[ $i + $offset ] ) ) {
 					break;
 				}
@@ -525,6 +525,10 @@ class Components extends Builder {
 	 * @return string The best guess as to an image's full size URL.
 	 */
 	private function get_image_full_size_url( $url ) {
+
+		if ( empty( $url ) ) {
+			return '';
+		}
 
 		// Strip URL formatting for easier matching.
 		$url = urldecode( $url );

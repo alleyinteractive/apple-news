@@ -42,9 +42,9 @@ class Table extends Component {
 			(
 				self::node_has_class( $node, 'wp-block-table' ) &&
 				$node->hasChildNodes() &&
-				'table' === $node->firstChild->nodeName
+				'table' === $node->firstChild->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			) ||
-			'table' === $node->nodeName ) {
+			'table' === $node->nodeName ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			return $node;
 		}
 

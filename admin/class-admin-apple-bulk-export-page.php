@@ -52,9 +52,9 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	 */
 	public function register_page() {
 		add_submenu_page(
-			null,                                // Parent, if null, it won't appear in any menu.
-			__( 'Bulk Export', 'apple-news' ),   // Page title.
-			__( 'Bulk Export', 'apple-news' ),   // Menu title.
+			'options.php', // Passing options.php means it won't appear in any menu.
+			__( 'Bulk Export', 'apple-news' ), // Page title.
+			__( 'Bulk Export', 'apple-news' ), // Menu title.
 			/**
 			 * Filters the capability required to be able to access the Bulk Export page.
 			 *

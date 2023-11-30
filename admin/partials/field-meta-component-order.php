@@ -18,7 +18,7 @@ use Apple_Exporter\Theme;
 	<ul id="meta-component-order-sort" class="component-order ui-sortable">
 		<?php foreach ( $component_order as $apple_component_name ) : ?>
 			<?php
-			echo sprintf(
+			printf(
 				'<li id="%s" class="ui-sortable-handle">%s</li>',
 				esc_attr( $apple_component_name ),
 				esc_html( Theme::get_meta_component_name( $apple_component_name ) )
@@ -32,7 +32,7 @@ use Apple_Exporter\Theme;
 	<ul id="meta-component-inactive" class="component-order ui-sortable">
 		<?php foreach ( $inactive_components as $apple_component_name ) : ?>
 			<?php
-			echo sprintf(
+			printf(
 				'<li id="%s" class="ui-sortable-handle">%s</li>',
 				esc_attr( $apple_component_name ),
 				esc_html( Theme::get_meta_component_name( $apple_component_name ) )

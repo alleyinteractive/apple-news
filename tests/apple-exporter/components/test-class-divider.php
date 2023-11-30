@@ -49,7 +49,7 @@ class Apple_News_Divider_Test extends Apple_News_Component_TestCase {
 
 		add_filter(
 			'apple_news_divider_json',
-			function( $json ) {
+			function ( $json ) {
 				$json['layout'] = 'fancy-layout';
 				return $json;
 			}

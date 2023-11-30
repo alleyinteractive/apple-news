@@ -15,7 +15,7 @@ require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-export.php
 require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-section.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-news-list-table.php';
 
-use \Apple_Exporter\Workspace as Workspace;
+use Apple_Exporter\Workspace;
 
 /**
  * A class to manage the index page of the Apple News admin interface.
@@ -441,5 +441,4 @@ class Admin_Apple_Index_Page extends Apple_News {
 		// This can only succeed.
 		$this->notice_success( __( 'Your article status has been successfully reset!', 'apple-news' ) );
 	}
-
 }

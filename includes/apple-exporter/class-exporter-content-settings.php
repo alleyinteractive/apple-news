@@ -61,5 +61,4 @@ class Exporter_Content_Settings {
 	public function all() {
 		return $this->settings;
 	}
-
 }

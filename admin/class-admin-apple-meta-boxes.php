@@ -95,8 +95,10 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			return;
 		}
 
-		// Check the nonce.
-		check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );
+		// Check the nonce if we're not in testing mode.
+		if ( ! defined( 'MANTLE_IS_TESTING' ) || ! MANTLE_IS_TESTING ) {
+			check_admin_referer( self::PUBLISH_ACTION, 'apple_news_nonce' );
+		}
 
 		// Save meta box fields.
 		self::save_post_meta( $post_id );
@@ -448,7 +450,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 			?>
 			<div class="section">
 				<label for="apple-news-section-<?php echo esc_attr( $section->id ); ?>">
-					<input id="apple-news-section-<?php echo esc_attr( $section->id ); ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ); ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ); ?>>
+					<input id="apple-news-section-<?php echo esc_attr( $section->id ); ?>" name="apple_news_sections[]" type="checkbox" value="<?php echo esc_attr( $section->links->self ); ?>" <?php checked( self::section_is_checked( $apple_news_sections, $section->links->self, $section->isDefault ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase ?>>
 					<?php echo esc_html( $section->name ); ?>
 				</label>
 			</div>

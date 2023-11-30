@@ -138,6 +138,4 @@ class Title extends Component {
 			'layout'
 		);
 	}
-
 }
-

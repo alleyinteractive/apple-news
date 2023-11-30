@@ -12,9 +12,9 @@ require_once plugin_dir_path( __FILE__ ) . 'class-action.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-action-exception.php';
 require_once plugin_dir_path( __FILE__ ) . '../../includes/apple-push-api/autoload.php';
 
-use Apple_Actions\Action as Action;
-use Apple_Push_API\API as API;
-use Apple_Push_API\Credentials as Credentials;
+use Apple_Actions\Action;
+use Apple_Push_API\API;
+use Apple_Push_API\Credentials;
 
 /**
  * A base class that API-related actions can extend.
@@ -88,5 +88,4 @@ abstract class API_Action extends Action {
 
 		return true;
 	}
-
 }

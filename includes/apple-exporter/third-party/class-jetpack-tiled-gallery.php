@@ -64,7 +64,7 @@ class Jetpack_Tiled_Gallery {
 		 */
 		add_filter(
 			'jetpack_tiled_gallery_types',
-			function() {
+			function () {
 				return [];
 			}
 		);

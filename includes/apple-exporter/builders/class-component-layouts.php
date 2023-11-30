@@ -8,7 +8,7 @@
 
 namespace Apple_Exporter\Builders;
 
-use \Apple_Exporter\Components\Component as Component;
+use Apple_Exporter\Components\Component;
 
 /**
  * Exporter and components can register layouts. This class manages the layouts
@@ -172,5 +172,4 @@ class Component_Layouts extends Builder {
 
 		$component->set_json( 'layout', $layout_name );
 	}
-
 }

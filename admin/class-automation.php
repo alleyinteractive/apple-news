@@ -133,7 +133,7 @@ class Automation {
 		$metadata_rules = array_values(
 			array_filter(
 				self::get_automation_for_post( $post_id ),
-				function( $rule ) {
+				function ( $rule ) {
 					return 'article_metadata' === self::get_fields()[ $rule['field'] ]['location'] ?? '';
 				}
 			)
@@ -179,7 +179,7 @@ class Automation {
 		return array_values(
 			array_filter(
 				self::get_automation_rules(),
-				function( $rule ) use ( $post_id ) {
+				function ( $rule ) use ( $post_id ) {
 					return has_term( $rule['term_id'] ?? '', $rule['taxonomy'] ?? '', $post_id );
 				}
 			)

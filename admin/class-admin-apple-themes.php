@@ -478,7 +478,7 @@ class Admin_Apple_Themes extends Apple_News {
 
 		// Add the edit theme page.
 		add_submenu_page(
-			null,
+			'options.php',
 			__( 'Apple News Edit Theme', 'apple-news' ),
 			__( 'Edit Theme', 'apple-news' ),
 			/** This filter is documented in admin/class-admin-apple-settings.php */

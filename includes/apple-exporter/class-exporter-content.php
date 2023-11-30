@@ -292,7 +292,6 @@ class Exporter_Content {
 
 		// Find the first-level nodes of the body tag.
 		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
-		return $body ? $body->childNodes : new \DOMNodeList();
+		return $body ? $body->childNodes : new \DOMNodeList(); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
-
 }

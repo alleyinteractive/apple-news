@@ -5,23 +5,49 @@
   "type"       : "wordpress-plugin",
   "license"    : "GPL-3.0-or-later",
   "require"    : {
-    "composer/installers": "~1.0",
-    "php": ">=7.1"
+    "composer/installers": "^1.12.0",
+    "php": ">=8.0"
   },
   "require-dev": {
-    "phpspec/prophecy": "~1.0",
-    "alleyinteractive/alley-coding-standards": "^0.3.0",
-    "yoast/phpunit-polyfills": "^1.0"
+    "alleyinteractive/alley-coding-standards": "^2.0.1",
+    "mantle-framework/testkit": "^0.12.7",
+    "phpspec/prophecy": "^1.17.0",
+    "yoast/phpunit-polyfills": "^2.0"
   },
   "scripts": {
     "phpcbf" : "phpcbf .",
     "phpcs" : "phpcs .",
-    "phpunit" : "phpunit"
+    "phpunit" : "phpunit",
+    "test": [
+      "@phpcs",
+      "@phpunit"
+    ]
   },
   "config": {
     "allow-plugins": {
+      "alleyinteractive/composer-wordpress-autoloader": true,
       "composer/installers": true,
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
+  },
+  "archive": {
+    "exclude": [
+      "*.xml",
+      "*.dist",
+      "*.cache",
+      ".phpcs.xml",
+      ".editorconfig",
+      ".gitignore",
+      ".distignore",
+      ".deployignore",
+      ".github/",
+      ".phpcs/",
+      ".phpstan/",
+      "plugin-build/",
+      "tests/",
+      "publish-to-apple-news.zip",
+      "!vendor/",
+      "!.wordpress-org/"
+    ]
   }
 }

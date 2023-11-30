@@ -7,8 +7,8 @@
 
 namespace Apple_News\REST;
 
-use \WP_Error;
-use \WP_REST_Request;
+use WP_Error;
+use WP_REST_Request;
 
 /**
  * Handle a REST POST request to the /apple-news/v1/delete endpoint.

@@ -37,7 +37,7 @@ function apple_news_register_meta_helper( $object_type, $object_slugs, $meta_key
 	// Object type must be either post or term.
 	if ( ! in_array( $object_type, [ 'post', 'term' ], true ) ) {
 		throw new InvalidArgumentException(
-			__(
+			esc_html__(
 				'Object type must be one of "post", "term".',
 				'apple-news'
 			)

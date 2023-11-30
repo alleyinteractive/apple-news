@@ -70,5 +70,4 @@ class Credentials {
 	public function secret() {
 		return $this->secret;
 	}
-
 }

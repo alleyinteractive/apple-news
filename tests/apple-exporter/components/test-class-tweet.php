@@ -106,7 +106,7 @@ class Apple_News_Tweet_Test extends Apple_News_Component_TestCase {
 
 		add_filter(
 			'apple_news_tweet_json',
-			function( $json ) {
+			function ( $json ) {
 				$json['URL'] = 'https://twitter.com/alleydev/status/123';
 				return $json;
 			}

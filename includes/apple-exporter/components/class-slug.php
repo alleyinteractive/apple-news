@@ -159,5 +159,4 @@ class Slug extends Component {
 			'layout'
 		);
 	}
-
 }

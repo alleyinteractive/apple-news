@@ -50,5 +50,4 @@ abstract class Action {
 	protected function get_setting( $name ) {
 		return $this->settings->get( $name );
 	}
-
 }

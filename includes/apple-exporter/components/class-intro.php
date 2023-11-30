@@ -89,6 +89,4 @@ class Intro extends Component {
 			'textStyle'
 		);
 	}
-
 }
-

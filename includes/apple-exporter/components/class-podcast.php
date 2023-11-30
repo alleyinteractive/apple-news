@@ -23,7 +23,7 @@ class Podcast extends Component {
 	 * Look for node matches for this component.
 	 *
 	 * @param \DOMElement $node The node to examine for matches.
-	 * 
+	 *
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
@@ -100,9 +100,9 @@ class Podcast extends Component {
 
 		// Remove iframe specific `embed.` prefix on podcast url.
 		$url = str_replace( 'embed.podcasts.apple.com', 'podcasts.apple.com', $url );
-		
+
 		// Parse url into component parts.
-		$url_comps = parse_url( $url );
+		$url_comps = wp_parse_url( $url );
 
 		// Reassemble url without query params.
 		$url = sprintf(

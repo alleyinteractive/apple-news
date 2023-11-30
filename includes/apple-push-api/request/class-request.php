@@ -8,7 +8,7 @@
 
 namespace Apple_Push_API\Request;
 
-use \Apple_Push_API\MIME_Builder as MIME_Builder;
+use Apple_Push_API\MIME_Builder;
 
 require_once __DIR__ . '/../class-mime-builder.php';
 
@@ -152,7 +152,7 @@ class Request {
 	private function parse_response( $response, $json = true, $type = 'post', $meta = null, $bundles = null, $article = '', $debug_mime_request = '' ) {
 		// Ensure we have an expected response type.
 		if ( ( ! is_array( $response ) || ! isset( $response['body'] ) ) && ! is_wp_error( $response ) ) {
-			throw new Request_Exception( __( 'Invalid response:', 'apple-news' ) . $response );
+			throw new Request_Exception( esc_html( __( 'Invalid response:', 'apple-news' ) . $response ) );
 		}
 
 		// If debugging mode is enabled, send an email.
@@ -182,13 +182,11 @@ class Request {
 			$body .= "\n\n" . esc_html__( 'Image Settings', 'apple-news' ) . ":\n";
 			if ( 'yes' === $settings['use_remote_images'] ) {
 				$body .= esc_html__( 'Use Remote images enabled ', 'apple-news' );
-			} else {
-				if ( ! empty( $bundles ) ) {
+			} elseif ( ! empty( $bundles ) ) {
 					$body .= "\n" . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
 					$body .= implode( "\n", $bundles );
-				} else {
-					$body .= esc_html__( 'No bundled images found.', 'apple-news' );
-				}
+			} else {
+				$body .= esc_html__( 'No bundled images found.', 'apple-news' );
 			}
 
 			// Add the JSON for the post.
@@ -226,7 +224,7 @@ class Request {
 			if ( is_array( $error_messages ) && ! empty( $error_messages ) ) {
 				$string_errors = implode( ', ', $error_messages );
 			}
-			throw new Request_Exception( __( 'There has been an error with your request:', 'apple-news' ) . " $string_errors" );
+			throw new Request_Exception( esc_html( __( 'There has been an error with your request:', 'apple-news' ) . " $string_errors" ) );
 		}
 
 		// Check for errors from the API.
@@ -237,8 +235,8 @@ class Request {
 			foreach ( $response_decoded->errors as $error ) {
 				// If there is a keyPath, build it into a string.
 				$key_path = '';
-				if ( ! empty( $error->keyPath ) && is_array( $error->keyPath ) ) {
-					foreach ( $error->keyPath as $i => $path ) {
+				if ( ! empty( $error->keyPath ) && is_array( $error->keyPath ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					foreach ( $error->keyPath as $i => $path ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						if ( $i > 0 ) {
 							$key_path .= "->$path";
 						} else {
@@ -273,7 +271,7 @@ class Request {
 				);
 			}
 
-			throw new Request_Exception( $message );
+			throw new Request_Exception( esc_html( $message ) );
 		}
 
 		// Return the response in the desired format.

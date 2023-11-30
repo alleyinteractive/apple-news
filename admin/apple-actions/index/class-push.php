@@ -11,9 +11,9 @@ namespace Apple_Actions\Index;
 require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-export.php';
 
-use \Admin_Apple_Notice;
-use \Admin_Apple_Sections;
-use \Apple_Actions\API_Action;
+use Admin_Apple_Notice;
+use Admin_Apple_Sections;
+use Apple_Actions\API_Action;
 
 /**
  * A class to handle a push request from the admin.
@@ -147,7 +147,7 @@ class Push extends API_Action {
 		// Ensure the post (still) exists. Async operations might result in this function being run against a non-existent post.
 		$post = get_post( $this->id );
 		if ( ! $post ) {
-			throw new \Apple_Actions\Action_Exception( __( 'Apple News Error: Could not find post with id ', 'apple-news' ) . $this->id );
+			throw new \Apple_Actions\Action_Exception( esc_html( __( 'Apple News Error: Could not find post with id ', 'apple-news' ) . $this->id ) );
 		}
 
 		// Compare checksums to determine whether the article is in sync or not.
@@ -187,13 +187,13 @@ class Push extends API_Action {
 		// Ensure we have a valid ID.
 		$apple_id = get_post_meta( $this->id, 'apple_news_api_id', true );
 		if ( empty( $apple_id ) ) {
-			throw new \Apple_Actions\Action_Exception( __( 'This post does not have a valid Apple News ID, so it cannot be retrieved from the API.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( esc_html__( 'This post does not have a valid Apple News ID, so it cannot be retrieved from the API.', 'apple-news' ) );
 		}
 
 		// Get the article from the API.
 		$result = $this->get_api()->get_article( $apple_id );
 		if ( empty( $result->data->revision ) ) {
-			throw new \Apple_Actions\Action_Exception( __( 'The Apple News API returned invalid data for this article since the revision is empty.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( esc_html__( 'The Apple News API returned invalid data for this article since the revision is empty.', 'apple-news' ) );
 		}
 
 		// Update the revision.
@@ -209,7 +209,7 @@ class Push extends API_Action {
 	 */
 	private function push( $user_id = null ) {
 		if ( ! $this->is_api_configuration_valid() ) {
-			throw new \Apple_Actions\Action_Exception( __( 'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( esc_html__( 'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
 		}
 
 		/**
@@ -227,8 +227,8 @@ class Push extends API_Action {
 			throw new \Apple_Actions\Action_Exception(
 				sprintf(
 					// Translators: Placeholder is a post ID.
-					__( 'Skipped push of article %d due to the apple_news_skip_push filter.', 'apple-news' ),
-					$this->id
+					esc_html__( 'Skipped push of article %d due to the apple_news_skip_push filter.', 'apple-news' ),
+					absint( $this->id )
 				)
 			);
 		}
@@ -277,8 +277,8 @@ class Push extends API_Action {
 				throw new \Apple_Actions\Action_Exception(
 					sprintf(
 						// Translators: Placeholder is a post ID.
-						__( 'Skipped push of article %d due to the presence of a skip push taxonomy term.', 'apple-news' ),
-						$this->id
+						esc_html__( 'Skipped push of article %d due to the presence of a skip push taxonomy term.', 'apple-news' ),
+						absint( $this->id )
 					)
 				);
 			}
@@ -393,8 +393,8 @@ class Push extends API_Action {
 			throw new \Apple_Actions\Action_Exception(
 				sprintf(
 					// Translators: Placeholder is a post ID.
-					__( 'Skipped push of article %d to Apple News because it is already in sync.', 'apple-news' ),
-					$this->id
+					esc_html__( 'Skipped push of article %d to Apple News because it is already in sync.', 'apple-news' ),
+					$this->id // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 				)
 			);
 		}
@@ -451,9 +451,9 @@ class Push extends API_Action {
 			$this->clean_workspace();
 
 			if ( preg_match( '#WRONG_REVISION#', $e->getMessage() ) ) {
-				throw new \Apple_Actions\Action_Exception( __( 'Apple News Error: It seems like the article was updated by another call. If the problem persists, try removing and pushing again.', 'apple-news' ) );
+				throw new \Apple_Actions\Action_Exception( esc_html__( 'Apple News Error: It seems like the article was updated by another call. If the problem persists, try removing and pushing again.', 'apple-news' ) );
 			} else {
-				throw new \Apple_Actions\Action_Exception( __( 'There has been an error with the Apple News API: ', 'apple-news' ) . $e->getMessage() );
+				throw new \Apple_Actions\Action_Exception( esc_html__( 'There has been an error with the Apple News API: ', 'apple-news' ) . esc_html( $e->getMessage() ) );
 			}
 		}
 
@@ -536,7 +536,7 @@ class Push extends API_Action {
 			$this->clean_workspace();
 
 			// Throw an exception.
-			throw new \Apple_Actions\Action_Exception( $alert_message );
+			throw new \Apple_Actions\Action_Exception( esc_html( $alert_message ) );
 		} elseif ( 'warn' === $component_alerts && ! empty( $errors[0]['component_errors'] ) ) {
 				\Admin_Apple_Notice::error( $alert_message, $user_id );
 		}
@@ -590,7 +590,7 @@ class Push extends API_Action {
 		 */
 		$decoded = json_decode( $json );
 		if ( ! $decoded ) {
-			throw new \Apple_Actions\Action_Exception( __( 'The Apple News JSON is invalid and cannot be published.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( esc_html__( 'The Apple News JSON is invalid and cannot be published.', 'apple-news' ) );
 		} else {
 			return wp_json_encode( $decoded );
 		}

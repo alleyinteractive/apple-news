@@ -21,8 +21,8 @@ class Apple_News_End_Of_Article_Test extends Apple_News_Component_TestCase {
 		 */
 	public function data_default_end_of_article_setting() {
 		return [
-			[ [ 'cover', 'slug', 'title', 'byline' ], 3, 4 ],
-			[ [ 'cover', 'slug', 'title', 'author', 'date' ], 4, 5 ],
+			[ [ 'cover', 'slug', 'title', 'byline' ], 5, 6 ],
+			[ [ 'cover', 'slug', 'title', 'author', 'date' ], 6, 7 ],
 		];
 	}
 

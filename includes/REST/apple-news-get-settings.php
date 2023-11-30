@@ -15,7 +15,7 @@ use Apple_News\Admin\Automation;
  * @param array $data data from query args.
  * @return array updated response.
  */
-function get_settings_response( $data ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+function get_settings_response( $data ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	// Ensure Apple News is first initialized.
 	\Apple_News::has_uninitialized_error();
 

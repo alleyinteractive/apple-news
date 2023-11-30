@@ -13,9 +13,16 @@ use Apple_Exporter\Exporter_Content;
 use Apple_Exporter\Theme;
 
 /**
- * A class which is used to test the Admin_Apple_Themes class.
+ * A class to test the Admin_Apple_Themes class.
  */
 class Admin_Apple_Themes_Test extends Apple_News_Testcase {
+
+	/**
+	 * Admin themes.
+	 *
+	 * @var Admin_Apple_Themes
+	 */
+	private Admin_Apple_Themes $themes;
 
 	/**
 	 * A helper function to create the default theme.

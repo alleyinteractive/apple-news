@@ -56,7 +56,7 @@ class Admin_Apple_Notice {
 
 		// Sort and JSON-encode the removal array to simplify comparison.
 		$notifications = array_map(
-			function( $value ) {
+			function ( $value ) {
 				ksort( $value );
 				return wp_json_encode( $value );
 			},

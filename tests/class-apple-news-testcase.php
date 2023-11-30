@@ -263,7 +263,9 @@ abstract class Apple_News_Testcase extends WP_UnitTestCase {
 				'body'     => $body,
 				'cookies'  => $cookies,
 				'filename' => $filename,
-				'headers'  => new Requests_Utility_CaseInsensitiveDictionary( $headers ),
+				'headers'  => class_exists( \WpOrg\Requests\Utility\CaseInsensitiveDictionary::class )
+					? new \WpOrg\Requests\Utility\CaseInsensitiveDictionary( $headers )
+					: new Requests_Utility_CaseInsensitiveDictionary( $headers ),
 				'response' => $response,
 			] : null;
 	}

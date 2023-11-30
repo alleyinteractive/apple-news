@@ -146,6 +146,4 @@ class Date extends Component {
 			'layout'
 		);
 	}
-
 }
-

@@ -25,6 +25,7 @@ class TikTok extends Component {
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 
 		// Handling for a Gutenberg TikTok embed.
 		if (
@@ -48,6 +49,7 @@ class TikTok extends Component {
 		}
 
 		return null;
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	}
 
 	/**

@@ -27,7 +27,7 @@ class Embed_Generic extends Component {
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
-
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// If we aren't on an element node, bail out.
 		if ( 1 !== $node->nodeType ) {
 			return null;
@@ -55,6 +55,7 @@ class Embed_Generic extends Component {
 
 		// Anything else isn't supported out of the box.
 		return null;
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	}
 
 	/**

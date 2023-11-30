@@ -29,14 +29,14 @@ class Instagram extends Component {
 
 		// Handling for a Gutenberg Instagram embed.
 		if (
-			'figure' === $node->nodeName
+			'figure' === $node->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			&& self::node_has_class( $node, 'wp-block-embed-instagram' )
 		) {
 			return $node;
 		}
 
 		// Handle Instagram oEmbed URLs.
-		if ( false !== self::get_instagram_url( $node->nodeValue ) ) {
+		if ( false !== self::get_instagram_url( $node->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			return $node;
 		}
 

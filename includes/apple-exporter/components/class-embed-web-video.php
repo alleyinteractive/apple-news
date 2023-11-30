@@ -37,7 +37,7 @@ class Embed_Web_Video extends Component {
 	 */
 	public static function node_matches( $node ) {
 		// First, check to see if the node is a YouTube or Vimeo Gutenberg block, because these are the simplest checks to make.
-		$is_figure        = 'figure' === $node->nodeName;
+		$is_figure        = 'figure' === $node->nodeName; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$is_vimeo_block   = self::node_has_class( $node, 'wp-block-embed-vimeo' );
 		$is_youtube_block = self::node_has_class( $node, 'wp-block-embed-youtube' );
 		if ( $is_figure && ( $is_vimeo_block || $is_youtube_block ) ) {
@@ -45,7 +45,7 @@ class Embed_Web_Video extends Component {
 		}
 
 		// Second, check to see if the node contains a YouTube or Vimeo oEmbed as a text string.
-		$inner_text      = trim( $node->nodeValue );
+		$inner_text      = trim( $node->nodeValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$has_vimeo_url   = (bool) preg_match( self::VIMEO_MATCH, $inner_text );
 		$has_youtube_url = (bool) preg_match( self::YOUTUBE_MATCH, $inner_text );
 		if ( $has_vimeo_url || $has_youtube_url ) {

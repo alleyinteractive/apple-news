@@ -64,6 +64,18 @@ The wiki has [details about contributing](https://github.com/alleyinteractive/ap
 
 ![Alley logo](https://avatars.githubusercontent.com/u/1733454?s=200&v=4)
 
+## Releasing the Plugin
+
+The plugin uses a [built release workflow](./.github/workflows/built-release.yml)
+to compile and tag releases. Whenever a new version is detected in the root
+`composer.json` file or in the plugin's headers, the workflow will automatically
+build the plugin and tag it with a new version. The built tag will contain all
+the required front-end assets the plugin may require. This works well for
+publishing to WordPress.org or for submodule-ing.
+
+When you are ready to release a new version of the plugin, you can run
+`npm run release` to start the process of setting up a new release.
+
 ### Contributors
 Thanks to all of the [contributors](CONTRIBUTORS.md) to this project.
 

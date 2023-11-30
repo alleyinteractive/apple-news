@@ -10,7 +10,7 @@ namespace Apple_Actions\Index;
 
 require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
 
-use Apple_Actions\API_Action as API_Action;
+use Apple_Actions\API_Action;
 
 /**
  * A class to handle a delete request from the admin.
@@ -63,12 +63,12 @@ class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWrites
 	 */
 	private function delete() {
 		if ( ! $this->is_api_configuration_valid() ) {
-			throw new \Apple_Actions\Action_Exception( __( 'Your Apple News API settings seem to be empty. Please fill the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( esc_html__( 'Your Apple News API settings seem to be empty. Please fill the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
 		}
 
 		$remote_id = get_post_meta( $this->id, 'apple_news_api_id', true );
 		if ( ! $remote_id ) {
-			throw new \Apple_Actions\Action_Exception( __( 'This post has not been pushed to Apple News, cannot delete.', 'apple-news' ) );
+			throw new \Apple_Actions\Action_Exception( esc_html__( 'This post has not been pushed to Apple News, cannot delete.', 'apple-news' ) );
 		}
 
 		try {
@@ -103,5 +103,4 @@ class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWrites
 			return $e->getMessage();
 		}
 	}
-
 }

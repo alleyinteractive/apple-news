@@ -62,6 +62,7 @@ class Facebook extends Component {
 	 */
 	public static function node_matches( $node ) {
 
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// Handling for a Gutenberg Facebook embed.
 		if (
 			'figure' === $node->nodeName
@@ -105,6 +106,7 @@ class Facebook extends Component {
 			) {
 				return $node;
 			}
+			/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		}
 
 		// facebook not found.

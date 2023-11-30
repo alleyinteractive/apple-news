@@ -1,51 +1,27 @@
-name: Unit Tests
+name: Testing Suite
+
 on:
+  push:
+    branches:
+      - develop
+      - release/*
   pull_request:
-  workflow_dispatch:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    branches:
+      - develop
+      - release/*
+
 jobs:
-  tests:
-    name: "PHP: ${{ matrix.php }} (MU: ${{ matrix.multisite }})"
-    runs-on: ubuntu-latest
+  php-tests:
     strategy:
-      fail-fast: true
       matrix:
-        multisite: [0, 1]
-        php: ['8.0', '7.4', '7.3', '7.2', '7.1']
-    env:
-      WP_CORE_DIR: /tmp/wordpress/
-      WP_MULTISITE: ${{ matrix.multisite }}
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          all_but_latest: true
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd
-          coverage: none
-      - name: Install dependencies
-        uses: ramsey/composer-install@v2
-      - name: Set up WordPress
-        run: |
-          bash <(curl -s "https://raw.githubusercontent.com/wp-cli/sample-plugin/master/bin/install-wp-tests.sh") wordpress_unit_tests root '' 127.0.0.1
-          rm -rf "${WP_CORE_DIR}wp-content/plugins"
-          mkdir -p "${WP_CORE_DIR}wp-content/plugins/publish-to-apple-news"
-          rsync -a --exclude=.git . "${WP_CORE_DIR}wp-content/plugins/publish-to-apple-news"
-          cd ${WP_CORE_DIR}wp-content/plugins/publish-to-apple-news && composer install
-      - name: Run tests
-        shell: bash
-        run: |
-          cd ${WP_CORE_DIR}/wp-content/plugins/publish-to-apple-news
-          composer run phpunit
+        multisite: [true, false]
+        php: ['8.2', '8.1', '8.0']
+        wordpress: ["latest"]
+    if: github.event.pull_request.draft == false
+    uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
+    with:
+      command: "phpunit"
+      multisite: ${{ matrix.multisite }}
+      php: ${{ matrix.php }}
+      wordpress: ${{ matrix.wordpress }}

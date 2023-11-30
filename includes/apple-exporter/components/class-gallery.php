@@ -11,8 +11,8 @@
 
 namespace Apple_Exporter\Components;
 
-use \Apple_Exporter\Exporter_Content;
-use \DOMDocument;
+use Apple_Exporter\Exporter_Content;
+use DOMDocument;
 
 /**
  * A class to translate the output of [gallery] shortcodes into Apple News format.
@@ -109,17 +109,17 @@ class Gallery extends Component {
 		}
 
 		// Determine if we have items.
-		if ( empty( $container->childNodes ) ) {
+		if ( empty( $container->childNodes ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			return;
 		}
 
 		// Loop through items and construct slides.
 		$theme = \Apple_Exporter\Theme::get_used();
 		$items = [];
-		foreach ( $container->childNodes as $item ) {
+		foreach ( $container->childNodes as $item ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 			// Convert item into HTML for regex matching.
-			$item_html = $item->ownerDocument->saveXML( $item );
+			$item_html = $item->ownerDocument->saveXML( $item ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 			// Try to get URL.
 			if ( ! preg_match( '/src="([^"]+)"/', $item_html, $matches ) ) {

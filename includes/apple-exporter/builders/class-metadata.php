@@ -89,7 +89,7 @@ class Metadata extends Builder {
 
 			// Loop through matched video elements looking for MP4 files.
 			$total = count( $matches[0] );
-			for ( $i = 0; $i < $total; $i ++ ) {
+			for ( $i = 0; $i < $total; $i++ ) {
 
 				// Try to match an MP4 source URL.
 				if ( preg_match( '/src="([^\?"]+\.(mp4|m3u8)[^"]*)"/', $matches[0][ $i ], $src ) ) {

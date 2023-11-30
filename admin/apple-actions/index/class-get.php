@@ -10,7 +10,7 @@ namespace Apple_Actions\Index;
 
 require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
 
-use Apple_Actions\API_Action as API_Action;
+use Apple_Actions\API_Action;
 
 /**
  * A class to handle a get request from the admin.

@@ -341,8 +341,8 @@ class Export extends Action {
 		}
 
 		// Get the date.
-		if ( empty( $date ) && ! empty( $post->post_date ) ) {
-			$date = $post->post_date;
+		if ( empty( $date ) && ! empty( $post->post_date_gmt ) ) {
+			$date = $post->post_date_gmt;
 		}
 
 		// Set the default date format.

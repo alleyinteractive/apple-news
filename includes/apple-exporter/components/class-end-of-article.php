@@ -64,5 +64,4 @@ class End_Of_Article extends Component {
 			'layout'
 		);
 	}
-
 }

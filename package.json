@@ -1,6 +1,6 @@
 {
   "name": "publish-to-apple-news",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "license": "GPLv3",
   "main": "index.php",
   "engines": {
@@ -19,7 +19,9 @@
     "lint:fix": "npx check-node-version --package && eslint --ext .jsx --ext .js . --fix",
     "scaffold": "scaffold dir ./scaffold --theme=./",
     "test": "npx check-node-version --package && jest",
-    "test:watch": "npx check-node-version --package && jest --watch"
+    "test:watch": "npx check-node-version --package && jest --watch",
+    "prerelease": "check-node-version --package",
+    "release": "npx @alleyinteractive/create-release@latest"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",

@@ -23,6 +23,7 @@ class Image extends Component {
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 
 		$has_image_child = false;
 		// If this is a figure and it has children, see if we can find an image.
@@ -48,6 +49,7 @@ class Image extends Component {
 		}
 
 		return null;
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	}
 
 	/**

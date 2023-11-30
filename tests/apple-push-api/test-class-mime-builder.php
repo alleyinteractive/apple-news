@@ -17,6 +17,15 @@ use Apple_Push_API\MIME_Builder;
 class Apple_News_MIME_Builder_Test extends Apple_News_Testcase {
 
 	/**
+	 * Sets up the test case.
+	 */
+	public function setUp(): void {
+		parent::setUp();
+
+		apple_news_require_file( dirname( __DIR__, 2 ) . '/includes/apple-push-api/request/class-request.php' );
+	}
+
+	/**
 	 * Tests the behavior of adding JSON to the MIME builder.
 	 */
 	public function test_add_json() {
@@ -47,7 +56,9 @@ class Apple_News_MIME_Builder_Test extends Apple_News_Testcase {
 		$filename = 'article.json';
 		$json     = '';
 
-		$this->setExpectedException( 'Apple_Push_API\\Request\\Request_Exception', 'The attachment article.json could not be included in the request because it was empty.' );
+		$this->expectException( \Apple_Push_API\Request\Request_Exception::class );
+		$this->expectExceptionMessage( 'The attachment article.json could not be included in the request because it was empty.' );
+
 		$builder->add_json_string( $name, $filename, $json );
 	}
 }

@@ -48,7 +48,7 @@ class Apple_News_Advertisement_Test extends Apple_News_Component_TestCase {
 
 		add_filter(
 			'apple_news_advertisement_json',
-			function( $json ) {
+			function ( $json ) {
 				$json['bannerType'] = 'double_height';
 				return $json;
 			}

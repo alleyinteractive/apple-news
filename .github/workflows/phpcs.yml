@@ -1,25 +1,22 @@
 name: PHP Coding Standards
+
 on:
+  push:
+    branches:
+      - develop
+      - release/*
   pull_request:
-  workflow_dispatch:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    branches:
+      - develop
+      - release/*
+
 jobs:
   phpcs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          all_but_latest: true
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.0'
-          coverage: none
-      - name: Validate Composer package
-        run: composer validate --strict
-      - name: Install dependencies
-        uses: ramsey/composer-install@v2
-      - name: Run PHPCS
-        run: composer phpcs
+    strategy:
+      matrix:
+        php: [ 8.2 ]
+    if: github.event.pull_request.draft == false
+    uses: alleyinteractive/.github/.github/workflows/php-coding-standards.yml@main
+    with:
+      php: ${{ matrix.php }}

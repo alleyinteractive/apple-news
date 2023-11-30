@@ -43,5 +43,4 @@ class Layout extends Builder {
 			$this->content_id()
 		);
 	}
-
 }

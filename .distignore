@@ -1,6 +1,4 @@
-# Directories and files that we do not want to be included with the built
-# IDEs
-# version and deployed to WordPress.org.
+# A set of files you probably don't want in your WordPress.org distribution
 *.sql
 *.tar.gz
 *.zip

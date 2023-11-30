@@ -80,7 +80,7 @@ class Apple_News_Audio_Test extends Apple_News_Component_TestCase {
 
 		add_filter(
 			'apple_news_audio_json',
-			function( $json ) {
+			function ( $json ) {
 				$json['URL'] = 'https://www.example.org/audio-file.mp3?some_query=string';
 				return $json;
 			}

@@ -26,7 +26,7 @@ class Quote extends Component {
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
-		return ( 'blockquote' === $node->nodeName || ( isset( $node->firstChild->tagName ) && 'blockquote' === $node->firstChild->tagName ) ) ? $node : null;
+		return ( 'blockquote' === $node->nodeName || ( isset( $node->firstChild->tagName ) && 'blockquote' === $node->firstChild->tagName ) ) ? $node : null; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 
 	/**

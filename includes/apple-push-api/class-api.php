@@ -8,7 +8,7 @@
 
 namespace Apple_Push_API;
 
-use \Apple_Push_API\Request\Request as Request;
+use Apple_Push_API\Request\Request;
 
 /**
  * This class will post provided specified format articles to a channel using
@@ -196,5 +196,4 @@ class API {
 	private function send_post_request( $url, $article, $bundles, $meta = null, $post_id = null ) {
 		return $this->request->post( $url, $article, $bundles, $meta, $post_id );
 	}
-
 }

@@ -193,6 +193,7 @@ class Component_Factory {
 	 * @return array An array of components contained in the node.
 	 */
 	public static function get_components_from_node( $node ) {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		$result = [];
 
 		foreach ( self::$components as $shortname => $class ) {
@@ -241,5 +242,6 @@ class Component_Factory {
 		}
 
 		return $result;
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	}
 }

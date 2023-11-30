@@ -23,10 +23,10 @@ class Link_Button extends Component {
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
-		return 'a' === $node->nodeName
+		return 'a' === $node->nodeName // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			&& self::node_has_class( $node, 'wp-block-button__link' )
 			&& ! empty( $node->getAttribute( 'href' ) )
-			&& ! empty( $node->nodeValue )
+			&& ! empty( $node->nodeValue ) // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				? $node
 				: null;
 	}
@@ -185,4 +185,3 @@ class Link_Button extends Component {
 		);
 	}
 }
-

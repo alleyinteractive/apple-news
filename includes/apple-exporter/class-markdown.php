@@ -9,6 +9,8 @@
  * @since 0.2.0
  */
 
+/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+
 namespace Apple_Exporter;
 
 use DOMElement;
@@ -306,3 +308,4 @@ class Markdown {
 		return $text . "\n\n";
 	}
 }
+/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */

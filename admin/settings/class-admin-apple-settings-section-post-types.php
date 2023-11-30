@@ -89,5 +89,4 @@ class Admin_Apple_Settings_Section_Post_Types extends Admin_Apple_Settings_Secti
 	public function get_section_info() {
 		return __( 'Choose the post types that are eligible for publishing to Apple News.', 'apple-news' );
 	}
-
 }

@@ -40,6 +40,7 @@ class Body extends Component {
 	 * @return array|null The node on success, or null on no match.
 	 */
 	public static function node_matches( $node ) {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// We are only interested in p, pre, ul and ol.
 		if ( ! in_array( $node->nodeName, [ 'p', 'pre', 'ul', 'ol' ], true ) ) {
 			return null;
@@ -88,6 +89,7 @@ class Body extends Component {
 			$open,
 			$close
 		);
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	}
 
 	/**
@@ -441,7 +443,7 @@ class Body extends Component {
 
 	/**
 	 * Determine whether to apply a dropcap style for the component.
-	 * 
+	 *
 	 * @param \Apple_Exporter\Theme $theme Object that stores theme level dropcap configuration.
 	 * @param string                $html The HTML to check for dropcap conditions. Should be the first paragraph of the post content.
 	 *
@@ -471,17 +473,17 @@ class Body extends Component {
 			$use_dropcap = false;
 		}
 
-		/** 
+		/**
 		 * Allows for filtering of the dropcap content before return.
-		 * 
+		 *
 		 * @since 2.4.0
-		 * 
+		 *
 		 * @param bool                  $use_dropcap Whether to apply a dropcap to this paragraph or not.
 		 * @param string                $html The post content to filter.
 		 * @param \Apple_Exporter\Theme $theme The theme whose dropcap options are used.
 		 * @param string                $post_id The id of the post whose content we're parsing.
 		 */
-		return apply_filters( 'apple_news_dropcap', $use_dropcap, $html, $theme, $this->workspace->content_id ); 
+		return apply_filters( 'apple_news_dropcap', $use_dropcap, $html, $theme, $this->workspace->content_id );
 	}
 
 	/**
@@ -555,4 +557,3 @@ class Body extends Component {
 		return parent::to_array();
 	}
 }
-

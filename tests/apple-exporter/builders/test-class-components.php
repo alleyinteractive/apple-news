@@ -334,11 +334,11 @@ HTML;
 
 		// Test.
 		$expected_total = count( $expected );
-		for ( $i = 0; $i < $expected_total; $i ++ ) {
+		for ( $i = 0; $i < $expected_total; $i++ ) {
 			$this->assertEquals( $expected[ $i ], $json['components'][ $i ]['role'] );
 			if ( 'container' === $json['components'][ $i ]['role'] ) {
 				$components_total = count( $components );
-				for ( $j = 0; $j < $components_total; $j ++ ) {
+				for ( $j = 0; $j < $components_total; $j++ ) {
 					$this->assertEquals(
 						$components[ $j ],
 						$json['components'][ $i ]['components'][ $j ]['role']

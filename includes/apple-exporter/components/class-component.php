@@ -10,9 +10,9 @@ namespace Apple_Exporter\Components;
 
 require_once __DIR__ . '/../class-markdown.php';
 
-use \Apple_Exporter\Component_Spec;
-use \Apple_Exporter\Exporter_Content;
-use \Apple_Exporter\Parser;
+use Apple_Exporter\Component_Spec;
+use Apple_Exporter\Exporter_Content;
+use Apple_Exporter\Parser;
 
 /**
  * Base component class. All components must inherit from this class and
@@ -270,7 +270,7 @@ abstract class Component {
 	 * @access public
 	 * @return \DOMElement|null The node on success, or null on no match.
 	 */
-	public static function node_matches( $node ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public static function node_matches( $node ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 		return null;
 	}
 
@@ -777,6 +777,7 @@ abstract class Component {
 		return '';
 	}
 
+	/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	/**
 	 * Given a DOMElement, recursively traverses its children looking for iframe
 	 * nodes and returns the first one it finds.
@@ -840,4 +841,5 @@ abstract class Component {
 
 		return $has_figure_iframe;
 	}
+	/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 }

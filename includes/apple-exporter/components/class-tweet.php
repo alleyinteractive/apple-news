@@ -25,6 +25,7 @@ class Tweet extends Component {
 	 */
 	public static function node_matches( $node ) {
 
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// Handling for a Gutenberg Twitter embed.
 		if (
 			'figure' === $node->nodeName
@@ -38,6 +39,7 @@ class Tweet extends Component {
 			'#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i',
 			trim( $node->nodeValue )
 		);
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 
 		if ( self::node_has_class( $node, 'twitter-tweet' ) || $is_twitter_url ) {
 			return $node;
@@ -112,5 +114,4 @@ class Tweet extends Component {
 			'layout'
 		);
 	}
-
 }

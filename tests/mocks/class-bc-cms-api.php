@@ -22,7 +22,7 @@ class BC_CMS_API {
 	 *
 	 * @return array Array of the video's images retrieved.
 	 */
-	public function video_get_images( $video_id ) {
+	public function video_get_images( $video_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 		return [
 			'poster'    => [
 				'src'     => 'https://cf-images.us-east-1.prod.boltdns.net/v1/jit/1234567890/abcd1234-ef56-ab78-cd90-efabcd123456/main/1280x720/1s234ms/match/image.jpg',
