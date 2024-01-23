@@ -141,7 +141,7 @@ class Admin_Apple_News extends Apple_News {
 					'default' => '',
 				],
 				'apple_news_metadata'            => [
-					'default'           => '',
+					'default'           => [],
 					'sanitize_callback' => function ( $value ) {
 						return ! empty( $value ) && is_string( $value ) ? json_decode( $value, true ) : $value;
 					},
@@ -159,7 +159,7 @@ class Admin_Apple_News extends Apple_News {
 					'default' => '',
 				],
 				'apple_news_sections'            => [
-					'default'           => '',
+					'default'           => [],
 					'sanitize_callback' => 'apple_news_sanitize_selected_sections',
 					'show_in_rest'      => [
 						'prepare_callback' => 'apple_news_json_encode',
