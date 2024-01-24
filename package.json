@@ -1,6 +1,6 @@
 {
   "name": "publish-to-apple-news",
-  "version": "2.4.4",
+  "version": "2.4.5",
   "license": "GPLv3",
   "main": "index.php",
   "engines": {
