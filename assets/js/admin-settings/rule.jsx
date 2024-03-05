@@ -28,6 +28,16 @@ function Rule({
     taxonomies,
     themes,
   } = AppleNewsAutomationConfig;
+  let fieldType = '';
+  if (field === 'links.sections') {
+    fieldType = 'sections';
+  } else if (field === 'theme') {
+    fieldType = 'themes';
+  } else if (fields[field]?.type === 'boolean') {
+    fieldType = 'boolean';
+  } else if (fields[field]?.type === 'string') {
+    fieldType = 'string';
+  }
 
   return (
     <tr
@@ -72,7 +82,7 @@ function Rule({
         />
       </td>
       <td>
-        {fields[field]?.label === 'Section' ? (
+        {fieldType === 'sections' ? (
           <SelectControl
             aria-labelledby="apple-news-automation-column-value"
             disabled={busy}
@@ -84,15 +94,16 @@ function Rule({
             value={value}
           />
         ) : null}
-        {fields[field]?.type === 'boolean' ? (
+        {fieldType === 'boolean' ? (
           <ToggleControl
             aria-labelledby="apple-news-automation-column-value"
             checked={value === 'true'}
             disabled={busy}
+            label=""
             onChange={(next) => onUpdate('value', next.toString())}
           />
         ) : null}
-        {fields[field]?.label === 'Slug' ? (
+        {fieldType === 'string' ? (
           <TextControl
             aria-labelledby="apple-news-automation-column-value"
             disabled={busy}
@@ -100,7 +111,7 @@ function Rule({
             value={value}
           />
         ) : null}
-        {fields[field]?.label === 'Theme' ? (
+        {fieldType === 'themes' ? (
           <SelectControl
             aria-labelledby="apple-news-automation-column-value"
             disabled={busy}

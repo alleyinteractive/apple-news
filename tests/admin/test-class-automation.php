@@ -327,4 +327,31 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 		$json = $this->get_json_for_post( $post_id );
 		$this->assertEquals( '#000000', $json['componentTextStyles']['default-title']['textColor'] );
 	}
+
+	/**
+	 * Tests the ability to prepend arbitrary text to the title of an article before it is published.
+	 */
+	public function test_title_automation() {
+		$post_id = self::factory()->post->create( [ 'post_title' => 'Lorem Ipsum Dolor Sit Amet' ] );
+
+		// Create an automation routine for the title component.
+		$result  = wp_insert_term( 'Opinion', 'category' );
+		$term_id = $result['term_id'];
+		update_option(
+			'apple_news_automation',
+			[
+				[
+					'field'    => 'title.prepend',
+					'taxonomy' => 'category',
+					'term_id'  => $term_id,
+					'value'    => 'Opinion:',
+				],
+			]
+		);
+
+		// Set the taxonomy term to trigger the automation routine and ensure the title value is set properly.
+		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'Opinion: Lorem Ipsum Dolor Sit Amet', $json['title'] );
+	}
 }

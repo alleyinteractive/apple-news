@@ -66,6 +66,7 @@ class Automation {
 		add_filter( 'apple_news_active_theme', [ __CLASS__, 'filter__apple_news_active_theme' ], 0, 2 );
 		add_filter( 'apple_news_article_metadata', [ __CLASS__, 'filter__apple_news_article_metadata' ], 0, 2 );
 		add_filter( 'apple_news_exporter_slug', [ __CLASS__, 'filter__apple_news_exporter_slug' ], 0, 2 );
+		add_filter( 'apple_news_exporter_title', [ __CLASS__, 'filter__apple_news_exporter_title' ], 0, 2 );
 	}
 
 	/**
@@ -169,6 +170,25 @@ class Automation {
 	}
 
 	/**
+	 * Applies automation rules affecting the post title.
+	 *
+	 * @param string $title   The title the plugin wants to use.
+	 * @param int    $post_id The post ID associated with the title.
+	 *
+	 * @return string The filtered title value.
+	 */
+	public static function filter__apple_news_exporter_title( $title, $post_id ) {
+		$rules = self::get_automation_for_post( $post_id );
+		foreach ( $rules as $rule ) {
+			if ( 'title.prepend' === ( $rule['field'] ?? '' ) ) {
+				$title = sprintf( '%s %s', $rule['value'] ?? '', $title );
+			}
+		}
+
+		return $title;
+	}
+
+	/**
 	 * Given a post ID, returns an array of matching automation rules.
 	 *
 	 * @param int $post_id The post ID to query.
@@ -244,6 +264,11 @@ class Automation {
 				'location' => 'exporter',
 				'type'     => 'string',
 				'label'    => __( 'Theme', 'apple-news' ),
+			],
+			'title.prepend'  => [
+				'location' => 'component',
+				'type'     => 'string',
+				'label'    => __( 'Title: Prepend Text', 'apple-news' ),
 			],
 		];
 	}
