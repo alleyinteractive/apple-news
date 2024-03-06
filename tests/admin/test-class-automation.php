@@ -115,6 +115,33 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 	}
 
 	/**
+	 * Tests the functionality of using Automation to set the value of the contentGenerationType metadata.
+	 */
+	public function test_content_generation_type() {
+		$post_id = self::factory()->post->create();
+
+		// Create an automation routine for the slug component.
+		$result  = wp_insert_term( 'AI Generated', 'category' );
+		$term_id = $result['term_id'];
+		update_option(
+			'apple_news_automation',
+			[
+				[
+					'field'    => 'contentGenerationType',
+					'taxonomy' => 'category',
+					'term_id'  => $term_id,
+					'value'    => 'AI',
+				],
+			]
+		);
+
+		// Set the taxonomy term to trigger the automation routine and ensure the contentGenerationType is properly set.
+		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'AI', $json['metadata']['contentGenerationType'] );
+	}
+
+	/**
 	 * Ensures that named metadata is properly set via an automation process.
 	 *
 	 * @dataProvider data_metadata_automation

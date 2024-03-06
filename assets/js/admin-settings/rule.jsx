@@ -29,7 +29,9 @@ function Rule({
     themes,
   } = AppleNewsAutomationConfig;
   let fieldType = '';
-  if (field === 'links.sections') {
+  if (field === 'contentGenerationType') {
+    fieldType = 'contentGenerationType';
+  } else if (field === 'links.sections') {
     fieldType = 'sections';
   } else if (field === 'theme') {
     fieldType = 'themes';
@@ -82,6 +84,18 @@ function Rule({
         />
       </td>
       <td>
+        {fieldType === 'contentGenerationType' ? (
+          <SelectControl
+            aria-labelledby="apple-news-automation-column-value"
+            disabled={busy}
+            onChange={(next) => onUpdate('value', next)}
+            options={[
+              { value: '', label: __('None', 'apple-news') },
+              { value: 'AI', label: __('AI', 'apple-news') },
+            ]}
+            value={value}
+          />
+        ) : null}
         {fieldType === 'sections' ? (
           <SelectControl
             aria-labelledby="apple-news-automation-column-value"

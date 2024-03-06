@@ -67,6 +67,7 @@ class Automation {
 		add_filter( 'apple_news_article_metadata', [ __CLASS__, 'filter__apple_news_article_metadata' ], 0, 2 );
 		add_filter( 'apple_news_exporter_slug', [ __CLASS__, 'filter__apple_news_exporter_slug' ], 0, 2 );
 		add_filter( 'apple_news_exporter_title', [ __CLASS__, 'filter__apple_news_exporter_title' ], 0, 2 );
+		add_filter( 'apple_news_metadata', [ __CLASS__, 'filter__apple_news_metadata' ], 0, 2 );
 	}
 
 	/**
@@ -189,6 +190,33 @@ class Automation {
 	}
 
 	/**
+	 * Adds or sets metadata based on automation rules.
+	 *
+	 * @param array $meta    Apple News metadata for a post.
+	 * @param int   $post_id The ID of the post.
+	 *
+	 * @return array The modified array of metadata.
+	 */
+	public static function filter__apple_news_metadata( $meta, $post_id ) {
+		// Trim down the list of matched rules to only those affecting metadata.
+		$metadata_rules = array_values(
+			array_filter(
+				self::get_automation_for_post( $post_id ),
+				function ( $rule ) {
+					return 'metadata' === self::get_fields()[ $rule['field'] ]['location'] ?? '';
+				}
+			)
+		);
+
+		// Loop through each matched rule and apply the value to metadata.
+		foreach ( $metadata_rules as $rule ) {
+			$meta[ $rule['field'] ] = $rule['value'];
+		}
+
+		return $meta;
+	}
+
+	/**
 	 * Given a post ID, returns an array of matching automation rules.
 	 *
 	 * @param int $post_id The post ID to query.
@@ -230,42 +258,47 @@ class Automation {
 	 */
 	public static function get_fields(): array {
 		return [
-			'isHidden'       => [
+			'contentGenerationType' => [
+				'location' => 'metadata',
+				'type'     => 'string',
+				'label'    => 'contentGenerationType',
+			],
+			'isHidden'              => [
 				'location' => 'article_metadata',
 				'type'     => 'boolean',
-				'label'    => __( 'isHidden', 'apple-news' ),
+				'label'    => 'isHidden',
 			],
-			'isPaid'         => [
+			'isPaid'                => [
 				'location' => 'article_metadata',
 				'type'     => 'boolean',
-				'label'    => __( 'isPaid', 'apple-news' ),
+				'label'    => 'isPaid',
 			],
-			'isPreview'      => [
+			'isPreview'             => [
 				'location' => 'article_metadata',
 				'type'     => 'boolean',
-				'label'    => __( 'isPreview', 'apple-news' ),
+				'label'    => 'isPreview',
 			],
-			'isSponsored'    => [
+			'isSponsored'           => [
 				'location' => 'article_metadata',
 				'type'     => 'boolean',
-				'label'    => __( 'isSponsored', 'apple-news' ),
+				'label'    => 'isSponsored',
 			],
-			'links.sections' => [
+			'links.sections'        => [
 				'location' => 'article_metadata',
 				'type'     => 'string',
 				'label'    => __( 'Section', 'apple-news' ),
 			],
-			'slug.#text#'    => [
+			'slug.#text#'           => [
 				'location' => 'component',
 				'type'     => 'string',
 				'label'    => __( 'Slug', 'apple-news' ),
 			],
-			'theme'          => [
+			'theme'                 => [
 				'location' => 'exporter',
 				'type'     => 'string',
 				'label'    => __( 'Theme', 'apple-news' ),
 			],
-			'title.prepend'  => [
+			'title.prepend'         => [
 				'location' => 'component',
 				'type'     => 'string',
 				'label'    => __( 'Title: Prepend Text', 'apple-news' ),
