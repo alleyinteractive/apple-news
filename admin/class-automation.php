@@ -261,27 +261,27 @@ class Automation {
 			'contentGenerationType' => [
 				'location' => 'metadata',
 				'type'     => 'string',
-				'label'    => __( 'contentGenerationType', 'apple-news' ),
+				'label'    => 'contentGenerationType',
 			],
 			'isHidden'              => [
 				'location' => 'article_metadata',
 				'type'     => 'boolean',
-				'label'    => __( 'isHidden', 'apple-news' ),
+				'label'    => 'isHidden',
 			],
 			'isPaid'                => [
 				'location' => 'article_metadata',
 				'type'     => 'boolean',
-				'label'    => __( 'isPaid', 'apple-news' ),
+				'label'    => 'isPaid',
 			],
 			'isPreview'             => [
 				'location' => 'article_metadata',
 				'type'     => 'boolean',
-				'label'    => __( 'isPreview', 'apple-news' ),
+				'label'    => 'isPreview',
 			],
 			'isSponsored'           => [
 				'location' => 'article_metadata',
 				'type'     => 'boolean',
-				'label'    => __( 'isSponsored', 'apple-news' ),
+				'label'    => 'isSponsored',
 			],
 			'links.sections'        => [
 				'location' => 'article_metadata',
