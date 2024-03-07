@@ -15,7 +15,7 @@ import useSiteOptions from '../services/hooks/use-site-options';
 import deleteAtIndex from '../util/delete-at-index';
 import updateValueAtIndex from '../util/update-value-at-index';
 
-const AdminSettings = () => {
+function AdminSettings() {
   const [{
     loading, setSettings, saving, settings,
   }, saveSettings] = useSiteOptions();
@@ -141,6 +141,6 @@ const AdminSettings = () => {
       </div>
     </div>
   );
-};
+}
 
 export default AdminSettings;

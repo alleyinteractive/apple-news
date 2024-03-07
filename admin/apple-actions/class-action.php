@@ -48,6 +48,6 @@ abstract class Action {
 	 * @return mixed The value for the setting.
 	 */
 	protected function get_setting( $name ) {
-		return $this->settings->get( $name );
+		return $this->settings->__get( $name );
 	}
 }

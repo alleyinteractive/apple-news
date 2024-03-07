@@ -4,9 +4,11 @@ import ReactDOM from 'react-dom';
 // Components.
 import AdminSettings from './index';
 
-ReactDOM.render(
+const container = document.getElementById('apple-news-options__page');
+const root = ReactDOM.createRoot(container);
+
+root.render(
   <StrictMode>
     <AdminSettings />
   </StrictMode>,
-  document.getElementById('apple-news-options__page'),
 );

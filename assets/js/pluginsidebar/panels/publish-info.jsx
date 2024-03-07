@@ -3,14 +3,14 @@ import { __ } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const PublishInfo = ({
+function PublishInfo({
   apiId,
   dateCreated,
   dateModified,
   revision,
   shareUrl,
   publishState,
-}) => {
+}) {
   if (!publishState || publishState === 'N/A') {
     return null;
   }
@@ -34,7 +34,7 @@ const PublishInfo = ({
       <p>{publishState}</p>
     </PanelBody>
   );
-};
+}
 
 PublishInfo.propTypes = {
   apiId: PropTypes.string.isRequired,

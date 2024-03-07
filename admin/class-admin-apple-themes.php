@@ -163,7 +163,7 @@ class Admin_Apple_Themes extends Apple_News {
 	 * Return a Theme object loaded with db values based on the theme name string.
 	 *
 	 * @param string $theme_str The name of theme.
-	 * 
+	 *
 	 * @return \Apple_Exporter\Theme $theme_object A Theme object loaded with db config.
 	 */
 	public static function get_theme_by_name( $theme_str ) {
@@ -574,7 +574,9 @@ class Admin_Apple_Themes extends Apple_News {
 				__( 'It looks like you are using the default theme. You can choose a new theme or customize your theme on the %1$sthemes page%2$s.', 'apple-news' ),
 				'<a href="' . esc_url( admin_url( 'admin.php?page=apple-news-themes' ) ) . '">',
 				'</a>'
-			)
+			),
+			get_current_user_id(),
+			true
 		);
 	}
 

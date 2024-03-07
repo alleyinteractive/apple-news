@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const PublishControls = ({
+function PublishControls({
   apiAutosync,
   apiAutosyncDelete,
   apiAutosyncUpdate,
@@ -15,7 +15,7 @@ const PublishControls = ({
   publishState,
   updatePost,
   userCanPublish,
-}) => {
+}) {
   // If the post isn't published, or the user can't publish to Apple News, bail.
   if (postStatus !== 'publish' || !userCanPublish) {
     return null;
@@ -64,7 +64,7 @@ const PublishControls = ({
       ) : null}
     </>
   );
-};
+}
 
 PublishControls.propTypes = {
   apiAutosync: PropTypes.bool.isRequired,

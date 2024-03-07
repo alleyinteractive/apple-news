@@ -22,7 +22,7 @@ import Slug from './panels/slug';
 // Utils.
 import safeJsonParseArray from '../util/safe-json-parse-array';
 
-const Sidebar = () => {
+function Sidebar() {
   const [state, setState] = useState({
     autoAssignCategories: false,
     loading: false,
@@ -201,7 +201,14 @@ const Sidebar = () => {
 
   // Display notices whenever they change.
   useEffect(() => {
-    notices.forEach((notice) => displayNotification(notice.message, notice.type));
+    /* Adding a conditional here to prevent a sporadic error.
+    Leaving a console log in place in case we need to debug this further.
+    See: https://github.com/alleyinteractive/apple-news/issues/1030 */
+    if (Array.isArray(notices) && notices.length) {
+      notices.forEach((notice) => displayNotification(notice.message, notice.type));
+    } else {
+      console.log('Notices dispatched, but none to display.'); // eslint-disable-line no-console
+    }
   }, [displayNotification, notices]);
 
   return (
@@ -289,6 +296,6 @@ const Sidebar = () => {
       </PluginSidebar>
     </>
   );
-};
+}
 
 export default Sidebar;

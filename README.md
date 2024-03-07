@@ -45,7 +45,7 @@ See the wiki for [usage instructions](https://github.com/alleyinteractive/apple-
 ###	Source
 
 ###	Changelog
-See the wiki for the [changelog](https://github.com/alleyinteractive/apple-news/wiki/Changelog).
+See the release archive for the [changelog](https://github.com/alleyinteractive/apple-news/releases).
 
 ## Development Process
 
