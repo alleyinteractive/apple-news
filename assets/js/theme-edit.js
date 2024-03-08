@@ -23,21 +23,45 @@
 	}
 
 	function appleNewsSelectInit() {
-		// Only show fonts on Macs since they're system fonts
-		if ( appleNewsSupportsMacFeatures() ) {
-			$( '.select2.standard' ).select2();
-			$( '.select2.font' ).select2({
-				templateResult: appleNewsFontSelectTemplate,
-				templateSelection: appleNewsFontSelectTemplate
-			});
-		} else {
-			$( '.select2' ).select2();
-			$( 'span.select2' ).after( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
-				$( '<div>' )
-					.addClass( 'font-notice' )
-					.text( appleNewsThemeEdit.fontNotice )
-			)
-		}
+		$( '.select2.standard' ).select2();
+		$( '.select2.font' ).select2({
+			templateResult: appleNewsFontSelectTemplate,
+			templateSelection: appleNewsFontSelectTemplate
+		}).on('select2:select', async function (e) {
+			var selectedFont = e.params.data.text;
+			var isCustomFont = appleNewsThemeEdit.customFonts.includes(selectedFont);
+
+			// Remove any warnings.
+			$( 'span.select2' ).next( '.font-notice' ).remove();
+
+			// Check if font is installed.
+			var localFontInstalled = false;
+			if ( 'queryLocalFonts' in window ) {
+				try {
+					var availableFonts = await window.queryLocalFonts();
+					localFontInstalled = availableFonts.some((font) => font.postscriptName === selectedFont);
+				} catch (err) {
+					console.error(err.name, err.message);
+				}
+			}
+
+			if ( !localFontInstalled ) {
+				// Display notice if local font is not installed or cannot be determined.
+				if ( isCustomFont ) {
+					$( 'span.select2' ).after( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
+						$( '<div>' )
+							.addClass( 'font-notice' )
+							.text( appleNewsThemeEdit.customFontNotice )
+					);
+				} else if ( !appleNewsSupportsMacFeatures() ) {
+					$( 'span.select2' ).after( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
+						$( '<div>' )
+							.addClass( 'font-notice' )
+							.text( appleNewsThemeEdit.fontNotice )
+					);
+				}
+			}
+		});
 	}
 
 	function appleNewsThemeEditBorderInit() {
