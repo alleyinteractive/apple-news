@@ -361,6 +361,7 @@ class Theme {
 	 * @return array The list of iOS fonts.
 	 */
 	public static function get_fonts() {
+		wp_die( 'get_fonts invoked' );
 		// Get custom fonts from this channel.
 		require_once plugin_dir_path( __DIR__ ) . '../admin/apple-actions/index/class-channel.php';
 		$admin_settings = new \Admin_Apple_Settings();
