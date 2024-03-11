@@ -428,8 +428,9 @@ class Admin_Apple_Themes extends Apple_News {
 				'apple-news-theme-edit-js',
 				'appleNewsThemeEdit',
 				[
-					'customFonts' => $custom_fonts,
-					'fontNotice'  => __( 'Font preview is only available on macOS', 'apple-news' ),
+					'customFonts'      => $custom_fonts,
+					'customFontNotice' => __( 'Font preview may not be available', 'apple-news' ),
+					'fontNotice'       => __( 'Font preview is only available on macOS', 'apple-news' ),
 				]
 			);
 		}

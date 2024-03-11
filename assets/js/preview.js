@@ -412,3 +412,22 @@ function appleNewsSupportsMacFeatures() {
 		return false;
 	}
 }
+
+/**
+ * Checks if a local font is installed.
+ *
+ * @async
+ * @param {string} selectedFont The PostScript name of the font to check.
+ * @returns {Promise<boolean>} A promise that resolves to true if it can be
+ *                             determined that the font is installed locally,
+ *                             false otherwise.
+ */
+async function appleNewsLocalFontInstalled( selectedFont ) {
+	let localFonts = [];
+	if ( 'queryLocalFonts' in window ) {
+		localFonts = await window.queryLocalFonts({
+			postscriptNames: [selectedFont],
+		});
+	}
+	return localFonts.length !== 0;
+}

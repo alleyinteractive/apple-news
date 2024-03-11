@@ -28,38 +28,34 @@
 			templateResult: appleNewsFontSelectTemplate,
 			templateSelection: appleNewsFontSelectTemplate
 		}).on('select2:select', async function (e) {
+			// Check if font preview is available.
 			var selectedFont = e.params.data.text;
 			var isCustomFont = appleNewsThemeEdit.customFonts.includes(selectedFont);
+			var localFontInstalled = await appleNewsLocalFontInstalled( selectedFont );
+			var $fontNotice = $( 'span.select2' ).next( '.font-notice' );
+			let noticeText = '';
 
-			// Remove any warnings.
-			$( 'span.select2' ).next( '.font-notice' ).remove();
-
-			// Check if font is installed.
-			var localFontInstalled = false;
-			if ( 'queryLocalFonts' in window ) {
-				try {
-					var availableFonts = await window.queryLocalFonts();
-					localFontInstalled = availableFonts.some((font) => font.postscriptName === selectedFont);
-				} catch (err) {
-					console.error(err.name, err.message);
-				}
+			if ( localFontInstalled ) {
+				// Local font is installed. Remove any warnings.
+				noticeText = '';
+			} else if ( isCustomFont ) {
+				// Local font is not installed or cannot be determined.
+				noticeText = appleNewsThemeEdit.customFontNotice;
+			} else if ( ! appleNewsSupportsMacFeatures() ) {
+				// MacOS system font.
+				noticeText = appleNewsThemeEdit.fontNotice;
 			}
 
-			if ( !localFontInstalled ) {
-				// Display notice if local font is not installed or cannot be determined.
-				if ( isCustomFont ) {
-					$( 'span.select2' ).after( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
-						$( '<div>' )
-							.addClass( 'font-notice' )
-							.text( appleNewsThemeEdit.customFontNotice )
-					);
-				} else if ( !appleNewsSupportsMacFeatures() ) {
-					$( 'span.select2' ).after( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
-						$( '<div>' )
-							.addClass( 'font-notice' )
-							.text( appleNewsThemeEdit.fontNotice )
-					);
-				}
+			if ( $fontNotice.length > 0 ) {
+				// Update existing notice.
+				$fontNotice.text( noticeText );
+			} else if ( noticeText ) {
+				// Append new notice if it doesn't exist.
+				$( 'span.select2' ).after(
+					$('<div>')
+						.addClass( 'font-notice' )
+						.text( noticeText )
+				);
 			}
 		});
 	}
