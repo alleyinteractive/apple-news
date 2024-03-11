@@ -29,11 +29,11 @@
 			templateSelection: appleNewsFontSelectTemplate
 		}).on('select2:select', async function (e) {
 			// Check if font preview is available.
-			const selectedFont = e.params.data.text;
-			const isCustomFont = appleNewsThemeEdit.customFonts.includes(selectedFont);
-			const localFontInstalled = await appleNewsLocalFontInstalled( selectedFont );
-			const $fontNotice = $( 'span.select2' ).next( '.font-notice' );
-			let noticeText = '';
+			var selectedFont = e.params.data.text;
+			var isCustomFont = appleNewsThemeEdit.customFonts.includes(selectedFont);
+			var localFontInstalled = await appleNewsLocalFontInstalled( selectedFont );
+			var $fontNotice = $( 'span.select2' ).next( '.font-notice' );
+			var noticeText = '';
 
 			if ( localFontInstalled ) {
 				// Local font is installed. Remove any warnings.
@@ -149,7 +149,7 @@
  *                             false otherwise.
  */
 async function appleNewsLocalFontInstalled( selectedFont ) {
-	let localFonts = [];
+	var localFonts = [];
 	if ( 'queryLocalFonts' in window ) {
 		localFonts = await window.queryLocalFonts({
 			postscriptNames: [selectedFont],
