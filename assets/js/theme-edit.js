@@ -29,10 +29,10 @@
 			templateSelection: appleNewsFontSelectTemplate
 		}).on('select2:select', async function (e) {
 			// Check if font preview is available.
-			var selectedFont = e.params.data.text;
-			var isCustomFont = appleNewsThemeEdit.customFonts.includes(selectedFont);
-			var localFontInstalled = await appleNewsLocalFontInstalled( selectedFont );
-			var $fontNotice = $( 'span.select2' ).next( '.font-notice' );
+			const selectedFont = e.params.data.text;
+			const isCustomFont = appleNewsThemeEdit.customFonts.includes(selectedFont);
+			const localFontInstalled = await appleNewsLocalFontInstalled( selectedFont );
+			const $fontNotice = $( 'span.select2' ).next( '.font-notice' );
 			let noticeText = '';
 
 			if ( localFontInstalled ) {
