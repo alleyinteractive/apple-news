@@ -36,9 +36,13 @@ export default function useTermCache() {
   /**
    * Fetches a term from the REST API given the taxonomy slug and the term ID.
    * @param {string} taxonomy - The taxonomy slug.
-   * @param {number} termId - The term ID.
+   * @param {string} rawTermId - The term ID.
    */
-  const fetchTerm = async (taxonomy, termId) => {
+  const fetchTerm = async (taxonomy, rawTermId) => {
+    const termId = Number(rawTermId);
+    if (Number.isNaN(termId) || termId <= 0) {
+      return;
+    }
     // If necessary, immediately add a placeholder to state while we are waiting for the load.
     if (termCache[taxonomy]?.[termId] === undefined) {
       set({ taxonomy, id: termId, loading: true });

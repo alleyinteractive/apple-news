@@ -12,7 +12,7 @@ import React from 'react';
 // Components.
 import TermSelector from '../components/term-selector';
 
-const Rule = ({
+function Rule({
   busy,
   field,
   onDelete,
@@ -21,7 +21,7 @@ const Rule = ({
   taxonomy,
   termId,
   value,
-}) => {
+}) {
   const {
     fields,
     sections,
@@ -124,7 +124,7 @@ const Rule = ({
       </td>
     </tr>
   );
-};
+}
 
 Rule.propTypes = {
   busy: PropTypes.bool.isRequired,

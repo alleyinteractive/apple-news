@@ -443,7 +443,7 @@ abstract class Component {
 		if ( 'yes' === $this->get_setting( 'use_remote_images' ) ) {
 			return $source;
 		} else {
-			if ( '' === $filename ) {
+			if ( null === $filename ) {
 				$filename = Apple_News::get_filename( $source );
 			}
 			$this->bundle_source( $filename, $source );
@@ -472,7 +472,7 @@ abstract class Component {
 	 * @since 0.4.0
 	 */
 	protected function get_setting( $name ) {
-		return $this->settings->get( $name );
+		return $this->settings->__get( $name );
 	}
 
 	/**

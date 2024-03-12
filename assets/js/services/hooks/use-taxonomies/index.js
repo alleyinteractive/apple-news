@@ -9,9 +9,14 @@ import { useEffect, useState } from 'react';
 export default function useTaxonomies() {
   const [taxonomies, setTaxonomies] = useState({});
 
-  useEffect(() => (async () => {
-    setTaxonomies(await apiFetch({ path: '/wp/v2/taxonomies' }));
-  })(), []);
+  useEffect(() => {
+    const fetchTaxonomies = async () => {
+      const response = await apiFetch({ path: '/wp/v2/taxonomies' });
+      setTaxonomies(response);
+    };
+
+    fetchTaxonomies();
+  }, []);
 
   return taxonomies;
 }

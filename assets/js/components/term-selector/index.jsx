@@ -24,13 +24,17 @@ export default function TermSelector({
 
   // If the debounced search term changes, search for results from the API.
   useEffect(() => {
-    if (debouncedSearchTerm) {
-      (async () => {
-        const newSearchResults = await apiFetch({ path: `/${taxonomies[taxonomy].rest_namespace}/${taxonomies[taxonomy].rest_base}?search=${debouncedSearchTerm}` });
+    const fetchTermData = async () => {
+      if (debouncedSearchTerm) {
+        const newSearchResults = await apiFetch({
+          path: `/${taxonomies[taxonomy].rest_namespace}/${taxonomies[taxonomy].rest_base}?search=${debouncedSearchTerm}`,
+        });
         newSearchResults.forEach((result) => termCache.set(result));
         setSearchResults(newSearchResults);
-      })();
-    }
+      }
+    };
+
+    fetchTermData();
   }, [debouncedSearchTerm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
