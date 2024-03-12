@@ -148,6 +148,7 @@ class Admin_Apple_News extends Apple_News {
 					'show_in_rest'      => [
 						'prepare_callback' => 'apple_news_json_encode',
 					],
+					'type'              => 'array',
 				],
 				'apple_news_pullquote'           => [
 					'default' => '',
@@ -164,6 +165,7 @@ class Admin_Apple_News extends Apple_News {
 					'show_in_rest'      => [
 						'prepare_callback' => 'apple_news_json_encode',
 					],
+					'type'              => 'array',
 				],
 				'apple_news_suppress_video_url'  => [
 					'default' => false,
