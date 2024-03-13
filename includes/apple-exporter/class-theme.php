@@ -361,6 +361,18 @@ class Theme {
 	 * @return array The list of iOS fonts.
 	 */
 	public static function get_fonts() {
+		// Get custom fonts from this channel.
+		require_once plugin_dir_path( __DIR__ ) . '../admin/apple-actions/index/class-channel.php';
+		$admin_settings = new \Admin_Apple_Settings();
+		$channel_api    = new \Apple_Actions\Index\Channel( $admin_settings->fetch_settings() );
+		$channel        = $channel_api->perform();
+		$custom_fonts   = ! empty( $channel->data->fonts ) && is_array( $channel->data->fonts )
+			? wp_list_pluck( $channel->data->fonts, 'name' )
+			: [];
+
+		$all_fonts = array_unique( array_merge( self::$fonts, $custom_fonts ) );
+		sort( $all_fonts );
+
 		/**
 		 * Allows the font list to be filtered, so that any custom
 		 * fonts that have been approved by Apple and added to your
@@ -375,7 +387,7 @@ class Theme {
 		 *
 		 * @param array $fonts An array of TrueType font names.
 		 */
-		return apply_filters( 'apple_news_fonts_list', self::$fonts );
+		return apply_filters( 'apple_news_fonts_list', $all_fonts );
 	}
 
 	/**

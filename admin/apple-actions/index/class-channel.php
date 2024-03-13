@@ -20,9 +20,17 @@ class Channel extends API_Action {
 	/**
 	 * Get the channel data from Apple News.
 	 *
-	 * @return object An object containing the response from the API.
+	 * @return object|null An object containing the response from the API or null on failure.
 	 */
 	public function perform() {
-		return $this->get_api()->get_channel( $this->get_setting( 'api_channel' ) );
+		$channel = get_transient( 'apple_news_channel' );
+		if ( false === $channel ) {
+			if ( $this->is_api_configuration_valid() ) {
+				$channel = $this->get_api()->get_channel( $this->get_setting( 'api_channel' ) );
+				set_transient( 'apple_news_channel', $channel, 300 );
+			}
+		}
+
+		return ! empty( $channel ) ? $channel : null;
 	}
 }
