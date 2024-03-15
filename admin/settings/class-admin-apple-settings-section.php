@@ -376,9 +376,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 				esc_attr( $name ),
 				esc_attr( $value ),
 				5,
-				$this->get_min_for( $name ),
-				$this->get_max_for( $name ),
-				$this->get_step_for( $name ),
+				esc_attr( $this->get_min_for( $name ) ),
+				esc_attr( $this->get_max_for( $name ) ),
+				esc_attr( $this->get_step_for( $name ) ),
 				esc_attr( $this->is_required( $name ) )
 			);
 		} else {
