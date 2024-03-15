@@ -7,6 +7,7 @@
 
 namespace Apple_News\REST;
 
+use Apple_Exporter\Settings;
 use Apple_News\Admin\Automation;
 
 /**
@@ -24,8 +25,9 @@ function get_settings_response( $data ) { // phpcs:ignore Generic.CodeAnalysis.U
 	}
 
 	// Compile non-sensitive plugin settings into a JS-friendly format and return.
-	$admin_settings = new \Admin_Apple_Settings();
-	$settings       = $admin_settings->fetch_settings();
+	$admin_settings   = new \Admin_Apple_Settings();
+	$settings         = $admin_settings->fetch_settings();
+	$default_settings = ( new Settings() )->all();
 	return [
 		'adminUrl'            => esc_url_raw( admin_url( 'admin.php?page=apple-news-options' ) ),
 		'automaticAssignment' => ! empty( Automation::get_automation_rules() ),
@@ -35,6 +37,7 @@ function get_settings_response( $data ) { // phpcs:ignore Generic.CodeAnalysis.U
 		'apiAutosyncUpdate'   => 'yes' === $settings->api_autosync_update,
 		'fullBleedImages'     => 'yes' === $settings->full_bleed_images,
 		'htmlSupport'         => 'yes' === $settings->html_support,
+		'inArticlePosition'   => is_int( $settings->in_article_position ) ? $settings->in_article_position : $default_settings['in_article_position'],
 		'postTypes'           => ! empty( $settings->post_types ) && is_array( $settings->post_types ) ? array_map( 'sanitize_text_field', $settings->post_types ) : [],
 		'showMetabox'         => 'yes' === $settings->show_metabox,
 		'useRemoteImages'     => 'yes' === $settings->use_remote_images,

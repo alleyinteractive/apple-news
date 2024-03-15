@@ -14,6 +14,7 @@ namespace Apple_Exporter\Builders;
 use Apple_Exporter\Component_Factory;
 use Apple_Exporter\Components\Component;
 use Apple_Exporter\Components\Image;
+use Apple_Exporter\Settings;
 use Apple_Exporter\Theme;
 use Apple_Exporter\Workspace;
 use Apple_News;
@@ -907,8 +908,15 @@ class Components extends Builder {
 
 		// Insert in-article module at the proper position, if set.
 		if ( ! empty( $json_templates['in_article']['json'] ) ) {
-			// TODO: Fetch this value from settings.
-			$position   = 3;
+			$position = $this->get_setting( 'in_article_position' );
+			if ( is_int( $position ) ) {
+				if ( $position < 0 ) {
+					$position = 0;
+				}
+			} else {
+				$default_settings = ( new Settings() )->all();
+				$position         = $default_settings['in_article_position'];
+			}
 			$components = array_merge(
 				array_slice( $components, 0, $position ),
 				[ Component_Factory::get_component( 'in-article', '' ) ],

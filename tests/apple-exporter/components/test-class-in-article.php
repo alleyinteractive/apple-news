@@ -75,6 +75,19 @@ HTML,
 		$this->assertEquals( 'In Article Module Test', $json['components'][6]['text'] );
 		$this->assertEquals( '<p>Paragraph 5</p>', $json['components'][8]['text'] );
 
-		// TODO: Test additional position values.
+		// Test insertion at the beginning.
+		$this->settings->in_article_position = 0;
+		$json                                = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'In Article Module Test', $json['components'][3]['text'] );
+
+		// Test insertion at the end.
+		$this->settings->in_article_position = 5;
+		$json                                = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'In Article Module Test', $json['components'][8]['text'] );
+
+		// Test overflow insertion.
+		$this->settings->in_article_position = 99;
+		$json                                = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'In Article Module Test', $json['components'][8]['text'] );
 	}
 }
