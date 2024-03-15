@@ -66,7 +66,7 @@ class Automation {
 		add_filter( 'apple_news_active_theme', [ __CLASS__, 'filter__apple_news_active_theme' ], 0, 2 );
 		add_filter( 'apple_news_article_metadata', [ __CLASS__, 'filter__apple_news_article_metadata' ], 0, 2 );
 		add_filter( 'apple_news_exporter_slug', [ __CLASS__, 'filter__apple_news_exporter_slug' ], 0, 2 );
-		add_filter( 'apple_news_exporter_title', [ __CLASS__, 'filter__apple_news_exporter_title' ], 0, 2 );
+		add_filter( 'apple_news_generate_json', [ __CLASS__, 'filter__apple_news_generate_json' ], 0, 2 );
 		add_filter( 'apple_news_metadata', [ __CLASS__, 'filter__apple_news_metadata' ], 0, 2 );
 	}
 
@@ -171,22 +171,23 @@ class Automation {
 	}
 
 	/**
-	 * Applies automation rules affecting the post title.
+	 * Applies automation rules after the JSON has been generated.
 	 *
-	 * @param string $title   The title the plugin wants to use.
-	 * @param int    $post_id The post ID associated with the title.
+	 * @param array $json    Generated JSON for the article.
+	 * @param int   $post_id The post ID associated with the JSON.
 	 *
-	 * @return string The filtered title value.
+	 * @return array Filtered JSON for the article.
 	 */
-	public static function filter__apple_news_exporter_title( $title, $post_id ) {
+	public static function filter__apple_news_generate_json( $json, $post_id ) {
+		$title = $json['title'] ?? '';
 		$rules = self::get_automation_for_post( $post_id );
 		foreach ( $rules as $rule ) {
 			if ( 'title.prepend' === ( $rule['field'] ?? '' ) ) {
-				$title = sprintf( '%s %s', $rule['value'] ?? '', $title );
+				$json['title'] = sprintf( '%s %s', $rule['value'] ?? '', $title );
 			}
 		}
 
-		return $title;
+		return $json;
 	}
 
 	/**
