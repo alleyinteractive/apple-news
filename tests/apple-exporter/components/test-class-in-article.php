@@ -55,25 +55,26 @@ HTML,
 			[
 				'json_templates' => [
 					'in_article' => [
-						'json'     => [
+						'json'   => [
 							'role'      => 'heading',
 							'text'      => 'In Article Module Test',
 							'format'    => 'html',
 							'textStyle' => 'default-heading-1',
 							'layout'    => 'heading-layout',
 						],
-						'layout'   => [],
-						'position' => 3,
+						'layout' => [],
 					],
 				],
 			]
 		);
 
-		// Fetch the JSON for the article again and confirm that the in-article module is inserted at the proper position.
+		// Fetch the JSON for the article again and confirm that the in-article module is inserted at the default position (after the third item).
 		$json = $this->get_json_for_post( $post_id );
 		$this->assertEquals( 9, count( $json['components'] ) );
 		$this->assertEquals( '<p>Paragraph 1</p>', $json['components'][3]['text'] );
 		$this->assertEquals( 'In Article Module Test', $json['components'][6]['text'] );
 		$this->assertEquals( '<p>Paragraph 5</p>', $json['components'][8]['text'] );
+
+		// TODO: Test additional position values.
 	}
 }

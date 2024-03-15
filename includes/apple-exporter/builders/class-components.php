@@ -905,6 +905,18 @@ class Components extends Builder {
 		$theme          = Theme::get_used();
 		$json_templates = $theme->get_value( 'json_templates' );
 
+		// Insert in-article module at the proper position, if set.
+		if ( ! empty( $json_templates['in_article']['json'] ) ) {
+			// TODO: Fetch this value from settings.
+			$position   = 3;
+			$components = array_merge(
+				array_slice( $components, 0, $position ),
+				[ Component_Factory::get_component( 'in-article', '' ) ],
+				array_slice( $components, $position )
+			);
+		}
+
+		// Insert end of article module, if set.
 		if ( ! empty( $json_templates['end_of_article']['json'] ) ) {
 			$components[] = Component_Factory::get_component( 'end-of-article', '' );
 		}
