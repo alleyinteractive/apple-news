@@ -909,7 +909,8 @@ class Components extends Builder {
 		// Insert in-article module at the proper position, if set.
 		if ( ! empty( $json_templates['in_article']['json'] ) ) {
 			$position = $this->get_setting( 'in_article_position' );
-			if ( is_int( $position ) ) {
+			if ( is_numeric( $position ) ) {
+				$position = (int) $position;
 				if ( $position < 0 ) {
 					$position = 0;
 				}
