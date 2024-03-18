@@ -118,6 +118,7 @@ class Component_Factory {
 		self::register_component( 'slug', '\\Apple_Exporter\\Components\\Slug' );
 		self::register_component( 'advertisement', '\\Apple_Exporter\\Components\\Advertisement' );
 		self::register_component( 'end-of-article', '\\Apple_Exporter\\Components\\End_Of_Article' );
+		self::register_component( 'in-article', '\\Apple_Exporter\\Components\\In_Article' );
 
 		/**
 		 * Allows you to add custom component classes to the plugin.

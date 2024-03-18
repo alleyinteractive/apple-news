@@ -225,7 +225,7 @@ class Admin_Apple_Settings extends Apple_News {
 
 			// Merge settings in the option with defaults.
 			foreach ( $settings->all() as $key => $value ) {
-				$wp_value       = ( empty( $wp_settings[ $key ] ) )
+				$wp_value       = ( ! isset( $wp_settings[ $key ] ) )
 					? $value
 					: $wp_settings[ $key ];
 				$settings->$key = $wp_value;
