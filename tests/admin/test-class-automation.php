@@ -380,5 +380,9 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
 		$json = $this->get_json_for_post( $post_id );
 		$this->assertEquals( 'Opinion: Lorem Ipsum Dolor Sit Amet', $json['title'] );
+
+		// Ensure that the title modification only applies to the metadata title and not the visible title in the component tree.
+		$this->assertEquals( 'title', $json['components'][0]['role'] );
+		$this->assertEquals( 'Lorem Ipsum Dolor Sit Amet', $json['components'][0]['text'] );
 	}
 }
