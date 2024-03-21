@@ -266,22 +266,22 @@ class Automation {
 			],
 			'isHidden'              => [
 				'location' => 'article_metadata',
-				'type'     => 'boolean',
+				'type'     => 'string',
 				'label'    => 'isHidden',
 			],
 			'isPaid'                => [
 				'location' => 'article_metadata',
-				'type'     => 'boolean',
+				'type'     => 'string',
 				'label'    => 'isPaid',
 			],
 			'isPreview'             => [
 				'location' => 'article_metadata',
-				'type'     => 'boolean',
+				'type'     => 'string',
 				'label'    => 'isPreview',
 			],
 			'isSponsored'           => [
 				'location' => 'article_metadata',
-				'type'     => 'boolean',
+				'type'     => 'string',
 				'label'    => 'isSponsored',
 			],
 			'links.sections'        => [
