@@ -122,20 +122,16 @@ class Admin_Apple_News extends Apple_News {
 					'default' => '',
 				],
 				'apple_news_is_hidden'           => [
-					'default' => false,
-					'type'    => 'boolean',
+					'default' => '',
 				],
 				'apple_news_is_paid'             => [
-					'default' => false,
-					'type'    => 'boolean',
+					'default' => '',
 				],
 				'apple_news_is_preview'          => [
-					'default' => false,
-					'type'    => 'boolean',
+					'default' => '',
 				],
 				'apple_news_is_sponsored'        => [
-					'default' => false,
-					'type'    => 'boolean',
+					'default' => '',
 				],
 				'apple_news_maturity_rating'     => [
 					'default' => '',
@@ -192,7 +188,7 @@ class Admin_Apple_News extends Apple_News {
 						}
 					)
 					: $meta_keys;
-				} 
+				}
 			);
 
 			add_action(
