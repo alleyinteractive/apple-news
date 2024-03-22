@@ -93,36 +93,12 @@ class Admin_Apple_Index_Page extends Apple_News {
 	}
 
 	/**
-	 * Decide which template to load for the Apple News admin page
-	 *
-	 * @access public
+	 * Shows the list of articles available for publishing to Apple News.
 	 */
 	public function admin_page() {
-		$id     = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
-		$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : null; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
-
-		switch ( $action ) {
-			case self::namespace_action( 'push' ):
-				/* phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable */
-
-				$section = new Apple_Actions\Index\Section( $this->settings );
-				try {
-					$sections = $section->get_sections();
-				} catch ( Apple_Actions\Action_Exception $e ) {
-					Admin_Apple_Notice::error( $e->getMessage() );
-				}
-
-				$post      = get_post( $id );
-				$post_meta = get_post_meta( $id );
-
-				/* phpcs:enable */
-
-				include plugin_dir_path( __FILE__ ) . 'partials/page-single-push.php';
-				break;
-			default:
-				$this->show_post_list_action();
-				break;
-		}
+		$table = new Admin_Apple_News_List_Table( $this->settings );
+		$table->prepare_items();
+		include plugin_dir_path( __FILE__ ) . 'partials/page-index.php';
 	}
 
 	/**
@@ -333,17 +309,6 @@ class Admin_Apple_Index_Page extends Apple_News {
 				'delete_confirmation' => __( 'Are you sure you want to delete this post from Apple News?', 'apple-news' ),
 			]
 		);
-	}
-
-	/**
-	 * Shows the list of articles available for publishing to Apple News.
-	 *
-	 * @access public
-	 */
-	public function show_post_list_action() {
-		$table = new Admin_Apple_News_List_Table( $this->settings );
-		$table->prepare_items();
-		include plugin_dir_path( __FILE__ ) . 'partials/page-index.php';
 	}
 
 	/**
