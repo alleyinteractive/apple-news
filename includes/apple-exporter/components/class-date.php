@@ -27,7 +27,7 @@ class Date extends Component {
 			'date-json',
 			__( 'Date JSON', 'apple-news' ),
 			[
-				'role' => 'body',
+				'role' => 'byline',
 				'text' => '#text#',
 			]
 		);
