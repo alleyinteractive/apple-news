@@ -31,6 +31,8 @@ function Rule({
   let fieldType = '';
   if (field === 'contentGenerationType') {
     fieldType = 'contentGenerationType';
+  } else if (['isHidden', 'isPaid', 'isPreview', 'isSponsored'].includes(field)) {
+    fieldType = 'boolean-select';
   } else if (field === 'links.sections') {
     fieldType = 'sections';
   } else if (field === 'theme') {
@@ -104,6 +106,19 @@ function Rule({
             options={[
               { value: '', label: __('Select Section', 'apple-news') },
               ...sections.map((sect) => ({ value: sect.id, label: sect.name })),
+            ]}
+            value={value}
+          />
+        ) : null}
+        {fieldType === 'boolean-select' ? (
+          <SelectControl
+            aria-labelledby="apple-news-automation-column-value"
+            disabled={busy}
+            onChange={(next) => onUpdate('value', next)}
+            options={[
+              { value: '', label: __('Channel Default', 'apple-news') },
+              { value: 'true', label: __('True', 'apple-news') },
+              { value: 'false', label: __('False', 'apple-news') },
             ]}
             value={value}
           />
