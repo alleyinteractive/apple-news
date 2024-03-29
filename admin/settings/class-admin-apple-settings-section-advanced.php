@@ -60,7 +60,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 			'in_article_position' => [
 				'label'       => __( 'Position of In Article Module', 'apple-news' ),
 				'type'        => 'number',
-				'min'         => 0,
+				'min'         => 3,
 				'max'         => 99,
 				'step'        => 1,
 				'description' => __( 'If you have configured an In Article module via Customize JSON, the position that the module should be inserted into. Defaults to 3, which is after the third content block in the article body (e.g., the third paragraph).', 'apple-news' ),
