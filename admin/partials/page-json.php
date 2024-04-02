@@ -34,11 +34,11 @@
 					'<a href="' . esc_url( $theme_admin_url ) . '">',
 					'</a>'
 				),
-				array(
-					'a' => array(
-						'href' => array(),
-					),
-				)
+				[
+					'a' => [
+						'href' => [],
+					],
+				]
 			)
 			?>
 			</p>
@@ -63,11 +63,11 @@
 					'<a href="https://developer.apple.com/documentation/apple_news/apple_news_format">',
 					'</a>'
 				),
-				array(
-					'a' => array(
-						'href' => array(),
-					),
-				)
+				[
+					'a' => [
+						'href' => [],
+					],
+				]
 			)
 			?>
 			</p>
