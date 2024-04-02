@@ -174,6 +174,37 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 	}
 
 	/**
+	 * Tests the ability to prepend arbitrary text to the metadata title of an article before it is published.
+	 */
+	public function test_metadata_title_automation() {
+		$post_id = self::factory()->post->create( [ 'post_title' => 'Lorem Ipsum Dolor Sit Amet' ] );
+
+		// Create an automation routine for the metadata title component.
+		$result  = wp_insert_term( 'Opinion', 'category' );
+		$term_id = $result['term_id'];
+		update_option(
+			'apple_news_automation',
+			[
+				[
+					'field'    => 'title.prepend',
+					'taxonomy' => 'category',
+					'term_id'  => $term_id,
+					'value'    => 'Opinion:',
+				],
+			]
+		);
+
+		// Set the taxonomy term to trigger the automation routine and ensure the title value is set properly.
+		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'Opinion: Lorem Ipsum Dolor Sit Amet', $json['title'] );
+
+		// Ensure that the title modification only applies to the metadata title and not the visible title in the component tree.
+		$this->assertEquals( 'title', $json['components'][0]['role'] );
+		$this->assertEquals( 'Lorem Ipsum Dolor Sit Amet', $json['components'][0]['text'] );
+	}
+
+	/**
 	 * Tests ability to automate setting a section.
 	 */
 	public function test_sections_automation() {
@@ -356,22 +387,22 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 	}
 
 	/**
-	 * Tests the ability to prepend arbitrary text to the title of an article before it is published.
+	 * Tests the ability to prepend arbitrary text to the visible title of an article before it is published.
 	 */
 	public function test_title_automation() {
 		$post_id = self::factory()->post->create( [ 'post_title' => 'Lorem Ipsum Dolor Sit Amet' ] );
 
 		// Create an automation routine for the title component.
-		$result  = wp_insert_term( 'Opinion', 'category' );
+		$result  = wp_insert_term( 'Commentary', 'category' );
 		$term_id = $result['term_id'];
 		update_option(
 			'apple_news_automation',
 			[
 				[
-					'field'    => 'title.prepend',
+					'field'    => 'headline.prepend',
 					'taxonomy' => 'category',
 					'term_id'  => $term_id,
-					'value'    => 'Opinion:',
+					'value'    => 'Commentary:',
 				],
 			]
 		);
@@ -379,10 +410,10 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 		// Set the taxonomy term to trigger the automation routine and ensure the title value is set properly.
 		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
 		$json = $this->get_json_for_post( $post_id );
-		$this->assertEquals( 'Opinion: Lorem Ipsum Dolor Sit Amet', $json['title'] );
-
-		// Ensure that the title modification only applies to the metadata title and not the visible title in the component tree.
 		$this->assertEquals( 'title', $json['components'][0]['role'] );
-		$this->assertEquals( 'Lorem Ipsum Dolor Sit Amet', $json['components'][0]['text'] );
+		$this->assertEquals( 'Commentary: Lorem Ipsum Dolor Sit Amet', $json['components'][0]['text'] );
+
+		// Ensure that the title modification only applies to the component title and not the metadata title.
+		$this->assertEquals( 'Lorem Ipsum Dolor Sit Amet', $json['title'] );
 	}
 }

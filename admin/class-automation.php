@@ -58,6 +58,13 @@ class Automation {
 	];
 
 	/**
+	 * Keeps track of the original title of posts by ID so we can refer to them when prepending.
+	 *
+	 * @var array
+	 */
+	private static array $original_titles = [];
+
+	/**
 	 * Initialize functionality of this class by registering hooks.
 	 */
 	public static function init(): void {
@@ -66,6 +73,7 @@ class Automation {
 		add_filter( 'apple_news_active_theme', [ __CLASS__, 'filter__apple_news_active_theme' ], 0, 2 );
 		add_filter( 'apple_news_article_metadata', [ __CLASS__, 'filter__apple_news_article_metadata' ], 0, 2 );
 		add_filter( 'apple_news_exporter_slug', [ __CLASS__, 'filter__apple_news_exporter_slug' ], 0, 2 );
+		add_filter( 'apple_news_exporter_title', [ __CLASS__, 'filter__apple_news_exporter_title' ], 0, 2 );
 		add_filter( 'apple_news_generate_json', [ __CLASS__, 'filter__apple_news_generate_json' ], 0, 2 );
 		add_filter( 'apple_news_metadata', [ __CLASS__, 'filter__apple_news_metadata' ], 0, 2 );
 	}
@@ -171,6 +179,29 @@ class Automation {
 	}
 
 	/**
+	 * A callback function for the apple_news_exporter_title filter.
+	 *
+	 * @param string $title   The title to use.
+	 * @param int    $post_id The post ID associated with the title.
+	 *
+	 * @return string The filtered title value.
+	 */
+	public static function filter__apple_news_exporter_title( $title, $post_id ) {
+		// Make a backup of the original title so we can refer to it later.
+		self::$original_titles[ $post_id ] = $title;
+
+		// Process rules.
+		$rules = self::get_automation_for_post( $post_id );
+		foreach ( $rules as $rule ) {
+			if ( 'headline.prepend' === ( $rule['field'] ?? '' ) ) {
+				$title = sprintf( '%s %s', $rule['value'] ?? '', self::$original_titles[ $post_id ] );
+			}
+		}
+
+		return $title;
+	}
+
+	/**
 	 * Applies automation rules after the JSON has been generated.
 	 *
 	 * @param array $json    Generated JSON for the article.
@@ -179,11 +210,12 @@ class Automation {
 	 * @return array Filtered JSON for the article.
 	 */
 	public static function filter__apple_news_generate_json( $json, $post_id ) {
-		$title = $json['title'] ?? '';
-		$rules = self::get_automation_for_post( $post_id );
+		$rules         = self::get_automation_for_post( $post_id );
+		$json['title'] = self::$original_titles[ $post_id ];
 		foreach ( $rules as $rule ) {
 			if ( 'title.prepend' === ( $rule['field'] ?? '' ) ) {
-				$json['title'] = sprintf( '%s %s', $rule['value'] ?? '', $title );
+				$prepend       = ! empty( $rule['value'] ) ? $rule['value'] . ' ' : '';
+				$json['title'] = $prepend . self::$original_titles[ $post_id ];
 			}
 		}
 
@@ -264,6 +296,11 @@ class Automation {
 				'type'     => 'string',
 				'label'    => 'contentGenerationType',
 			],
+			'headline.prepend'      => [
+				'location' => 'component',
+				'type'     => 'string',
+				'label'    => __( 'Headline: Prepend Text', 'apple-news' ),
+			],
 			'isHidden'              => [
 				'location' => 'article_metadata',
 				'type'     => 'string',
@@ -284,6 +321,11 @@ class Automation {
 				'type'     => 'string',
 				'label'    => 'isSponsored',
 			],
+			'title.prepend'         => [
+				'location' => 'component',
+				'type'     => 'string',
+				'label'    => __( 'Metadata Title: Prepend Text', 'apple-news' ),
+			],
 			'links.sections'        => [
 				'location' => 'article_metadata',
 				'type'     => 'string',
@@ -298,11 +340,6 @@ class Automation {
 				'location' => 'exporter',
 				'type'     => 'string',
 				'label'    => __( 'Theme', 'apple-news' ),
-			],
-			'title.prepend'         => [
-				'location' => 'component',
-				'type'     => 'string',
-				'label'    => __( 'Title: Prepend Text', 'apple-news' ),
 			],
 		];
 	}
