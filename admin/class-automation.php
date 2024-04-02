@@ -58,11 +58,11 @@ class Automation {
 	];
 
 	/**
-	 * Keeps track of the original title of the post so we can refer to it when prepending.
+	 * Keeps track of the original title of posts by ID so we can refer to them when prepending.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	private static string $original_title = '';
+	private static array $original_titles = [];
 
 	/**
 	 * Initialize functionality of this class by registering hooks.
@@ -187,11 +187,14 @@ class Automation {
 	 * @return string The filtered title value.
 	 */
 	public static function filter__apple_news_exporter_title( $title, $post_id ) {
-		self::$original_title = $title;
-		$rules                = self::get_automation_for_post( $post_id );
+		// Make a backup of the original title so we can refer to it later.
+		self::$original_titles[ $post_id ] = $title;
+
+		// Process rules.
+		$rules = self::get_automation_for_post( $post_id );
 		foreach ( $rules as $rule ) {
 			if ( 'headline.prepend' === ( $rule['field'] ?? '' ) ) {
-				$title = sprintf( '%s %s', $rule['value'] ?? '', self::$original_title );
+				$title = sprintf( '%s %s', $rule['value'] ?? '', self::$original_titles[ $post_id ] );
 			}
 		}
 
@@ -208,10 +211,11 @@ class Automation {
 	 */
 	public static function filter__apple_news_generate_json( $json, $post_id ) {
 		$rules         = self::get_automation_for_post( $post_id );
-		$json['title'] = self::$original_title;
+		$json['title'] = self::$original_titles[ $post_id ];
 		foreach ( $rules as $rule ) {
 			if ( 'title.prepend' === ( $rule['field'] ?? '' ) ) {
-				$json['title'] = sprintf( '%s %s', $rule['value'] ?? '', self::$original_title );
+				$prepend       = ! empty( $rule['value'] ) ? $rule['value'] . ' ' : '';
+				$json['title'] = $prepend . self::$original_titles[ $post_id ];
 			}
 		}
 
