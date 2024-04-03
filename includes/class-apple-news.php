@@ -500,6 +500,11 @@ class Apple_News {
 			if ( version_compare( $current_version, '2.4.0', '<' ) ) {
 				$this->upgrade_to_2_4_0();
 			}
+
+			// Handle upgrade to version 2.5.0.
+			if ( version_compare( $current_version, '2.5.0', '<' ) ) {
+				$this->upgrade_to_2_5_0();
+			}
 		}
 
 		// Ensure the default themes are created.
@@ -1097,6 +1102,25 @@ class Apple_News {
 		delete_option( 'apple_news_section_priority_mappings' );
 		delete_option( 'apple_news_section_taxonomy_mappings' );
 		delete_option( 'apple_news_section_theme_mappings' );
+	}
+
+	/**
+	 * Upgrades settings and data formats to be compatible with version 2.5.0.
+	 */
+	public function upgrade_to_2_5_0(): void {
+		$registry = Theme::get_registry();
+		foreach ( $registry as $theme_name ) {
+			$theme_object = Admin_Apple_Themes::get_theme_by_name( $theme_name );
+			$save_theme   = false;
+
+			// TODO: Migrate heading layouts from being centrally defined to being defined per heading level.
+			/*
+			if ( 'by #author#' === $theme_object->get_value( 'author_format' ) ) {
+				$theme_object->set_value( 'author_format', 'By #author#' );
+				$save_theme = true;
+			}
+			*/
+		}
 	}
 
 	/**

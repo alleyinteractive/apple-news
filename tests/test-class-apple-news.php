@@ -282,6 +282,16 @@ class Apple_News_Test extends Apple_News_Testcase {
 	}
 
 	/**
+	 * Tests an upgrade from a version prior to 2.5.0 to version 2.5.0.
+	 */
+	public function test_upgrade_to_2_5_0(): void {
+		// Set legacy theme settings for heading layout.
+		$this->load_example_theme( 'default' );
+		$theme = Theme::get_used();
+		// TODO: Set custom JSON for legacy heading option.
+	}
+
+	/**
 	 * Ensures that the version in Apple_News matches the reported plugin version.
 	 *
 	 * @see Apple_News::$version
