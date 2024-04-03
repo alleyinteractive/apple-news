@@ -73,19 +73,6 @@ class Heading extends Component {
 			]
 		);
 
-		$this->register_spec(
-			'heading-layout',
-			__( 'Layout', 'apple-news' ),
-			[
-				'columnStart' => '#body_offset#',
-				'columnSpan'  => '#body_column_span#',
-				'margin'      => [
-					'bottom' => 15,
-					'top'    => 15,
-				],
-			]
-		);
-
 		foreach ( self::$levels as $level ) {
 			$conditional = [];
 			if ( ! empty( $theme->get_value( 'header' . $level . '_color_dark' ) ) ) {
@@ -117,6 +104,22 @@ class Heading extends Component {
 					],
 					$conditional
 				)
+			);
+			$this->register_spec(
+				'heading-layout' . $level,
+				sprintf(
+					// translators: token is the heading level.
+					__( 'Level %s Layout', 'apple-news' ),
+					$level
+				),
+				[
+					'columnStart' => '#body_offset#',
+					'columnSpan'  => '#body_column_span#',
+					'margin'      => [
+						'bottom' => 15,
+						'top'    => 15,
+					],
+				]
 			);
 		}
 	}
