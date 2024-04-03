@@ -1113,13 +1113,22 @@ class Apple_News {
 			$theme_object = Admin_Apple_Themes::get_theme_by_name( $theme_name );
 			$save_theme   = false;
 
-			// TODO: Migrate heading layouts from being centrally defined to being defined per heading level.
-			/*
-			if ( 'by #author#' === $theme_object->get_value( 'author_format' ) ) {
-				$theme_object->set_value( 'author_format', 'By #author#' );
+			// Migrate heading layouts from being centrally defined to being defined per heading level.
+			$json_templates = $theme_object->get_value( 'json_templates' );
+			if ( ! empty( $json_templates['heading']['heading-layout'] ) ) {
+				$heading_layout = $json_templates['heading']['heading-layout'];
+				unset( $json_templates['heading']['heading-layout'] );
+				for ( $heading_level = 1; $heading_level <= 6; $heading_level++ ) {
+					$json_templates['heading'][ 'heading-layout-' . $heading_level ] = $heading_layout;
+				}
+				$theme_object->set_value( 'json_templates', $json_templates );
 				$save_theme = true;
 			}
-			*/
+
+			// Save the theme if there were changes.
+			if ( $save_theme ) {
+				$theme_object->save();
+			}
 		}
 	}
 

@@ -299,7 +299,7 @@ class Apple_News_Test extends Apple_News_Testcase {
 			],
 		];
 		$this->load_example_theme( 'default' );
-		$theme_data = get_option( Theme::theme_key( 'Default' ) );
+		$theme_data                   = get_option( Theme::theme_key( 'Default' ) );
 		$theme_data['json_templates'] = [
 			'heading' => [
 				'heading-layout' => $custom_heading_layout,
