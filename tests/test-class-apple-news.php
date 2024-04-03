@@ -285,10 +285,41 @@ class Apple_News_Test extends Apple_News_Testcase {
 	 * Tests an upgrade from a version prior to 2.5.0 to version 2.5.0.
 	 */
 	public function test_upgrade_to_2_5_0(): void {
-		// Set legacy theme settings for heading layout.
+		/*
+		 * Set legacy theme settings for heading layout.
+		 *
+		 * We have to do this in the database directly because it will fail validation with the updated theme code.
+		 */
+		$custom_heading_layout = [
+			'columnStart' => '#body_offset#',
+			'columnSpan'  => '#body_column_span#',
+			'margin'      => [
+				'bottom' => 25,
+				'top'    => 25,
+			],
+		];
 		$this->load_example_theme( 'default' );
+		$theme_data = get_option( Theme::theme_key( 'Default' ) );
+		$theme_data['json_templates'] = [
+			'heading' => [
+				'heading-layout' => $custom_heading_layout,
+			],
+		];
+		update_option( Theme::theme_key( 'Default' ), $theme_data );
+
+		// Run the upgrade.
+		$apple_news = new Apple_News();
+		$apple_news->upgrade_to_2_5_0();
 		$theme = Theme::get_used();
-		// TODO: Set custom JSON for legacy heading option.
+		$theme->load();
+		$json = $theme->get_value( 'json_templates' );
+		$this->assertTrue( empty( $json['heading']['heading-layout'] ) );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-1'] );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-2'] );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-3'] );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-4'] );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-5'] );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-6'] );
 	}
 
 	/**
