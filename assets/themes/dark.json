@@ -127,7 +127,7 @@
                         "role": "caption",
                         "text": "#caption#",
                         "textStyle": {
-                            "textAlignment": "center",
+                            "textAlignment": "left",
                             "fontName": "#caption_font#",
                             "fontSize": "#caption_size#",
                             "tracking": "#caption_tracking#",

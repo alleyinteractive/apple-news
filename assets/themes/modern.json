@@ -186,9 +186,6 @@
                             "textColor": "#caption_color#"
                         },
                         "layout": {
-                            "margin": {
-                                "bottom": 20
-                            },
                             "ignoreDocumentMargin": "#full_bleed_images#"
                         }
                     }

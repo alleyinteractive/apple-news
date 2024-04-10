@@ -162,9 +162,6 @@
                         "layout": {
                             "columnSpan": 6,
                             "columnStart": 1,
-                            "margin": {
-                                "top": 20
-                            },
                             "ignoreDocumentMargin": "#full_bleed_images#"
                         }
                     }
