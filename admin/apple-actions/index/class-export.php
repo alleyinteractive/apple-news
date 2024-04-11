@@ -18,7 +18,6 @@ use Apple_Exporter\Exporter_Content;
 use Apple_Exporter\Exporter_Content_Settings;
 use Apple_Exporter\Theme;
 use Apple_Exporter\Third_Party\Jetpack_Tiled_Gallery;
-use Apple_Exporter\Footnotes;
 use Apple_News;
 use BC_Setup;
 
@@ -59,7 +58,6 @@ class Export extends Action {
 		$this->id = $id;
 		$this->set_theme();
 		Jetpack_Tiled_Gallery::instance();
-		Footnotes::instance();
 	}
 
 	/**
