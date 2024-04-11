@@ -486,13 +486,6 @@ class Components extends Builder {
 		$component['text'] = preg_replace_callback(
 			'/\bid=["\'](.*?)["\']/',
 			function ( $matches ) use ( &$component, &$identifiers ) {
-				// If 'id' starts with a digit, it's skipped,
-				// as it's not a valid identifier and Apple News
-				// will reject it.
-				if ( preg_match( '/^\d/', $matches[1] ) ) {
-					return '';
-				}
-
 				// Saving the 'id' as the 'identifier'.
 				$identifier = $matches[1];
 
