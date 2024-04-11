@@ -1,6 +1,6 @@
 <?php
 /**
- * Publish to Apple News: \Apple_Exporter\Third_Party\Footnotes class
+ * Publish to Apple News: \Apple_Exporter\Footnotes class
  *
  * @package Apple_News
  * @subpackage Apple_Exporter\Third_Party
@@ -55,18 +55,25 @@ class Footnotes {
 		}
 
 		/**
-		 * Allow default rendering of gallery since we have
-		 * builtin handling for the default WP galleries.
+		 * Change the ordered list to a series of paragraphs so that each paragraph can have a unique identifier,
+		 * which allows us to link to each footnote from the main content.
 		 */
 		add_filter(
 			'render_block_core/footnotes',
 			function ( $block_content ) {
-				// Change li tags to p tags.
-				$new_content = str_replace( [ '<li', '</li' ], [ '<p', '</p' ] , $block_content );
-				$new_content = preg_replace( '/<ol.*?>/', '', $new_content );
-				$new_content = preg_replace( '/<\/ol.*?>/', '', $new_content );
-				// TODO: Add numbers.
-				return $new_content;
+				preg_match_all( '/<li.*?>.*?<\/li>/', $block_content, $matches );
+				$items = $matches[0];
+
+				// convert each list item to a paragraph with a number added.
+				foreach ( $items as $key => $item ) {
+					$count = $key + 1;
+					$items[$key] = preg_replace(
+						'/<li(.*?)>(.*?)<\/li>/',
+						"<p$1>${count}. $2</p>",
+						$item
+					);
+				}
+				return implode( PHP_EOL, $items );
 			},
 			5,
 			1
