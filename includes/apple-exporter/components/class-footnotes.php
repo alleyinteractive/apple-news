@@ -54,8 +54,9 @@ class Footnotes extends Component {
 			__( 'Individual Footnote JSON', 'apple-news' ),
 			[
 				'role'       => 'body',
-				'text'       => '#text',
+				'text'       => '#text#',
 				'format'     => 'html',
+				'identifier' => '#identifier#',
 			]
 		);
 	}
@@ -81,14 +82,17 @@ class Footnotes extends Component {
 			);
 			preg_match( '/id="(.*?)"/', $text, $matches );
 			$id           = $matches[1] ?? null;
-			$components[] = $this->register_json(
+			$this->register_json(
 				'footnote-json',
 				[
-					'text'       => $text,
-					'format'     => 'html',
-					'identifier' => $id,
+					'#text#'       => $text,
+					'format'       => 'html',
+					'#identifier#' => $id,
 				]
 			);
+			// The register_json function saves its result to $this->json, so extract it from there and reset it.
+			$components[] = $this->json;
+			$this->json   = [];
 		}
 		$this->register_json(
 			'json',
