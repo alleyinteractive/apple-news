@@ -333,21 +333,21 @@ class Push extends API_Action {
 			$meta['data']['links'] = [ 'sections' => $this->sections ];
 		}
 
-		// Get the isPreview setting.
-		$is_paid                = (bool) get_post_meta( $this->id, 'apple_news_is_paid', true );
-		$meta['data']['isPaid'] = $is_paid;
-
-		// Get the isPreview setting.
-		$is_preview                = (bool) get_post_meta( $this->id, 'apple_news_is_preview', true );
-		$meta['data']['isPreview'] = $is_preview;
-
-		// Get the isHidden setting.
-		$is_hidden                = (bool) get_post_meta( $this->id, 'apple_news_is_hidden', true );
-		$meta['data']['isHidden'] = $is_hidden;
-
-		// Get the isSponsored setting.
-		$is_sponsored                = (bool) get_post_meta( $this->id, 'apple_news_is_sponsored', true );
-		$meta['data']['isSponsored'] = $is_sponsored;
+		// Set boolean metadata. Don't set values at all if they are not set in postmeta, or are set to empty string.
+		$metadata_keys = [
+			'isHidden'    => 'apple_news_is_hidden',
+			'isPaid'      => 'apple_news_is_paid',
+			'isPreview'   => 'apple_news_is_preview',
+			'isSponsored' => 'apple_news_is_sponsored',
+		];
+		foreach ( $metadata_keys as $metadata_property => $meta_key ) {
+			$meta_value = get_post_meta( $this->id, $meta_key, true );
+			if ( 'true' === $meta_value || '1' === $meta_value ) {
+				$meta['data'][ $metadata_property ] = true;
+			} elseif ( 'false' === $meta_value || '0' === $meta_value ) {
+				$meta['data'][ $metadata_property ] = false;
+			}
+		}
 
 		// Get the maturity rating setting.
 		$maturity_rating = get_post_meta( $this->id, 'apple_news_maturity_rating', true );

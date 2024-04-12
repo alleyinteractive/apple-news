@@ -175,10 +175,10 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		$fields = [
 			'apple_news_coverimage'          => 'integer',
 			'apple_news_coverimage_caption'  => 'textarea',
-			'apple_news_is_hidden'           => 'boolean',
-			'apple_news_is_paid'             => 'boolean',
-			'apple_news_is_preview'          => 'boolean',
-			'apple_news_is_sponsored'        => 'boolean',
+			'apple_news_is_hidden'           => 'string',
+			'apple_news_is_paid'             => 'string',
+			'apple_news_is_preview'          => 'string',
+			'apple_news_is_sponsored'        => 'string',
 			'apple_news_pullquote'           => 'string',
 			'apple_news_pullquote_position'  => 'string',
 			'apple_news_slug'                => 'string',
@@ -356,6 +356,12 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 		if ( empty( $pullquote_position ) ) {
 			$pullquote_position = 'middle';
 		}
+
+		// Handle backwards compatibility for is* fields that were previously stored as booleans.
+		$is_hidden    = '1' === $is_hidden ? 'true' : $is_hidden;
+		$is_paid      = '1' === $is_paid ? 'true' : $is_paid;
+		$is_preview   = '1' === $is_preview ? 'true' : $is_preview;
+		$is_sponsored = '1' === $is_sponsored ? 'true' : $is_sponsored;
 
 		// Create local copies of values to pass into the partial.
 		$publish_action = self::PUBLISH_ACTION;

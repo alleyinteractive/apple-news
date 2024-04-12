@@ -45,6 +45,7 @@ class Settings {
 		'component_alerts'            => 'none',
 		'full_bleed_images'           => 'no',
 		'html_support'                => 'yes',
+		'in_article_position'         => 3,
 		'post_types'                  => [ 'post' ],
 		'show_metabox'                => 'yes',
 		'use_remote_images'           => 'yes',

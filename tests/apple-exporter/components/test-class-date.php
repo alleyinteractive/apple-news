@@ -23,7 +23,7 @@ class Apple_News_Date_Test extends Apple_News_Testcase {
 		// Create a test post and get JSON for it.
 		$post_id = self::factory()->post->create( [ 'post_date_gmt' => '1970-01-01 12:34:56' ] );
 		$json    = $this->get_json_for_post( $post_id );
-		$this->assertEquals( 'body', $json['components'][0]['role'] );
+		$this->assertEquals( 'byline', $json['components'][0]['role'] );
 		$this->assertEquals( 'Jan 1, 1970 | 12:34 PM', $json['components'][0]['text'] );
 	}
 
@@ -54,6 +54,6 @@ class Apple_News_Date_Test extends Apple_News_Testcase {
 		$this->assertEquals( 34, $json['componentTextStyles']['default-date']['fontSize'] );
 		$this->assertEquals( 0.56, $json['componentTextStyles']['default-date']['tracking'] );
 		$this->assertEquals( 'Jan 1, 1970 | 12:34 PM', $json['components'][2]['text'] );
-		$this->assertEquals( 'body', $json['components'][2]['role'] );
+		$this->assertEquals( 'byline', $json['components'][2]['role'] );
 	}
 }
