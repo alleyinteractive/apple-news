@@ -91,14 +91,13 @@ function Sidebar() {
   const [metadataRaw, setMetadataRaw] = usePostMetaValue('apple_news_metadata');
   const [pullquoteText, setPullquoteText] = usePostMetaValue('apple_news_pullquote');
   const [pullquotePosition, setPullquotePosition] = usePostMetaValue('apple_news_pullquote_position');
-  const [selectedSectionsRaw, setSelectedSectionsRaw] = usePostMetaValue('apple_news_sections');
+  const [selectedSections, setSelectedSectionsRaw] = usePostMetaValue('apple_news_sections');
   const [slug, setSlug] = usePostMetaValue('apple_news_slug');
   const [suppressVideoURL, setSuppressVideoURL] = usePostMetaValue('apple_news_suppress_video_url');
   const [useImageComponent, setUseImageComponent] = usePostMetaValue('apple_news_use_image_component');
 
   // Decode selected sections.
   const metadata = safeJsonParseArray(metadataRaw);
-  const selectedSections = safeJsonParseArray(selectedSectionsRaw);
 
   /**
    * A helper function for setting metadata.
@@ -110,7 +109,7 @@ function Sidebar() {
    * A helper function for setting selected sections.
    * @param {Array} next - The array of selected sections to set.
    */
-  const setSelectedSections = (next) => setSelectedSectionsRaw(JSON.stringify(next));
+  const setSelectedSections = (next) => setSelectedSectionsRaw(next);
 
   /**
    * A helper function for displaying a notification to the user.
