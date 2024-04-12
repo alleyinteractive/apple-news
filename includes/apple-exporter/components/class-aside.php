@@ -47,14 +47,29 @@ class Aside extends Component {
 	 */
 	public function register_specs() {
 		$this->register_spec(
-			'aside-json',
-			__( 'Aside JSON', 'apple-news' ),
+			'json',
+			__( 'JSON', 'apple-news' ),
 			[
-				'role'       => 'container',
-				'layout'     => 'aside-layout',
-				// 'components' => '#components#',
-				'format'     => 'html',
-				'text'       => '#text#',
+				'role'       => 'aside',
+				// 'layout'     => 'aside-layout',
+				'components' => [
+					[
+						'role'   => 'body',
+						'text'   => '#text#',
+						'format' => 'html',
+					],
+				],
+			]
+		);
+
+		$this->register_layout(
+			'aside-layout',
+			__( 'Aside Layout', 'apple-news' ),
+			[
+				'ignoreDocumentMargin' => true,
+				'ignoreDocumentGutter' => true,
+				'columnStart'          => 1,
+				'columnSpan'           => 4,
 			]
 		);
 	}
@@ -66,25 +81,10 @@ class Aside extends Component {
 	 * @access protected
 	 */
 	protected function build( $html ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		var_dump( $html );
-
-		$doc = new \DOMDocument();
-		$doc->loadHTML( $html );
-
-		$inner_html = "";
-		foreach ( $doc->childNodes as $element) {
-			foreach ( $element->childNodes as $child ) {
-				$inner_html .= $element->ownerDocument->saveHTML( $child );
-			}
-		}
-		var_dump( $inner_html );
-
-		die();
 		$this->register_json(
-			'aside-json',
+			'json',
 			[
-				// '#components#' => $components,
-				'#text#'       => $this->text,
+				'#text#'       => $html,
 			]
 		);
 	}
