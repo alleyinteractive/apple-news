@@ -40,12 +40,22 @@ class Footnotes extends Component {
 	 */
 	public function register_specs() {
 		$this->register_spec(
-			'footnotes-json',
-			__( 'Footnotes JSON', 'apple-news' ),
+			'json',
+			__( 'JSON', 'apple-news' ),
 			[
 				'role'       => 'container',
 				'layout'     => 'body-layout',
 				'components' => '#components#',
+			]
+		);
+
+		$this->register_spec(
+			'footnote-json',
+			__( 'Individual Footnote JSON', 'apple-news' ),
+			[
+				'role'       => 'body',
+				'text'       => '#text',
+				'format'     => 'html',
 			]
 		);
 	}
@@ -71,15 +81,17 @@ class Footnotes extends Component {
 			);
 			preg_match( '/id="(.*?)"/', $text, $matches );
 			$id           = $matches[1] ?? null;
-			$components[] = [
-				'role'       => 'body',
-				'text'       => $text,
-				'format'     => 'html',
-				'identifier' => $id,
-			];
+			$components[] = $this->register_json(
+				'footnote-json',
+				[
+					'text'       => $text,
+					'format'     => 'html',
+					'identifier' => $id,
+				]
+			);
 		}
 		$this->register_json(
-			'footnotes-json',
+			'json',
 			[
 				'#components#' => $components,
 			]
