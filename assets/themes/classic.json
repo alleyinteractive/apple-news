@@ -139,7 +139,10 @@
                             "textColor": "#caption_color#"
                         },
                         "layout": {
-                            "ignoreDocumentMargin": "#full_bleed_images#"
+                            "ignoreDocumentMargin": "#full_bleed_images#",
+                            "margin": {
+                                "bottom": "#caption_margin_bottom#"
+                            }
                         }
                     }
                 ],
