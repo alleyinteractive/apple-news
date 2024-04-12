@@ -61,15 +61,16 @@ class Footnotes extends Component {
 		$items = $matches[0];
 
 		// convert each list item to a paragraph with a number added.
+		$components = [];
 		foreach ( $items as $key => $item ) {
 			$count = $key + 1;
-			$text = preg_replace(
+			$text  = preg_replace(
 				'/<li(.*?)>(.*?)<\/li>/',
 				"<p$1>${count}. $2</p>",
 				$item
 			);
 			preg_match( '/id="(.*?)"/', $text, $matches );
-			$id = $matches[1] ?? null;
+			$id           = $matches[1] ?? null;
 			$components[] = [
 				'role'       => 'body',
 				'text'       => $text,
