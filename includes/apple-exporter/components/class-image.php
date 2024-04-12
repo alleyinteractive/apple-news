@@ -117,7 +117,7 @@ class Image extends Component {
 						),
 						'layout'    => [
 							'ignoreDocumentMargin' => '#full_bleed_images#',
-							'margin' => [
+							'margin'               => [
 								'bottom' => '#caption_margin_bottom#',
 							],
 						],
