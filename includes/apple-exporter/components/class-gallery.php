@@ -48,10 +48,35 @@ class Gallery extends Component {
 	public function register_specs() {
 		$this->register_spec(
 			'json',
-			__( 'JSON', 'apple-news' ),
+			__( 'Container JSON', 'apple-news' ),
 			[
 				'role'  => '#gallery_type#',
 				'items' => '#items#',
+			]
+		);
+
+		$this->register_spec(
+			'item-json',
+			__( 'Item JSON', 'apple-news' ),
+			[
+				'accessibilityCaption' => '#gallery_item_accessibility_caption#',
+				'URL'                  => '#gallery_item_url#',
+			]
+		);
+
+		$this->register_spec(
+			'item-with-caption-json',
+			__( 'Item with Caption JSON', 'apple-news' ),
+			[
+				'accessibilityCaption' => '#gallery_item_accessibility_caption#',
+				'caption'              => [
+					'format'    => 'html',
+					'text'      => '#gallery_item_caption#',
+					'textStyle' => [
+						'fontName' => '#caption_font#',
+					],
+				],
+				'URL'                  => '#gallery_item_url#',
 			]
 		);
 
@@ -132,32 +157,26 @@ class Gallery extends Component {
 				continue;
 			}
 
-			// Start building the item.
-			$content = [
-				'URL' => $this->maybe_bundle_source( esc_url_raw( $url ) ),
-			];
+			// Try to get the accessibility caption.
+			preg_match( '/alt="([^"]+)"/', $item_html, $matches );
+			$accessibility_caption = $matches[1] ?? '';
 
-			// Try to add the caption.
+			// Build the item using the JSON spec.
 			$caption_regex = '/<(dd|figcaption).*?>(.*)<\/\g1>/s';
-			if ( preg_match( $caption_regex, $item_html, $matches ) ) {
-				$content['caption'] = [
-					'format'    => 'html',
-					'text'      => trim( $matches[2] ),
-					'textStyle' => [
-						'fontName' => $theme->get_value( 'caption_font' ),
-					],
-				];
-			}
+			preg_match( $caption_regex, $item_html, $matches );
+			$this->register_json(
+				! empty( trim( $matches[2] ) ) ? 'item-with-caption-json' : 'item-json',
+				[
+					'#caption_font#'                       => $theme->get_value( 'caption_font' ),
+					'#gallery_item_accessibility_caption#' => sanitize_text_field( $accessibility_caption ),
+					'#gallery_item_caption#'               => trim( $matches[2] ?? '' ),
+					'#gallery_item_url#'                   => $this->maybe_bundle_source( esc_url_raw( $url ) ),
+				]
+			);
 
-			// Try to add the alt text as the accessibility caption.
-			if ( preg_match( '/alt="([^"]+)"/', $item_html, $matches ) ) {
-				$content['accessibilityCaption'] = sanitize_text_field(
-					$matches[1]
-				);
-			}
-
-			// Add the compiled slide content to the list of items.
-			$items[] = $content;
+			// The register_json function saves its result to $this->json, so extract it from there and reset it.
+			$items[]    = $this->json;
+			$this->json = [];
 		}
 
 		// Ensure we got items.
