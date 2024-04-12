@@ -11,7 +11,7 @@ namespace Apple_Exporter\Components;
 /**
  * A translation of the WordPress Footnotes block.
  *
- * @since 0.2.5
+ * @since 2.5.0
  */
 class Footnotes extends Component {
 
@@ -48,17 +48,6 @@ class Footnotes extends Component {
 				'components' => '#components#',
 			]
 		);
-
-		$this->register_spec(
-			'footnote-json',
-			__( 'Footnote JSON', 'apple-news' ),
-			[
-				'role'       => 'text',
-				'text'       => '#text#',
-				'identifier' => '#identifier#',
-			]
-		);
-
 	}
 
 	/**
