@@ -127,7 +127,7 @@
                         "role": "caption",
                         "text": "#caption#",
                         "textStyle": {
-                            "textAlignment": "center",
+                            "textAlignment": "left",
                             "fontName": "#caption_font#",
                             "fontSize": "#caption_size#",
                             "tracking": "#caption_tracking#",
@@ -135,7 +135,10 @@
                             "textColor": "#caption_color#"
                         },
                         "layout": {
-                            "ignoreDocumentMargin": "#full_bleed_images#"
+                            "ignoreDocumentMargin": "#full_bleed_images#",
+                            "margin": {
+                                "bottom": "#caption_margin_bottom#"
+                            }
                         }
                     }
                 ],

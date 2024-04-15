@@ -162,10 +162,10 @@
                         "layout": {
                             "columnSpan": 6,
                             "columnStart": 1,
+                            "ignoreDocumentMargin": "#full_bleed_images#",
                             "margin": {
-                                "top": 20
-                            },
-                            "ignoreDocumentMargin": "#full_bleed_images#"
+                                "bottom": "#caption_margin_bottom#"
+                            }
                         }
                     }
                 ],

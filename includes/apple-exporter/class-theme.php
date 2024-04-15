@@ -840,6 +840,11 @@ class Theme {
 				'label'   => __( 'Caption line height', 'apple-news' ),
 				'type'    => 'float',
 			],
+			'caption_margin_bottom'              => [
+				'default' => 25,
+				'label'   => __( 'Margin below the caption', 'apple-news' ),
+				'type'    => 'integer',
+			],
 			'caption_size'                       => [
 				'default' => 16,
 				'label'   => __( 'Caption font size', 'apple-news' ),
