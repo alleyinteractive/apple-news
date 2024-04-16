@@ -144,6 +144,7 @@ class Admin_Apple_News extends Apple_News {
 					'show_in_rest'      => [
 						'prepare_callback' => 'apple_news_json_encode',
 					],
+					'type'              => 'string',
 				],
 				'apple_news_pullquote'           => [
 					'default' => '',
@@ -155,11 +156,16 @@ class Admin_Apple_News extends Apple_News {
 					'default' => '',
 				],
 				'apple_news_sections'            => [
-					'default'           => '',
-					'sanitize_callback' => 'apple_news_sanitize_selected_sections',
-					'show_in_rest'      => [
-						'prepare_callback' => 'apple_news_json_encode',
+					'default'      => [],
+					'show_in_rest' => [
+						'schema' => [
+							'items' => [
+								'type' => 'string',
+							],
+							'type'  => 'array',
+						],
 					],
+					'type'         => 'array',
 				],
 				'apple_news_suppress_video_url'  => [
 					'default' => false,

@@ -186,10 +186,10 @@
                             "textColor": "#caption_color#"
                         },
                         "layout": {
+                            "ignoreDocumentMargin": "#full_bleed_images#",
                             "margin": {
-                                "bottom": 20
-                            },
-                            "ignoreDocumentMargin": "#full_bleed_images#"
+                                "bottom": "#caption_margin_bottom#"
+                            }
                         }
                     }
                 ],
