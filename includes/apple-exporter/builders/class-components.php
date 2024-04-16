@@ -858,14 +858,17 @@ class Components extends Builder {
 			if ( ! ( $component instanceof Component ) ) {
 				continue;
 			}
+
 			$component = $component->to_array();
 
-			// If the cover isn't first, give it a different layout.
-			if ( 'header' === $component['role'] && 0 !== $i ) {
-				$component['layout'] = 'headerBelowTextPhotoLayout';
-			}
+			if ( is_array( $component ) ) {
+				// If the cover isn't first, give it a different layout.
+				if ( ! empty( $component['role'] ) && 'header' === $component['role'] && 0 !== $i ) {
+					$component['layout'] = 'headerBelowTextPhotoLayout';
+				}
 
-			$components[] = $component;
+				$components[] = $component;
+			}
 		}
 
 		return $components;
