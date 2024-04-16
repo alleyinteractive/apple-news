@@ -81,7 +81,7 @@ class Footnotes extends Component {
 				$item
 			);
 			preg_match( '/id="(.*?)"/', $text, $matches );
-			$id           = $matches[1] ?? null;
+			$id = $matches[1] ?? null;
 			$this->register_json(
 				'footnote-json',
 				[
