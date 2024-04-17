@@ -102,6 +102,7 @@ class Component_Factory {
 		self::register_component( 'audio', '\\Apple_Exporter\\Components\\Audio' );
 		self::register_component( 'heading', '\\Apple_Exporter\\Components\\Heading' );
 		self::register_component( 'blockquote', '\\Apple_Exporter\\Components\\Quote' );
+		self::register_component( 'footnotes', '\\Apple_Exporter\\Components\\Footnotes' );
 		self::register_component( 'p', '\\Apple_Exporter\\Components\\Body' );
 		self::register_component( 'ol', '\\Apple_Exporter\\Components\\Body' );
 		self::register_component( 'ul', '\\Apple_Exporter\\Components\\Body' );
