@@ -191,7 +191,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			'debug'  => sprintf(
 				"<a title='%s' href='%s' target='_blank'>%s</a>",
 				esc_html__( 'Show API request for debugging', 'apple-news' ),
-				esc_url( add_query_arg( 'apple_news_debug', '1', get_permalink( $item->ID ) ) ),
+				esc_url( Admin_Apple_Index_Page::action_query_params( 'debug', $base_url ) ),
 				esc_html__( 'Debug', 'apple-news' )
 			),
 		];
