@@ -148,6 +148,8 @@ class Admin_Apple_Index_Page extends Apple_News {
 
 		// Given an action and ID, map the attributes to corresponding actions.
 		switch ( $action ) {
+			case self::namespace_action( 'debug' ):
+				return $this->debug_action( $id );
 			case self::namespace_action( 'export' ):
 				return $this->export_action( $id );
 			case self::namespace_action( 'reset' ):
@@ -403,6 +405,25 @@ class Admin_Apple_Index_Page extends Apple_News {
 		} catch ( Apple_Actions\Action_Exception $e ) {
 			$this->notice_error( $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Handles a debug action.
+	 *
+	 * @param int|null $id The ID of the post being debugged.
+	 *
+	 * @access private
+	 */
+	private function debug_action( ?int $id ): void {
+		$post = get_post( $id );
+		if ( ! $post ) {
+			return;
+		}
+
+		$action = new Apple_Actions\Index\Push( $this->settings, $id );
+		$action->debug();
+
+		exit( 'Debug output complete.' );
 	}
 
 	/**
