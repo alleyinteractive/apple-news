@@ -445,10 +445,21 @@ class Body extends Component {
 	 * @return array
 	 */
 	private function get_default_text_styles() {
-		$theme       = Theme::get_used();
-		$conditional = [];
+		$theme        = Theme::get_used();
+		$conditionals = [];
+		if ( ! empty( $theme->get_value( 'cite_color_dark' ) ) ) {
+			$conditionals['cite'] = [
+				'conditional' => [
+					'textColor'  => '#cite_color_dark#',
+					'conditions' => [
+						'minSpecVersion'       => '1.14',
+						'preferredColorScheme' => 'dark',
+					],
+				],
+			];
+		}
 		if ( ! empty( $theme->get_value( 'monospaced_color_dark' ) ) ) {
-			$conditional = [
+			$conditionals['monospaced'] = [
 				'conditional' => [
 					'textColor'  => '#monospaced_color_dark#',
 					'conditions' => [
@@ -460,6 +471,16 @@ class Body extends Component {
 		}
 
 		return [
+			'default-tag-cite' => array_merge(
+				[
+					'fontName'   => '#cite_font#',
+					'fontSize'   => '#cite_size#',
+					'tracking'   => '#cite_tracking#',
+					'lineHeight' => '#cite_line_height#',
+					'textColor'  => '#cite_color',
+				],
+				$conditionals['cite']
+			),
 			'default-tag-code' => array_merge(
 				[
 					'fontName'   => '#monospaced_font#',
@@ -468,7 +489,7 @@ class Body extends Component {
 					'lineHeight' => '#monospaced_line_height#',
 					'textColor'  => '#monospaced_color',
 				],
-				$conditional
+				$conditionals['monospaced']
 			),
 			'default-tag-pre'  => array_merge(
 				[
@@ -481,7 +502,7 @@ class Body extends Component {
 					'paragraphSpacingBefore' => 18,
 					'paragraphSpacingAfter'  => 18,
 				],
-				$conditional
+				$conditionals['monospaced']
 			),
 			'default-tag-samp' => array_merge(
 				[
@@ -491,7 +512,7 @@ class Body extends Component {
 					'lineHeight' => '#monospaced_line_height#',
 					'textColor'  => '#monospaced_color#',
 				],
-				$conditional
+				$conditionals['monospaced']
 			),
 		];
 	}
