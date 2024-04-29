@@ -11,11 +11,14 @@ namespace Apple_Actions\Index;
 require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
 require_once plugin_dir_path( __FILE__ ) . 'class-export.php';
 
+use Admin_Apple_Async;
 use Admin_Apple_Notice;
 use Admin_Apple_Sections;
 use Apple_Actions\Action_Exception;
 use Apple_Actions\API_Action;
+use Apple_Exporter\Exporter;
 use Apple_Exporter\Settings;
+use Apple_Push_API\Request\Request_Exception;
 
 /**
  * A class to handle a push request from the admin.
@@ -61,7 +64,7 @@ class Push extends API_Action {
 	 * Constructor.
 	 *
 	 * @param Settings $settings A settings object containing settings at load time.
-	 * @param int      $id       The ID for the content object to be pushed.
+	 * @param int      $id The ID for the content object to be pushed.
 	 */
 	public function __construct( $settings, $id ) {
 		parent::__construct( $settings );
@@ -73,13 +76,14 @@ class Push extends API_Action {
 	 * Perform the push action.
 	 *
 	 * @param boolean $doing_async Optional. Whether the action is being performed asynchronously.
-	 * @param int     $user_id     Optional. The ID of the user performing the action. Defaults to the current user ID.
+	 * @param int     $user_id Optional. The ID of the user performing the action. Defaults to the current user ID.
+	 *
 	 * @access public
 	 * @return boolean
 	 * @throws Action_Exception If the push fails.
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
-		if ( 'yes' === $this->settings->get( 'api_async' ) && false === $doing_async ) {
+		if ( 'yes' === $this->settings->__get( 'api_async' ) && false === $doing_async ) {
 			// Do not proceed if this is already pending publish.
 			$pending = get_post_meta( $this->id, 'apple_news_api_pending', true );
 			if ( ! empty( $pending ) ) {
@@ -89,7 +93,7 @@ class Push extends API_Action {
 			// Track this publish event as pending with the timestamp it was sent.
 			update_post_meta( $this->id, 'apple_news_api_pending', time() );
 
-			wp_schedule_single_event( time(), \Admin_Apple_Async::ASYNC_PUSH_HOOK, [ $this->id, get_current_user_id() ] );
+			wp_schedule_single_event( time(), Admin_Apple_Async::ASYNC_PUSH_HOOK, [ $this->id, get_current_user_id() ] );
 		} else {
 			return $this->push( $user_id );
 		}
@@ -98,10 +102,10 @@ class Push extends API_Action {
 	/**
 	 * Generate a checksum against the article JSON with certain fields ignored.
 	 *
-	 * @param string $json    The JSON to turn into a checksum.
-	 * @param array  $meta    Optional. Metadata for the article. Defaults to empty array.
+	 * @param string $json The JSON to turn into a checksum.
+	 * @param array  $meta Optional. Metadata for the article. Defaults to empty array.
 	 * @param array  $bundles Optional. Any bundles that will be sent with the article. Defaults to empty array.
-	 * @param bool   $force   Optional. Allows bypass of local cache for checksum.
+	 * @param bool   $force Optional. Allows bypass of local cache for checksum.
 	 *
 	 * @return string The checksum for the JSON.
 	 */
@@ -137,9 +141,11 @@ class Push extends API_Action {
 	 * Check if the post is in sync before updating in Apple News.
 	 *
 	 * @access private
-	 * @param string $json    The JSON for this article to check if it is in sync.
-	 * @param array  $meta    Optional. Metadata for the article. Defaults to empty array.
+	 *
+	 * @param string $json The JSON for this article to check if it is in sync.
+	 * @param array  $meta Optional. Metadata for the article. Defaults to empty array.
 	 * @param array  $bundles Optional. Any bundles that will be sent with the article. Defaults to empty array.
+	 *
 	 * @return boolean
 	 * @throws Action_Exception If the post could not be found.
 	 */
@@ -167,13 +173,13 @@ class Push extends API_Action {
 		 * logic, you can do that by modifying `$in_sync`. The most common use case
 		 * is to not update posts based on custom criteria.
 		 *
-		 * @since 2.0.2 Added the $post_id, $json, $meta, and $bundles parameters.
+		 * @param bool $in_sync Whether the current post is in sync or not.
+		 * @param int $post_id The ID of the post being checked.
+		 * @param string $json The JSON for the current article.
+		 * @param array $meta Metadata for the current article.
+		 * @param array $bundles Any bundles that will be sent with the current article.
 		 *
-		 * @param bool   $in_sync Whether the current post is in sync or not.
-		 * @param int    $post_id The ID of the post being checked.
-		 * @param string $json    The JSON for the current article.
-		 * @param array  $meta    Metadata for the current article.
-		 * @param array  $bundles Any bundles that will be sent with the current article.
+		 * @since 2.0.2 Added the $post_id, $json, $meta, and $bundles parameters.
 		 */
 		return apply_filters( 'apple_news_is_post_in_sync', $in_sync, $this->id, $json, $meta, $bundles );
 	}
@@ -185,7 +191,7 @@ class Push extends API_Action {
 	 * @access private
 	 * @throws Action_Exception If there was an error getting the article from the API.
 	 */
-	private function get() {
+	private function get(): void {
 		// Ensure we have a valid ID.
 		$apple_id = get_post_meta( $this->id, 'apple_news_api_id', true );
 		if ( empty( $apple_id ) ) {
@@ -206,10 +212,11 @@ class Push extends API_Action {
 	 * Push the post using the API data.
 	 *
 	 * @param int $user_id Optional. The ID of the user performing the push. Defaults to current user.
+	 *
 	 * @access private
 	 * @throws Action_Exception If unable to push.
 	 */
-	private function push( $user_id = null ) {
+	private function push( $user_id = null ): void {
 		if ( ! $this->is_api_configuration_valid() ) {
 			throw new Action_Exception( esc_html__( 'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
 		}
@@ -222,8 +229,8 @@ class Push extends API_Action {
 		 * category or tag. By default this is always `false` as all posts are
 		 * published once they reach this step.
 		 *
-		 * @param bool $skip    Whether the post should be skipped. Defaults to `false`.
-		 * @param int  $post_id The ID of the post.
+		 * @param bool $skip Whether the post should be skipped. Defaults to `false`.
+		 * @param int $post_id The ID of the post.
 		 */
 		if ( apply_filters( 'apple_news_skip_push', false, $this->id ) ) {
 			throw new Action_Exception(
@@ -254,10 +261,10 @@ class Push extends API_Action {
 			 * for the plugin, but the list can be modified for individual posts via
 			 * this filter.
 			 *
-			 * @since 2.3.0
-			 *
 			 * @param int[] $term_ids The list of term IDs that should trigger a skipped push. Defaults to the term IDs set in plugin options.
-			 * @param int   $post_id  The ID of the post being exported.
+			 * @param int $post_id The ID of the post being exported.
+			 *
+			 * @since 2.3.0
 			 */
 			$skip_term_ids = apply_filters( 'apple_news_skip_push_term_ids', $skip_term_ids, $this->id );
 
@@ -357,36 +364,15 @@ class Push extends API_Action {
 
 		// Add custom metadata fields.
 		$custom_meta = get_post_meta( $this->id, 'apple_news_metadata', true );
-		if ( ! empty( $custom_meta ) && is_array( $custom_meta ) ) {
-			foreach ( $custom_meta as $metadata ) {
-				// Ensure required fields are set.
-				if ( empty( $metadata['key'] ) || empty( $metadata['type'] ) || ! isset( $metadata['value'] ) ) {
-					continue;
-				}
-
-				// If the value is an array, we have to decode it from JSON.
-				$value = $metadata['value'];
-				if ( 'array' === $metadata['type'] ) {
-					$value = json_decode( $metadata['value'] );
-
-					// If the user entered a bad value for the array, bail out without adding it.
-					if ( empty( $value ) || ! is_array( $value ) ) {
-						continue;
-					}
-				}
-
-				// Add the custom metadata field to the article metadata.
-				$meta['data'][ $metadata['key'] ] = $value;
-			}
-		}
+		$meta        = $this->get_meta( $custom_meta, $meta );
 
 		/**
 		 * Allow article metadata to be filtered.
 		 *
-		 * @since 2.4.0
-		 *
 		 * @param array $metadata The article metadata to be filtered.
-		 * @param int   $post_id  The ID of the post being pushed to Apple News.
+		 * @param int $post_id The ID of the post being pushed to Apple News.
+		 *
+		 * @since 2.4.0
 		 */
 		$meta['data'] = apply_filters( 'apple_news_article_metadata', $meta['data'], $this->id );
 
@@ -438,11 +424,11 @@ class Push extends API_Action {
 			/**
 			 * Actions to be taken after an article was pushed to Apple News.
 			 *
-			 * @param int    $post_id The ID of the post.
-			 * @param object $result  The JSON returned by the Apple News API.
+			 * @param int $post_id The ID of the post.
+			 * @param object $result The JSON returned by the Apple News API.
 			 */
 			do_action( 'apple_news_after_push', $this->id, $result );
-		} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
+		} catch ( Request_Exception $e ) {
 
 			// Remove the pending designation if it exists.
 			delete_post_meta( $this->id, 'apple_news_api_pending' );
@@ -488,10 +474,11 @@ class Push extends API_Action {
 	 * Processes errors, halts publishing if needed.
 	 *
 	 * @param array $errors Array of errors to be processed.
+	 *
 	 * @access private
 	 * @throws Action_Exception If set to fail on component errors.
 	 */
-	private function process_errors( $errors ) {
+	private function process_errors( $errors ): void {
 		// Get the current alert settings.
 		$component_alerts = $this->get_setting( 'component_alerts' );
 
@@ -503,7 +490,7 @@ class Push extends API_Action {
 
 		// Build the component alert error message, if required.
 		if ( ! empty( $errors[0]['component_errors'] ) ) {
-			// Build an list of the components that caused errors.
+			// Build a list of the components that caused errors.
 			$component_names = implode( ', ', $errors[0]['component_errors'] );
 
 			if ( 'warn' === $component_alerts ) {
@@ -540,8 +527,75 @@ class Push extends API_Action {
 			// Throw an exception.
 			throw new Action_Exception( esc_html( $alert_message ) );
 		} elseif ( 'warn' === $component_alerts && ! empty( $errors[0]['component_errors'] ) ) {
-			\Admin_Apple_Notice::error( $alert_message, $user_id );
+			Admin_Apple_Notice::error( $alert_message, $user_id );
 		}
+	}
+
+	/**
+	 * Allows debugging of API requests by dumping the data
+	 * that will be sent to the API.
+	 */
+	public function debug(): void {
+		$post_id = $this->id;
+		$post    = get_post( $post_id );
+		if ( ! $post ) {
+			return;
+		}
+
+		$this->sections              = Admin_Apple_Sections::get_sections_for_post( $post_id );
+		[ $json, $bundles, $errors ] = $this->generate_article();
+
+		// Retrieve the metadata using the same method as in the push() function.
+		$meta = [ 'data' => [] ];
+
+		// Set sections.
+		if ( ! empty( $this->sections ) ) {
+			sort( $this->sections );
+			$meta['data']['links'] = [ 'sections' => $this->sections ];
+		}
+
+		// Get the various settings.
+		$is_paid         = (bool) get_post_meta( $post_id, 'apple_news_is_paid', true );
+		$is_preview      = (bool) get_post_meta( $post_id, 'apple_news_is_preview', true );
+		$is_hidden       = (bool) get_post_meta( $post_id, 'apple_news_is_hidden', true );
+		$is_sponsored    = (bool) get_post_meta( $post_id, 'apple_news_is_sponsored', true );
+		$maturity_rating = get_post_meta( $post_id, 'apple_news_maturity_rating', true );
+
+		$meta['data']['isPaid']      = $is_paid;
+		$meta['data']['isPreview']   = $is_preview;
+		$meta['data']['isHidden']    = $is_hidden;
+		$meta['data']['isSponsored'] = $is_sponsored;
+		if ( ! empty( $maturity_rating ) ) {
+			$meta['data']['maturityRating'] = $maturity_rating;
+		}
+
+		// Add custom metadata fields.
+		$custom_meta  = get_post_meta( $post_id, 'apple_news_metadata', true );
+		$meta         = $this->get_meta( $custom_meta, $meta );
+		$meta['data'] = apply_filters( 'apple_news_article_metadata', $meta['data'], $post_id );
+
+		header( 'Content-Type: text/html' );
+
+		echo '<h1>Apple News API Push</h1><pre style="font-size: 0.9em; background: #f9f9f9; padding: 10px; border: 1px solid #ccc; max-width: 90%; overflow: scroll; white-space: pre-wrap;">';
+		echo 'Post ID: ' . esc_html( $post_id ) . "\n";
+
+		echo '<hr>Article:<br>';
+		$formatted_json = json_decode( $json );
+		echo wp_json_encode( $formatted_json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+		echo "\n";
+
+		echo '<hr>Bundles:<br>';
+		echo wp_json_encode( $bundles, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+		echo "\n";
+
+		echo '<hr>Meta:<br>';
+		echo wp_json_encode( $meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+		echo "\n";
+
+		echo '</pre>';
+
+		// Clean the workspace after the debug.
+		$this->clean_workspace();
 	}
 
 	/**
@@ -549,7 +603,7 @@ class Push extends API_Action {
 	 *
 	 * @access private
 	 */
-	private function clean_workspace() {
+	private function clean_workspace(): void {
 		if ( is_null( $this->exporter ) ) {
 			return;
 		}
@@ -578,12 +632,12 @@ class Push extends API_Action {
 	/**
 	 * Sanitize the JSON output based on whether HTML or markdown is used.
 	 *
-	 * @since 1.2.7
-	 *
 	 * @param string $json The JSON to be sanitized.
+	 *
 	 * @access private
 	 * @return string
 	 * @throws Action_Exception If the JSON is invalid.
+	 * @since 1.2.7
 	 */
 	private function sanitize_json( $json ) {
 		/**
@@ -596,5 +650,42 @@ class Push extends API_Action {
 		} else {
 			return wp_json_encode( $decoded );
 		}
+	}
+
+	/**
+	 * Get the custom post meta data and add it to the article metadata array.
+	 *
+	 * @access private
+	 *
+	 * @param mixed $custom_meta The custom meta data.
+	 * @param array $meta The article metadata.
+	 *
+	 * @return array The updated article metadata.
+	 */
+	private function get_meta( mixed $custom_meta, array $meta ): array {
+		if ( ! empty( $custom_meta ) && is_array( $custom_meta ) ) {
+			foreach ( $custom_meta as $metadata ) {
+				// Ensure required fields are set.
+				if ( empty( $metadata['key'] ) || empty( $metadata['type'] ) || ! isset( $metadata['value'] ) ) {
+					continue;
+				}
+
+				// If the value is an array, we have to decode it from JSON.
+				$value = $metadata['value'];
+				if ( 'array' === $metadata['type'] ) {
+					$value = json_decode( $metadata['value'] );
+
+					// If the user entered a bad value for the array, bail out without adding it.
+					if ( empty( $value ) || ! is_array( $value ) ) {
+						continue;
+					}
+				}
+
+				// Add the custom metadata field to the article metadata.
+				$meta['data'][ $metadata['key'] ] = $value;
+			}
+		}
+
+		return $meta;
 	}
 }
