@@ -479,7 +479,7 @@ class Body extends Component {
 					'lineHeight' => '#cite_line_height#',
 					'textColor'  => '#cite_color',
 				],
-				$conditionals['cite']
+				$conditionals['cite'] ?? []
 			),
 			'default-tag-code' => array_merge(
 				[
@@ -489,7 +489,7 @@ class Body extends Component {
 					'lineHeight' => '#monospaced_line_height#',
 					'textColor'  => '#monospaced_color',
 				],
-				$conditionals['monospaced']
+				$conditionals['monospaced'] ?? []
 			),
 			'default-tag-pre'  => array_merge(
 				[
@@ -502,7 +502,7 @@ class Body extends Component {
 					'paragraphSpacingBefore' => 18,
 					'paragraphSpacingAfter'  => 18,
 				],
-				$conditionals['monospaced']
+				$conditionals['monospaced'] ?? []
 			),
 			'default-tag-samp' => array_merge(
 				[
@@ -512,7 +512,7 @@ class Body extends Component {
 					'lineHeight' => '#monospaced_line_height#',
 					'textColor'  => '#monospaced_color#',
 				],
-				$conditionals['monospaced']
+				$conditionals['monospaced'] ?? []
 			),
 		];
 	}

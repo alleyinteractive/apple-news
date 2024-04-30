@@ -1110,11 +1110,10 @@ class Apple_News {
 	public function upgrade_to_2_5_0(): void {
 		$registry = Theme::get_registry();
 		foreach ( $registry as $theme_name ) {
-			$theme_object = Admin_Apple_Themes::get_theme_by_name( $theme_name );
-			$save_theme   = false;
+			$theme_object   = Admin_Apple_Themes::get_theme_by_name( $theme_name );
+			$json_templates = $theme_object->get_value( 'json_templates' );
 
 			// Migrate heading layouts from being centrally defined to being defined per heading level.
-			$json_templates = $theme_object->get_value( 'json_templates' );
 			if ( ! empty( $json_templates['heading']['heading-layout'] ) ) {
 				$heading_layout = $json_templates['heading']['heading-layout'];
 				unset( $json_templates['heading']['heading-layout'] );
@@ -1122,13 +1121,18 @@ class Apple_News {
 					$json_templates['heading'][ 'heading-layout-' . $heading_level ] = $heading_layout;
 				}
 				$theme_object->set_value( 'json_templates', $json_templates );
-				$save_theme = true;
 			}
 
-			// Save the theme if there were changes.
-			if ( $save_theme ) {
-				$theme_object->save();
-			}
+			// Set defaults for new <cite> styles based on caption settings.
+			$theme_object->set_value( 'cite_color', $theme_object->get_value( 'caption_color' ) );
+			$theme_object->set_value( 'cite_color_dark', $theme_object->get_value( 'caption_color_dark' ) );
+			$theme_object->set_value( 'cite_font', $theme_object->get_value( 'caption_font' ) );
+			$theme_object->set_value( 'cite_line_height', $theme_object->get_value( 'caption_line_height' ) );
+			$theme_object->set_value( 'cite_size', $theme_object->get_value( 'caption_size' ) );
+			$theme_object->set_value( 'cite_tracking', $theme_object->get_value( 'caption_tracking' ) );
+
+			// Save our changes.
+			$theme_object->save();
 		}
 	}
 

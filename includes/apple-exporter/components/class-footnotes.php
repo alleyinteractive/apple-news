@@ -77,7 +77,7 @@ class Footnotes extends Component {
 			$count = $key + 1;
 			$text  = preg_replace(
 				'/<li(.*?)>(.*?)<\/li>/',
-				"<p$1>${count}. $2</p>",
+				"<p$1>{$count}. $2</p>",
 				$item
 			);
 			preg_match( '/id="(.*?)"/', $text, $matches );
