@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 6.3
 Tested up to: 6.5.2
 Requires PHP: 8.0
-Stable tag: 2.4.9
+Stable tag: 2.5.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -46,7 +46,7 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
-= 2.4.9 =
+= 2.5.0 =
 
 * Enhancement: #1110 - Added debugging for Apple News API requests.
 
