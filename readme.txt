@@ -46,6 +46,10 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
+= 2.4.9 =
+
+* Enhancement: #1110 - Added debugging for Apple News API requests.
+
 = 2.4.8 =
 
 * Bugfix: #1089 - Resolve notice thrown with registering `apple_news_metadata` meta.
