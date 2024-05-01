@@ -93,15 +93,14 @@ class Text_Styles extends Builder {
 	 */
 	private function add_html_styles() {
 		// Try to get the text styles spec from the body component.
-		$body        = new Body();
-		$specs       = $body->get_specs();
-		$text_styles = $specs['default-text-styles'];
-		if ( empty( $text_styles ) || ! $text_styles instanceof Component_Spec ) {
+		$body  = new Body();
+		$specs = $body->get_specs();
+		if ( empty( $specs['default-text-styles'] ) || ! $specs['default-text-styles'] instanceof Component_Spec ) {
 			return;
 		}
 
 		// Get the computed specs for the text styles including any overrides from the theme via Customize JSON and apply them.
-		$computed_styles = $text_styles->substitute_values( [] );
+		$computed_styles = $specs['default-text-styles']->substitute_values( [] );
 		foreach ( $computed_styles as $name => $values ) {
 			$this->register_style( $name, $values );
 		}
