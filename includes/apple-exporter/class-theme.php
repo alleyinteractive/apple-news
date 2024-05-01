@@ -1164,6 +1164,37 @@ class Theme {
 				'callback'    => [ get_called_class(), 'render_meta_component_order' ],
 				'type'        => 'array',
 			],
+			'cite_color'                         => [
+				'default' => '#4f4f4f',
+				'label'   => __( 'Citation font color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'cite_color_dark'                    => [
+				'default' => '',
+				'label'   => __( 'Citation font color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'cite_font'                          => [
+				'default' => 'AvenirNext-Italic',
+				'label'   => __( 'Citation font face', 'apple-news' ),
+				'type'    => 'font',
+			],
+			'cite_line_height'                   => [
+				'default' => 24.0,
+				'label'   => __( 'Citation line height', 'apple-news' ),
+				'type'    => 'float',
+			],
+			'cite_size'                          => [
+				'default' => 16,
+				'label'   => __( 'Citation font size', 'apple-news' ),
+				'type'    => 'integer',
+			],
+			'cite_tracking'                      => [
+				'default'     => 0,
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+				'label'       => __( 'Citation tracking', 'apple-news' ),
+				'type'        => 'integer',
+			],
 			'monospaced_color'                   => [
 				'default' => '#4f4f4f',
 				'label'   => __( 'Monospaced font color', 'apple-news' ),
@@ -2433,6 +2464,18 @@ class Theme {
 					'table_body_color_dark',
 					'table_header_background_color_dark',
 					'table_header_color_dark',
+				],
+			],
+			'cite'            => [
+				'label'    => __( 'Citation (<cite>)', 'apple-news' ),
+				'settings' => [
+					'cite_font',
+					'cite_size',
+					'cite_line_height',
+					'cite_tracking',
+					'cite_color',
+					'dark_mode_colors_heading',
+					'cite_color_dark',
 				],
 			],
 			'monospaced'      => [

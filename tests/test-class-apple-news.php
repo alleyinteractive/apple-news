@@ -286,7 +286,7 @@ class Apple_News_Test extends Apple_News_Testcase {
 	 */
 	public function test_upgrade_to_2_5_0(): void {
 		/*
-		 * Set legacy theme settings for heading layout.
+		 * Set legacy theme settings.
 		 *
 		 * We have to do this in the database directly because it will fail validation with the updated theme code.
 		 */
@@ -305,6 +305,18 @@ class Apple_News_Test extends Apple_News_Testcase {
 				'heading-layout' => $custom_heading_layout,
 			],
 		];
+		unset( $theme_data['cite_color'] );
+		unset( $theme_data['cite_color_dark'] );
+		unset( $theme_data['cite_font'] );
+		unset( $theme_data['cite_line_height'] );
+		unset( $theme_data['cite_size'] );
+		unset( $theme_data['cite_tracking'] );
+		$theme_data['caption_color']       = '#abc123';
+		$theme_data['caption_color_dark']  = '#def456';
+		$theme_data['caption_font']        = 'AvenirNext-Bold';
+		$theme_data['caption_line_height'] = 123;
+		$theme_data['caption_size']        = 234;
+		$theme_data['caption_tracking']    = 345;
 		update_option( Theme::theme_key( 'Default' ), $theme_data );
 
 		// Run the upgrade.
@@ -313,13 +325,19 @@ class Apple_News_Test extends Apple_News_Testcase {
 		$theme = Theme::get_used();
 		$theme->load();
 		$json = $theme->get_value( 'json_templates' );
-		$this->assertTrue( empty( $json['heading']['heading-layout'] ) );
-		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-1'] );
-		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-2'] );
-		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-3'] );
-		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-4'] );
-		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-5'] );
-		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-6'] );
+		$this->assertTrue( empty( $json['heading']['heading-layout'] ), 'Expected the generic heading layout to be removed by the upgrade.' );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-1'], 'Expected the custom heading layout to be migrated to heading level 1 during the upgrade.' );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-2'], 'Expected the custom heading layout to be migrated to heading level 2 during the upgrade.' );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-3'], 'Expected the custom heading layout to be migrated to heading level 3 during the upgrade.' );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-4'], 'Expected the custom heading layout to be migrated to heading level 4 during the upgrade.' );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-5'], 'Expected the custom heading layout to be migrated to heading level 5 during the upgrade.' );
+		$this->assertEquals( $custom_heading_layout, $json['heading']['heading-layout-6'], 'Expected the custom heading layout to be migrated to heading level 6 during the upgrade.' );
+		$this->assertEquals( '#abc123', $theme->get_value( 'cite_color' ), 'Expected the custom caption color to be applied to the cite color as part of the upgrade.' );
+		$this->assertEquals( '#def456', $theme->get_value( 'cite_color_dark' ), 'Expected the custom caption dark color to be applied to the cite dark color as part of the upgrade.' );
+		$this->assertEquals( 'AvenirNext-Bold', $theme->get_value( 'cite_font' ), 'Expected the custom caption font to be applied to the cite font as part of the upgrade.' );
+		$this->assertEquals( 123, $theme->get_value( 'cite_line_height' ), 'Expected the custom caption line height to be applied to the cite line height as part of the upgrade.' );
+		$this->assertEquals( 234, $theme->get_value( 'cite_size' ), 'Expected the custom caption size to be applied to the cite size as part of the upgrade.' );
+		$this->assertEquals( 345, $theme->get_value( 'cite_tracking' ), 'Expected the custom caption tracking to be applied to the cite tracking as part of the upgrade.' );
 	}
 
 	/**

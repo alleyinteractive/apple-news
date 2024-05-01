@@ -196,6 +196,12 @@ class Body extends Component {
 				$conditional
 			)
 		);
+
+		$this->register_spec(
+			'default-text-styles',
+			__( 'Default Text Styles', 'apple-news' ),
+			$this->get_default_text_styles()
+		);
 	}
 
 	/**
@@ -430,6 +436,84 @@ class Body extends Component {
 			'#body_link_color#'      => $theme->get_value( 'body_link_color' ),
 			'#body_color_dark#'      => $theme->get_value( 'body_color_dark' ),
 			'#body_link_color_dark#' => $theme->get_value( 'body_link_color_dark' ),
+		];
+	}
+
+	/**
+	 * Compile default text styles applied to the document as a whole based on HTML tags.
+	 *
+	 * @return array
+	 */
+	private function get_default_text_styles() {
+		$theme        = Theme::get_used();
+		$conditionals = [];
+		if ( ! empty( $theme->get_value( 'cite_color_dark' ) ) ) {
+			$conditionals['cite'] = [
+				'conditional' => [
+					'textColor'  => '#cite_color_dark#',
+					'conditions' => [
+						'minSpecVersion'       => '1.14',
+						'preferredColorScheme' => 'dark',
+					],
+				],
+			];
+		}
+		if ( ! empty( $theme->get_value( 'monospaced_color_dark' ) ) ) {
+			$conditionals['monospaced'] = [
+				'conditional' => [
+					'textColor'  => '#monospaced_color_dark#',
+					'conditions' => [
+						'minSpecVersion'       => '1.14',
+						'preferredColorScheme' => 'dark',
+					],
+				],
+			];
+		}
+
+		return [
+			'default-tag-cite' => array_merge(
+				[
+					'fontName'   => '#cite_font#',
+					'fontSize'   => '#cite_size#',
+					'tracking'   => '#cite_tracking#',
+					'lineHeight' => '#cite_line_height#',
+					'textColor'  => '#cite_color',
+				],
+				$conditionals['cite'] ?? []
+			),
+			'default-tag-code' => array_merge(
+				[
+					'fontName'   => '#monospaced_font#',
+					'fontSize'   => '#monospaced_size#',
+					'tracking'   => '#monospaced_tracking#',
+					'lineHeight' => '#monospaced_line_height#',
+					'textColor'  => '#monospaced_color',
+				],
+				$conditionals['monospaced'] ?? []
+			),
+			'default-tag-pre'  => array_merge(
+				[
+					'textAlignment'          => 'left',
+					'fontName'               => '#monospaced_font#',
+					'fontSize'               => '#monospaced_size#',
+					'tracking'               => '#monospaced_tracking#',
+					'lineHeight'             => '#monospaced_line_height#',
+					'textColor'              => '#monospaced_color#',
+					'paragraphSpacingBefore' => 18,
+					'paragraphSpacingAfter'  => 18,
+				],
+				$conditionals['monospaced'] ?? []
+			),
+			'default-tag-samp' => array_merge(
+				[
+					'fontName'   => '#monospaced_font#',
+					'fontSize'   => '#monospaced_size#',
+					'tracking'   => '#monospaced_tracking#',
+					'lineHeight' => '#monospaced_line_height#',
+					'textColor'  => '#monospaced_color#',
+				],
+				$conditionals['monospaced'] ?? []
+			),
 		];
 	}
 
