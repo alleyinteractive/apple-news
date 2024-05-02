@@ -555,16 +555,22 @@ class Push extends API_Action {
 		}
 
 		// Get the various settings.
-		$is_paid         = (bool) get_post_meta( $post_id, 'apple_news_is_paid', true );
-		$is_preview      = (bool) get_post_meta( $post_id, 'apple_news_is_preview', true );
-		$is_hidden       = (bool) get_post_meta( $post_id, 'apple_news_is_hidden', true );
-		$is_sponsored    = (bool) get_post_meta( $post_id, 'apple_news_is_sponsored', true );
-		$maturity_rating = get_post_meta( $post_id, 'apple_news_maturity_rating', true );
+		$metadata_keys = [
+			'isHidden'    => 'apple_news_is_hidden',
+			'isPaid'      => 'apple_news_is_paid',
+			'isPreview'   => 'apple_news_is_preview',
+			'isSponsored' => 'apple_news_is_sponsored',
+		];
+		foreach ( $metadata_keys as $metadata_property => $meta_key ) {
+			$meta_value = get_post_meta( $post_id, $meta_key, true );
+			if ( 'true' === $meta_value || '1' === $meta_value ) {
+				$meta['data'][ $metadata_property ] = true;
+			} elseif ( 'false' === $meta_value || '0' === $meta_value ) {
+				$meta['data'][ $metadata_property ] = false;
+			}
+		}
 
-		$meta['data']['isPaid']      = $is_paid;
-		$meta['data']['isPreview']   = $is_preview;
-		$meta['data']['isHidden']    = $is_hidden;
-		$meta['data']['isSponsored'] = $is_sponsored;
+		$maturity_rating = get_post_meta( $post_id, 'apple_news_maturity_rating', true );
 		if ( ! empty( $maturity_rating ) ) {
 			$meta['data']['maturityRating'] = $maturity_rating;
 		}
