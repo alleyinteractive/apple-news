@@ -11,8 +11,11 @@
 
 namespace Apple_Exporter\Builders;
 
+use Apple_Exporter\Component_Spec;
+use Apple_Exporter\Components\Body;
 use Apple_Exporter\Exporter_Content;
 use Apple_Exporter\Exporter_Content_Settings;
+use Apple_Exporter\Theme;
 
 /**
  * A class which is used to set top-level text styles.
@@ -89,69 +92,17 @@ class Text_Styles extends Builder {
 	 * @access private
 	 */
 	private function add_html_styles() {
-
-		// Get information about the currently loaded theme.
-		$theme = \Apple_Exporter\Theme::get_used();
-
-		$conditional = [];
-		if ( ! empty( $theme->get_value( 'monospaced_color_dark' ) ) ) {
-			$conditional = [
-				'conditional' => [
-					'textColor'  => $theme->get_value( 'monospaced_color_dark' ),
-					'conditions' => [
-						'minSpecVersion'       => '1.14',
-						'preferredColorScheme' => 'dark',
-					],
-				],
-			];
+		// Try to get the text styles spec from the body component.
+		$body  = new Body();
+		$specs = $body->get_specs();
+		if ( empty( $specs['default-text-styles'] ) || ! $specs['default-text-styles'] instanceof Component_Spec ) {
+			return;
 		}
 
-		// Add style for <code> tags.
-		$this->register_style(
-			'default-tag-code',
-			array_merge(
-				[
-					'fontName'   => $theme->get_value( 'monospaced_font' ),
-					'fontSize'   => intval( $theme->get_value( 'monospaced_size' ) ),
-					'tracking'   => intval( $theme->get_value( 'monospaced_tracking' ) ) / 100,
-					'lineHeight' => intval( $theme->get_value( 'monospaced_line_height' ) ),
-					'textColor'  => $theme->get_value( 'monospaced_color' ),
-				],
-				$conditional
-			)
-		);
-
-		// Add style for <pre> tags.
-		$this->register_style(
-			'default-tag-pre',
-			array_merge(
-				[
-					'textAlignment'          => 'left',
-					'fontName'               => $theme->get_value( 'monospaced_font' ),
-					'fontSize'               => intval( $theme->get_value( 'monospaced_size' ) ),
-					'tracking'               => intval( $theme->get_value( 'monospaced_tracking' ) ) / 100,
-					'lineHeight'             => intval( $theme->get_value( 'monospaced_line_height' ) ),
-					'textColor'              => $theme->get_value( 'monospaced_color' ),
-					'paragraphSpacingBefore' => 18,
-					'paragraphSpacingAfter'  => 18,
-				],
-				$conditional
-			)
-		);
-
-		// Add style for <samp> tags.
-		$this->register_style(
-			'default-tag-samp',
-			array_merge(
-				[
-					'fontName'   => $theme->get_value( 'monospaced_font' ),
-					'fontSize'   => intval( $theme->get_value( 'monospaced_size' ) ),
-					'tracking'   => intval( $theme->get_value( 'monospaced_tracking' ) ) / 100,
-					'lineHeight' => intval( $theme->get_value( 'monospaced_line_height' ) ),
-					'textColor'  => $theme->get_value( 'monospaced_color' ),
-				],
-				$conditional
-			)
-		);
+		// Get the computed specs for the text styles including any overrides from the theme via Customize JSON and apply them.
+		$computed_styles = $specs['default-text-styles']->substitute_values( [] );
+		foreach ( $computed_styles as $name => $values ) {
+			$this->register_style( $name, $values );
+		}
 	}
 }

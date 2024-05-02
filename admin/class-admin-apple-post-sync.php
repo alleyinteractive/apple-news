@@ -149,8 +149,8 @@ class Admin_Apple_Post_Sync {
 
 		// Proceed based on the current settings for auto publish and update.
 		$updated = get_post_meta( $id, 'apple_news_api_id', true );
-		if ( $updated && 'yes' !== $this->settings->api_autosync_update
-			|| ! $updated && 'yes' !== $this->settings->api_autosync ) {
+		if ( ( $updated && 'yes' !== $this->settings->api_autosync_update )
+			|| ( ! $updated && 'yes' !== $this->settings->api_autosync ) ) {
 			return;
 		}
 

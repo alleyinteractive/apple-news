@@ -489,14 +489,8 @@ JSON;
 		$admin_json->action_router();
 
 		// Test.
-		$settings = new Admin_Apple_Settings();
-		$content  = new Exporter_Content(
-			1,
-			__( 'My Title', 'apple-news' ),
-			'<p>' . __( 'Hello, World!', 'apple-news' ) . '</p>'
-		);
-		$exporter = new Exporter( $content, null, $settings->fetch_settings() );
-		$json     = json_decode( $exporter->export(), true );
+		$post_id = self::factory()->post->create();
+		$json    = $this->get_json_for_post( $post_id );
 		$this->assertEquals(
 			20,
 			$json['componentLayouts']['body-layout']['margin']['bottom']
@@ -542,16 +536,9 @@ JSON;
 		$admin_json->action_router();
 
 		// Test.
-		$post_id  = $this->factory->post->create();
-		$settings = new Admin_Apple_Settings();
-		$content  = new Exporter_Content(
-			$post_id,
-			__( 'My Title', 'apple-news' ),
-			'<p>' . __( 'Hello, World!', 'apple-news' ) . '</p>'
-		);
+		$post_id = self::factory()->post->create();
 		add_post_meta( $post_id, 'apple_news_column_span', 2, true );
-		$exporter = new Exporter( $content, null, $settings->fetch_settings() );
-		$json     = json_decode( $exporter->export(), true );
+		$json = $this->get_json_for_post( $post_id );
 		$this->assertEquals(
 			2,
 			$json['componentLayouts']['body-layout']['columnSpan']

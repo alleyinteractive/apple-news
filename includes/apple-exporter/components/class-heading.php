@@ -73,19 +73,6 @@ class Heading extends Component {
 			]
 		);
 
-		$this->register_spec(
-			'heading-layout',
-			__( 'Layout', 'apple-news' ),
-			[
-				'columnStart' => '#body_offset#',
-				'columnSpan'  => '#body_column_span#',
-				'margin'      => [
-					'bottom' => 15,
-					'top'    => 15,
-				],
-			]
-		);
-
 		foreach ( self::$levels as $level ) {
 			$conditional = [];
 			if ( ! empty( $theme->get_value( 'header' . $level . '_color_dark' ) ) ) {
@@ -117,6 +104,22 @@ class Heading extends Component {
 					],
 					$conditional
 				)
+			);
+			$this->register_spec(
+				'heading-layout-' . $level,
+				sprintf(
+					// translators: token is the heading level.
+					__( 'Level %s Layout', 'apple-news' ),
+					$level
+				),
+				[
+					'columnStart' => '#body_offset#',
+					'columnSpan'  => '#body_column_span#',
+					'margin'      => [
+						'bottom' => 15,
+						'top'    => 15,
+					],
+				]
 			);
 		}
 	}
@@ -210,22 +213,24 @@ class Heading extends Component {
 		);
 
 		$this->set_style( $level );
-		$this->set_layout();
+		$this->set_layout( $level );
 	}
 
 	/**
 	 * Set the layout for the component.
 	 *
+	 * @param int $level The heading level (1-6).
+	 *
 	 * @access private
 	 */
-	private function set_layout(): void {
+	private function set_layout( int $level ): void {
 
 		// Get information about the currently loaded theme.
 		$theme = Theme::get_used();
 
 		$this->register_layout(
-			'heading-layout',
-			'heading-layout',
+			'heading-layout-' . $level,
+			'heading-layout-' . $level,
 			[
 				'#body_offset#'      => $theme->get_body_offset(),
 				'#body_column_span#' => $theme->get_body_column_span(),

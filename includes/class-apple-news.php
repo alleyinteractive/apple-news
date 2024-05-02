@@ -500,6 +500,11 @@ class Apple_News {
 			if ( version_compare( $current_version, '2.4.0', '<' ) ) {
 				$this->upgrade_to_2_4_0();
 			}
+
+			// Handle upgrade to version 2.5.0.
+			if ( version_compare( $current_version, '2.5.0', '<' ) ) {
+				$this->upgrade_to_2_5_0();
+			}
 		}
 
 		// Ensure the default themes are created.
@@ -1097,6 +1102,38 @@ class Apple_News {
 		delete_option( 'apple_news_section_priority_mappings' );
 		delete_option( 'apple_news_section_taxonomy_mappings' );
 		delete_option( 'apple_news_section_theme_mappings' );
+	}
+
+	/**
+	 * Upgrades settings and data formats to be compatible with version 2.5.0.
+	 */
+	public function upgrade_to_2_5_0(): void {
+		$registry = Theme::get_registry();
+		foreach ( $registry as $theme_name ) {
+			$theme_object   = Admin_Apple_Themes::get_theme_by_name( $theme_name );
+			$json_templates = $theme_object->get_value( 'json_templates' );
+
+			// Migrate heading layouts from being centrally defined to being defined per heading level.
+			if ( ! empty( $json_templates['heading']['heading-layout'] ) ) {
+				$heading_layout = $json_templates['heading']['heading-layout'];
+				unset( $json_templates['heading']['heading-layout'] );
+				for ( $heading_level = 1; $heading_level <= 6; $heading_level++ ) {
+					$json_templates['heading'][ 'heading-layout-' . $heading_level ] = $heading_layout;
+				}
+				$theme_object->set_value( 'json_templates', $json_templates );
+			}
+
+			// Set defaults for new <cite> styles based on caption settings.
+			$theme_object->set_value( 'cite_color', $theme_object->get_value( 'caption_color' ) );
+			$theme_object->set_value( 'cite_color_dark', $theme_object->get_value( 'caption_color_dark' ) );
+			$theme_object->set_value( 'cite_font', $theme_object->get_value( 'caption_font' ) );
+			$theme_object->set_value( 'cite_line_height', $theme_object->get_value( 'caption_line_height' ) );
+			$theme_object->set_value( 'cite_size', $theme_object->get_value( 'caption_size' ) );
+			$theme_object->set_value( 'cite_tracking', $theme_object->get_value( 'caption_tracking' ) );
+
+			// Save our changes.
+			$theme_object->save();
+		}
 	}
 
 	/**

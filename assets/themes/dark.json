@@ -40,6 +40,11 @@
     "caption_line_height": 19,
     "caption_size": 14,
     "caption_tracking": -1,
+    "cite_color": "#999999",
+    "cite_font": "Helvetica-Light",
+    "cite_line_height": 19,
+    "cite_size": 14,
+    "cite_tracking": -1,
     "date_color": "#e2e2e2",
     "date_font": "Helvetica-Bold",
     "date_format": "#F j \\a\\t g:i A#",
@@ -127,7 +132,7 @@
                         "role": "caption",
                         "text": "#caption#",
                         "textStyle": {
-                            "textAlignment": "center",
+                            "textAlignment": "left",
                             "fontName": "#caption_font#",
                             "fontSize": "#caption_size#",
                             "tracking": "#caption_tracking#",
@@ -135,7 +140,10 @@
                             "textColor": "#caption_color#"
                         },
                         "layout": {
-                            "ignoreDocumentMargin": "#full_bleed_images#"
+                            "ignoreDocumentMargin": "#full_bleed_images#",
+                            "margin": {
+                                "bottom": "#caption_margin_bottom#"
+                            }
                         }
                     }
                 ],
