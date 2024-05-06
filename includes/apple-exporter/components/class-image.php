@@ -8,6 +8,8 @@
 
 namespace Apple_Exporter\Components;
 
+use WP_HTML_Tag_Processor;
+
 /**
  * Represents a simple image.
  *
@@ -26,13 +28,12 @@ class Image extends Component {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 
 		$has_image_child = false;
-		// If this is a figure and it has children, see if we can find an image.
+
+		// If this is a figure, and it has children, see if we can find an image at any depth.
 		if ( $node->hasChildNodes() && 'figure' === $node->tagName ) {
-			foreach ( $node->childNodes as $child ) {
-				if ( 'img' === $child->nodeName ) {
-					$has_image_child = true;
-				}
-			}
+			$html            = $node->ownerDocument->saveHTML( $node );
+			$proc            = new WP_HTML_Tag_Processor( $html );
+			$has_image_child = false !== $proc->next_tag( 'img' );
 		}
 
 		// Is this an image node?
