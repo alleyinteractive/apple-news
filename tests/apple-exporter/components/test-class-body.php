@@ -596,4 +596,28 @@ HTML;
 		$this->assertEquals( '<p>Paragraph 2.</p>', $json['components'][3]['text'] );
 		$this->assertEquals( 'default-body', $json['components'][3]['textStyle'] );
 	}
+
+	/**
+	 * Tests alignment textStyles.
+	 */
+	public function test_alignment_textstyles() {
+		$content = <<<HTML
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center">Paragraph 1.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right">Paragraph 2.</p>
+<!-- /wp:paragraph -->
+HTML;
+
+		$post_id = self::factory()->post->create( [ 'post_content' => $content ] );
+		$json    = $this->get_json_for_post( $post_id );
+
+		$center = array_filter( $json['components'], fn ( $c ) => '<p>Paragraph 1.</p>' === $c['text'] );
+		$right  = array_filter( $json['components'], fn ( $c ) => '<p>Paragraph 2.</p>' === $c['text'] );
+
+		$this->assertSame( 'default-body-center', array_pop( $center )['textStyle'] );
+		$this->assertSame( 'default-body-right', array_pop( $right )['textStyle'] );
+	}
 }
