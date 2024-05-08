@@ -57,6 +57,8 @@ class Aside extends Component {
 	 * @access public
 	 */
 	public function register_specs() {
+		$theme = \Apple_Exporter\Theme::get_used();
+
 		$this->register_spec(
 			'json',
 			__( 'JSON', 'apple-news' ),
@@ -67,21 +69,63 @@ class Aside extends Component {
 			],
 		);
 
+		$aside_conditional_style = [];
+		if ( ! empty( $theme->get_value( 'aside_background_color_dark' ) ) || ! empty( $theme->get_value( 'aside_border_color_dark' ) ) ) {
+			$aside_conditional_style = [
+				'conditional' => [
+					'backgroundColor' => '#aside_background_color_dark#',
+					'border'          => [
+						'all' => [
+							'width' => '#blockquote_border_width#',
+							'style' => '#blockquote_border_style#',
+							'color' => '#aside_border_color_dark#',
+						],
+					],
+					'conditions'      => [
+						'minSpecVersion'       => '1.14',
+						'preferredColorScheme' => 'dark',
+					],
+				],
+			];
+		}
+
 		$this->register_spec(
 			'default-aside',
 			__( 'Aside Style', 'apple-news' ),
-			[
-				'border' => [
-					'all'    => [
-						'color' => '#aside_border_color#',
-						'style' => 'solid',
-						'width' => 3,
+			array_merge(
+				[
+					'backgroundColor' => '#aside_background_color#',
+					'border'          => [
+						'all' => [
+							'color' => '#aside_border_color#',
+							'style' => '#aside_border_style#',
+							'width' => '#aside_border_width#',
+						],
 					],
-					'top'    => true,
-					'bottom' => true,
-					'left'   => false,
-					'right'  => false,
 				],
+				$aside_conditional_style
+			)
+		);
+
+		$this->register_spec(
+			'aside-layout-left',
+			__( 'Aside Layout - Left Aligned', 'apple-news' ),
+			[
+				'columnStart' => 0,
+				'columnSpan'  => 3,
+				'padding'     => '#aside_padding#',
+				'margin'      => 20,
+			],
+		);
+
+		$this->register_spec(
+			'aside-layout-right',
+			__( 'Aside Layout - Right Aligned', 'apple-news' ),
+			[
+				'columnStart' => 3,
+				'columnSpan'  => 3,
+				'padding'     => '#aside_padding#',
+				'margin'      => 20,
 			],
 		);
 	}
@@ -113,16 +157,12 @@ class Aside extends Component {
 			],
 		);
 
-		$this->set_anchor_position(
-			match ( $theme->get_value( 'aside_alignment' ) ) {
-				'left' => self::ANCHOR_LEFT,
-				default => self::ANCHOR_RIGHT,
-			}
-		);
-
 		$this->register_component_style(
 			'default-aside',
 			'default-aside',
 		);
+
+		$layout_name = 'left' === $theme->get_value( 'aside_alignment' ) ? 'aside-layout-left' : 'aside-layout-right';
+		$this->register_layout( $layout_name, $layout_name, [], 'layout' );
 	}
 }
