@@ -66,9 +66,9 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'description' => __( 'If you have configured an In Article module via Customize JSON, the position that the module should be inserted into. Defaults to 3, which is after the third content block in the article body (e.g., the third paragraph).', 'apple-news' ),
 			],
 			'aside_component_class' => [
-				'label'       => __( 'Aside Component CSS Class', 'apple-news' ),
+				'label'       => __( 'Aside Content CSS Class', 'apple-news' ),
 				'type'        => 'text',
-				'description' => __( 'Enter an optional CSS class that will be used to generate the Aside component. Do not prefix with a period.', 'apple-news' ),
+				'description' => __( 'Enter a CSS class name that will be used to generate the Aside component. Do not prefix with a period.', 'apple-news' ),
 			],
 		];
 
@@ -87,7 +87,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'settings' => [ 'html_support', 'in_article_position' ],
 			],
 			'aside'  => [
-				'label'    => __( 'Aside Component Settings', 'apple-news' ),
+				'label'    => __( 'Aside Component', 'apple-news' ),
 				'settings' => [ 'aside_component_class' ],
 			]
 		];

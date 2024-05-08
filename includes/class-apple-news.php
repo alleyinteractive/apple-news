@@ -1131,6 +1131,9 @@ class Apple_News {
 			$theme_object->set_value( 'cite_size', $theme_object->get_value( 'caption_size' ) );
 			$theme_object->set_value( 'cite_tracking', $theme_object->get_value( 'caption_tracking' ) );
 
+			// Set defaults for new aside component styles based on pullquote settings.
+			$theme_object->set_value( 'aside_border_color', $theme_object->get_value( 'pullquote_border_color' ) );
+
 			// Save our changes.
 			$theme_object->save();
 		}

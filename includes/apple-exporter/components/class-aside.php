@@ -8,16 +8,10 @@
 
 namespace Apple_Exporter\Components;
 
-use Apple_Exporter\Export_String;
-use Apple_Exporter\Exporter_Content;
-use Apple_Exporter\Settings;
+use Apple_Exporter\Component_Factory;
 use Apple_Exporter\Theme;
-use Apple_Actions\Index\Export;
-use Admin_Apple_Sections;
 use DOMDocument;
 use DOMElement;
-use DOMNodeList;
-use DOMXPath;
 
 /**
  * A component to handle aside content.
@@ -45,13 +39,8 @@ class Aside extends Component {
 	public static function node_matches( $node ) {
 		// Note: we can't use the component get_setting method or settings array here, because this is a static class.
 		$class = get_option( 'apple_news_settings' )['aside_component_class'] ?? '';
-		if ( empty( $class ) ) {
-			return null;
-		}
 
-		if (
-			self::node_has_class( $node, $class )
-		) {
+		if ( $class && self::node_has_class( $node, $class ) ) {
 			return $node;
 		}
 
@@ -69,27 +58,27 @@ class Aside extends Component {
 			__( 'JSON', 'apple-news' ),
 			[
 				'role'       => 'aside',
-				// 'layout'     => 'aside-layout',
+				'layout'     => 'aside-layout',
 				'components' => '#components#',
-			]
+			],
 		);
 
-		$this->register_layout(
-			'aside-layout',
-			__( 'Aside Layout', 'apple-news' ),
+		$this->register_spec(
+			'default-aside',
+			__( 'Aside Style', 'apple-news' ),
 			[
-				'ignoreDocumentMargin' => true,
-				'ignoreDocumentGutter' => true,
-				'columnStart'          => 1,
-				'columnSpan'           => 4,
-			]
-		);
-
-		$this->register_style(
-			'aside',
-			'aside',
-			[],
-			'textStyle'
+				'border' => [
+					'all'    => [
+						'color' => '#aside_border_color#',
+						'style' => 'solid',
+						'width' => 3,
+					],
+					'top'    => true,
+					'bottom' => true,
+					'left'   => false,
+					'right'  => false,
+				],
+			],
 		);
 	}
 
@@ -99,35 +88,37 @@ class Aside extends Component {
 	 * @param string $html The HTML to parse into text for processing.
 	 * @access protected
 	 */
-	protected function build( $html ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		$content    = new Export_String();
-		$element    = $content->get_root_element( $html );
-		$inner_html = $content->get_inner_html_for_element( $element );
+	protected function build( $html ) {
+		$theme = Theme::get_used();
 
-		$content->set_settings( $this->settings );
-		$content->set_post_id( get_the_ID() );
+		$dom = new DOMDocument();
+		$dom->loadHTML( $html );
+		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$element = $dom->documentElement->firstElementChild->firstElementChild;
 
-		// Convert the sidebar HTML into components.
-		$inner_json = $content->get_json_for_html( $inner_html );
-
-		// Loop over the generated JSON and further filter the components.
-		$components = $inner_json['components'] ?? [];
-
-		// Ensure any non-sidebar layouts are registered.
-		foreach ( $inner_json['componentLayouts'] ?? [] as $layout_name => $layout_json ) {
-			$this->layouts->register_layout( $layout_name, $layout_json );
-		}
-
-		// Ensure any non-sidebar text styles are registered.
-		foreach ( $inner_json['componentTextStyles'] ?? [] as $style_name => $style_json ) {
-			// $this->styles->register_style( $style_name, $style_json );
-		}
+		// Avoid an infinite loop from detecting the aside again.
+		$element->removeAttribute( 'class' );
 
 		$this->register_json(
 			'json',
 			[
-				'#components#'       => $components,
-			]
+				'#components#' => array_map(
+					fn ( Component $component ) => $component->to_array(),
+					Component_Factory::get_components_from_node( $element ),
+				),
+			],
+		);
+
+		$this->set_anchor_position(
+			match ( $theme->get_value( 'aside_alignment' ) ) {
+				'left' => self::ANCHOR_LEFT,
+				default => self::ANCHOR_RIGHT,
+			}
+		);
+
+		$this->register_component_style(
+			'default-aside',
+			'default-aside',
 		);
 	}
 }

@@ -311,12 +311,13 @@ class Apple_News_Test extends Apple_News_Testcase {
 		unset( $theme_data['cite_line_height'] );
 		unset( $theme_data['cite_size'] );
 		unset( $theme_data['cite_tracking'] );
-		$theme_data['caption_color']       = '#abc123';
-		$theme_data['caption_color_dark']  = '#def456';
-		$theme_data['caption_font']        = 'AvenirNext-Bold';
-		$theme_data['caption_line_height'] = 123;
-		$theme_data['caption_size']        = 234;
-		$theme_data['caption_tracking']    = 345;
+		$theme_data['caption_color']          = '#abc123';
+		$theme_data['caption_color_dark']     = '#def456';
+		$theme_data['caption_font']           = 'AvenirNext-Bold';
+		$theme_data['caption_line_height']    = 123;
+		$theme_data['caption_size']           = 234;
+		$theme_data['caption_tracking']       = 345;
+		$theme_data['pullquote_border_color'] = '#abcdef';
 		update_option( Theme::theme_key( 'Default' ), $theme_data );
 
 		// Run the upgrade.
@@ -338,6 +339,7 @@ class Apple_News_Test extends Apple_News_Testcase {
 		$this->assertEquals( 123, $theme->get_value( 'cite_line_height' ), 'Expected the custom caption line height to be applied to the cite line height as part of the upgrade.' );
 		$this->assertEquals( 234, $theme->get_value( 'cite_size' ), 'Expected the custom caption size to be applied to the cite size as part of the upgrade.' );
 		$this->assertEquals( 345, $theme->get_value( 'cite_tracking' ), 'Expected the custom caption tracking to be applied to the cite tracking as part of the upgrade.' );
+		$this->assertEquals( '#abcdef', $theme->get_value( 'aside_border_color' ), 'Expected the custom pullquote border to be applied to the aside border as part of the upgrade.' );
 	}
 
 	/**

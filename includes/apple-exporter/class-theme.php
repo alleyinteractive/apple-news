@@ -569,6 +569,17 @@ class Theme {
 				'label'       => __( 'Ad Margin', 'apple-news' ),
 				'type'        => 'integer',
 			],
+			'aside_alignment'                    => [
+				'default' => 'right',
+				'label'   => __( 'Aside component alignment', 'apple-news' ),
+				'options' => [ 'left', 'right' ],
+				'type'    => 'select',
+			],
+			'aside_border_color'                 => [
+				'default' => '',
+				'label'   => __( 'Aside border color', 'apple-news' ),
+				'type'    => 'color',
+			],
 			'author_color'                       => [
 				'default' => '#7c7c7c',
 				'label'   => __( 'Author font color', 'apple-news' ),
@@ -2501,6 +2512,14 @@ class Theme {
 					'enable_advertisement',
 					'ad_frequency',
 					'ad_margin',
+				],
+			],
+			'aside'           => [
+				'label'    => __( 'Aside', 'apple-news' ),
+				'description' => __( 'Content that is not directly related to the article.', 'apple-news' ),
+				'settings' => [
+					'aside_alignment',
+					'aside_border_color',
 				],
 			],
 			'component_order' => [
