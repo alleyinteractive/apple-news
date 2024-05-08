@@ -1,6 +1,7 @@
 {
     "ad_frequency": 5,
     "ad_margin": 15,
+    "aside_border_color": "#ffebe0",
     "blockquote_background_color": "#ffebe0",
     "blockquote_border_color": "#ffffff",
     "blockquote_border_style": "none",
