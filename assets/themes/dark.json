@@ -1,7 +1,12 @@
 {
     "ad_frequency": 5,
     "ad_margin": 15,
+    "aside_alignment": "right",
+    "aside_background_color": "",
     "aside_border_color": "#ffe890",
+    "aside_border_style": "solid",
+    "aside_border_width": 1,
+    "aside_padding": 20,
     "blockquote_background_color": "",
     "blockquote_border_color": "#ffe890",
     "blockquote_border_style": "solid",
