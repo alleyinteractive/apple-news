@@ -2546,9 +2546,9 @@ class Theme {
 				],
 			],
 			'aside'           => [
-				'label'    => __( 'Aside', 'apple-news' ),
+				'label'       => __( 'Aside', 'apple-news' ),
 				'description' => __( 'Content that is not directly related to the article.', 'apple-news' ),
-				'settings' => [
+				'settings'    => [
 					'aside_alignment',
 					'aside_background_color',
 					'aside_border_color',

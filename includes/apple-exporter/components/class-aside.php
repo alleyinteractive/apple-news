@@ -21,11 +21,15 @@ use DOMElement;
 class Aside extends Component {
 	/**
 	 * Store the html for the component.
+	 *
+	 * @var string
 	 */
 	protected $html;
 
 	/**
 	 * Store the post id for the component.
+	 *
+	 * @var int
 	 */
 	protected static $post_id;
 
