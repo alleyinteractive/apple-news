@@ -41,11 +41,11 @@ class Apple_News_Image_Test extends Apple_News_Component_TestCase {
 			]
 		);
 
-		// Create a new attachment and assign it as the featured image for the cover component. 
-		set_post_thumbnail( 
-			$post_id, 
-			$this->get_new_attachment( 0 ) 
-		); 
+		// Create a new attachment and assign it as the featured image for the cover component.
+		set_post_thumbnail(
+			$post_id,
+			$this->get_new_attachment( 0 )
+		);
 
 		// Check that the default component role is 'photo'.
 		$json = $this->get_json_for_post( $post_id );
@@ -93,6 +93,37 @@ class Apple_News_Image_Test extends Apple_News_Component_TestCase {
 		// Test the JSON.
 		$this->assertEquals( 'photo', $json['role'] );
 		$this->assertEquals( 'https://placeimg.com/640/480/any', $json['URL'] );
+	}
+
+	/**
+	 * Test Image component matching with HTML markup for an image deeply nested in a figure tag.
+	 *
+	 * @see https://github.com/alleyinteractive/apple-news/issues/867.
+	 */
+	public function test_transform_linked_image() {
+		$this->settings->set( 'html_support', 'yes' );
+		$this->settings->set( 'use_remote_images', 'yes' );
+
+		$html = <<<HTML
+<figure>
+	<a href="#">
+		<img src="https://placeimg.com/640/480/any" alt="Example" align="left" />
+</a>
+</figure>
+HTML;
+
+		$component = new Image(
+			$html,
+			$this->workspace,
+			$this->settings,
+			$this->styles,
+			$this->layouts
+		);
+
+		// Build the node.
+		$node = self::build_node( $html );
+
+		$this->assertSame( $node, $component->node_matches( $node ) );
 	}
 
 	/**
