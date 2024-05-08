@@ -576,7 +576,7 @@ class Theme {
 				'type'    => 'select',
 			],
 			'aside_border_color'                 => [
-				'default' => '',
+				'default' => '#53585f',
 				'label'   => __( 'Aside border color', 'apple-news' ),
 				'type'    => 'color',
 			],
