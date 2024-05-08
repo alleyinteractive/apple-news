@@ -10,6 +10,7 @@ namespace Apple_Exporter\Components;
 
 use Apple_Exporter\Theme;
 use DOMElement;
+use WP_HTML_Tag_Processor;
 
 /**
  * A paragraph component.
@@ -34,6 +35,13 @@ class Body extends Component {
 	 * @access protected
 	 */
 	protected $can_be_anchor_target = true;
+
+	/**
+	 * Set default value for parent text alignment property.
+	 *
+	 * @var string
+	 */
+	protected $text_alignment = 'left';
 
 	/**
 	 * Look for node matches for this component.
@@ -144,6 +152,21 @@ class Body extends Component {
 			'default-body',
 			__( 'Default Style', 'apple-news' ),
 			$default_spec
+		);
+
+		$this->register_spec(
+			'default-body-center',
+			__( 'Centered Text', 'apple-news' ),
+			[
+				'textAlignment' => 'center',
+			],
+		);
+		$this->register_spec(
+			'default-body-right',
+			__( 'Right-Aligned Text', 'apple-news' ),
+			[
+				'textAlignment' => 'right',
+			],
 		);
 
 		$dropcap_color_dark            = $theme->get_value( 'dropcap_color_dark' );
@@ -290,12 +313,29 @@ class Body extends Component {
 	 * @access protected
 	 */
 	protected function build( $html ) {
+		$origin = $html;
 
 		// If there is no text for this element, bail.
 		$html  = $this->parser->parse( $html );
 		$check = trim( $html );
 		if ( empty( $check ) ) {
 			return;
+		}
+
+		// Determine the text alignment from the first tag in the original HTML, which still has the alignment attributes.
+		$proc = new WP_HTML_Tag_Processor( $origin );
+		if ( false !== $proc->next_tag() ) {
+			// `has_class()` is available in 6.4+.
+			$class = (string) $proc->get_attribute( 'class' );
+			$style = (string) $proc->get_attribute( 'style' );
+
+			if ( preg_match( '/\bhas-text-align-center\b/i', $class ) || preg_match( '/\btext-align:\s*center\b/i', $style ) ) {
+				$this->text_alignment = 'center';
+			}
+
+			if ( preg_match( '/\bhas-text-align-right\b/i', $class ) || preg_match( '/\btext-align:\s*right\b/i', $style ) ) {
+				$this->text_alignment = 'right';
+			}
 		}
 
 		// Add the JSON for this component.
@@ -477,7 +517,7 @@ class Body extends Component {
 					'fontSize'   => '#cite_size#',
 					'tracking'   => '#cite_tracking#',
 					'lineHeight' => '#cite_line_height#',
-					'textColor'  => '#cite_color',
+					'textColor'  => '#cite_color#',
 				],
 				$conditionals['cite'] ?? []
 			),
@@ -487,7 +527,7 @@ class Body extends Component {
 					'fontSize'   => '#monospaced_size#',
 					'tracking'   => '#monospaced_tracking#',
 					'lineHeight' => '#monospaced_line_height#',
-					'textColor'  => '#monospaced_color',
+					'textColor'  => '#monospaced_color#',
 				],
 				$conditionals['monospaced'] ?? []
 			),
@@ -523,12 +563,32 @@ class Body extends Component {
 	 * @access public
 	 */
 	public function set_default_style() {
+		// Always register the default style.
 		$this->register_style(
 			'default-body',
 			'default-body',
 			$this->get_default_style_values(),
 			'textStyle'
 		);
+
+		// If necessary, register the styles that are expected to override the 'textAlignment' property.
+		if ( 'center' === $this->text_alignment ) {
+			$this->register_style(
+				'default-body-center',
+				'default-body-center',
+				[],
+				'textStyle'
+			);
+		}
+
+		if ( 'right' === $this->text_alignment ) {
+			$this->register_style(
+				'default-body-right',
+				'default-body-right',
+				[],
+				'textStyle'
+			);
+		}
 	}
 
 	/**
