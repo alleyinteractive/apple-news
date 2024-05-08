@@ -517,7 +517,7 @@ class Body extends Component {
 					'fontSize'   => '#cite_size#',
 					'tracking'   => '#cite_tracking#',
 					'lineHeight' => '#cite_line_height#',
-					'textColor'  => '#cite_color',
+					'textColor'  => '#cite_color#',
 				],
 				$conditionals['cite'] ?? []
 			),
@@ -527,7 +527,7 @@ class Body extends Component {
 					'fontSize'   => '#monospaced_size#',
 					'tracking'   => '#monospaced_tracking#',
 					'lineHeight' => '#monospaced_line_height#',
-					'textColor'  => '#monospaced_color',
+					'textColor'  => '#monospaced_color#',
 				],
 				$conditionals['monospaced'] ?? []
 			),
