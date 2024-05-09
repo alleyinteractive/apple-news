@@ -19,6 +19,14 @@ use DOMElement;
  * @since 2.5.0
  */
 class Aside extends Component {
+
+	/**
+	 * We are providing our own layout below, so don't set one automatically when anchoring.
+	 *
+	 * @var bool
+	 */
+	public $needs_layout_if_anchored = false;
+
 	/**
 	 * Store the html for the component.
 	 *
@@ -107,26 +115,32 @@ class Aside extends Component {
 			)
 		);
 
+		$aside_layout = [
+			'columnSpan' => 3,
+			'padding'    => '#aside_padding#',
+			'margin'     => 20,
+		];
+
 		$this->register_spec(
 			'aside-layout-left',
 			__( 'Aside Layout - Left Aligned', 'apple-news' ),
-			[
-				'columnStart' => 0,
-				'columnSpan'  => 3,
-				'padding'     => '#aside_padding#',
-				'margin'      => 20,
-			],
+			array_merge(
+				[
+					'columnStart' => 0,
+				],
+				$aside_layout
+			)
 		);
 
 		$this->register_spec(
 			'aside-layout-right',
 			__( 'Aside Layout - Right Aligned', 'apple-news' ),
-			[
-				'columnStart' => 3,
-				'columnSpan'  => 3,
-				'padding'     => '#aside_padding#',
-				'margin'      => 20,
-			],
+			array_merge(
+				[
+					'columnStart' => 3,
+				],
+				$aside_layout
+			)
 		);
 	}
 
@@ -162,7 +176,9 @@ class Aside extends Component {
 			'default-aside',
 		);
 
-		$layout_name = 'left' === $theme->get_value( 'aside_alignment' ) ? 'aside-layout-left' : 'aside-layout-right';
+		$alignment   = $theme->get_value( 'aside_alignment' );
+		$layout_name = 'left' === $alignment ? 'aside-layout-left' : 'aside-layout-right';
 		$this->register_layout( $layout_name, $layout_name, [], 'layout' );
+		$this->anchor_position = 'left' === $alignment ? self::ANCHOR_LEFT : self::ANCHOR_RIGHT;
 	}
 }
