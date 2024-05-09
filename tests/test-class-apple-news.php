@@ -311,12 +311,18 @@ class Apple_News_Test extends Apple_News_Testcase {
 		unset( $theme_data['cite_line_height'] );
 		unset( $theme_data['cite_size'] );
 		unset( $theme_data['cite_tracking'] );
-		$theme_data['caption_color']       = '#abc123';
-		$theme_data['caption_color_dark']  = '#def456';
-		$theme_data['caption_font']        = 'AvenirNext-Bold';
-		$theme_data['caption_line_height'] = 123;
-		$theme_data['caption_size']        = 234;
-		$theme_data['caption_tracking']    = 345;
+		$theme_data['caption_color']                    = '#abc123';
+		$theme_data['caption_color_dark']               = '#def456';
+		$theme_data['caption_font']                     = 'AvenirNext-Bold';
+		$theme_data['caption_line_height']              = 123;
+		$theme_data['caption_size']                     = 234;
+		$theme_data['caption_tracking']                 = 345;
+		$theme_data['blockquote_background_color']      = '#abcde1';
+		$theme_data['blockquote_background_color_dark'] = '#abcde2';
+		$theme_data['blockquote_border_color']          = '#abcde3';
+		$theme_data['blockquote_border_color_dark']     = '#abcde4';
+		$theme_data['blockquote_border_style']          = 'dashed';
+		$theme_data['blockquote_border_width']          = 5;
 		update_option( Theme::theme_key( 'Default' ), $theme_data );
 
 		// Run the upgrade.
@@ -338,6 +344,12 @@ class Apple_News_Test extends Apple_News_Testcase {
 		$this->assertEquals( 123, $theme->get_value( 'cite_line_height' ), 'Expected the custom caption line height to be applied to the cite line height as part of the upgrade.' );
 		$this->assertEquals( 234, $theme->get_value( 'cite_size' ), 'Expected the custom caption size to be applied to the cite size as part of the upgrade.' );
 		$this->assertEquals( 345, $theme->get_value( 'cite_tracking' ), 'Expected the custom caption tracking to be applied to the cite tracking as part of the upgrade.' );
+		$this->assertEquals( '#abcde1', $theme->get_value( 'aside_background_color' ), 'Expected the custom blockquote background color to be applied to the aside background color as part of the upgrade.' );
+		$this->assertEquals( '#abcde2', $theme->get_value( 'aside_background_color_dark' ), 'Expected the custom blockquote background color (dark) to be applied to the aside background color (dark) as part of the upgrade.' );
+		$this->assertEquals( '#abcde3', $theme->get_value( 'aside_border_color' ), 'Expected the custom blockquote border to be applied to the aside border as part of the upgrade.' );
+		$this->assertEquals( '#abcde4', $theme->get_value( 'aside_border_color_dark' ), 'Expected the custom blockquote border (dark) to be applied to the aside border (dark) as part of the upgrade.' );
+		$this->assertEquals( 'dashed', $theme->get_value( 'aside_border_style' ), 'Expected the custom blockquote border style to be applied to the aside border style as part of the upgrade.' );
+		$this->assertEquals( 5, $theme->get_value( 'aside_border_width' ), 'Expected the custom blockquote border width to be applied to the aside border width as part of the upgrade.' );
 	}
 
 	/**

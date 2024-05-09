@@ -569,6 +569,48 @@ class Theme {
 				'label'       => __( 'Ad Margin', 'apple-news' ),
 				'type'        => 'integer',
 			],
+			'aside_alignment'                    => [
+				'default' => 'right',
+				'label'   => __( 'Aside component alignment', 'apple-news' ),
+				'options' => [ 'left', 'right' ],
+				'type'    => 'select',
+			],
+			'aside_background_color'             => [
+				'default' => '#e1e1e1',
+				'label'   => __( 'Aside background color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'aside_background_color_dark'        => [
+				'default' => '',
+				'label'   => __( 'Aside background color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'aside_border_color'                 => [
+				'default' => '#4f4f4f',
+				'label'   => __( 'Aside border color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'aside_border_color_dark'            => [
+				'default' => '',
+				'label'   => __( 'Aside border color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'aside_border_style'                 => [
+				'default' => 'solid',
+				'label'   => __( 'Aside border style', 'apple-news' ),
+				'options' => [ 'solid', 'dashed', 'dotted', 'none' ],
+				'type'    => 'select',
+			],
+			'aside_border_width'                 => [
+				'default' => 3,
+				'label'   => __( 'Aside border width', 'apple-news' ),
+				'type'    => 'integer',
+			],
+			'aside_padding'                      => [
+				'default' => 20,
+				'label'   => __( 'Aside padding', 'apple-news' ),
+				'type'    => 'integer',
+			],
 			'author_color'                       => [
 				'default' => '#7c7c7c',
 				'label'   => __( 'Author font color', 'apple-news' ),
@@ -2501,6 +2543,21 @@ class Theme {
 					'enable_advertisement',
 					'ad_frequency',
 					'ad_margin',
+				],
+			],
+			'aside'           => [
+				'label'       => __( 'Aside', 'apple-news' ),
+				'description' => __( 'Content that is not directly related to the article.', 'apple-news' ),
+				'settings'    => [
+					'aside_alignment',
+					'aside_background_color',
+					'aside_border_color',
+					'aside_border_style',
+					'aside_border_width',
+					'aside_padding',
+					'dark_mode_colors_heading',
+					'aside_background_color_dark',
+					'aside_border_color_dark',
 				],
 			],
 			'component_order' => [
