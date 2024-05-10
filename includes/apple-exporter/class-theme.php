@@ -362,7 +362,7 @@ class Theme {
 	 */
 	public static function get_fonts() {
 		// Get custom fonts from this channel.
-		require_once plugin_dir_path( __DIR__ ) . '../admin/apple-actions/index/class-channel.php';
+		require_once dirname( __DIR__, 2 ) . '/admin/apple-actions/index/class-channel.php';
 		$admin_settings = new \Admin_Apple_Settings();
 		$channel_api    = new \Apple_Actions\Index\Channel( $admin_settings->fetch_settings() );
 		$channel        = $channel_api->perform();
@@ -499,8 +499,7 @@ class Theme {
 		/* phpcs:enable */
 
 		// Load the template.
-		include dirname( dirname( plugin_dir_path( __FILE__ ) ) )
-			. '/admin/partials/field-meta-component-order.php';
+		include dirname( __DIR__, 2 ) . '/admin/partials/field-meta-component-order.php';
 	}
 
 	/**

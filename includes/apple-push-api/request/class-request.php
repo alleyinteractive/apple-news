@@ -12,7 +12,7 @@ use Apple_Push_API\Credentials;
 use Apple_Push_API\MIME_Builder;
 use WP_Error;
 
-require_once __DIR__ . '/../class-mime-builder.php';
+require_once dirname( __DIR__ ) . '/class-mime-builder.php';
 
 /**
  * An object capable of sending signed HTTP requests to the Push API.

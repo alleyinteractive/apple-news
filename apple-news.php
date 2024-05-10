@@ -57,7 +57,7 @@ function apple_news_activate_wp_plugin() {
 	}
 }
 
-require plugin_dir_path( __FILE__ ) . 'includes/apple-exporter/class-settings.php';
+require __DIR__ . '/includes/apple-exporter/class-settings.php';
 
 /**
  * Deactivate the plugin.
@@ -76,8 +76,8 @@ if ( ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV ) {
 }
 
 // Initialize plugin class.
-require plugin_dir_path( __FILE__ ) . 'includes/class-apple-news.php';
-require plugin_dir_path( __FILE__ ) . 'admin/class-admin-apple-news.php';
+require __DIR__ . '/includes/class-apple-news.php';
+require __DIR__ . '/admin/class-admin-apple-news.php';
 
 /**
  * Load plugin textdomain.
@@ -85,7 +85,7 @@ require plugin_dir_path( __FILE__ ) . 'admin/class-admin-apple-news.php';
  * @since 0.9.0
  */
 function apple_news_load_textdomain() {
-	load_plugin_textdomain( 'apple-news', false, plugin_dir_path( __FILE__ ) . '/lang' );
+	load_plugin_textdomain( 'apple-news', false, __DIR__ . '/lang' );
 }
 add_action( 'plugins_loaded', 'apple_news_load_textdomain' );
 
@@ -101,7 +101,7 @@ function apple_news_get_plugin_data() {
 	if ( ! function_exists( 'get_plugin_data' ) ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	}
-	return get_plugin_data( plugin_dir_path( __FILE__ ) . '/apple-news.php' );
+	return get_plugin_data( __DIR__ . '/apple-news.php' );
 }
 
 new Admin_Apple_News();

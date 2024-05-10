@@ -24,7 +24,7 @@ function apple_news_require_file( string $file ) {
 }
 
 // Autoloading for prophecy.
-apple_news_require_file( dirname( __DIR__, 1 ) . '/vendor/autoload.php' );
+apple_news_require_file( dirname( __DIR__ ) . '/vendor/autoload.php' );
 
 /**
  * Install WordPress and load the plugin.
@@ -107,7 +107,7 @@ JSON;
 			set_transient( 'apple_news_channel', wp_json_encode( $channel_api_response ) );
 
 			// Load the plugin.
-			require dirname( __DIR__, 1 ) . '/apple-news.php';
+			require dirname( __DIR__ ) . '/apple-news.php';
 		}
 	)->install();
 

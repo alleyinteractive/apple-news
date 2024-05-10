@@ -8,8 +8,8 @@
 
 namespace Apple_Actions\Index;
 
-require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-export.php';
+require_once dirname( __DIR__ ) . '/class-api-action.php';
+require_once __DIR__ . '/class-export.php';
 
 use Admin_Apple_Async;
 use Admin_Apple_Notice;

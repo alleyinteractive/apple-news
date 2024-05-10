@@ -8,7 +8,7 @@
 
 namespace Apple_Exporter\Components;
 
-require_once __DIR__ . '/../class-markdown.php';
+require_once dirname( __DIR__ ) . '/class-markdown.php';
 
 use Apple_Exporter\Builders\Component_Layouts;
 use Apple_Exporter\Builders\Component_Styles;
