@@ -60,6 +60,64 @@ class Apple_News_Image_Test extends Apple_News_Component_TestCase {
 	}
 
 	/**
+	 * Tests the process of transforming a Cover block into an image.
+	 */
+	public function test_transform_cover() {
+		$featured_image = $this->get_new_attachment();
+		$image_id       = $this->get_new_attachment();
+		$image_url      = wp_get_attachment_image_url( $image_id, 'full' );
+		$post_content   = <<<HTML
+<!-- wp:cover {"url":"$image_url","id":$image_id,"dimRatio":50,"customOverlayColor":"#e9e9e9","isDark":false,"layout":{"type":"constrained"}} -->
+<div class="wp-block-cover is-light"><span aria-hidden="true" class="wp-block-cover__background has-background-dim" style="background-color:#e9e9e9"></span><img class="wp-block-cover__image-background wp-image-$image_id" alt="" src="$image_url" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:paragraph {"align":"center","placeholder":"Write title…","fontSize":"large"} -->
+<p class="has-text-align-center has-large-font-size">Testing cover block.</p>
+<!-- /wp:paragraph --></div></div>
+<!-- /wp:cover -->
+HTML;
+		$post_id        = self::factory()->post->create( [ 'post_content' => $post_content ] );
+		update_post_meta( $post_id, '_thumbnail_id', $featured_image );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertEquals(
+			[
+				'role'       => 'container',
+				'components' => [
+					[
+						'role'    => 'photo',
+						'URL'     => $image_url,
+						'layout'  => 'full-width-image-with-caption',
+						'caption' => [
+							'format'    => 'html',
+							'text'      => '<p class="has-text-align-center has-large-font-size">Testing cover block.</p>',
+							'textStyle' => [
+								'fontName' => 'AvenirNext-Italic',
+							],
+						],
+					],
+					[
+						'role'      => 'caption',
+						'text'      => '<p class="has-text-align-center has-large-font-size">Testing cover block.</p>',
+						'format'    => 'html',
+						'textStyle' => [
+							'textAlignment' => 'left',
+							'fontName'      => 'AvenirNext-Italic',
+							'fontSize'      => 16,
+							'tracking'      => 0,
+							'lineHeight'    => 24,
+							'textColor'     => '#4f4f4f',
+						],
+						'layout'    => [
+							'margin' => [
+								'bottom' => 25,
+							],
+						],
+					],
+				],
+				'layout'     => [],
+			],
+			$json['components'][1]['components'][3]
+		);
+	}
+
+	/**
 	 * Test Image component matching and JSON
 	 * output with HTML markup for an image.
 	 */
