@@ -8,12 +8,12 @@
  */
 
 // Include dependencies.
-require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-get.php';
-require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-push.php';
-require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-delete.php';
-require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-export.php';
-require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-section.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-news-list-table.php';
+require_once __DIR__ . '/apple-actions/index/class-get.php';
+require_once __DIR__ . '/apple-actions/index/class-push.php';
+require_once __DIR__ . '/apple-actions/index/class-delete.php';
+require_once __DIR__ . '/apple-actions/index/class-export.php';
+require_once __DIR__ . '/apple-actions/index/class-section.php';
+require_once __DIR__ . '/class-admin-apple-news-list-table.php';
 
 use Apple_Exporter\Workspace;
 
@@ -98,7 +98,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	public function admin_page() {
 		$table = new Admin_Apple_News_List_Table( $this->settings );
 		$table->prepare_items();
-		include plugin_dir_path( __FILE__ ) . 'partials/page-index.php';
+		include __DIR__ . '/partials/page-index.php';
 	}
 
 	/**

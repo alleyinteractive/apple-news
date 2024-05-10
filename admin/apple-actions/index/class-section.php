@@ -8,7 +8,7 @@
 
 namespace Apple_Actions\Index;
 
-require_once plugin_dir_path( __FILE__ ) . '../class-api-action.php';
+require_once dirname( __DIR__ ) . '/class-api-action.php';
 
 use Apple_Actions\API_Action;
 use Apple_Exporter\Settings;

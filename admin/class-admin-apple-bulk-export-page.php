@@ -6,7 +6,7 @@
  */
 
 // Include dependencies.
-require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-push.php';
+require_once __DIR__ . '/apple-actions/index/class-push.php';
 
 /**
  * Bulk export page. Display progress on multiple articles export process.
@@ -105,7 +105,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			}
 		}
 
-		require_once plugin_dir_path( __FILE__ ) . 'partials/page-bulk-export.php';
+		require_once __DIR__ . '/partials/page-bulk-export.php';
 	}
 
 	/**

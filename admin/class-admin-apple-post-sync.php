@@ -6,8 +6,8 @@
  */
 
 // Include dependencies.
-require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-push.php';
-require_once plugin_dir_path( __FILE__ ) . 'apple-actions/index/class-delete.php';
+require_once __DIR__ . '/apple-actions/index/class-push.php';
+require_once __DIR__ . '/apple-actions/index/class-delete.php';
 
 /**
  * This class is in charge of syncing posts creation, updates and deletions

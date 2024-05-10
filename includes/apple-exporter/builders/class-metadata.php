@@ -8,7 +8,7 @@
 
 namespace Apple_Exporter\Builders;
 
-require_once plugin_dir_path( __FILE__ ) . '../../../admin/class-admin-apple-news.php';
+require_once dirname( __DIR__, 3 ) . '/admin/class-admin-apple-news.php';
 
 use Admin_Apple_News;
 use Apple_Exporter\Exporter_Content;
