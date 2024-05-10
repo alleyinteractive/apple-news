@@ -185,7 +185,7 @@ function Sidebar() {
         const data = await Promise.all(fetches);
         setState({
           ...state,
-          autoAssignCategories: (selectedSections === null || selectedSections.length === 0)
+          autoAssignCategories: (!selectedSections || selectedSections.length === 0)
             && data[2].automaticAssignment === true,
           ...data[0],
           sections: data[1],
