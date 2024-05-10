@@ -404,7 +404,7 @@ class Admin_Apple_Notice {
 		$message = apply_filters( 'apple_news_notice_message', $message, $type );
 
 		// Load the partial for the notice.
-		include plugin_dir_path( __FILE__ ) . 'partials/notice.php';
+		include __DIR__ . '/partials/notice.php';
 	}
 
 	/**

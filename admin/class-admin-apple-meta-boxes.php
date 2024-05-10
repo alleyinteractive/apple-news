@@ -368,7 +368,7 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		/* phpcs:enable */
 
-		include plugin_dir_path( __FILE__ ) . 'partials/metabox-publish.php';
+		include __DIR__ . '/partials/metabox-publish.php';
 	}
 
 	/**

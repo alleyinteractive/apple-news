@@ -256,10 +256,7 @@ class Image extends Component {
 		$caption_regex = $is_cover_block ? '#<div.*?>?\n(.*)#m' : '#<figcaption.*?>(.*?)</figcaption>#ms';
 		if ( preg_match( $caption_regex, $html, $matches ) ) {
 			$caption                  = trim( $matches[1] );
-			$values['#caption#']      = ! $is_cover_block ? $caption : [
-				'text'   => $caption,
-				'format' => 'html',
-			];
+			$values['#caption#']      = $caption;
 			$values['#caption_text#'] = $caption;
 			$values                   = $this->group_component( $values['#caption#'], $values );
 			$spec_name                = 'json-with-caption';

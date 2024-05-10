@@ -193,7 +193,7 @@ class Admin_Apple_JSON extends Apple_News {
 		/* phpcs:enable */
 
 		// Load the template.
-		include plugin_dir_path( __FILE__ ) . 'partials/page-json.php';
+		include __DIR__ . '/partials/page-json.php';
 	}
 
 	/**
