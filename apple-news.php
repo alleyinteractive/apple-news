@@ -40,7 +40,7 @@ function apple_news_date( $format, $timestamp = null, $timezone = null ) {
 	return date( $format, $timestamp ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 }
 
-require_once plugin_dir_path( __FILE__ ) . './includes/meta.php';
+require_once __DIR__ . '/includes/meta.php';
 
 if ( ! defined( 'WPINC' ) ) {
 	die;
