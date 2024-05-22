@@ -69,6 +69,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'label'       => __( 'Aside Content CSS Class', 'apple-news' ),
 				'type'        => 'text',
 				'description' => __( 'Enter a CSS class name that will be used to generate the Aside component. Do not prefix with a period.', 'apple-news' ),
+				'required'    => false,
 			],
 		];
 
