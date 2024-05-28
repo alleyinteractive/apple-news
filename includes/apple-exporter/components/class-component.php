@@ -145,6 +145,15 @@ abstract class Component {
 	protected $layouts;
 
 	/**
+	 * The parent component.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @var ?Component
+	 */
+	protected $parent;
+
+	/**
 	 * The parser to use for this component.
 	 *
 	 * @since 1.2.1
@@ -224,6 +233,7 @@ abstract class Component {
 	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts          Registered layouts.
 	 * @param \Apple_Exporter\Parser                         $parser           The parser in use during this run.
 	 * @param \Apple_Exporter\Builders\Component_Styles      $component_styles Registered text styles.
+	 * @param ?Component                                     $parent           The parent component, if this is a subcomponent.
 	 * @access public
 	 */
 	public function __construct(
@@ -233,7 +243,8 @@ abstract class Component {
 		$styles = null,
 		$layouts = null,
 		$parser = null,
-		$component_styles = null
+		$component_styles = null,
+		$parent = null
 	) {
 		// Register specs for this component.
 		$this->register_specs();
@@ -250,6 +261,7 @@ abstract class Component {
 		$this->component_styles = $component_styles;
 		$this->layouts          = $layouts;
 		$this->text             = $text;
+		$this->parent           = $parent;
 		$this->json             = null;
 
 		// Negotiate parser.
@@ -536,6 +548,20 @@ abstract class Component {
 	}
 
 	/**
+	 * Given a base name corresponding to a componentLayout, componentTextStyle, or componentStyle, returns a subcomponent
+	 * key if this component is a subcomponent, or the base name if it is not.
+	 *
+	 * @param string $name The base name of the componentLayout, componentTextStyle, or componentStyle.
+	 *
+	 * @return string The key for the componentLayout, componentTextStyle, or componentStyle with subcomponent namespacing added if necessary.
+	 */
+	protected function get_component_object_key( $name ) {
+		return $this->parent instanceof Component
+			? sprintf( '%s-subcomponent-%s', $this->parent->get_component_name(), $name )
+			: $name;
+	}
+
+	/**
 	 * Get a spec to use for creating component JSON.
 	 *
 	 * @param string $spec_name The name of the spec to fetch.
@@ -545,6 +571,7 @@ abstract class Component {
 	 * @since 1.2.4
 	 */
 	protected function get_spec( $spec_name ) {
+		// TODO: Handle parent specs.
 		if ( ! isset( $this->specs[ $spec_name ] ) ) {
 			return null;
 		}
@@ -587,8 +614,8 @@ abstract class Component {
 				? $this->workspace->content_id
 				: 0;
 			$json    = $component_spec->substitute_values( $values, $post_id );
-			$this->styles->register_style( $name, $json );
-			$this->set_json( $property, $name );
+			$this->styles->register_style( $this->get_component_object_key( $name ), $json );
+			$this->set_json( $property, $this->get_component_object_key( $name ) );
 		}
 	}
 
@@ -610,8 +637,8 @@ abstract class Component {
 				? $this->workspace->content_id
 				: 0;
 			$json    = $component_spec->substitute_values( $values, $post_id );
-			$this->component_styles->register_style( $name, $json );
-			$this->set_json( $property, $name );
+			$this->component_styles->register_style( $this->get_component_object_key( $name ), $json );
+			$this->set_json( $property, $this->get_component_object_key( $name ) );
 		}
 	}
 
@@ -632,8 +659,8 @@ abstract class Component {
 				? $this->workspace->content_id
 				: 0;
 			$json    = $component_spec->substitute_values( $values, $post_id );
-			$this->layouts->register_layout( $name, $json );
-			$this->set_json( $property, $name );
+			$this->layouts->register_layout( $this->get_component_object_key( $name ), $json );
+			$this->set_json( $property, $this->get_component_object_key( $name ) );
 		}
 	}
 

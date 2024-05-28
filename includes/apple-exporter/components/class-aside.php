@@ -166,7 +166,7 @@ class Aside extends Component {
 			[
 				'#components#' => array_map(
 					fn ( Component $component ) => $component->to_array(),
-					Component_Factory::get_components_from_node( $element ),
+					Component_Factory::get_components_from_node( $element, $this ),
 				),
 			],
 		);
