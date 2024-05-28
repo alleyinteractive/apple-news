@@ -87,7 +87,7 @@
 			</div>
 			<?php if ( ! empty( $selected_theme ) ) : ?>
 				<div>
-					<label for="apple_news_theme">
+					<label for="apple_news_component">
 						<?php esc_html_e( 'Component', 'apple-news' ); ?>:
 						<select id="apple_news_component" name="apple_news_component">
 							<option value=""><?php esc_html_e( 'Select a component', 'apple-news' ); ?></option>
