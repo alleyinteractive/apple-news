@@ -548,6 +548,15 @@ abstract class Component {
 	}
 
 	/**
+	 * Determines whether this component is a subcomponent.
+	 *
+	 * @return bool True if this component is a subcomponent, false otherwise.
+	 */
+	public function is_subcomponent() {
+		return $this->parent instanceof Component;
+	}
+
+	/**
 	 * Given a base name corresponding to a componentLayout, componentTextStyle, or componentStyle, returns a subcomponent
 	 * key if this component is a subcomponent, or the base name if it is not.
 	 *
@@ -556,7 +565,7 @@ abstract class Component {
 	 * @return string The key for the componentLayout, componentTextStyle, or componentStyle with subcomponent namespacing added if necessary.
 	 */
 	protected function get_component_object_key( $name ) {
-		return $this->parent instanceof Component
+		return $this->is_subcomponent()
 			? sprintf( '%s-subcomponent-%s', $this->parent->get_component_name(), $name )
 			: $name;
 	}
@@ -571,12 +580,34 @@ abstract class Component {
 	 * @since 1.2.4
 	 */
 	protected function get_spec( $spec_name ) {
-		// TODO: Handle parent specs.
-		if ( ! isset( $this->specs[ $spec_name ] ) ) {
-			return null;
+		$subcomponent_spec = $this->get_subcomponent_spec( $spec_name );
+		if ( ! empty( $subcomponent_spec ) ) {
+			return $subcomponent_spec;
+		} elseif ( isset( $this->specs[ $spec_name ] ) ) {
+			return $this->specs[ $spec_name ];
 		}
 
-		return $this->specs[ $spec_name ];
+		return null;
+	}
+
+	/**
+	 * Given a spec name, tries to find it in subcomponent spec definitions in the theme.
+	 *
+	 * @param string $spec_name The spec name to look up.
+	 *
+	 * @return ?Component_Spec Array containing subcomponent spec if found, null otherwise.
+	 */
+	protected function get_subcomponent_spec( $spec_name ) {
+		if ( $this->is_subcomponent() ) {
+			$theme          = Theme::get_used();
+			$json_templates = $theme->get_value( 'json_templates' ) ?: [];
+			$spec           = $json_templates[ $this->parent->get_component_name() ]['subcomponents'][ $this->get_component_name() ][ $spec_name ] ?? null;
+			if ( ! empty( $spec ) ) {
+				return new Component_Spec( $this->get_component_name(), $this->get_component_object_key( $spec_name ), '', $spec );
+			}
+		}
+
+		return null;
 	}
 
 	/**
