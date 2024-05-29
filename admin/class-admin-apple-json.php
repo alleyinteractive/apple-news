@@ -416,18 +416,17 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	private function get_component_class( $component, $subcomponent = null ) {
 		$classname = $this->namespace . $component;
-
-		// If we aren't requesting a subcomponent, just return the class.
-		if ( empty( $subcomponent ) ) {
-			return class_exists( $classname ) ? new $classname() : null;
+		if ( ! class_exists( $classname ) ) {
+			return null;
 		}
 
-		// If we are requesting a subcomponent, create its class and set it as the parent, then return.
-		$child_classname = $this->get_component_class( $subcomponent );
+		// Handle subcomponents.
+		if ( ! empty( $subcomponent ) ) {
+			$subcomponent_classname = $this->namespace . $subcomponent;
+			return class_exists( $subcomponent_classname ) ? new $subcomponent_classname( null, null, null, null, null, null, null, new $classname() ) : null;
+		}
 
-		return class_exists( $classname ) && class_exists( $child_classname )
-			? new $child_classname( null, null, null, null, null, null, null, new $classname )
-			: null;
+		return new $classname();
 	}
 
 	/**
