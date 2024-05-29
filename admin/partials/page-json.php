@@ -5,8 +5,10 @@
  * phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
  *
  * @global array  $all_themes
+ * @global bool   $component_can_be_parent
  * @global array  $components
  * @global string $selected_component
+ * @global string $selected_subcomponent
  * @global string $selected_theme
  * @global array  $specs
  * @global string $theme_admin_url
@@ -101,6 +103,23 @@
 					</label>
 				</div>
 			<?php endif; ?>
+
+			<?php if ( $component_can_be_parent ) : ?>
+			<div>
+				<label for="apple_news_subcomponent">
+					<?php esc_html_e( 'Subcomponent', 'apple-news' ); ?>:
+					<select id="apple_news_subcomponent" name="apple_news_subcomponent">
+						<option value=""><?php esc_html_e( 'None', 'apple-news' ); ?></option>
+						<?php foreach ( $components as $apple_component_key => $apple_component_name ) : ?>
+							<option value="<?php echo esc_attr( $apple_component_key ); ?>"
+								<?php selected( $apple_component_key, $selected_subcomponent ); ?>>
+								<?php echo esc_html( $apple_component_name ); ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+			</div>
+		<?php endif; ?>
 
 			<?php if ( ! empty( $specs ) ) : ?>
 				<?php

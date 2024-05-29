@@ -78,6 +78,14 @@ abstract class Component {
 	protected $can_be_anchor_target = false;
 
 	/**
+	 * Whether this component can be a parent.
+	 *
+	 * @since 2.5.0
+	 * @var boolean
+	 */
+	protected $can_be_parent = false;
+
+	/**
 	 * Workspace for this component.
 	 *
 	 * @since 0.2.0
@@ -425,6 +433,16 @@ abstract class Component {
 	 */
 	public function can_be_anchor_target() {
 		return $this->can_be_anchor_target && empty( $this->uid );
+	}
+
+	/**
+	 * Returns whether this component can be a parent (have subcomponents).
+	 *
+	 * @since 2.5.0
+	 * @return boolean
+	 */
+	public function can_be_parent() {
+		return $this->can_be_parent;
 	}
 
 	/**

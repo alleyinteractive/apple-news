@@ -5,6 +5,8 @@
  * @package Apple_News
  */
 
+use Apple_Exporter\Components\Component;
+
 /**
  * This class is in charge of handling the management of custom JSON.
  */
@@ -34,6 +36,14 @@ class Admin_Apple_JSON extends Apple_News {
 	 * @access private
 	 */
 	private $selected_component = '';
+
+	/**
+	 * Holds the selected subcomponent from the request.
+	 *
+	 * @since 2.5.0
+	 * @var string
+	 */
+	private $selected_subcomponent = '';
 
 	/**
 	 * Holds the selected theme from the request.
@@ -98,6 +108,14 @@ class Admin_Apple_JSON extends Apple_News {
 			: '';
 		if ( ! array_key_exists( $this->selected_component, $this->list_components() ) ) {
 			$this->selected_component = '';
+		}
+
+		// Store the selected subcomponent value for use later.
+		$this->selected_subcomponent = isset( $_POST['apple_news_subcomponent'] )
+			? sanitize_text_field( wp_unslash( $_POST['apple_news_subcomponent'] ) )
+			: '';
+		if ( ! array_key_exists( $this->selected_subcomponent, $this->list_components() ) ) {
+			$this->selected_subcomponent = '';
 		}
 
 		// Store the selected theme for use later.
@@ -185,10 +203,14 @@ class Admin_Apple_JSON extends Apple_News {
 			? $this->get_selected_component()
 			: '';
 
-		// If we have a class, get its specs.
-		$specs = ( ! empty( $selected_component ) )
-			? $this->get_specs( $selected_component )
-			: [];
+		// Handle subcomponents.
+		$component_can_be_parent = $this->get_component_class( $selected_component )?->can_be_parent();
+		$selected_subcomponent   = ( ! empty( $selected_component ) )
+			? $this->get_selected_subcomponent()
+			: '';
+
+		// If we have a component or subcomponent, get its specs.
+		$specs = $this->get_specs( $selected_subcomponent ?: $selected_component );
 
 		/* phpcs:enable */
 
@@ -366,20 +388,27 @@ class Admin_Apple_JSON extends Apple_News {
 	}
 
 	/**
+	 * Given a component slug, returns the associated component class.
+	 *
+	 * @param string $component The component to get the class for.
+	 *
+	 * @return ?Component
+	 */
+	private function get_component_class( $component ) {
+		$classname = $this->namespace . $component;
+		return class_exists( $classname ) ? new $classname() : null;
+	}
+
+	/**
 	 * Loads the JSON specs that can be customized for the component
 	 *
 	 * @param string $component The component to get specs for.
+	 *
 	 * @return array
-	 * @access private
 	 */
 	private function get_specs( $component ) {
-		if ( empty( $component ) ) {
-			return [];
-		}
-
-		$classname       = $this->namespace . $component;
-		$component_class = new $classname();
-		return $component_class->get_specs();
+		$component_class = $this->get_component_class( $component );
+		return $component_class ? $component_class->get_specs() : [];
 	}
 
 	/**
@@ -412,6 +441,15 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	public function get_selected_component() {
 		return $this->selected_component;
+	}
+
+	/**
+	 * Gets the currently selected subcomponent.
+	 *
+	 * @return string
+	 */
+	public function get_selected_subcomponent() {
+		return $this->selected_subcomponent;
 	}
 
 	/**

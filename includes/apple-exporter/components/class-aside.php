@@ -21,6 +21,13 @@ use DOMElement;
 class Aside extends Component {
 
 	/**
+	 * Declare support for subcomponents.
+	 *
+	 * @var bool
+	 */
+	protected $can_be_parent = true;
+
+	/**
 	 * We are providing our own layout below, so don't set one automatically when anchoring.
 	 *
 	 * @var bool
