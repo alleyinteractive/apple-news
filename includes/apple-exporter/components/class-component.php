@@ -254,15 +254,6 @@ abstract class Component {
 		$component_styles = null,
 		$parent = null
 	) {
-		// Register specs for this component.
-		$this->register_specs();
-
-		// If all params are null, then this was just used to get spec data.
-		// Exit.
-		if ( 0 === func_num_args() ) {
-			return;
-		}
-
 		$this->workspace        = $workspace;
 		$this->settings         = $settings;
 		$this->styles           = $styles;
@@ -271,6 +262,15 @@ abstract class Component {
 		$this->text             = $text;
 		$this->parent           = $parent;
 		$this->json             = null;
+
+		// Register specs for this component.
+		$this->register_specs();
+
+		// If all params are null, then this was just used to get spec data.
+		// Exit.
+		if ( 0 === func_num_args() ) {
+			return;
+		}
 
 		// Negotiate parser.
 		if ( empty( $parser ) ) {
@@ -562,7 +562,7 @@ abstract class Component {
 	 */
 	protected function register_spec( $name, $label, $spec ) {
 		// Store as a multidimensional array with the label and spec, indexed by name.
-		$this->specs[ $name ] = new Component_Spec( $this->get_component_name(), $name, $label, $spec );
+		$this->specs[ $name ] = new Component_Spec( $this->get_component_name(), $name, $label, $spec, $this->is_subcomponent() ? $this->parent->get_component_name() : null );
 	}
 
 	/**
@@ -598,34 +598,11 @@ abstract class Component {
 	 * @since 1.2.4
 	 */
 	protected function get_spec( $spec_name ) {
-		$subcomponent_spec = $this->get_subcomponent_spec( $spec_name );
-		if ( ! empty( $subcomponent_spec ) ) {
-			return $subcomponent_spec;
-		} elseif ( isset( $this->specs[ $spec_name ] ) ) {
-			return $this->specs[ $spec_name ];
+		if ( ! isset( $this->specs[ $spec_name ] ) ) {
+			return null;
 		}
 
-		return null;
-	}
-
-	/**
-	 * Given a spec name, tries to find it in subcomponent spec definitions in the theme.
-	 *
-	 * @param string $spec_name The spec name to look up.
-	 *
-	 * @return ?Component_Spec Array containing subcomponent spec if found, null otherwise.
-	 */
-	protected function get_subcomponent_spec( $spec_name ) {
-		if ( $this->is_subcomponent() ) {
-			$theme          = Theme::get_used();
-			$json_templates = $theme->get_value( 'json_templates' ) ?: [];
-			$spec           = $json_templates[ $this->parent->get_component_name() ]['subcomponents'][ $this->get_component_name() ][ $spec_name ] ?? null;
-			if ( ! empty( $spec ) ) {
-				return new Component_Spec( $this->get_component_name(), $this->get_component_object_key( $spec_name ), '', $spec );
-			}
-		}
-
-		return null;
+		return $this->specs[ $spec_name ];
 	}
 
 	/**

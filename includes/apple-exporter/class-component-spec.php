@@ -53,20 +53,30 @@ class Component_Spec {
 	public $spec;
 
 	/**
+	 * The parent component name, if any.
+	 *
+	 * @since 2.5.0
+	 * @var ?string
+	 */
+	public $parent;
+
+	/**
 	 * Initializes the object with the name, label and the spec.
 	 *
-	 * @param string $component The component name.
-	 * @param string $name      The spec name.
-	 * @param string $label     The human-readable label for the spec.
-	 * @param array  $spec      The spec definition.
+	 * @param string  $component The component name.
+	 * @param string  $name      The spec name.
+	 * @param string  $label     The human-readable label for the spec.
+	 * @param array   $spec      The spec definition.
+	 * @param ?string $parent    The parent component name.
 	 *
 	 * @access public
 	 */
-	public function __construct( $component, $name, $label, $spec ) {
+	public function __construct( $component, $name, $label, $spec, $parent = null ) {
 		$this->component = $component;
 		$this->name      = $name;
 		$this->label     = $label;
 		$this->spec      = $spec;
+		$this->parent    = $parent;
 	}
 
 	/**
@@ -230,6 +240,8 @@ class Component_Spec {
 	 * @return boolean True on success, false on failure.
 	 */
 	public function save( $spec, $theme_name = '' ) {
+
+		// TODO: Handle subcomponents.
 
 		// Check for empty JSON.
 		$json = $this->spec;
@@ -447,6 +459,11 @@ class Component_Spec {
 		$json_templates = $theme->get_value( 'json_templates' );
 		if ( empty( $json_templates ) || ! is_array( $json_templates ) ) {
 			return null;
+		}
+
+		// Determine if there is a subcomponent override in the theme.
+		if ( ! empty( $json_templates[ $this->parent ]['subcomponents'][ $this->key_from_name( $this->component ) ][ $this->name ] ) ) {
+			return $json_templates[ $this->parent ]['subcomponents'][ $this->key_from_name( $this->component ) ][ $this->name ];
 		}
 
 		// Determine if there is an override in the theme.

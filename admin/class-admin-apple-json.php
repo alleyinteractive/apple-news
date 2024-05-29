@@ -210,7 +210,7 @@ class Admin_Apple_JSON extends Apple_News {
 			: '';
 
 		// If we have a component or subcomponent, get its specs.
-		$specs = $this->get_specs( $selected_subcomponent ?: $selected_component );
+		$specs = $this->get_specs( $selected_component, $selected_subcomponent );
 
 		/* phpcs:enable */
 
@@ -282,8 +282,11 @@ class Admin_Apple_JSON extends Apple_News {
 			return;
 		}
 
+		// Get the selected subcomponent.
+		$subcomponent = $this->get_selected_subcomponent();
+
 		// Get the specs for the component.
-		$specs = $this->get_specs( $component );
+		$specs = $this->get_specs( $component, $subcomponent );
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
@@ -339,9 +342,12 @@ class Admin_Apple_JSON extends Apple_News {
 			return;
 		}
 
-		// Get the specs for the component and theme.
+		// Get the selected subcomponent.
+		$subcomponent = $this->get_selected_subcomponent();
+
+		// Get the specs for the component or subcomponent.
 		$theme = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
-		$specs = $this->get_specs( $component, $theme );
+		$specs = $this->get_specs( $component, $subcomponent );
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
@@ -390,24 +396,37 @@ class Admin_Apple_JSON extends Apple_News {
 	/**
 	 * Given a component slug, returns the associated component class.
 	 *
-	 * @param string $component The component to get the class for.
+	 * @param string  $component    The component to get the class for.
+	 * @param ?string $subcomponent The subcomponent to get the class for.
 	 *
 	 * @return ?Component
 	 */
-	private function get_component_class( $component ) {
+	private function get_component_class( $component, $subcomponent = null ) {
 		$classname = $this->namespace . $component;
-		return class_exists( $classname ) ? new $classname() : null;
+
+		// If we aren't requesting a subcomponent, just return the class.
+		if ( empty( $subcomponent ) ) {
+			return class_exists( $classname ) ? new $classname() : null;
+		}
+
+		// If we are requesting a subcomponent, create its class and set it as the parent, then return.
+		$child_classname = $this->get_component_class( $subcomponent );
+
+		return class_exists( $classname ) && class_exists( $child_classname )
+			? new $child_classname( null, null, null, null, null, null, null, new $classname )
+			: null;
 	}
 
 	/**
 	 * Loads the JSON specs that can be customized for the component
 	 *
-	 * @param string $component The component to get specs for.
+	 * @param string  $component    The component to get specs for.
+	 * @param ?string $subcomponent The subcomponent to get specs for.
 	 *
 	 * @return array
 	 */
-	private function get_specs( $component ) {
-		$component_class = $this->get_component_class( $component );
+	private function get_specs( $component, $subcomponent = null ) {
+		$component_class = $this->get_component_class( $component, $subcomponent );
 		return $component_class ? $component_class->get_specs() : [];
 	}
 
