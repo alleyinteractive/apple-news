@@ -394,6 +394,19 @@ class Admin_Apple_JSON extends Apple_News {
 	}
 
 	/**
+	 * Loads the JSON specs that can be customized for the component
+	 *
+	 * @param string  $component    The component to get specs for.
+	 * @param ?string $subcomponent The subcomponent to get specs for.
+	 *
+	 * @return array
+	 */
+	private function get_specs( $component, $subcomponent = null ) {
+		$component_class = $this->get_component_class( $component, $subcomponent );
+		return $component_class ? $component_class->get_specs() : [];
+	}
+
+	/**
 	 * Given a component slug, returns the associated component class.
 	 *
 	 * @param string  $component    The component to get the class for.
@@ -415,19 +428,6 @@ class Admin_Apple_JSON extends Apple_News {
 		return class_exists( $classname ) && class_exists( $child_classname )
 			? new $child_classname( null, null, null, null, null, null, null, new $classname )
 			: null;
-	}
-
-	/**
-	 * Loads the JSON specs that can be customized for the component
-	 *
-	 * @param string  $component    The component to get specs for.
-	 * @param ?string $subcomponent The subcomponent to get specs for.
-	 *
-	 * @return array
-	 */
-	private function get_specs( $component, $subcomponent = null ) {
-		$component_class = $this->get_component_class( $component, $subcomponent );
-		return $component_class ? $component_class->get_specs() : [];
 	}
 
 	/**
