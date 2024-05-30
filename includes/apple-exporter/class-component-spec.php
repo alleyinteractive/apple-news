@@ -241,8 +241,6 @@ class Component_Spec {
 	 */
 	public function save( $spec, $theme_name = '' ) {
 
-		// TODO: Handle subcomponents.
-
 		// Check for empty JSON.
 		$json = $this->spec;
 		if ( empty( $spec ) ) {
@@ -323,9 +321,15 @@ class Component_Spec {
 			$theme_settings['json_templates'] = [];
 		}
 
-		// Try to load the custom JSON into the theme.
+		// Set the JSON template for this component spec.
 		$component_key = $this->key_from_name( $this->component );
-		$theme_settings['json_templates'][ $component_key ][ $this->name ] = $json;
+		if ( $this->parent ) {
+			$theme_settings['json_templates'][ $this->parent ]['subcomponents'][ $component_key ][ $this->name ] = $json;
+		} else {
+			$theme_settings['json_templates'][ $component_key ][ $this->name ] = $json;
+		}
+
+		// Try to load the custom JSON into the theme.
 		if ( ! $theme->load( $theme_settings ) ) {
 			Admin_Apple_Notice::error(
 				sprintf(
@@ -376,15 +380,20 @@ class Component_Spec {
 			return false;
 		}
 
-		// Determine if this spec override is defined in the theme.
+		// Remove the JSON template for this component spec or fail if it doesn't exist.
 		$component_key  = $this->key_from_name( $this->component );
 		$theme_settings = $theme->all_settings();
-		if ( ! isset( $theme_settings['json_templates'][ $component_key ][ $this->name ] ) ) {
-			return false;
+		if ( $this->parent ) {
+			if ( ! isset( $theme_settings['json_templates'][ $this->parent ]['subcomponents'][ $component_key ][ $this->name ] ) ) {
+				return false;
+			}
+			unset( $theme_settings['json_templates'][ $this->parent ]['subcomponents'][ $component_key ][ $this->name ] );
+		} else {
+			if ( ! isset( $theme_settings['json_templates'][ $component_key ][ $this->name ] ) ) {
+				return false;
+			}
+			unset( $theme_settings['json_templates'][ $component_key ][ $this->name ] );
 		}
-
-		// Remove this spec from the theme.
-		unset( $theme_settings['json_templates'][ $component_key ][ $this->name ] );
 
 		// If there are no more overrides for this component, remove it.
 		if ( empty( $theme_settings['json_templates'][ $component_key ] ) ) {
