@@ -2681,6 +2681,11 @@ class Theme {
 				// Clean up root-level components list.
 				$invalid_components = array_filter( $invalid_components );
 			}
+
+			// Allow subcomponents through.
+			if ( isset( $invalid_components[ $component_key ]['subcomponents'] ) ) {
+				unset( $invalid_components[ $component_key ]['subcomponents'] );
+			}
 		}
 
 		// If there are any invalid components, fail.

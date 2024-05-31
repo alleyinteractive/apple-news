@@ -78,6 +78,14 @@ abstract class Component {
 	protected $can_be_anchor_target = false;
 
 	/**
+	 * Whether this component can be a parent.
+	 *
+	 * @since 2.5.0
+	 * @var boolean
+	 */
+	protected $can_be_parent = false;
+
+	/**
 	 * Workspace for this component.
 	 *
 	 * @since 0.2.0
@@ -143,6 +151,15 @@ abstract class Component {
 	 * @access protected
 	 */
 	protected $layouts;
+
+	/**
+	 * The parent component.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @var ?Component
+	 */
+	protected $parent;
 
 	/**
 	 * The parser to use for this component.
@@ -224,6 +241,7 @@ abstract class Component {
 	 * @param \Apple_Exporter\Builders\Component_Layouts     $layouts          Registered layouts.
 	 * @param \Apple_Exporter\Parser                         $parser           The parser in use during this run.
 	 * @param \Apple_Exporter\Builders\Component_Styles      $component_styles Registered text styles.
+	 * @param ?Component                                     $parent           The parent component, if this is a subcomponent.
 	 * @access public
 	 */
 	public function __construct(
@@ -233,8 +251,18 @@ abstract class Component {
 		$styles = null,
 		$layouts = null,
 		$parser = null,
-		$component_styles = null
+		$component_styles = null,
+		$parent = null
 	) {
+		$this->workspace        = $workspace;
+		$this->settings         = $settings;
+		$this->styles           = $styles;
+		$this->component_styles = $component_styles;
+		$this->layouts          = $layouts;
+		$this->text             = $text;
+		$this->parent           = $parent;
+		$this->json             = null;
+
 		// Register specs for this component.
 		$this->register_specs();
 
@@ -243,14 +271,6 @@ abstract class Component {
 		if ( 0 === func_num_args() ) {
 			return;
 		}
-
-		$this->workspace        = $workspace;
-		$this->settings         = $settings;
-		$this->styles           = $styles;
-		$this->component_styles = $component_styles;
-		$this->layouts          = $layouts;
-		$this->text             = $text;
-		$this->json             = null;
 
 		// Negotiate parser.
 		if ( empty( $parser ) ) {
@@ -416,6 +436,16 @@ abstract class Component {
 	}
 
 	/**
+	 * Returns whether this component can be a parent (have subcomponents).
+	 *
+	 * @since 2.5.0
+	 * @return boolean
+	 */
+	public function can_be_parent() {
+		return $this->can_be_parent;
+	}
+
+	/**
 	 * Get the current UID.
 	 *
 	 * @return string
@@ -532,7 +562,30 @@ abstract class Component {
 	 */
 	protected function register_spec( $name, $label, $spec ) {
 		// Store as a multidimensional array with the label and spec, indexed by name.
-		$this->specs[ $name ] = new Component_Spec( $this->get_component_name(), $name, $label, $spec );
+		$this->specs[ $name ] = new Component_Spec( $this->get_component_name(), $name, $label, $spec, $this->is_subcomponent() ? $this->parent->get_component_name() : null );
+	}
+
+	/**
+	 * Determines whether this component is a subcomponent.
+	 *
+	 * @return bool True if this component is a subcomponent, false otherwise.
+	 */
+	public function is_subcomponent() {
+		return $this->parent instanceof Component;
+	}
+
+	/**
+	 * Given a base name corresponding to a componentLayout, componentTextStyle, or componentStyle, returns a subcomponent
+	 * key if this component is a subcomponent, or the base name if it is not.
+	 *
+	 * @param string $name The base name of the componentLayout, componentTextStyle, or componentStyle.
+	 *
+	 * @return string The key for the componentLayout, componentTextStyle, or componentStyle with subcomponent namespacing added if necessary.
+	 */
+	protected function get_component_object_key( $name ) {
+		return $this->is_subcomponent()
+			? sprintf( '%s-subcomponent-%s', $this->parent->get_component_name(), $name )
+			: $name;
 	}
 
 	/**
@@ -587,8 +640,8 @@ abstract class Component {
 				? $this->workspace->content_id
 				: 0;
 			$json    = $component_spec->substitute_values( $values, $post_id );
-			$this->styles->register_style( $name, $json );
-			$this->set_json( $property, $name );
+			$this->styles->register_style( $this->get_component_object_key( $name ), $json );
+			$this->set_json( $property, $this->get_component_object_key( $name ) );
 		}
 	}
 
@@ -610,8 +663,8 @@ abstract class Component {
 				? $this->workspace->content_id
 				: 0;
 			$json    = $component_spec->substitute_values( $values, $post_id );
-			$this->component_styles->register_style( $name, $json );
-			$this->set_json( $property, $name );
+			$this->component_styles->register_style( $this->get_component_object_key( $name ), $json );
+			$this->set_json( $property, $this->get_component_object_key( $name ) );
 		}
 	}
 
@@ -632,8 +685,8 @@ abstract class Component {
 				? $this->workspace->content_id
 				: 0;
 			$json    = $component_spec->substitute_values( $values, $post_id );
-			$this->layouts->register_layout( $name, $json );
-			$this->set_json( $property, $name );
+			$this->layouts->register_layout( $this->get_component_object_key( $name ), $json );
+			$this->set_json( $property, $this->get_component_object_key( $name ) );
 		}
 	}
 
