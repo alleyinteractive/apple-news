@@ -47,6 +47,7 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 = 2.5.0 =
 
+* Breaking Change: Removed support for per-article advertising settings, which have been deprecated by Apple. Advertising settings can now only be set at the channel level.
 * Enhancement: Added support for an aside component. To use, specify the class for the container that includes the aside content in the plugin settings.
 * Enhancement: Added support for the Footnotes block.
 * Enhancement: Added a new In Article module, similar to the End of Article module, but which is configurable to appear within article content instead.
