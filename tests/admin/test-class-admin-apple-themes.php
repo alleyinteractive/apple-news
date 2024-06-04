@@ -212,19 +212,10 @@ class Admin_Apple_Themes_Test extends Apple_News_Testcase {
 	public function test_import_theme() {
 
 		// Setup.
-		$advertisement_json = [
-			'role'       => 'banner_advertisement',
-			'bannerType' => 'double_height',
-		];
-		$import_settings    = [
-			'layout_margin'  => 100,
-			'layout_gutter'  => 20,
-			'json_templates' => [
-				'advertisement' => [
-					'json' => $advertisement_json,
-				],
-			],
-			'theme_name'     => 'Test Import Theme',
+		$import_settings = [
+			'layout_margin' => 100,
+			'layout_gutter' => 20,
+			'theme_name'    => 'Test Import Theme',
 		];
 
 		// Test.
@@ -235,10 +226,6 @@ class Admin_Apple_Themes_Test extends Apple_News_Testcase {
 		$theme_settings = $theme->all_settings();
 		$this->assertEquals( 100, $theme_settings['layout_margin'] );
 		$this->assertEquals( 20, $theme_settings['layout_gutter'] );
-		$this->assertEquals(
-			$advertisement_json,
-			$theme_settings['json_templates']['advertisement']['json']
-		);
 
 		// Cleanup.
 		$theme->delete();
@@ -336,14 +323,16 @@ class Admin_Apple_Themes_Test extends Apple_News_Testcase {
 		$this->create_default_theme();
 		$json  = <<<JSON
 {
-    "role": "banner_advertisement",
-    "bannerType": "double_height"
+    "role": "body",
+    "text": "#text#",
+    "format": "html",
+    "anchor": "abc123"
 }
 JSON;
 		$nonce = wp_create_nonce( 'apple_news_json' );
 		/* phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized */
 		$_POST['apple_news_theme']     = Theme::get_active_theme_name();
-		$_POST['apple_news_component'] = 'Advertisement';
+		$_POST['apple_news_component'] = 'Body';
 		$_POST['apple_news_action']    = 'apple_news_save_json';
 		$_POST['apple_news_json_json'] = $json;
 		$_POST['page']                 = 'apple-news-json';
@@ -363,7 +352,7 @@ JSON;
 		$this->assertTrue( $theme->load() );
 		$theme_settings = $theme->all_settings();
 		$stored_json    = wp_json_encode(
-			$theme_settings['json_templates']['advertisement']['json'],
+			$theme_settings['json_templates']['body']['json'],
 			JSON_PRETTY_PRINT
 		);
 		$this->assertEquals( $stored_json, $json );
