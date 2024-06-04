@@ -321,7 +321,6 @@ HTML;
 	public function test_meta_component_ordering( $order, $expected, $components ) {
 		$this->set_theme_settings(
 			[
-				'enable_advertisement' => 'no',
 				'meta_component_order' => $order,
 			]
 		);

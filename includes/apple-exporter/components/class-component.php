@@ -44,8 +44,7 @@ abstract class Component {
 
 	/**
 	 * Anchorable components are anchored to the previous element that appears in
-	 * the position specified. If the previous element is an advertisement,
-	 * attaches to the next instead of the previous element.
+	 * the position specified.
 	 *
 	 * @since 0.6.0
 	 * @var int

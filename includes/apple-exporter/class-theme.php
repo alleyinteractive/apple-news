@@ -556,18 +556,6 @@ class Theme {
 	 */
 	private static function initialize_options() {
 		self::$options = [
-			'ad_frequency'                       => [
-				'default'     => 5,
-				'description' => __( 'A number between 1 and 10 defining the frequency for automatically inserting dynamic advertisements into articles. For more information, see the <a href="https://developer.apple.com/documentation/apple_news/advertisementautoplacement" target="_blank">Apple News Format Reference</a>.', 'apple-news' ),
-				'label'       => __( 'Ad Frequency', 'apple-news' ),
-				'type'        => 'integer',
-			],
-			'ad_margin'                          => [
-				'default'     => 15,
-				'description' => __( 'The margin to use above and below inserted ads.', 'apple-news' ),
-				'label'       => __( 'Ad Margin', 'apple-news' ),
-				'type'        => 'integer',
-			],
 			'aside_alignment'                    => [
 				'default' => 'right',
 				'label'   => __( 'Aside component alignment', 'apple-news' ),
@@ -963,12 +951,6 @@ class Theme {
 				'default' => 5,
 				'label'   => __( 'Drop cap padding', 'apple-news' ),
 				'type'    => 'integer',
-			],
-			'enable_advertisement'               => [
-				'default' => 'yes',
-				'label'   => __( 'Enable advertisements', 'apple-news' ),
-				'options' => [ 'yes', 'no' ],
-				'type'    => 'select',
 			],
 			'gallery_type'                       => [
 				'default' => 'gallery',
@@ -2535,14 +2517,6 @@ class Theme {
 				'label'       => __( 'Gallery', 'apple-news' ),
 				'description' => __( 'Can either be a standard gallery, or mosaic.', 'apple-news' ),
 				'settings'    => [ 'gallery_type' ],
-			],
-			'advertisement'   => [
-				'label'    => __( 'Advertisement', 'apple-news' ),
-				'settings' => [
-					'enable_advertisement',
-					'ad_frequency',
-					'ad_margin',
-				],
 			],
 			'aside'           => [
 				'label'       => __( 'Aside', 'apple-news' ),
