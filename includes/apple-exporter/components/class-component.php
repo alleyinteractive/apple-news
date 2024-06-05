@@ -275,7 +275,7 @@ abstract class Component {
 		if ( empty( $parser ) ) {
 
 			// Load format from settings.
-			$format = ( 'yes' === $this->settings->html_support )
+			$format = ( 'yes' === $this->settings?->html_support )
 				? 'html'
 				: 'markdown';
 
