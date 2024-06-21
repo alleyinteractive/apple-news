@@ -84,29 +84,59 @@ class Aside extends Component {
 			],
 		);
 
-		$aside_conditional_style = [];
-		if ( ! empty( $theme->get_value( 'aside_background_color_dark' ) ) || ! empty( $theme->get_value( 'aside_border_color_dark' ) ) ) {
-			$aside_conditional_style = [
-				'conditional' => [
-					'backgroundColor' => '#aside_background_color_dark#',
-					'border'          => [
-						'all' => [
-							'width' => '#blockquote_border_width#',
-							'style' => '#blockquote_border_style#',
-							'color' => '#aside_border_color_dark#',
-						],
-					],
-					'conditions'      => [
-						'minSpecVersion'       => '1.14',
-						'preferredColorScheme' => 'dark',
+		$aside_conditional_background_style = [];
+		if ( ! empty( $theme->get_value( 'aside_background_color_dark' ) ) ) {
+			$aside_conditional_background_style = [
+				'backgroundColor' => '#aside_background_color_dark#',
+			];
+		}
+	
+		$aside_conditional_border_style = [];
+		if ( ! empty( $theme->get_value( 'aside_border_color_dark' ) ) ) {
+			$aside_conditional_border_style = [
+				'border' => [
+					'all' => [
+						'width' => '#aside_border_width#',
+						'style' => '#aside_border_style#',
+						'color' => '#aside_border_color_dark#',
 					],
 				],
 			];
 		}
 
+		$aside_conditional_conditions = [
+			'conditions' => [
+				'minSpecVersion'       => '1.14',
+				'preferredColorScheme' => 'dark',
+			],
+		];
+
+		$aside_conditional_style_with_borders = ( ! empty( $aside_conditional_background_style ) || ! empty( $aside_conditional_border_style ) )
+			? [
+				'conditional' => [
+					array_merge(
+						$aside_conditional_background_style,
+						$aside_conditional_border_style,
+						$aside_conditional_conditions,
+					),
+				]
+			]
+			: [];
+
+		$aside_conditional_style_without_borders = ( ! empty( $aside_conditional_background_style ) || ! empty( $aside_conditional_border_style ) )
+			? [
+				'conditional' => [
+					array_merge(
+						$aside_conditional_background_style,
+						$aside_conditional_conditions,
+					),
+				]
+			]
+			: [];
+
 		$this->register_spec(
-			'default-aside',
-			__( 'Aside Style', 'apple-news' ),
+			'aside-with-border-json',
+			__( 'Aside With Border JSON', 'apple-news' ),
 			array_merge(
 				[
 					'backgroundColor' => '#aside_background_color#',
@@ -118,7 +148,18 @@ class Aside extends Component {
 						],
 					],
 				],
-				$aside_conditional_style
+				$aside_conditional_style_with_borders
+			)
+		);
+
+		$this->register_spec(
+			'aside-without-border-json',
+			__( 'Aside Without Border JSON', 'apple-news' ),
+			array_merge(
+				[
+					'backgroundColor' => '#aside_background_color#',
+				],
+				$aside_conditional_style_without_borders
 			)
 		);
 
@@ -178,9 +219,13 @@ class Aside extends Component {
 			],
 		);
 
+		$component_style = ( 'none' !== $theme->get_value( 'aside_border_style' ) )
+			? 'aside-with-border-json'
+			: 'aside-without-border-json';
+
 		$this->register_component_style(
 			'default-aside',
-			'default-aside',
+			$component_style,
 		);
 
 		$alignment   = $theme->get_value( 'aside_alignment' );

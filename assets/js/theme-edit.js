@@ -76,6 +76,14 @@
 				$( '#pullquote_border_color, #pullquote_border_width' ).parent().show().next( 'br' ).show();
 			}
 		} ).change();
+
+		$( '#aside_border_style' ).on( 'change', function () {
+			if ( 'none' === $( this ).val() ) {
+				$( '#aside_border_color, #aside_border_width' ).parent().hide().next( 'br' ).hide();
+			} else {
+				$( '#aside_border_color, #aside_border_width' ).parent().show().next( 'br' ).show();
+			}
+		} ).change();
 	}
 
 	function appleNewsThemeEditSortInit( activeSelector, activeKey, inactiveSelector, inactiveKey, connectWith ) {
