@@ -119,7 +119,7 @@ class Aside extends Component {
 						$aside_conditional_border_style,
 						$aside_conditional_conditions,
 					),
-				]
+				],
 			]
 			: [];
 
@@ -130,7 +130,7 @@ class Aside extends Component {
 						$aside_conditional_background_style,
 						$aside_conditional_conditions,
 					),
-				]
+				],
 			]
 			: [];
 
