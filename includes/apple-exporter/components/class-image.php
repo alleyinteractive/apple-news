@@ -295,7 +295,7 @@ class Image extends Component {
 
 		$this->register_layout( $layout_name, $layout_name );
 
-		$values['#layout#'] = $layout_name;
+		$values['#layout#'] = $this->get_component_object_key( $layout_name );
 		return $values;
 	}
 
@@ -331,7 +331,7 @@ class Image extends Component {
 		// Register the layout.
 		$this->register_full_width_layout( $layout_name, $spec_name, $layout_values );
 
-		$values['#layout#'] = $layout_name;
+		$values['#layout#'] = $this->get_component_object_key( $layout_name );
 		return $values;
 	}
 
