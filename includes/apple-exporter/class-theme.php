@@ -2524,8 +2524,8 @@ class Theme {
 				'settings'    => [
 					'aside_alignment',
 					'aside_background_color',
-					'aside_border_color',
 					'aside_border_style',
+					'aside_border_color',
 					'aside_border_width',
 					'aside_padding',
 					'dark_mode_colors_heading',
