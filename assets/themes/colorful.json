@@ -1,6 +1,10 @@
 {
-    "ad_frequency": 5,
-    "ad_margin": 15,
+    "aside_alignment": "right",
+    "aside_background_color": "#ffff00",
+    "aside_border_color": "#3045ca",
+    "aside_border_style": "none",
+    "aside_border_width": 3,
+    "aside_padding": 20,
     "blockquote_background_color": "#ffff00",
     "blockquote_border_color": "#3045ca",
     "blockquote_border_style": "none",
@@ -40,6 +44,11 @@
     "caption_line_height": 22,
     "caption_size": 14,
     "caption_tracking": -3,
+    "cite_color": "#3045ca",
+    "cite_font": "Georgia",
+    "cite_line_height": 22,
+    "cite_size": 14,
+    "cite_tracking": -3,
     "date_color": "#000000",
     "date_font": "Optima-Regular",
     "date_format": "#F j, Y#",
@@ -53,7 +62,6 @@
     "dropcap_number_of_lines": 5,
     "dropcap_number_of_raised_lines": 0,
     "dropcap_padding": 5,
-    "enable_advertisement": "yes",
     "gallery_type": "gallery",
     "header1_color": "#000000",
     "header1_font": "HelveticaNeue-CondensedBlack",
@@ -162,10 +170,10 @@
                         "layout": {
                             "columnSpan": 6,
                             "columnStart": 1,
+                            "ignoreDocumentMargin": "#full_bleed_images#",
                             "margin": {
-                                "top": 20
-                            },
-                            "ignoreDocumentMargin": "#full_bleed_images#"
+                                "bottom": "#caption_margin_bottom#"
+                            }
                         }
                     }
                 ],

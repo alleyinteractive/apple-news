@@ -8,6 +8,8 @@
 
 namespace Apple_Exporter\Components;
 
+use WP_HTML_Tag_Processor;
+
 /**
  * Represents a simple image.
  *
@@ -26,13 +28,12 @@ class Image extends Component {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 
 		$has_image_child = false;
-		// If this is a figure and it has children, see if we can find an image.
+
+		// If this is a figure, and it has children, see if we can find an image at any depth.
 		if ( $node->hasChildNodes() && 'figure' === $node->tagName ) {
-			foreach ( $node->childNodes as $child ) {
-				if ( 'img' === $child->nodeName ) {
-					$has_image_child = true;
-				}
-			}
+			$html            = $node->ownerDocument->saveHTML( $node );
+			$proc            = new WP_HTML_Tag_Processor( $html );
+			$has_image_child = false !== $proc->next_tag( 'img' );
 		}
 
 		// Is this an image node?
@@ -117,6 +118,9 @@ class Image extends Component {
 						),
 						'layout'    => [
 							'ignoreDocumentMargin' => '#full_bleed_images#',
+							'margin'               => [
+								'bottom' => '#caption_margin_bottom#',
+							],
 						],
 					],
 				],
@@ -128,7 +132,7 @@ class Image extends Component {
 
 		$this->register_spec(
 			'anchored-image',
-			__( 'Anchored Layout', 'apple-news' ),
+			__( 'Anchored Layout (Without Caption)', 'apple-news' ),
 			[
 				'margin' => [
 					'bottom' => 25,
@@ -138,8 +142,19 @@ class Image extends Component {
 		);
 
 		$this->register_spec(
+			'anchored-image-with-caption',
+			__( 'Anchored Layout (With Caption)', 'apple-news' ),
+			[
+				'margin' => [
+					'bottom' => 10,
+					'top'    => 25,
+				],
+			]
+		);
+
+		$this->register_spec(
 			'non-anchored-image',
-			__( 'Non Anchored Layout', 'apple-news' ),
+			__( 'Non Anchored Layout (Without Caption)', 'apple-news' ),
 			[
 				'margin'      => [
 					'bottom' => 25,
@@ -151,11 +166,36 @@ class Image extends Component {
 		);
 
 		$this->register_spec(
+			'non-anchored-image-with-caption',
+			__( 'Non Anchored Layout (With Caption)', 'apple-news' ),
+			[
+				'margin'      => [
+					'bottom' => 10,
+					'top'    => 25,
+				],
+				'columnSpan'  => '#layout_columns_minus_4#',
+				'columnStart' => 2,
+			]
+		);
+
+		$this->register_spec(
 			'non-anchored-full-bleed-image',
-			__( 'Non Anchored with Full Bleed Images Layout', 'apple-news' ),
+			__( 'Non Anchored with Full Bleed Images Layout (Without Caption)', 'apple-news' ),
 			[
 				'margin'               => [
 					'bottom' => 25,
+					'top'    => 25,
+				],
+				'ignoreDocumentMargin' => true,
+			]
+		);
+
+		$this->register_spec(
+			'non-anchored-full-bleed-image-with-caption',
+			__( 'Non Anchored with Full Bleed Images Layout (With Caption)', 'apple-news' ),
+			[
+				'margin'               => [
+					'bottom' => 10,
 					'top'    => 25,
 				],
 				'ignoreDocumentMargin' => true,
@@ -216,10 +256,7 @@ class Image extends Component {
 		$caption_regex = $is_cover_block ? '#<div.*?>?\n(.*)#m' : '#<figcaption.*?>(.*?)</figcaption>#ms';
 		if ( preg_match( $caption_regex, $html, $matches ) ) {
 			$caption                  = trim( $matches[1] );
-			$values['#caption#']      = ! $is_cover_block ? $caption : [
-				'text'   => $caption,
-				'format' => 'html',
-			];
+			$values['#caption#']      = $caption;
 			$values['#caption_text#'] = $caption;
 			$values                   = $this->group_component( $values['#caption#'], $values );
 			$spec_name                = 'json-with-caption';
@@ -250,12 +287,15 @@ class Image extends Component {
 	 * @return array The modified values array.
 	 */
 	private function register_anchor_layout( $values ) {
-		$this->register_layout(
-			'anchored-image',
-			'anchored-image'
-		);
+		$layout_name = 'anchored-image';
 
-		$values['#layout#'] = 'anchored-image';
+		if ( isset( $values['#caption#'] ) ) {
+			$layout_name .= '-with-caption';
+		}
+
+		$this->register_layout( $layout_name, $layout_name );
+
+		$values['#layout#'] = $this->get_component_object_key( $layout_name );
 		return $values;
 	}
 
@@ -281,14 +321,17 @@ class Image extends Component {
 			$spec_name                                 = 'non-anchored-image';
 		}
 
-		// Register the layout.
-		$this->register_full_width_layout(
-			'full-width-image',
-			$spec_name,
-			$layout_values
-		);
+		$layout_name = 'full-width-image';
 
-		$values['#layout#'] = 'full-width-image';
+		if ( isset( $values['#caption#'] ) ) {
+			$layout_name .= '-with-caption';
+			$spec_name   .= '-with-caption';
+		}
+
+		// Register the layout.
+		$this->register_full_width_layout( $layout_name, $spec_name, $layout_values );
+
+		$values['#layout#'] = $this->get_component_object_key( $layout_name );
 		return $values;
 	}
 
@@ -304,7 +347,7 @@ class Image extends Component {
 		$theme = \Apple_Exporter\Theme::get_used();
 
 		if ( Component::ANCHOR_NONE === $this->get_anchor_position() ) {
-			return 'center';
+			return 'left';
 		}
 
 		switch ( $this->get_anchor_position() ) {
@@ -337,15 +380,16 @@ class Image extends Component {
 		$values = array_merge(
 			$values,
 			[
-				'#caption#'             => $caption,
-				'#text_alignment#'      => $this->find_caption_alignment(),
-				'#caption_font#'        => $theme->get_value( 'caption_font' ),
-				'#caption_size#'        => intval( $theme->get_value( 'caption_size' ) ),
-				'#caption_tracking#'    => intval( $theme->get_value( 'caption_tracking' ) ) / 100,
-				'#caption_line_height#' => intval( $theme->get_value( 'caption_line_height' ) ),
-				'#caption_color#'       => $theme->get_value( 'caption_color' ),
-				'#caption_color_dark#'  => $theme->get_value( 'caption_color_dark' ),
-				'#full_bleed_images#'   => ( 'yes' === $this->get_setting( 'full_bleed_images' ) ),
+				'#caption#'               => $caption,
+				'#text_alignment#'        => $this->find_caption_alignment(),
+				'#caption_font#'          => $theme->get_value( 'caption_font' ),
+				'#caption_size#'          => intval( $theme->get_value( 'caption_size' ) ),
+				'#caption_tracking#'      => intval( $theme->get_value( 'caption_tracking' ) ) / 100,
+				'#caption_line_height#'   => intval( $theme->get_value( 'caption_line_height' ) ),
+				'#caption_color#'         => $theme->get_value( 'caption_color' ),
+				'#caption_color_dark#'    => $theme->get_value( 'caption_color_dark' ),
+				'#caption_margin_bottom#' => intval( $theme->get_value( 'caption_margin_bottom' ) ),
+				'#full_bleed_images#'     => ( 'yes' === $this->get_setting( 'full_bleed_images' ) ),
 			]
 		);
 

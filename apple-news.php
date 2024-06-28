@@ -14,7 +14,7 @@
  * Plugin Name: Publish to Apple News
  * Plugin URI:  http://github.com/alleyinteractive/apple-news
  * Description: Export and sync posts to Apple format.
- * Version:     2.4.8
+ * Version:     2.5.0
  * Author:      Alley
  * Author URI:  https://alley.com
  * Text Domain: apple-news
@@ -40,7 +40,7 @@ function apple_news_date( $format, $timestamp = null, $timezone = null ) {
 	return date( $format, $timestamp ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 }
 
-require_once plugin_dir_path( __FILE__ ) . './includes/meta.php';
+require_once __DIR__ . '/includes/meta.php';
 
 if ( ! defined( 'WPINC' ) ) {
 	die;
@@ -57,7 +57,7 @@ function apple_news_activate_wp_plugin() {
 	}
 }
 
-require plugin_dir_path( __FILE__ ) . 'includes/apple-exporter/class-settings.php';
+require __DIR__ . '/includes/apple-exporter/class-settings.php';
 
 /**
  * Deactivate the plugin.
@@ -76,8 +76,8 @@ if ( ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV ) {
 }
 
 // Initialize plugin class.
-require plugin_dir_path( __FILE__ ) . 'includes/class-apple-news.php';
-require plugin_dir_path( __FILE__ ) . 'admin/class-admin-apple-news.php';
+require __DIR__ . '/includes/class-apple-news.php';
+require __DIR__ . '/admin/class-admin-apple-news.php';
 
 /**
  * Load plugin textdomain.
@@ -85,7 +85,7 @@ require plugin_dir_path( __FILE__ ) . 'admin/class-admin-apple-news.php';
  * @since 0.9.0
  */
 function apple_news_load_textdomain() {
-	load_plugin_textdomain( 'apple-news', false, plugin_dir_path( __FILE__ ) . '/lang' );
+	load_plugin_textdomain( 'apple-news', false, __DIR__ . '/lang' );
 }
 add_action( 'plugins_loaded', 'apple_news_load_textdomain' );
 
@@ -101,7 +101,7 @@ function apple_news_get_plugin_data() {
 	if ( ! function_exists( 'get_plugin_data' ) ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	}
-	return get_plugin_data( plugin_dir_path( __FILE__ ) . '/apple-news.php' );
+	return get_plugin_data( __DIR__ . '/apple-news.php' );
 }
 
 new Admin_Apple_News();
@@ -200,14 +200,3 @@ function apple_news_is_classic_editor_plugin_active() {
 
 	return false;
 }
-
-/**
- * Given a user ID, a post ID, and an action, determines whether a user can
- * perform the action or not.
- *
- * @param int    $post_id The ID of the post to check.
- * @param string $action  The action to check. One of 'publish', 'update', 'delete'.
- * @param int    $user_id The user ID to check.
- *
- * @return bool True if the user can perform the action, false otherwise.
- */

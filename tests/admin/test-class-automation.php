@@ -115,6 +115,33 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 	}
 
 	/**
+	 * Tests the functionality of using Automation to set the value of the contentGenerationType metadata.
+	 */
+	public function test_content_generation_type() {
+		$post_id = self::factory()->post->create();
+
+		// Create an automation routine for the slug component.
+		$result  = wp_insert_term( 'AI Generated', 'category' );
+		$term_id = $result['term_id'];
+		update_option(
+			'apple_news_automation',
+			[
+				[
+					'field'    => 'contentGenerationType',
+					'taxonomy' => 'category',
+					'term_id'  => $term_id,
+					'value'    => 'AI',
+				],
+			]
+		);
+
+		// Set the taxonomy term to trigger the automation routine and ensure the contentGenerationType is properly set.
+		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'AI', $json['metadata']['contentGenerationType'] );
+	}
+
+	/**
 	 * Ensures that named metadata is properly set via an automation process.
 	 *
 	 * @dataProvider data_metadata_automation
@@ -144,6 +171,37 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 		$request  = $this->get_request_for_post( $post_id );
 		$metadata = $this->get_metadata_from_request( $request );
 		$this->assertEquals( true, $metadata['data'][ $flag ] );
+	}
+
+	/**
+	 * Tests the ability to prepend arbitrary text to the metadata title of an article before it is published.
+	 */
+	public function test_metadata_title_automation() {
+		$post_id = self::factory()->post->create( [ 'post_title' => 'Lorem Ipsum Dolor Sit Amet' ] );
+
+		// Create an automation routine for the metadata title component.
+		$result  = wp_insert_term( 'Opinion', 'category' );
+		$term_id = $result['term_id'];
+		update_option(
+			'apple_news_automation',
+			[
+				[
+					'field'    => 'title.prepend',
+					'taxonomy' => 'category',
+					'term_id'  => $term_id,
+					'value'    => 'Opinion:',
+				],
+			]
+		);
+
+		// Set the taxonomy term to trigger the automation routine and ensure the title value is set properly.
+		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'Opinion: Lorem Ipsum Dolor Sit Amet', $json['title'] );
+
+		// Ensure that the title modification only applies to the metadata title and not the visible title in the component tree.
+		$this->assertEquals( 'title', $json['components'][0]['role'] );
+		$this->assertEquals( 'Lorem Ipsum Dolor Sit Amet', $json['components'][0]['text'] );
 	}
 
 	/**
@@ -326,5 +384,36 @@ class Apple_News_Automation_Test extends Apple_News_Testcase {
 		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
 		$json = $this->get_json_for_post( $post_id );
 		$this->assertEquals( '#000000', $json['componentTextStyles']['default-title']['textColor'] );
+	}
+
+	/**
+	 * Tests the ability to prepend arbitrary text to the visible title of an article before it is published.
+	 */
+	public function test_title_automation() {
+		$post_id = self::factory()->post->create( [ 'post_title' => 'Lorem Ipsum Dolor Sit Amet' ] );
+
+		// Create an automation routine for the title component.
+		$result  = wp_insert_term( 'Commentary', 'category' );
+		$term_id = $result['term_id'];
+		update_option(
+			'apple_news_automation',
+			[
+				[
+					'field'    => 'headline.prepend',
+					'taxonomy' => 'category',
+					'term_id'  => $term_id,
+					'value'    => 'Commentary:',
+				],
+			]
+		);
+
+		// Set the taxonomy term to trigger the automation routine and ensure the title value is set properly.
+		wp_set_post_terms( $post_id, [ $term_id ], 'category' );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertEquals( 'title', $json['components'][0]['role'] );
+		$this->assertEquals( 'Commentary: Lorem Ipsum Dolor Sit Amet', $json['components'][0]['text'] );
+
+		// Ensure that the title modification only applies to the component title and not the metadata title.
+		$this->assertEquals( 'Lorem Ipsum Dolor Sit Amet', $json['title'] );
 	}
 }

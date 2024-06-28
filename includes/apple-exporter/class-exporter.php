@@ -92,7 +92,6 @@ class Exporter {
 			$this->register_builder( 'textStyles', new Builders\Text_Styles( $this->content, $this->settings ) );
 			$this->register_builder( 'componentLayouts', new Builders\Component_Layouts( $this->content, $this->settings ) );
 			$this->register_builder( 'metadata', new Builders\Metadata( $this->content, $this->settings ) );
-			$this->register_builder( 'autoplacement', new Builders\Advertising_Settings( $this->content, $this->settings ) );
 		}
 
 		Component_Factory::initialize(

@@ -21,10 +21,26 @@ class Apple_News_Admin_Action_Index_Push_Test extends Apple_News_Testcase {
 	 */
 	public function data_metadata() {
 		return [
-			[ 'apple_news_is_hidden', true, false, false, false ],
-			[ 'apple_news_is_paid', false, true, false, false ],
-			[ 'apple_news_is_preview', false, false, true, false ],
-			[ 'apple_news_is_sponsored', false, false, false, true ],
+			[ 'apple_news_is_hidden', 'true', 'isHidden', true ],
+			[ 'apple_news_is_hidden', 'false', 'isHidden', false ],
+			[ 'apple_news_is_hidden', '1', 'isHidden', true ],
+			[ 'apple_news_is_hidden', '0', 'isHidden', false ],
+			[ 'apple_news_is_hidden', null, 'isHidden', null ],
+			[ 'apple_news_is_paid', 'true', 'isPaid', true ],
+			[ 'apple_news_is_paid', 'false', 'isPaid', false ],
+			[ 'apple_news_is_paid', '1', 'isPaid', true ],
+			[ 'apple_news_is_paid', '0', 'isPaid', false ],
+			[ 'apple_news_is_paid', null, 'isPaid', null ],
+			[ 'apple_news_is_preview', 'true', 'isPreview', true ],
+			[ 'apple_news_is_preview', 'false', 'isPreview', false ],
+			[ 'apple_news_is_preview', '1', 'isPreview', true ],
+			[ 'apple_news_is_preview', '0', 'isPreview', false ],
+			[ 'apple_news_is_preview', null, 'isPreview', null ],
+			[ 'apple_news_is_sponsored', 'true', 'isSponsored', true ],
+			[ 'apple_news_is_sponsored', 'false', 'isSponsored', false ],
+			[ 'apple_news_is_sponsored', '1', 'isSponsored', true ],
+			[ 'apple_news_is_sponsored', '0', 'isSponsored', false ],
+			[ 'apple_news_is_sponsored', null, 'isSponsored', null ],
 		];
 	}
 
@@ -194,23 +210,23 @@ class Apple_News_Admin_Action_Index_Push_Test extends Apple_News_Testcase {
 	 *
 	 * @dataProvider data_metadata
 	 *
-	 * @param string $meta_key     The meta key to set to true (e.g., apple_news_is_hidden).
-	 * @param bool   $is_hidden    The expected value for isHidden in the request.
-	 * @param bool   $is_paid      The expected value for isPaid in the request.
-	 * @param bool   $is_preview   The expected value for isPreview in the request.
-	 * @param bool   $is_sponsored The expected value for isSponsored in the request.
+	 * @param string      $meta_key   The meta key to set (e.g., apple_news_is_hidden).
+	 * @param string|null $meta_value The meta value to set, or null if the meta key should not be set at all.
+	 * @param string      $property   The metadata property to check.
+	 * @param string|null $expected   The expected value for the property, or null if it is expected to not be set.
 	 */
-	public function test_metadata( $meta_key, $is_hidden, $is_paid, $is_preview, $is_sponsored ) {
+	public function test_metadata( $meta_key, $meta_value, $property, $expected ) {
 		$post_id = self::factory()->post->create();
-		add_post_meta( $post_id, $meta_key, true );
+		if ( ! is_null( $meta_value ) ) {
+			add_post_meta( $post_id, $meta_key, $meta_value );
+		}
 		$request  = $this->get_request_for_post( $post_id );
 		$metadata = $this->get_metadata_from_request( $request );
-
-		// Check the values for the four metadata keys against expected values.
-		$this->assertEquals( $is_hidden, $metadata['data']['isHidden'] );
-		$this->assertEquals( $is_paid, $metadata['data']['isPaid'] );
-		$this->assertEquals( $is_preview, $metadata['data']['isPreview'] );
-		$this->assertEquals( $is_sponsored, $metadata['data']['isSponsored'] );
+		if ( ! is_null( $expected ) ) {
+			$this->assertEquals( $expected, $metadata['data'][ $property ], sprintf( 'Expected property %s to be %s given meta key %s and meta value %s', $property, $expected, $meta_key, $meta_value ) );
+		} else {
+			$this->assertArrayNotHasKey( $property, $metadata['data'] ?? [], sprintf( 'Expected property %s to not exist, but it does', $property ) );
+		}
 	}
 
 	/**

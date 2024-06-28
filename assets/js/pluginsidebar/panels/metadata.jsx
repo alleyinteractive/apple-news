@@ -37,29 +37,49 @@ function Metadata({
       initialOpen={false}
       title={__('Metadata', 'apple-news')}
     >
-      <CheckboxControl
-        checked={isPaid}
-        help={__('Check this to indicate that viewing the article requires a paid subscription. Note that Apple must approve your channel for paid content before using this feature.', 'apple-news')}
+      <SelectControl
+        help={__('Set this setting to true to indicate that viewing the article requires a paid subscription, false to indicate that it does not, or leave it empty to use the channel default value. Note that Apple must approve your channel for paid content before using this feature.', 'apple-news')}
         label={__('Paid Article', 'apple-news')}
         onChange={onChangeIsPaid}
+        options={[
+          { label: __('Channel Default', 'apple-news'), value: '' },
+          { label: __('True', 'apple-news'), value: 'true' },
+          { label: __('False', 'apple-news'), value: 'false' },
+        ]}
+        value={isPaid === '1' ? 'true' : isPaid}
       />
-      <CheckboxControl
-        checked={isPreview}
-        help={__('Check this to publish the article as a draft.', 'apple-news')}
+      <SelectControl
+        help={__('Set this setting to true to publish the article as a draft.', 'apple-news')}
         label={__('Preview Article', 'apple-news')}
         onChange={onChangeIsPreview}
+        options={[
+          { label: __('Channel Default', 'apple-news'), value: '' },
+          { label: __('True', 'apple-news'), value: 'true' },
+          { label: __('False', 'apple-news'), value: 'false' },
+        ]}
+        value={isPreview === '1' ? 'true' : isPreview}
       />
-      <CheckboxControl
-        checked={isHidden}
-        help={__('Check this to publish the article as a hidden article. Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news')}
+      <SelectControl
+        help={__('Set this setting to true to publish the article as a hidden article. Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news')}
         label={__('Hidden Article', 'apple-news')}
         onChange={onChangeIsHidden}
+        options={[
+          { label: __('Channel Default', 'apple-news'), value: '' },
+          { label: __('True', 'apple-news'), value: 'true' },
+          { label: __('False', 'apple-news'), value: 'false' },
+        ]}
+        value={isHidden === '1' ? 'true' : isHidden}
       />
-      <CheckboxControl
-        checked={isSponsored}
-        help={__('Check this to indicate this article is sponsored content.', 'apple-news')}
+      <SelectControl
+        help={__('Set this setting to true to indicate this article is sponsored content.', 'apple-news')}
         label={__('Sponsored Article', 'apple-news')}
         onChange={onChangeIsSponsored}
+        options={[
+          { label: __('Channel Default', 'apple-news'), value: '' },
+          { label: __('True', 'apple-news'), value: 'true' },
+          { label: __('False', 'apple-news'), value: 'false' },
+        ]}
+        value={isSponsored === '1' ? 'true' : isSponsored}
       />
       <CheckboxControl
         checked={suppressVideoURL}

@@ -361,6 +361,18 @@ class Theme {
 	 * @return array The list of iOS fonts.
 	 */
 	public static function get_fonts() {
+		// Get custom fonts from this channel.
+		require_once dirname( __DIR__, 2 ) . '/admin/apple-actions/index/class-channel.php';
+		$admin_settings = new \Admin_Apple_Settings();
+		$channel_api    = new \Apple_Actions\Index\Channel( $admin_settings->fetch_settings() );
+		$channel        = $channel_api->perform();
+		$custom_fonts   = ! empty( $channel->data->fonts ) && is_array( $channel->data->fonts )
+			? wp_list_pluck( $channel->data->fonts, 'name' )
+			: [];
+
+		$all_fonts = array_unique( array_merge( self::$fonts, $custom_fonts ) );
+		sort( $all_fonts );
+
 		/**
 		 * Allows the font list to be filtered, so that any custom
 		 * fonts that have been approved by Apple and added to your
@@ -375,7 +387,7 @@ class Theme {
 		 *
 		 * @param array $fonts An array of TrueType font names.
 		 */
-		return apply_filters( 'apple_news_fonts_list', self::$fonts );
+		return apply_filters( 'apple_news_fonts_list', $all_fonts );
 	}
 
 	/**
@@ -487,8 +499,7 @@ class Theme {
 		/* phpcs:enable */
 
 		// Load the template.
-		include dirname( dirname( plugin_dir_path( __FILE__ ) ) )
-			. '/admin/partials/field-meta-component-order.php';
+		include dirname( __DIR__, 2 ) . '/admin/partials/field-meta-component-order.php';
 	}
 
 	/**
@@ -545,17 +556,47 @@ class Theme {
 	 */
 	private static function initialize_options() {
 		self::$options = [
-			'ad_frequency'                       => [
-				'default'     => 5,
-				'description' => __( 'A number between 1 and 10 defining the frequency for automatically inserting dynamic advertisements into articles. For more information, see the <a href="https://developer.apple.com/documentation/apple_news/advertisementautoplacement" target="_blank">Apple News Format Reference</a>.', 'apple-news' ),
-				'label'       => __( 'Ad Frequency', 'apple-news' ),
-				'type'        => 'integer',
+			'aside_alignment'                    => [
+				'default' => 'right',
+				'label'   => __( 'Aside component alignment', 'apple-news' ),
+				'options' => [ 'left', 'right' ],
+				'type'    => 'select',
 			],
-			'ad_margin'                          => [
-				'default'     => 15,
-				'description' => __( 'The margin to use above and below inserted ads.', 'apple-news' ),
-				'label'       => __( 'Ad Margin', 'apple-news' ),
-				'type'        => 'integer',
+			'aside_background_color'             => [
+				'default' => '#e1e1e1',
+				'label'   => __( 'Aside background color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'aside_background_color_dark'        => [
+				'default' => '',
+				'label'   => __( 'Aside background color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'aside_border_color'                 => [
+				'default' => '#4f4f4f',
+				'label'   => __( 'Aside border color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'aside_border_color_dark'            => [
+				'default' => '',
+				'label'   => __( 'Aside border color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'aside_border_style'                 => [
+				'default' => 'solid',
+				'label'   => __( 'Aside border style', 'apple-news' ),
+				'options' => [ 'solid', 'dashed', 'dotted', 'none' ],
+				'type'    => 'select',
+			],
+			'aside_border_width'                 => [
+				'default' => 3,
+				'label'   => __( 'Aside border width', 'apple-news' ),
+				'type'    => 'integer',
+			],
+			'aside_padding'                      => [
+				'default' => 20,
+				'label'   => __( 'Aside padding', 'apple-news' ),
+				'type'    => 'integer',
 			],
 			'author_color'                       => [
 				'default' => '#7c7c7c',
@@ -828,6 +869,11 @@ class Theme {
 				'label'   => __( 'Caption line height', 'apple-news' ),
 				'type'    => 'float',
 			],
+			'caption_margin_bottom'              => [
+				'default' => 25,
+				'label'   => __( 'Margin below the caption', 'apple-news' ),
+				'type'    => 'integer',
+			],
 			'caption_size'                       => [
 				'default' => 16,
 				'label'   => __( 'Caption font size', 'apple-news' ),
@@ -905,12 +951,6 @@ class Theme {
 				'default' => 5,
 				'label'   => __( 'Drop cap padding', 'apple-news' ),
 				'type'    => 'integer',
-			],
-			'enable_advertisement'               => [
-				'default' => 'yes',
-				'label'   => __( 'Enable advertisements', 'apple-news' ),
-				'options' => [ 'yes', 'no' ],
-				'type'    => 'select',
 			],
 			'gallery_type'                       => [
 				'default' => 'gallery',
@@ -1146,6 +1186,37 @@ class Theme {
 				'all_options' => [ 'cover', 'title', 'slug', 'byline', 'author', 'date', 'intro' ],
 				'callback'    => [ get_called_class(), 'render_meta_component_order' ],
 				'type'        => 'array',
+			],
+			'cite_color'                         => [
+				'default' => '#4f4f4f',
+				'label'   => __( 'Citation font color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'cite_color_dark'                    => [
+				'default' => '',
+				'label'   => __( 'Citation font color', 'apple-news' ),
+				'type'    => 'color',
+			],
+			'cite_font'                          => [
+				'default' => 'AvenirNext-Italic',
+				'label'   => __( 'Citation font face', 'apple-news' ),
+				'type'    => 'font',
+			],
+			'cite_line_height'                   => [
+				'default' => 24.0,
+				'label'   => __( 'Citation line height', 'apple-news' ),
+				'type'    => 'float',
+			],
+			'cite_size'                          => [
+				'default' => 16,
+				'label'   => __( 'Citation font size', 'apple-news' ),
+				'type'    => 'integer',
+			],
+			'cite_tracking'                      => [
+				'default'     => 0,
+				'description' => __( '(Percentage of font size)', 'apple-news' ),
+				'label'       => __( 'Citation tracking', 'apple-news' ),
+				'type'        => 'integer',
 			],
 			'monospaced_color'                   => [
 				'default' => '#4f4f4f',
@@ -2418,6 +2489,18 @@ class Theme {
 					'table_header_color_dark',
 				],
 			],
+			'cite'            => [
+				'label'    => __( 'Citation (<cite>)', 'apple-news' ),
+				'settings' => [
+					'cite_font',
+					'cite_size',
+					'cite_line_height',
+					'cite_tracking',
+					'cite_color',
+					'dark_mode_colors_heading',
+					'cite_color_dark',
+				],
+			],
 			'monospaced'      => [
 				'label'    => __( 'Monospaced (<pre>, <code>, <samp>)', 'apple-news' ),
 				'settings' => [
@@ -2435,12 +2518,19 @@ class Theme {
 				'description' => __( 'Can either be a standard gallery, or mosaic.', 'apple-news' ),
 				'settings'    => [ 'gallery_type' ],
 			],
-			'advertisement'   => [
-				'label'    => __( 'Advertisement', 'apple-news' ),
-				'settings' => [
-					'enable_advertisement',
-					'ad_frequency',
-					'ad_margin',
+			'aside'           => [
+				'label'       => __( 'Aside', 'apple-news' ),
+				'description' => __( 'Content that is not directly related to the article.', 'apple-news' ),
+				'settings'    => [
+					'aside_alignment',
+					'aside_background_color',
+					'aside_border_style',
+					'aside_border_color',
+					'aside_border_width',
+					'aside_padding',
+					'dark_mode_colors_heading',
+					'aside_background_color_dark',
+					'aside_border_color_dark',
 				],
 			],
 			'component_order' => [
@@ -2564,6 +2654,11 @@ class Theme {
 
 				// Clean up root-level components list.
 				$invalid_components = array_filter( $invalid_components );
+			}
+
+			// Allow subcomponents through.
+			if ( isset( $invalid_components[ $component_key ]['subcomponents'] ) ) {
+				unset( $invalid_components[ $component_key ]['subcomponents'] );
 			}
 		}
 

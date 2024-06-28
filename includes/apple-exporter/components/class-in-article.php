@@ -1,6 +1,6 @@
 <?php
 /**
- * Publish to Apple News: \Apple_Exporter\Components\Advertisement class
+ * Publish to Apple News: \Apple_Exporter\Components\In_Article class
  *
  * @package Apple_News
  * @subpackage Apple_Exporter\Components
@@ -9,37 +9,26 @@
 namespace Apple_Exporter\Components;
 
 /**
- * Represents an Article Format Advertisement. It gets generated automatically
- * so not much to do here but define the static JSON.
+ * Represents an In Article module. The module initializes as empty and
+ * is defined by the user via the Customize JSON feature. If non-empty, it is
+ * inserted into the article body after the block occupying the specified position.
  *
- * @since 0.4.0
+ * @since 2.5.0
  */
-class Advertisement extends Component {
-
+class In_Article extends Component {
 	/**
 	 * Register all specs for the component.
-	 *
-	 * @access public
 	 */
 	public function register_specs() {
 		$this->register_spec(
 			'json',
 			__( 'JSON', 'apple-news' ),
-			[
-				'role'       => 'banner_advertisement',
-				'bannerType' => 'standard',
-			]
+			[]
 		);
-
 		$this->register_spec(
 			'layout',
 			__( 'Layout', 'apple-news' ),
-			[
-				'margin' => [
-					'top'    => 25,
-					'bottom' => 25,
-				],
-			]
+			[]
 		);
 	}
 
@@ -47,7 +36,6 @@ class Advertisement extends Component {
 	 * Build the component.
 	 *
 	 * @param string $html The HTML to parse into text for processing.
-	 * @access protected
 	 */
 	protected function build( $html ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$this->register_json(
@@ -65,7 +53,7 @@ class Advertisement extends Component {
 	 */
 	private function set_layout() {
 		$this->register_full_width_layout(
-			'advertisement-layout',
+			'in-article-layout',
 			'layout',
 			[],
 			'layout'

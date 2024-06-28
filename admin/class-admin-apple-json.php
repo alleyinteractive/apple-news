@@ -5,6 +5,8 @@
  * @package Apple_News
  */
 
+use Apple_Exporter\Components\Component;
+
 /**
  * This class is in charge of handling the management of custom JSON.
  */
@@ -36,6 +38,14 @@ class Admin_Apple_JSON extends Apple_News {
 	private $selected_component = '';
 
 	/**
+	 * Holds the selected subcomponent from the request.
+	 *
+	 * @since 2.5.0
+	 * @var string
+	 */
+	private $selected_subcomponent = '';
+
+	/**
 	 * Holds the selected theme from the request.
 	 *
 	 * @since 1.4.0
@@ -58,20 +68,20 @@ class Admin_Apple_JSON extends Apple_News {
 	public function __construct() {
 		$this->json_page_name = $this->plugin_domain . '-json';
 
-		$this->valid_actions = array(
-			'apple_news_get_json'   => array(),
-			'apple_news_reset_json' => array(
-				'callback' => array( $this, 'reset_json' ),
-			),
-			'apple_news_save_json'  => array(
-				'callback' => array( $this, 'save_json' ),
-			),
-		);
+		$this->valid_actions = [
+			'apple_news_get_json'   => [],
+			'apple_news_reset_json' => [
+				'callback' => [ $this, 'reset_json' ],
+			],
+			'apple_news_save_json'  => [
+				'callback' => [ $this, 'save_json' ],
+			],
+		];
 
-		add_action( 'admin_menu', array( $this, 'setup_json_page' ), 99 );
-		add_action( 'admin_init', array( $this, 'action_router' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
-		add_filter( 'admin_title', array( $this, 'set_title' ), 10, 2 );
+		add_action( 'admin_menu', [ $this, 'setup_json_page' ], 99 );
+		add_action( 'admin_init', [ $this, 'action_router' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'register_assets' ] );
+		add_filter( 'admin_title', [ $this, 'set_title' ], 10, 2 );
 	}
 
 	/**
@@ -98,6 +108,14 @@ class Admin_Apple_JSON extends Apple_News {
 			: '';
 		if ( ! array_key_exists( $this->selected_component, $this->list_components() ) ) {
 			$this->selected_component = '';
+		}
+
+		// Store the selected subcomponent value for use later.
+		$this->selected_subcomponent = isset( $_POST['apple_news_subcomponent'] )
+			? sanitize_text_field( wp_unslash( $_POST['apple_news_subcomponent'] ) )
+			: '';
+		if ( ! array_key_exists( $this->selected_subcomponent, $this->list_components() ) ) {
+			$this->selected_subcomponent = '';
 		}
 
 		// Store the selected theme for use later.
@@ -152,7 +170,7 @@ class Admin_Apple_JSON extends Apple_News {
 			/** This filter is documented in admin/class-admin-apple-settings.php */
 			apply_filters( 'apple_news_settings_capability', 'manage_options' ),
 			$this->json_page_name,
-			array( $this, 'page_json_render' )
+			[ $this, 'page_json_render' ]
 		);
 	}
 
@@ -185,15 +203,19 @@ class Admin_Apple_JSON extends Apple_News {
 			? $this->get_selected_component()
 			: '';
 
-		// If we have a class, get its specs.
-		$specs = ( ! empty( $selected_component ) )
-			? $this->get_specs( $selected_component )
-			: array();
+		// Handle subcomponents.
+		$component_can_be_parent = $this->get_component_class( $selected_component )?->can_be_parent();
+		$selected_subcomponent   = ( ! empty( $selected_component ) )
+			? $this->get_selected_subcomponent()
+			: '';
+
+		// If we have a component or subcomponent, get its specs.
+		$specs = $this->get_specs( $selected_component, $selected_subcomponent );
 
 		/* phpcs:enable */
 
 		// Load the template.
-		include plugin_dir_path( __FILE__ ) . 'partials/page-json.php';
+		include __DIR__ . '/partials/page-json.php';
 	}
 
 	/**
@@ -210,14 +232,14 @@ class Admin_Apple_JSON extends Apple_News {
 		wp_enqueue_style(
 			'apple-news-json-css',
 			plugin_dir_url( __FILE__ ) . '../assets/css/json.css',
-			array(),
+			[],
 			self::$version
 		);
 
 		wp_enqueue_script(
 			'apple-news-json-js',
 			plugin_dir_url( __FILE__ ) . '../assets/js/json.js',
-			array( 'jquery' ),
+			[ 'jquery' ],
 			self::$version,
 			false
 		);
@@ -225,7 +247,7 @@ class Admin_Apple_JSON extends Apple_News {
 		wp_enqueue_script(
 			'ace-js',
 			'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js',
-			array( 'jquery' ),
+			[ 'jquery' ],
 			'1.2.6',
 			false
 		);
@@ -260,8 +282,11 @@ class Admin_Apple_JSON extends Apple_News {
 			return;
 		}
 
+		// Get the selected subcomponent.
+		$subcomponent = $this->get_selected_subcomponent();
+
 		// Get the specs for the component.
-		$specs = $this->get_specs( $component );
+		$specs = $this->get_specs( $component, $subcomponent );
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
@@ -317,9 +342,12 @@ class Admin_Apple_JSON extends Apple_News {
 			return;
 		}
 
-		// Get the specs for the component and theme.
+		// Get the selected subcomponent.
+		$subcomponent = $this->get_selected_subcomponent();
+
+		// Get the specs for the component or subcomponent.
 		$theme = sanitize_text_field( wp_unslash( $_POST['apple_news_theme'] ) );
-		$specs = $this->get_specs( $component, $theme );
+		$specs = $this->get_specs( $component, $subcomponent );
 		if ( empty( $specs ) ) {
 			\Admin_Apple_Notice::error(
 				sprintf(
@@ -334,7 +362,7 @@ class Admin_Apple_JSON extends Apple_News {
 
 		// Iterate over the specs and save each one.
 		// Keep track of which ones were updated.
-		$updates = array();
+		$updates = [];
 		foreach ( $specs as $spec ) {
 			// Ensure the value exists.
 			$key = 'apple_news_json_' . $spec->key_from_name( $spec->name );
@@ -368,18 +396,37 @@ class Admin_Apple_JSON extends Apple_News {
 	/**
 	 * Loads the JSON specs that can be customized for the component
 	 *
-	 * @param string $component The component to get specs for.
+	 * @param string  $component    The component to get specs for.
+	 * @param ?string $subcomponent The subcomponent to get specs for.
+	 *
 	 * @return array
-	 * @access private
 	 */
-	private function get_specs( $component ) {
-		if ( empty( $component ) ) {
-			return array();
+	private function get_specs( $component, $subcomponent = null ) {
+		$component_class = $this->get_component_class( $component, $subcomponent );
+		return $component_class ? $component_class->get_specs() : [];
+	}
+
+	/**
+	 * Given a component slug, returns the associated component class.
+	 *
+	 * @param string  $component    The component to get the class for.
+	 * @param ?string $subcomponent The subcomponent to get the class for.
+	 *
+	 * @return ?Component
+	 */
+	private function get_component_class( $component, $subcomponent = null ) {
+		$classname = $this->namespace . $component;
+		if ( ! class_exists( $classname ) ) {
+			return null;
 		}
 
-		$classname       = $this->namespace . $component;
-		$component_class = new $classname();
-		return $component_class->get_specs();
+		// Handle subcomponents.
+		if ( ! empty( $subcomponent ) ) {
+			$subcomponent_classname = $this->namespace . $subcomponent;
+			return class_exists( $subcomponent_classname ) ? new $subcomponent_classname( null, null, null, null, null, null, null, new $classname() ) : null;
+		}
+
+		return new $classname();
 	}
 
 	/**
@@ -394,7 +441,7 @@ class Admin_Apple_JSON extends Apple_News {
 		$components = $component_factory::get_components();
 
 		// Make this alphabetized and pretty.
-		$components_sanitized = array();
+		$components_sanitized = [];
 		foreach ( $components as $component ) {
 			$component_key                          = str_replace( $this->namespace, '', $component );
 			$component_name                         = str_replace( '_', ' ', $component_key );
@@ -412,6 +459,15 @@ class Admin_Apple_JSON extends Apple_News {
 	 */
 	public function get_selected_component() {
 		return $this->selected_component;
+	}
+
+	/**
+	 * Gets the currently selected subcomponent.
+	 *
+	 * @return string
+	 */
+	public function get_selected_subcomponent() {
+		return $this->selected_subcomponent;
 	}
 
 	/**

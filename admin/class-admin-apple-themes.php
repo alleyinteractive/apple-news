@@ -318,7 +318,7 @@ class Admin_Apple_Themes extends Apple_News {
 		/* phpcs:enable */
 
 		// Load the edit page.
-		include plugin_dir_path( __FILE__ ) . 'partials/page-theme-edit.php';
+		include __DIR__ . '/partials/page-theme-edit.php';
 	}
 
 	/**
@@ -332,7 +332,7 @@ class Admin_Apple_Themes extends Apple_News {
 			wp_die( esc_html__( 'You do not have permissions to access this page.', 'apple-news' ) );
 		}
 
-		include plugin_dir_path( __FILE__ ) . 'partials/page-themes.php';
+		include __DIR__ . '/partials/page-themes.php';
 	}
 
 	/**
@@ -352,6 +352,15 @@ class Admin_Apple_Themes extends Apple_News {
 		) ) {
 			return;
 		}
+
+		// Get information about custom fonts from the channel.
+		require_once __DIR__ . '/apple-actions/index/class-channel.php';
+		$admin_settings = new Admin_Apple_Settings();
+		$channel_api    = new \Apple_Actions\Index\Channel( $admin_settings->fetch_settings() );
+		$channel        = $channel_api->perform();
+		$custom_fonts   = ! empty( $channel->data->fonts ) && is_array( $channel->data->fonts )
+			? wp_list_pluck( $channel->data->fonts, 'name' )
+			: [];
 
 		wp_enqueue_style(
 			'apple-news-themes-css',
@@ -419,7 +428,9 @@ class Admin_Apple_Themes extends Apple_News {
 				'apple-news-theme-edit-js',
 				'appleNewsThemeEdit',
 				[
-					'fontNotice' => __( 'Font preview is only available on macOS', 'apple-news' ),
+					'customFonts'      => $custom_fonts,
+					'customFontNotice' => __( 'Font preview may not be available', 'apple-news' ),
+					'fontNotice'       => __( 'Font preview is only available on macOS', 'apple-news' ),
 				]
 			);
 		}

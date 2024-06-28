@@ -8,28 +8,28 @@
  */
 
 // Include dependencies.
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-settings.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-post-sync.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-index-page.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-bulk-export-page.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-notice.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-meta-boxes.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-async.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-sections.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-themes.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-preview.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-admin-apple-json.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-automation.php';
+require_once __DIR__ . '/class-admin-apple-settings.php';
+require_once __DIR__ . '/class-admin-apple-post-sync.php';
+require_once __DIR__ . '/class-admin-apple-index-page.php';
+require_once __DIR__ . '/class-admin-apple-bulk-export-page.php';
+require_once __DIR__ . '/class-admin-apple-notice.php';
+require_once __DIR__ . '/class-admin-apple-meta-boxes.php';
+require_once __DIR__ . '/class-admin-apple-async.php';
+require_once __DIR__ . '/class-admin-apple-sections.php';
+require_once __DIR__ . '/class-admin-apple-themes.php';
+require_once __DIR__ . '/class-admin-apple-preview.php';
+require_once __DIR__ . '/class-admin-apple-json.php';
+require_once __DIR__ . '/class-automation.php';
 
 // REST Includes.
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-delete.php';
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-published-state.php';
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-get-settings.php';
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-modify-post.php';
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-publish.php';
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-sections.php';
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-update.php';
-require_once plugin_dir_path( __FILE__ ) . '../includes/REST/apple-news-user-can-publish.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-delete.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-get-published-state.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-get-settings.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-modify-post.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-publish.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-sections.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-update.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-user-can-publish.php';
 
 /**
  * Entry-point class for the plugin.
@@ -122,20 +122,16 @@ class Admin_Apple_News extends Apple_News {
 					'default' => '',
 				],
 				'apple_news_is_hidden'           => [
-					'default' => false,
-					'type'    => 'boolean',
+					'default' => '',
 				],
 				'apple_news_is_paid'             => [
-					'default' => false,
-					'type'    => 'boolean',
+					'default' => '',
 				],
 				'apple_news_is_preview'          => [
-					'default' => false,
-					'type'    => 'boolean',
+					'default' => '',
 				],
 				'apple_news_is_sponsored'        => [
-					'default' => false,
-					'type'    => 'boolean',
+					'default' => '',
 				],
 				'apple_news_maturity_rating'     => [
 					'default' => '',

@@ -48,25 +48,41 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 	<div id="apple-news-metabox-metadata" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
 		<h3><?php esc_html_e( 'Metadata', 'apple-news' ); ?></h3>
 		<label for="apple-news-is-paid">
-			<input id="apple-news-is-paid" name="apple_news_is_paid" type="checkbox" value="1" <?php checked( $is_paid ); ?>>
 			<strong><?php esc_html_e( 'Paid Article', 'apple-news' ); ?></strong>
+			<select id="apple-news-is-paid" name="apple_news_is_paid">
+				<option value=""><?php esc_html_e( 'Channel Default', 'apple-news' ); ?></option>
+				<option value="true" <?php selected( 'true', $is_paid ); ?>><?php esc_html_e( 'True', 'apple-news' ); ?></option>
+				<option value="false" <?php selected( 'false', $is_paid ); ?>><?php esc_html_e( 'False', 'apple-news' ); ?></option>
+			</select>
 		</label>
-		<p><?php esc_html_e( 'Check this to indicate that viewing the article requires a paid subscription. Note that Apple must approve your channel for paid content before using this feature.', 'apple-news' ); ?></p>
+		<p><?php esc_html_e( 'Set this setting to true to indicate that viewing the article requires a paid subscription, false to indicate that it does not, or leave it empty to use the channel default value. Note that Apple must approve your channel for paid content before using this feature.', 'apple-news' ); ?></p>
 		<label for="apple-news-is-preview">
-			<input id="apple-news-is-preview" name="apple_news_is_preview" type="checkbox" value="1" <?php checked( $is_preview ); ?>>
 			<strong><?php esc_html_e( 'Preview Article', 'apple-news' ); ?></strong>
+			<select id="apple-news-is-preview" name="apple_news_is_preview">
+				<option value=""><?php esc_html_e( 'Channel Default', 'apple-news' ); ?></option>
+				<option value="true" <?php selected( 'true', $is_preview ); ?>><?php esc_html_e( 'True', 'apple-news' ); ?></option>
+				<option value="false" <?php selected( 'false', $is_preview ); ?>><?php esc_html_e( 'False', 'apple-news' ); ?></option>
+			</select>
 		</label>
-		<p><?php esc_html_e( 'Check this to publish the article as a draft.', 'apple-news' ); ?></p>
+		<p><?php esc_html_e( 'Set this setting to true to publish the article as a draft.', 'apple-news' ); ?></p>
 		<label for="apple-news-is-hidden">
-			<input id="apple-news-is-hidden" name="apple_news_is_hidden" type="checkbox" value="1" <?php checked( $is_hidden ); ?>>
 			<strong><?php esc_html_e( 'Hidden Article', 'apple-news' ); ?></strong>
+			<select id="apple-news-is-hidden" name="apple_news_is_hidden">
+				<option value=""><?php esc_html_e( 'Channel Default', 'apple-news' ); ?></option>
+				<option value="true" <?php selected( 'true', $is_hidden ); ?>><?php esc_html_e( 'True', 'apple-news' ); ?></option>
+				<option value="false" <?php selected( 'false', $is_hidden ); ?>><?php esc_html_e( 'False', 'apple-news' ); ?></option>
+			</select>
 		</label>
-		<p><?php esc_html_e( 'Check this to publish the article as a hidden article. Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news' ); ?></p>
+		<p><?php esc_html_e( 'Set this setting to true to publish the article as a hidden article. Hidden articles are visible to users who have a link to the article, but do not appear in feeds.', 'apple-news' ); ?></p>
 		<label for="apple-news-is-sponsored">
-			<input id="apple-news-is-sponsored" name="apple_news_is_sponsored" type="checkbox" value="1" <?php checked( $is_sponsored ); ?>>
 			<strong><?php esc_html_e( 'Sponsored Article', 'apple-news' ); ?></strong>
+			<select id="apple-news-is-sponsored" name="apple_news_is_sponsored">
+				<option value=""><?php esc_html_e( 'Channel Default', 'apple-news' ); ?></option>
+				<option value="true" <?php selected( 'true', $is_sponsored ); ?>><?php esc_html_e( 'True', 'apple-news' ); ?></option>
+				<option value="false" <?php selected( 'false', $is_sponsored ); ?>><?php esc_html_e( 'False', 'apple-news' ); ?></option>
+			</select>
 		</label>
-		<p><?php esc_html_e( 'Check this to indicate this article is sponsored content.', 'apple-news' ); ?></p>
+		<p><?php esc_html_e( 'Set this setting to true to indicate this article is sponsored content.', 'apple-news' ); ?></p>
 		<label for="apple-news-suppress-video-url">
 			<input id="apple-news-suppress-video-url" name="apple_news_suppress_video_url" type="checkbox" value="1" <?php checked( $suppress_video_url ); ?>>
 			<strong><?php esc_html_e( 'Do not set videoURL metadata for this article', 'apple-news' ); ?></strong>
@@ -119,7 +135,7 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 	</div>
 	<div id="apple-news-metabox-coverimage" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
 		<h3><?php esc_html_e( 'Cover Image', 'apple-news' ); ?></h3>
-		<?php require plugin_dir_path( __FILE__ ) . 'cover-image.php'; ?>
+		<?php require __DIR__ . '/cover-image.php'; ?>
 	</div>
 	<?php
 	if ( 'yes' !== $this->settings->get( 'api_autosync' )

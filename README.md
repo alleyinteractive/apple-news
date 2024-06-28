@@ -10,7 +10,6 @@ The Publish to Apple News plugin enables your WordPress content to be published 
 - Control individual posts with options to publish, update, or delete.
 - Publish individual posts or in bulk.
 - Handles image galleries and popular embeds like YouTube and Vimeo that are supported by Apple News.
-- Automatically adjust advertisement settings.
 
 Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for detailed information on the follow items:
 

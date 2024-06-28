@@ -37,6 +37,13 @@ abstract class Apple_News_Testcase extends WP_UnitTestCase {
 	protected $content_settings;
 
 	/**
+	 * Keeps track of files created for tests so we can clean them up in tearDown.
+	 *
+	 * @var array
+	 */
+	private $files_created = [];
+
+	/**
 	 * Contains an array of key-value pairs for responses for given verbs and URLs.
 	 *
 	 * @var array
@@ -226,10 +233,13 @@ abstract class Apple_News_Testcase extends WP_UnitTestCase {
 	 * A fixture containing operations to be run after each test.
 	 */
 	public function tearDown(): void {
+		parent::tearDown();
 		$this->prophet->checkPredictions();
-		remove_filter( 'apple_news_post_args', [ $this, 'filter_apple_news_post_args' ] );
-		remove_filter( 'pre_http_request', [ $this, 'filter_pre_http_request' ] );
-		wp_set_current_user( 0 );
+		foreach ( $this->files_created as $file_created ) {
+			if ( file_exists( $file_created ) ) {
+				unlink( $file_created ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink
+			}
+		}
 	}
 
 	/**
@@ -421,7 +431,7 @@ abstract class Apple_News_Testcase extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Runs create_upload_object using a test image and returns the image ID.
+	 * Creates an attachment using a real image and returns the image ID.
 	 *
 	 * @param int    $parent  Optional. The parent post ID. Defaults to no parent.
 	 * @param string $caption Optional. The caption to set on the image.
@@ -430,7 +440,7 @@ abstract class Apple_News_Testcase extends WP_UnitTestCase {
 	 * @return int The post ID of the attachment image that was created.
 	 */
 	protected function get_new_attachment( $parent = 0, $caption = '', $alt = '' ) {
-		$image_id = self::factory()->attachment->create_upload_object( __DIR__ . '/data/test-image.jpg', $parent );
+		$image_id = self::factory()->attachment->with_image( __DIR__ . '/data/test-image.jpg', $parent )->create();
 
 		if ( ! empty( $caption ) ) {
 			$image               = get_post( $image_id );
@@ -440,6 +450,14 @@ abstract class Apple_News_Testcase extends WP_UnitTestCase {
 
 		if ( ! empty( $alt ) ) {
 			update_post_meta( $image_id, '_wp_attachment_image_alt', $alt );
+		}
+
+		// Keep track of all files that this function created so we can delete them later.
+		$upload_dir            = wp_get_upload_dir();
+		$metadata              = wp_get_attachment_metadata( $image_id );
+		$this->files_created[] = sprintf( '%s/%s', $upload_dir['basedir'], $metadata['file'] );
+		foreach ( $metadata['sizes'] as $size ) {
+			$this->files_created[] = sprintf( '%s/%s', $upload_dir['path'], $size['file'] );
 		}
 
 		return $image_id;

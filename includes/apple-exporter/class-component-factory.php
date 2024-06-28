@@ -8,6 +8,9 @@
 
 namespace Apple_Exporter;
 
+use Apple_Exporter\Components\Component;
+use DOMElement;
+
 /**
  * This class in in charge of creating components. Manual component
  * instantiation should be avoided, use this instead.
@@ -88,6 +91,7 @@ class Component_Factory {
 		self::$component_styles = $component_styles;
 
 		// Order is important. Components are checked in the order they are added.
+		self::register_component( 'aside', '\\Apple_Exporter\\Components\\Aside' );
 		self::register_component( 'gallery', '\\Apple_Exporter\\Components\\Gallery' );
 		self::register_component( 'tweet', '\\Apple_Exporter\\Components\\Tweet' );
 		self::register_component( 'facebook', '\\Apple_Exporter\\Components\\Facebook' );
@@ -102,6 +106,7 @@ class Component_Factory {
 		self::register_component( 'audio', '\\Apple_Exporter\\Components\\Audio' );
 		self::register_component( 'heading', '\\Apple_Exporter\\Components\\Heading' );
 		self::register_component( 'blockquote', '\\Apple_Exporter\\Components\\Quote' );
+		self::register_component( 'footnotes', '\\Apple_Exporter\\Components\\Footnotes' );
 		self::register_component( 'p', '\\Apple_Exporter\\Components\\Body' );
 		self::register_component( 'ol', '\\Apple_Exporter\\Components\\Body' );
 		self::register_component( 'ul', '\\Apple_Exporter\\Components\\Body' );
@@ -116,8 +121,8 @@ class Component_Factory {
 		self::register_component( 'author', '\\Apple_Exporter\\Components\\Author' );
 		self::register_component( 'date', '\\Apple_Exporter\\Components\\Date' );
 		self::register_component( 'slug', '\\Apple_Exporter\\Components\\Slug' );
-		self::register_component( 'advertisement', '\\Apple_Exporter\\Components\\Advertisement' );
 		self::register_component( 'end-of-article', '\\Apple_Exporter\\Components\\End_Of_Article' );
+		self::register_component( 'in-article', '\\Apple_Exporter\\Components\\In_Article' );
 
 		/**
 		 * Allows you to add custom component classes to the plugin.
@@ -160,12 +165,13 @@ class Component_Factory {
 	/**
 	 * Get a component.
 	 *
-	 * @param string $shortname The short name for the component type to use.
-	 * @param string $html      The HTML to be parsed by the component.
-	 * @access public
-	 * @return \Apple_Exporter\Components\Component A component class matching the shortname.
+	 * @param string     $shortname The short name for the component type to use.
+	 * @param string     $html      The HTML to be parsed by the component.
+	 * @param ?Component $parent    If provided, treats this component as a subcomponent of this parent.
+	 *
+	 * @return Component A component class matching the shortname.
 	 */
-	public static function get_component( $shortname, $html ) {
+	public static function get_component( $shortname, $html, $parent = null ) {
 
 		$class = self::$components[ $shortname ];
 
@@ -173,26 +179,30 @@ class Component_Factory {
 			return null;
 		}
 
-		return new $class(
+		$component = new $class(
 			$html,
 			self::$workspace,
 			self::$settings,
 			self::$styles,
 			self::$layouts,
 			null,
-			self::$component_styles
+			self::$component_styles,
+			$parent
 		);
+
+		return $component;
 	}
 
 	/**
 	 * Given a node, returns an array of all the components inside that node. If
 	 * the node is a component itself, returns an array of only one element.
 	 *
-	 * @param \DOMElement $node The node to be examined.
-	 * @access public
+	 * @param DOMElement $node   The node to be examined.
+	 * @param ?Component $parent If provided, treats all components as subcomponents of this parent.
+	 *
 	 * @return array An array of components contained in the node.
 	 */
-	public static function get_components_from_node( $node ) {
+	public static function get_components_from_node( $node, $parent = null ) {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		$result = [];
 
@@ -207,25 +217,25 @@ class Component_Factory {
 
 			/**
 			 * Did we match several components? If so, a hash is returned. Both the
-			 * body and heading components can returns this, in the case they find
+			 * body and heading components can return this, in the case they find
 			 * non-markdown-able elements inside.
 			 */
 			if ( is_array( $matched_node ) ) {
 				foreach ( $matched_node as $base_component ) {
-					$result[] = self::get_component( $base_component['name'], $base_component['value'] );
+					$result[] = self::get_component( $base_component['name'], $base_component['value'], $parent );
 				}
 				return $result;
 			}
 
 			// We matched a single node.
 			$html     = $node->ownerDocument->saveXML( $matched_node );
-			$result[] = self::get_component( $shortname, $html );
+			$result[] = self::get_component( $shortname, $html, $parent );
 			return $result;
 		}
 		// Nothing found. Maybe it's a container element?
 		if ( $node->hasChildNodes() ) {
 			foreach ( $node->childNodes as $child ) {
-				$result = array_merge( $result, self::get_components_from_node( $child, $node ) );
+				$result = array_merge( $result, self::get_components_from_node( $child, $parent ) );
 			}
 			// Remove all nulls from the array.
 			$result = array_filter( $result );

@@ -8,9 +8,9 @@
 
 namespace Apple_Actions\Index;
 
-require_once plugin_dir_path( __FILE__ ) . '../class-action.php';
-require_once plugin_dir_path( __FILE__ ) . '../class-action-exception.php';
-require_once plugin_dir_path( __FILE__ ) . '../../../includes/apple-exporter/autoload.php';
+require_once dirname( __DIR__ ) . '/class-action.php';
+require_once dirname( __DIR__ ) . '/class-action-exception.php';
+require_once dirname( __DIR__, 3 ) . '/includes/apple-exporter/autoload.php';
 
 use Apple_Actions\Action;
 use Apple_Exporter\Exporter;

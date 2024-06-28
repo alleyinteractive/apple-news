@@ -23,21 +23,41 @@
 	}
 
 	function appleNewsSelectInit() {
-		// Only show fonts on Macs since they're system fonts
-		if ( appleNewsSupportsMacFeatures() ) {
-			$( '.select2.standard' ).select2();
-			$( '.select2.font' ).select2({
-				templateResult: appleNewsFontSelectTemplate,
-				templateSelection: appleNewsFontSelectTemplate
-			});
-		} else {
-			$( '.select2' ).select2();
-			$( 'span.select2' ).after( // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.after
-				$( '<div>' )
-					.addClass( 'font-notice' )
-					.text( appleNewsThemeEdit.fontNotice )
-			)
-		}
+		$( '.select2.standard' ).select2();
+		$( '.select2.font' ).select2({
+			templateResult: appleNewsFontSelectTemplate,
+			templateSelection: appleNewsFontSelectTemplate
+		}).on('select2:select', async function (e) {
+			// Check if font preview is available.
+			var selectedFont = e.params.data.text;
+			var isCustomFont = appleNewsThemeEdit.customFonts.includes(selectedFont);
+			var localFontInstalled = await appleNewsLocalFontInstalled( selectedFont );
+			var $fontNotice = $( 'span.select2' ).next( '.font-notice' );
+			var noticeText = '';
+
+			if ( localFontInstalled ) {
+				// Local font is installed. Remove any warnings.
+				noticeText = '';
+			} else if ( isCustomFont ) {
+				// Local font is not installed or cannot be determined.
+				noticeText = appleNewsThemeEdit.customFontNotice;
+			} else if ( ! appleNewsSupportsMacFeatures() ) {
+				// MacOS system font.
+				noticeText = appleNewsThemeEdit.fontNotice;
+			}
+
+			if ( $fontNotice.length > 0 ) {
+				// Update existing notice.
+				$fontNotice.text( noticeText );
+			} else if ( noticeText ) {
+				// Append new notice if it doesn't exist.
+				$( 'span.select2' ).after(
+					$('<div>')
+						.addClass( 'font-notice' )
+						.text( noticeText )
+				);
+			}
+		});
 	}
 
 	function appleNewsThemeEditBorderInit() {
@@ -54,6 +74,14 @@
 				$( '#pullquote_border_color, #pullquote_border_width' ).parent().hide().next( 'br' ).hide();
 			} else {
 				$( '#pullquote_border_color, #pullquote_border_width' ).parent().show().next( 'br' ).show();
+			}
+		} ).change();
+
+		$( '#aside_border_style' ).on( 'change', function () {
+			if ( 'none' === $( this ).val() ) {
+				$( '#aside_border_color, #aside_border_width' ).parent().hide().next( 'br' ).hide();
+			} else {
+				$( '#aside_border_color, #aside_border_width' ).parent().show().next( 'br' ).show();
 			}
 		} ).change();
 	}
@@ -118,3 +146,22 @@
 	}
 
 }( jQuery ) );
+
+/**
+ * Checks if a local font is installed.
+ *
+ * @async
+ * @param {string} selectedFont The PostScript name of the font to check.
+ * @returns {Promise<boolean>} A promise that resolves to true if it can be
+ *                             determined that the font is installed locally,
+ *                             false otherwise.
+ */
+async function appleNewsLocalFontInstalled( selectedFont ) {
+	var localFonts = [];
+	if ( 'queryLocalFonts' in window ) {
+		localFonts = await window.queryLocalFonts({
+			postscriptNames: [selectedFont],
+		});
+	}
+	return localFonts.length !== 0;
+}

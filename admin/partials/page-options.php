@@ -24,9 +24,9 @@
 			<?php $apple_section->before_section(); ?>
 			<?php
 			if ( $apple_section->is_hidden() ) {
-				include plugin_dir_path( __FILE__ ) . 'page-options-section-hidden.php';
+				include __DIR__ . '/page-options-section-hidden.php';
 			} else {
-				include plugin_dir_path( __FILE__ ) . 'page-options-section.php';
+				include __DIR__ . '/page-options-section.php';
 			}
 				$apple_section->after_section();
 			?>

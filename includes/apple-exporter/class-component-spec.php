@@ -53,20 +53,30 @@ class Component_Spec {
 	public $spec;
 
 	/**
+	 * The parent component name, if any.
+	 *
+	 * @since 2.5.0
+	 * @var ?string
+	 */
+	public $parent;
+
+	/**
 	 * Initializes the object with the name, label and the spec.
 	 *
-	 * @param string $component The component name.
-	 * @param string $name      The spec name.
-	 * @param string $label     The human-readable label for the spec.
-	 * @param array  $spec      The spec definition.
+	 * @param string  $component The component name.
+	 * @param string  $name      The spec name.
+	 * @param string  $label     The human-readable label for the spec.
+	 * @param array   $spec      The spec definition.
+	 * @param ?string $parent    The parent component name.
 	 *
 	 * @access public
 	 */
-	public function __construct( $component, $name, $label, $spec ) {
+	public function __construct( $component, $name, $label, $spec, $parent = null ) {
 		$this->component = $component;
 		$this->name      = $name;
 		$this->label     = $label;
 		$this->spec      = $spec;
+		$this->parent    = $parent;
 	}
 
 	/**
@@ -311,9 +321,15 @@ class Component_Spec {
 			$theme_settings['json_templates'] = [];
 		}
 
-		// Try to load the custom JSON into the theme.
+		// Set the JSON template for this component spec.
 		$component_key = $this->key_from_name( $this->component );
-		$theme_settings['json_templates'][ $component_key ][ $this->name ] = $json;
+		if ( $this->parent ) {
+			$theme_settings['json_templates'][ $this->parent ]['subcomponents'][ $component_key ][ $this->name ] = $json;
+		} else {
+			$theme_settings['json_templates'][ $component_key ][ $this->name ] = $json;
+		}
+
+		// Try to load the custom JSON into the theme.
 		if ( ! $theme->load( $theme_settings ) ) {
 			Admin_Apple_Notice::error(
 				sprintf(
@@ -364,15 +380,20 @@ class Component_Spec {
 			return false;
 		}
 
-		// Determine if this spec override is defined in the theme.
+		// Remove the JSON template for this component spec or fail if it doesn't exist.
 		$component_key  = $this->key_from_name( $this->component );
 		$theme_settings = $theme->all_settings();
-		if ( ! isset( $theme_settings['json_templates'][ $component_key ][ $this->name ] ) ) {
-			return false;
+		if ( $this->parent ) {
+			if ( ! isset( $theme_settings['json_templates'][ $this->parent ]['subcomponents'][ $component_key ][ $this->name ] ) ) {
+				return false;
+			}
+			unset( $theme_settings['json_templates'][ $this->parent ]['subcomponents'][ $component_key ][ $this->name ] );
+		} else {
+			if ( ! isset( $theme_settings['json_templates'][ $component_key ][ $this->name ] ) ) {
+				return false;
+			}
+			unset( $theme_settings['json_templates'][ $component_key ][ $this->name ] );
 		}
-
-		// Remove this spec from the theme.
-		unset( $theme_settings['json_templates'][ $component_key ][ $this->name ] );
 
 		// If there are no more overrides for this component, remove it.
 		if ( empty( $theme_settings['json_templates'][ $component_key ] ) ) {
@@ -447,6 +468,11 @@ class Component_Spec {
 		$json_templates = $theme->get_value( 'json_templates' );
 		if ( empty( $json_templates ) || ! is_array( $json_templates ) ) {
 			return null;
+		}
+
+		// Determine if there is a subcomponent override in the theme.
+		if ( ! empty( $json_templates[ $this->parent ]['subcomponents'][ $this->key_from_name( $this->component ) ][ $this->name ] ) ) {
+			return $json_templates[ $this->parent ]['subcomponents'][ $this->key_from_name( $this->component ) ][ $this->name ];
 		}
 
 		// Determine if there is an override in the theme.

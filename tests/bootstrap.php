@@ -24,7 +24,7 @@ function apple_news_require_file( string $file ) {
 }
 
 // Autoloading for prophecy.
-apple_news_require_file( dirname( __DIR__, 1 ) . '/vendor/autoload.php' );
+apple_news_require_file( dirname( __DIR__ ) . '/vendor/autoload.php' );
 
 /**
  * Install WordPress and load the plugin.
@@ -85,8 +85,29 @@ apple_news_require_file( dirname( __DIR__, 1 ) . '/vendor/autoload.php' );
 				}
 			);
 
+			// Pre-populate the channel transient to prevent Apple News from making a request to the API for channel data.
+			$channel_api_response = <<<JSON
+{
+  "data": {
+    "createdAt": "1970-01-01T00:00:00Z",
+    "modifiedAt": "1970-01-01T00:00:00Z",
+    "id": "abcdef12-3456-7890-abcd-ef1234567890",
+    "type": "channel",
+    "shareUrl": "https:\/\/apple.news\/TESTAPPLENEWSCHANNELXYZ",
+    "links": {
+      "defaultSection": "https:\/\/news-api.apple.com\/sections\/abcdef12-3456-7890-abcd-ef1234567890",
+      "self": "https:\/\/news-api.apple.com\/channels\/abcdef12-3456-7890-abcd-ef1234567890"
+    },
+    "name": "Apple News Test Channel",
+    "website": "https:\/\/github.com/alleyinteractive/apple-news",
+    "fonts": []
+  }
+}
+JSON;
+			set_transient( 'apple_news_channel', wp_json_encode( $channel_api_response ) );
+
 			// Load the plugin.
-			require dirname( __DIR__, 1 ) . '/apple-news.php';
+			require dirname( __DIR__ ) . '/apple-news.php';
 		}
 	)->install();
 

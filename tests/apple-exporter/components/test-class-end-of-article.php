@@ -61,7 +61,7 @@ class Apple_News_End_Of_Article_Test extends Apple_News_Component_TestCase {
 							'text'      => '<strong>Heading <em>1<\/em><\/strong> Test',
 							'format'    => 'html',
 							'textStyle' => 'default-heading-1',
-							'layout'    => 'heading-layout',
+							'layout'    => 'heading-layout-1',
 						],
 						'layout' => [],
 					],
