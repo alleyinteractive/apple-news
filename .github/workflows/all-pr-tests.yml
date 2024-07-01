@@ -33,7 +33,7 @@ jobs:
         with:
           php-version: '8.2'
           wordpress-host: 'false'
-          wordpress-version: 'false'
+          working-directory: 'plugins/publish-to-apple-news'
 
       - name: Run PHPUnit Only on PHP 8.1
         uses: alleyinteractive/action-test-php@develop
@@ -42,7 +42,7 @@ jobs:
           skip-audit: 'true'
           test-command: 'composer run-script phpunit'
           wordpress-host: 'false'
-          wordpress-version: 'false'
+          working-directory: 'plugins/publish-to-apple-news'
 
       - name: Run PHPUnit Only on PHP 8.0
         uses: alleyinteractive/action-test-php@develop
@@ -51,4 +51,4 @@ jobs:
           skip-audit: 'true'
           test-command: 'composer run-script phpunit'
           wordpress-host: 'false'
-          wordpress-version: 'false'
+          working-directory: 'plugins/publish-to-apple-news'
