@@ -26,6 +26,7 @@ vendor
 babel.config.json
 composer.json
 composer.lock
+DOCKER_ENV
 package.json
 package-lock.json
 phpunit.xml.dist
