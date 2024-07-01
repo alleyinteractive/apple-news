@@ -8,11 +8,8 @@ on:
 jobs:
   built-release:
     uses: alleyinteractive/.github/.github/workflows/built-release.yml@main
-    if: ${{ github.repository != 'alleyinteractive/create-wordpress-plugin' }}
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     with:
+      composer_install: false
       node: 20
-      php: '8.2'
-      composer_install: true
-      draft: false

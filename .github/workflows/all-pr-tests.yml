@@ -1,0 +1,51 @@
+name: "All Pull Request Tests"
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - release/*
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  pr-tests:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run General Tests
+        uses: alleyinteractive/action-test-general@develop
+
+      - name: Run Node Tests
+        uses: alleyinteractive/action-test-node@develop
+        with:
+          node-version: '20'
+          skip-audit: 'true'
+
+      - name: Run All PHP Tests on PHP 8.2
+        uses: alleyinteractive/action-test-php@develop
+        with:
+          php-version: '8.2'
+          wordpress-host: 'false'
+
+      - name: Run PHPUnit Only on PHP 8.1
+        uses: alleyinteractive/action-test-php@develop
+        with:
+          php-version: '8.1'
+          skip-audit: 'true'
+          test-command: 'composer run-script phpunit'
+          wordpress-host: 'false'
+
+      - name: Run PHPUnit Only on PHP 8.0
+        uses: alleyinteractive/action-test-php@develop
+        with:
+          php-version: '8.0'
+          skip-audit: 'true'
+          test-command: 'composer run-script phpunit'
+          wordpress-host: 'false'

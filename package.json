@@ -18,8 +18,9 @@
     "lint": "npx check-node-version --package && eslint --ext .jsx --ext .js .",
     "lint:fix": "npx check-node-version --package && eslint --ext .jsx --ext .js . --fix",
     "scaffold": "scaffold dir ./scaffold --theme=./",
-    "test": "npx check-node-version --package && jest",
-    "test:watch": "npx check-node-version --package && jest --watch",
+    "jest": "npx check-node-version --package && jest",
+    "jest:watch": "npx check-node-version --package && jest --watch",
+    "test": "npm run lint && npm run jest",
     "prerelease": "check-node-version --package",
     "release": "npx @alleyinteractive/create-release@latest"
   },
