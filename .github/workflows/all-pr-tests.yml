@@ -29,26 +29,26 @@ jobs:
           skip-audit: 'true'
 
       - name: Run All PHP Tests on PHP 8.2
-        uses: alleyinteractive/action-test-php@develop
+        uses: alleyinteractive/action-test-php@feature/issue-1/allow-phpunit-setup-own-tests
         with:
+          install-wordpress: 'false'
           php-version: '8.2'
           wordpress-host: 'false'
-          working-directory: 'plugins/publish-to-apple-news'
 
       - name: Run PHPUnit Only on PHP 8.1
-        uses: alleyinteractive/action-test-php@develop
+        uses: alleyinteractive/action-test-php@feature/issue-1/allow-phpunit-setup-own-tests
         with:
+          install-wordpress: 'false'
           php-version: '8.1'
           skip-audit: 'true'
           test-command: 'composer run-script phpunit'
           wordpress-host: 'false'
-          working-directory: 'plugins/publish-to-apple-news'
 
       - name: Run PHPUnit Only on PHP 8.0
-        uses: alleyinteractive/action-test-php@develop
+        uses: alleyinteractive/action-test-php@feature/issue-1/allow-phpunit-setup-own-tests
         with:
+          install-wordpress: 'false'
           php-version: '8.0'
           skip-audit: 'true'
           test-command: 'composer run-script phpunit'
           wordpress-host: 'false'
-          working-directory: 'plugins/publish-to-apple-news'
