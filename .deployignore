@@ -1,4 +1,5 @@
 # Exclusions when publishing to the develop-built branch
+# Notably, must include .github and .distignore so the next step has access to them
 
 # Directories
 .git
