@@ -3,6 +3,8 @@ on:
   push:
     tags:
     - "*"
+  workflow_dispatch:
+
 jobs:
   push-built-release:
     name: Deploy plugin version to WP.org
