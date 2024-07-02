@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+      group: php-8-1-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
 
     steps:
@@ -51,6 +51,26 @@ jobs:
         with:
           install-wordpress: 'false'
           php-version: '8.1'
+          skip-audit: 'true'
+          test-command: 'composer run-script phpunit'
+          wordpress-host: 'false'
+
+  pr-tests-php-8-0:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: php-8-0-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run PHPUnit Only on PHP 8.0
+        uses: alleyinteractive/action-test-php@feature/issue-1/allow-phpunit-setup-own-tests
+        with:
+          install-wordpress: 'false'
+          php-version: '8.0'
           skip-audit: 'true'
           test-command: 'composer run-script phpunit'
           wordpress-host: 'false'
