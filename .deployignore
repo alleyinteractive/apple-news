@@ -13,7 +13,7 @@ tests
 vendor
 
 # Files
-.distignore
+.deployignore
 .editorconfig
 .eslintignore
 .eslintrc.json
