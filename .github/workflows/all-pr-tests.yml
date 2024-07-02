@@ -8,7 +8,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  pr-tests:
+  general-and-node-tests:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -28,49 +28,23 @@ jobs:
           node-version: '20'
           skip-audit: 'true'
 
-      - name: Run All PHP Tests on PHP 8.2
-        uses: alleyinteractive/action-test-php@feature/issue-1/allow-phpunit-setup-own-tests
-        with:
-          install-wordpress: 'false'
-          php-version: '8.2'
-          wordpress-host: 'false'
-
-  pr-tests-php-8-1:
+  php-tests:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      matrix:
+        php-version: ['8.2', '8.1', '8.0']
     concurrency:
-      group: php-8-1-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+      group: php-${{ matrix.php-version }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run PHPUnit Only on PHP 8.1
+      - name: Run PHP Tests
         uses: alleyinteractive/action-test-php@feature/issue-1/allow-phpunit-setup-own-tests
         with:
           install-wordpress: 'false'
-          php-version: '8.1'
-          skip-audit: 'true'
-          test-command: 'composer run-script phpunit'
-          wordpress-host: 'false'
-
-  pr-tests-php-8-0:
-    if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    concurrency:
-      group: php-8-0-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
-      cancel-in-progress: true
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run PHPUnit Only on PHP 8.0
-        uses: alleyinteractive/action-test-php@feature/issue-1/allow-phpunit-setup-own-tests
-        with:
-          install-wordpress: 'false'
-          php-version: '8.0'
-          skip-audit: 'true'
-          test-command: 'composer run-script phpunit'
+          php-version: ${{ matrix.php-version }}
           wordpress-host: 'false'
