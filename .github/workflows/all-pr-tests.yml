@@ -43,8 +43,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run PHP Tests
-        uses: alleyinteractive/action-test-php@feature/issue-1/allow-phpunit-setup-own-tests
+        uses: alleyinteractive/action-test-php@develop
         with:
-          install-wordpress: 'false'
           php-version: ${{ matrix.php-version }}
           wordpress-host: 'false'
+          wordpress-version: 'false'
