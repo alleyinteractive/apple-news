@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run PHP Tests
-        uses: alleyinteractive/action-test-php@develop
+        uses: alleyinteractive/action-test-php@fix/wp-env-vars
         with:
           php-version: ${{ matrix.php-version }}
           wordpress-host: 'false'
