@@ -8,6 +8,8 @@
 
 /* phpcs:disable WordPressVIPMinimum.Files.IncludingFile.UsingVariable */
 
+const MANTLE_TESTING_DEBUG = true;
+
 /**
  * Includes a PHP file if it exists.
  *
