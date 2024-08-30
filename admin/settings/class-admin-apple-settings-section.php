@@ -638,6 +638,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		}
 
 		// Clear certain caches.
+		delete_transient( 'apple_news_channel' );
 		delete_transient( 'apple_news_sections' );
 
 		// Save to options.

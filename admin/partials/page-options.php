@@ -9,10 +9,12 @@
  * @package Apple_News
  */
 
+$apple_news_successful_update = isset( $_POST['action'] ) && 'apple_news_options' === $_POST['action'] && Apple_News::is_initialized(); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
 ?>
 <div class="wrap apple-news-settings">
 	<h1><?php esc_html_e( 'Manage Settings', 'apple-news' ); ?></h1>
-	<?php if ( Apple_News::is_initialized() ) : ?>
+	<?php if ( $apple_news_successful_update ) : ?>
 		<div class="notice notice-success">
 			<p><?php esc_html_e( 'The Apple News channel config has been successfully added.', 'apple-news' ); ?></p>
 		</div>
