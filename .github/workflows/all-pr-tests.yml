@@ -1,0 +1,50 @@
+name: "All Pull Request Tests"
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - release/*
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  general-and-node-tests:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run General Tests
+        uses: alleyinteractive/action-test-general@develop
+
+      - name: Run Node Tests
+        uses: alleyinteractive/action-test-node@develop
+        with:
+          node-version: '20'
+          skip-audit: 'true'
+
+  php-tests:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        php-version: ['8.2']
+    concurrency:
+      group: php-${{ matrix.php-version }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run PHP Tests
+        uses: alleyinteractive/action-test-php@fix/wp-env-vars
+        with:
+          php-version: ${{ matrix.php-version }}
+          wordpress-host: 'false'
+          wordpress-version: 'false'
