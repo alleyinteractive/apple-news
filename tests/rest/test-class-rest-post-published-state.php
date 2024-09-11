@@ -12,6 +12,21 @@
 class Apple_News_Rest_Post_Published_State_Test extends Apple_News_Testcase {
 
 	/**
+	 * Test the REST endpoint for getting the published state of a post when the plugin is not initialized.
+	 */
+	public function test_get_post_published_state_with_invalid_config(): void {
+		delete_option( Apple_News::$option_name );
+
+		$this->assertFalse( Apple_News::is_initialized() );
+
+		$post_id = self::factory()->post->create();
+
+		$this->get( rest_url( '/apple-news/v1/get-published-state/' . $post_id ) )
+			->assertStatus( 400 )
+			->assertJsonPath( 'message', 'You must enter your API information on the settings page before using Publish to Apple News.' );
+	}
+
+	/**
 	 * Test the REST endpoint for getting the published state of a post when not authenticated.
 	 */
 	public function test_get_post_published_state_unauthenticated(): void {

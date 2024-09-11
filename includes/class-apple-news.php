@@ -340,6 +340,7 @@ class Apple_News {
 			self::$is_initialized = $has_api_settings || $has_api_config;
 		}
 
+
 		return self::$is_initialized;
 	}
 
