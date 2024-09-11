@@ -68,9 +68,9 @@ class Parser {
 		// Fork for format.
 		if ( 'html' === $this->format ) {
 			return $this->parse_html( $html );
-		} else {
-			return $this->parse_markdown( $html );
 		}
+
+		return $this->parse_markdown( $html );
 	}
 
 	/**
@@ -204,7 +204,7 @@ class Parser {
 	private function handle_root_relative_urls( string $html ): string {
 		return preg_replace_callback(
 			'/(<a[^>]+href=(["\'])\/[^\/].*?\2[^>]*>)/m',
-			fn( $matches ) => str_replace( 'href="/', 'href="' . get_site_url() . '/', $matches[0] ),
+			fn( $matches ) => str_replace( 'href="/', 'href="' . get_home_url() . '/', $matches[0] ),
 			$html
 		);
 	}
