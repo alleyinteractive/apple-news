@@ -291,7 +291,6 @@ class Apple_News_Admin_Action_Index_Push_Test extends Apple_News_Testcase {
 		$this->assertEquals( null, get_post_meta( $post->ID, 'apple_news_api_deleted', true ) );
 
 		// Try to sync the post again, and verify that it bails out before attempting the sync.
-		$exception = false;
 		try {
 			$this->get_request_for_post( $post->ID );
 		} catch ( Action_Exception $e ) {

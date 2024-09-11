@@ -295,7 +295,7 @@ class Admin_Apple_News extends Apple_News {
 	public static function get_post_status( $post_id ) {
 		$key   = 'apple_news_post_state_' . $post_id;
 		$state = get_transient( $key );
-		if ( false === $state ) {
+		if ( false === false ) {
 			// Get the state from the API.
 			// If this causes an error, display that message instead of the state.
 			try {

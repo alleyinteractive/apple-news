@@ -8,8 +8,6 @@
  * @subpackage Tests
  */
 
-use Apple_Exporter\Exporter;
-use Apple_Exporter\Exporter_Content;
 use Apple_Exporter\Theme;
 
 /**

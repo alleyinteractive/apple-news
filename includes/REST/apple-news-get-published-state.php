@@ -7,24 +7,10 @@
 
 namespace Apple_News\REST;
 
-/**
- * Get API response.
- *
- * @param array $data data from query args.
- * @return array updated response.
- */
-function get_published_state_response( $data ) {
-	$response = [];
-
-	// Ensure Apple News is first initialized.
-	\Apple_News::has_uninitialized_error();
-
-	if ( ! empty( get_current_user_id() ) ) {
-		$response['publishState'] = \Admin_Apple_News::get_post_status( $data['id'] );
-	}
-
-	return $response;
-}
+use WP_Error;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_REST_Server;
 
 /**
  * Initialize this REST Endpoint.
@@ -32,15 +18,49 @@ function get_published_state_response( $data ) {
 add_action(
 	'rest_api_init',
 	function () {
-		// Register route count argument.
 		register_rest_route(
 			'apple-news/v1',
 			'/get-published-state/(?P<id>\d+)',
 			[
-				'methods'             => 'GET',
+				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => __NAMESPACE__ . '\get_published_state_response',
 				'permission_callback' => '__return_true',
-			]
+				'schema'              => [
+					'description' => __( 'Get the published state of a post.', 'apple-news' ),
+					'type'        => 'object',
+					'properties'  => [
+						'publishState' => [
+							'type'        => 'string',
+							'description' => __( 'The published state of the post.', 'apple-news' ),
+						],
+					],
+				],
+			],
 		);
 	}
 );
+
+/**
+ * Get the published state of a post.
+ *
+ * @param WP_REST_Request $request Full details about the request.
+ * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+ */
+function get_published_state_response( $request ): WP_REST_Response|WP_Error {
+	$id = $request->get_param( 'id' );
+
+	// Ensure Apple News is first initialized.
+	$retval = \Apple_News::has_uninitialized_error();
+
+	if ( is_wp_error( $retval ) ) {
+		return $retval;
+	}
+
+	$response = [];
+
+	if ( ! empty( get_current_user_id() ) ) {
+		$response['publishState'] = \Admin_Apple_News::get_post_status( $id );
+	}
+
+	return rest_ensure_response( $response );
+}
