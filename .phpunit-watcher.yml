@@ -1,0 +1,6 @@
+watch:
+  directories:
+    - tests
+    - admin
+    - includes
+  fileMask: '*.php'

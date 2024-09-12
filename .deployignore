@@ -20,6 +20,7 @@ vendor
 .eslintrc.json
 .gitignore
 .nvmrc
+.phpunit-watcher.yml
 .phpcs.xml
 .phpcs-cache.json
 .phpunit.result.cache
