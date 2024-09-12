@@ -21,6 +21,7 @@ vendor
 .gitignore
 .nvmrc
 .phpcs.xml
+.phpunit-watcher.yml
 .phpcs-cache.json
 .phpunit.result.cache
 babel.config.json
