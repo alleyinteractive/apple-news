@@ -141,7 +141,7 @@ class Export extends Action {
 			if ( ! empty( $post_thumb_url ) ) {
 				// If the post thumb URL is root-relative, convert it to fully-qualified.
 				if ( str_starts_with( $post_thumb_url, '/' ) ) {
-					$post_thumb_url = site_url( $post_thumb_url );
+					$post_thumb_url = home_url( $post_thumb_url );
 				}
 
 				// Compile the post_thumb object using the URL and caption from the featured image.

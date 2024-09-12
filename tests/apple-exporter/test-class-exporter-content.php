@@ -67,10 +67,48 @@ class Apple_News_Exporter_Content_Test extends Apple_News_Testcase {
 	/**
 	 * Ensure we decode the HTML entities in URLs extracted from HTML attributes.[type]
 	 */
-	public function test_format_src_url() {
+	public function test_format_src_url(): void {
 		$this->assertEquals(
 			'https://www.example.org/some.mp3?one=two&query=arg',
 			Exporter_Content::format_src_url( 'https://www.example.org/some.mp3?one=two&amp;query=arg' )
 		);
+
+		// Change the home URL.
+		update_option( 'home', 'https://www.custom-example.org' );
+
+		$this->assertEquals(
+			'https://www.example.org/some.mp3?one=two&query=arg',
+			Exporter_Content::format_src_url( 'https://www.example.org/some.mp3?one=two&amp;query=arg' )
+		);
+
+		$this->assertEquals(
+			'https://www.custom-example.org/',
+			Exporter_Content::format_src_url( '/' )
+		);
+
+		$this->assertEquals(
+			'https://www.custom-example.org',
+			Exporter_Content::format_src_url( 'https://www.custom-example.org' )
+		);
+
+		$this->assertNotEquals(
+			'https://www.custom-example.org',
+			Exporter_Content::format_src_url( '/' ),
+			'Root URL is missing a trailing slash.'
+		);
+
+		$this->assertEquals(
+			'https://www.example.org',
+			Exporter_Content::format_src_url( 'https://www.example.org' )
+		);
+
+		$this->assertNotEquals(
+			'https://www.example.org/', // The / here is intentional.
+			Exporter_Content::format_src_url( 'https://www.example.org' ),
+			'Root URL has a trailing slash.'
+		);
+
+		// Reset the home URL.
+		update_option( 'home', 'https://www.example.org' );
 	}
 }
