@@ -83,7 +83,7 @@ class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWrites
 			$this->get_api()->delete_article( $remote_id );
 
 			// Delete the API references and mark as deleted.
-			$this->reset_meta( $this->id );
+			$this->delete_post_meta( $this->id );
 			update_post_meta( $this->id, 'apple_news_api_deleted', time() );
 
 			// Clear the cache for post status.

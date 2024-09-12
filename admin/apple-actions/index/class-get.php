@@ -56,11 +56,11 @@ class Get extends API_Action {
 			$article = $this->get_api()->get_article( $apple_id );
 		} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
 			$article = $e->getMessage();
-		}
 
-		// Reset the API postmeta if the article is not present in Apple News.
-		if ( is_string( $article ) && str_contains( $article, 'NOT_FOUND (keyPath articleId)' ) ) {
-			$this->reset_meta( $this->id );
+			// Reset the API postmeta if the article is deleted in Apple News.
+			if ( is_string( $article ) && str_contains( $article, 'NOT_FOUND (keyPath articleId)' ) ) {
+				$this->delete_post_meta( $this->id );
+			}
 		}
 
 		if ( empty( $article->data ) ) {

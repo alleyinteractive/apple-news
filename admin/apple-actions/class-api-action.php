@@ -94,7 +94,7 @@ abstract class API_Action extends Action {
 	 *
 	 * @param int $post_id The post ID to reset.
 	 */
-	protected function reset_meta( $post_id ): void {
+	protected function delete_post_meta( $post_id ): void {
 		delete_post_meta( $post_id, 'apple_news_api_id' );
 		delete_post_meta( $post_id, 'apple_news_api_revision' );
 		delete_post_meta( $post_id, 'apple_news_api_created_at' );
