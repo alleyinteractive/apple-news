@@ -103,14 +103,13 @@ class Exporter_Content {
 	 *
 	 * @param string $url The URL to format.
 	 *
-	 * @access protected
 	 * @return string The formatted URL on success, or a blank string on failure.
 	 */
 	public static function format_src_url( $url ) {
 
 		// If this is a root-relative path, make absolute.
 		if ( 0 === strpos( $url, '/' ) ) {
-			$url = site_url( $url );
+			$url = home_url( $url );
 		}
 
 		// Decode the HTML entities since the URL is from the src attribute.

@@ -35,7 +35,7 @@ class Apple_News_Cover_Test extends Apple_News_Testcase {
 	 * @return string The filtered URL, made root-relative.
 	 */
 	public function filter_wp_get_attachment_url( $url ) {
-		return str_replace( site_url(), '', $url );
+		return str_replace( home_url(), '', $url );
 	}
 
 	/**
@@ -64,10 +64,10 @@ class Apple_News_Cover_Test extends Apple_News_Testcase {
 		// Create test post.
 		$post_id = self::factory()->post->create();
 
-		// Create a new attachment and assign it as the featured image for the cover component. 
-		set_post_thumbnail( 
-			$post_id, 
-			$this->get_new_attachment( 0 ) 
+		// Create a new attachment and assign it as the featured image for the cover component.
+		set_post_thumbnail(
+			$post_id,
+			$this->get_new_attachment( 0 )
 		);
 
 		// Check that the cover component's default role is 'photo'.
@@ -120,7 +120,7 @@ class Apple_News_Cover_Test extends Apple_News_Testcase {
 
 		// Create a post with an image with a root-relative src property and ensure its URL is expanded fully when converted to a Cover component.
 		$image_id_1 = $this->get_new_attachment( 0, 'Test Caption', 'Test alt text.' );
-		$post_id_1  = self::factory()->post->create( [ 'post_content' => str_replace( site_url(), '', $this->get_image_with_caption( $image_id_1 ) ) ] );
+		$post_id_1  = self::factory()->post->create( [ 'post_content' => str_replace( home_url(), '', $this->get_image_with_caption( $image_id_1 ) ) ] );
 		$json_1     = $this->get_json_for_post( $post_id_1 );
 		$this->assertEquals( wp_get_attachment_image_url( $image_id_1, 'full' ), $json_1['components'][0]['components'][0]['URL'] );
 
