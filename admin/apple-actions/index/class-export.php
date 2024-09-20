@@ -128,9 +128,10 @@ class Export extends Action {
 			if ( empty( $cover_caption ) ) {
 				$cover_caption = wp_get_attachment_caption( $cover_meta_id );
 			}
+			$image_url = wp_get_attachment_image_url( $cover_meta_id, 'full' );
 			$post_thumb = [
 				'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
-				'url'     => wp_get_attachment_url( $cover_meta_id ),
+				'url'     => $image_url ?? '',
 			];
 		} else {
 			$thumb_id       = get_post_thumbnail_id( $this->id );
