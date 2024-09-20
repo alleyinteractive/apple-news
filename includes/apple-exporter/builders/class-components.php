@@ -222,11 +222,6 @@ class Components extends Builder {
 
 			// If the normalized URL for the first image is different than the URL for the featured image, use the featured image.
 			$cover_config   = $this->content_cover();
-			$cover_url      = $this->get_image_full_size_url( isset( $cover_config['url'] ) ? $cover_config['url'] : $cover_config );
-			$normalized_url = $this->get_image_full_size_url( $original_url );
-			if ( ! empty( $cover_url ) && $normalized_url !== $cover_url ) {
-				return;
-			}
 
 			// If the cover is set to be displayed, remove it from the flow.
 			$cover_caption = '';
@@ -597,56 +592,6 @@ class Components extends Builder {
 	 */
 	private function get_components_from_node( $node ) {
 		return Component_Factory::get_components_from_node( $node );
-	}
-
-	/**
-	 * Attempts to guess the image's full size URL, minus any scaling or cropping.
-	 *
-	 * @param string $url The URL to evaluate.
-	 *
-	 * @since 2.1.0
-	 *
-	 * @return string The best guess as to an image's full size URL.
-	 */
-	private function get_image_full_size_url( $url ) {
-
-		if ( empty( $url ) ) {
-			return '';
-		}
-
-		// Strip URL formatting for easier matching.
-		$url = urldecode( $url );
-
-		// Split out the URL into its component parts so we can put it back together again.
-		$url_parts = wp_parse_url( $url );
-		if ( empty( $url_parts['scheme'] )
-			|| empty( $url_parts['host'] )
-			|| empty( $url_parts['path'] )
-		) {
-			return $url;
-		}
-
-		/*
-		 * Strip off any scaling, rotating, or cropping indicators from the
-		 * filename. Handles image-150x150.jpg, image-scaled.jpg,
-		 * image-rotated.jpg, for example, and will return image.jpg.
-		 */
-		$normalized_path = preg_replace( '/-(?:\d+x\d+|scaled|rotated)(\.[^.]+)$/', '$1', $url_parts['path'] );
-
-		// Remove the Jetpack CDN domain.
-		if ( preg_match( '/^i[0-9]\.wp\.com$/', $url_parts['host'] ) ) {
-			$path_parts        = explode( '/', $normalized_path );
-			$url_parts['host'] = array_shift( $path_parts );
-			$normalized_path   = implode( '/', $path_parts );
-		}
-
-		// Put Humpty Dumpty back together again.
-		return sprintf(
-			'%s://%s%s',
-			$url_parts['scheme'],
-			$url_parts['host'],
-			$normalized_path
-		);
 	}
 
 	/**
