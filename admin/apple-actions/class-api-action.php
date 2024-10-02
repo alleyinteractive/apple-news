@@ -88,4 +88,17 @@ abstract class API_Action extends Action {
 
 		return true;
 	}
+
+	/**
+	 * Resets the API postmeta for a given post ID.
+	 *
+	 * @param int $post_id The post ID to reset.
+	 */
+	protected function delete_post_meta( $post_id ): void {
+		delete_post_meta( $post_id, 'apple_news_api_id' );
+		delete_post_meta( $post_id, 'apple_news_api_revision' );
+		delete_post_meta( $post_id, 'apple_news_api_created_at' );
+		delete_post_meta( $post_id, 'apple_news_api_modified_at' );
+		delete_post_meta( $post_id, 'apple_news_api_share_url' );
+	}
 }

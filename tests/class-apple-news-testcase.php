@@ -285,12 +285,14 @@ abstract class Apple_News_Testcase extends WP_UnitTestCase {
 	 * user ID to the new user. Useful when testing functionality that requires
 	 * an administrator's credentials, such as adding unfiltered HTML to a post.
 	 */
-	protected function become_admin() {
-		$user_id = self::factory()->user->create( [ 'role' => 'administrator' ] );
+	protected function become_admin(): void {
+		$user = $this->create_user_with_role( 'administrator' );
+
 		if ( function_exists( 'grant_super_admin' ) ) {
-			grant_super_admin( $user_id );
+			grant_super_admin( $user->ID );
 		}
-		wp_set_current_user( $user_id );
+
+		wp_set_current_user( $user->ID );
 	}
 
 	/**

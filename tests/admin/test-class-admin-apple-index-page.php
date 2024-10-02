@@ -40,10 +40,10 @@ class Apple_News_Admin_Apple_Index_Page_Test extends Apple_News_Testcase {
 		$index_page->page_router();
 
 		// Ensure values were deleted.
-		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_api_pending', true ) );
-		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_api_async_in_progress', true ) );
-		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_api_bundle', true ) );
-		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_api_json', true ) );
-		$this->assertEquals( false, get_post_meta( $post_id, 'apple_news_api_errors', true ) );
+		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_pending', true ) );
+		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_async_in_progress', true ) );
+		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_bundle', true ) );
+		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_json', true ) );
+		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_errors', true ) );
 	}
 }

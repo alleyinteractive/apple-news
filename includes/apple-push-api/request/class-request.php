@@ -240,6 +240,7 @@ class Request {
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
 			throw new Request_Exception( esc_html( __( 'Unable to decode JSON from the response:', 'apple-news' ) ) );
 		}
+
 		if ( ! empty( $response_decoded->errors ) && is_array( $response_decoded->errors ) ) {
 			$message  = '';
 			$messages = [];
@@ -408,7 +409,7 @@ class Request {
 		}
 
 		// Parse the response.
-		$response = $this->parse_response(
+		return $this->parse_response(
 			$response,
 			true,
 			strtolower( $verb ),
@@ -417,8 +418,6 @@ class Request {
 			! empty( $data['article'] ) ? $data['article'] : '',
 			'POST' === $verb ? $this->mime_builder->get_debug_content( $args ) : ''
 		);
-
-		return $response;
 	}
 
 	/**
