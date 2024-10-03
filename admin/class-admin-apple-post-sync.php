@@ -120,9 +120,9 @@ class Admin_Apple_Post_Sync {
 	 * When a post is published, or a published post updated, trigger this function.
 	 *
 	 * @since 0.4.0
+	 *
 	 * @param int     $id   The ID of the post being updated.
 	 * @param WP_Post $post The post object being updated.
-	 * @access public
 	 */
 	public function do_publish( $id, $post ) {
 		if ( 'publish' !== $post->post_status
@@ -170,6 +170,7 @@ class Admin_Apple_Post_Sync {
 
 		// Proceed with the push.
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
+
 		try {
 			$action->perform();
 		} catch ( Apple_Actions\Action_Exception $e ) {
