@@ -306,6 +306,9 @@ class Apple_News_Admin_Action_Index_Push_Test extends Apple_News_Testcase {
 		$this->assertEquals( 'Test New Title', $body['title'] );
 	}
 
+	/**
+	 * Test that the action is able to handle a deleted article.
+	 */
 	public function test_update_with_deleted_article(): void {
 		$article_id = self::factory()->post->create();
 		$api_id     = 'efabcdef123456';
