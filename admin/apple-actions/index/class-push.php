@@ -78,14 +78,15 @@ class Push extends API_Action {
 	 * @param boolean $doing_async Optional. Whether the action is being performed asynchronously.
 	 * @param int     $user_id Optional. The ID of the user performing the action. Defaults to the current user ID.
 	 *
-	 * @access public
 	 * @return boolean
 	 * @throws Action_Exception If the push fails.
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
 		if ( 'yes' === $this->settings->__get( 'api_async' ) && false === $doing_async ) {
+
 			// Do not proceed if this is already pending publish.
 			$pending = get_post_meta( $this->id, 'apple_news_api_pending', true );
+
 			if ( ! empty( $pending ) ) {
 				return false;
 			}
@@ -94,9 +95,9 @@ class Push extends API_Action {
 			update_post_meta( $this->id, 'apple_news_api_pending', time() );
 
 			wp_schedule_single_event( time(), Admin_Apple_Async::ASYNC_PUSH_HOOK, [ $this->id, get_current_user_id() ] );
-		} else {
-			return $this->push( $user_id );
 		}
+
+		return $this->push( $user_id );
 	}
 
 	/**
@@ -213,7 +214,6 @@ class Push extends API_Action {
 	 *
 	 * @param int $user_id Optional. The ID of the user performing the push. Defaults to current user.
 	 *
-	 * @access private
 	 * @throws Action_Exception If unable to push.
 	 */
 	private function push( $user_id = null ): void {
@@ -438,11 +438,20 @@ class Push extends API_Action {
 
 			$this->clean_workspace();
 
-			if ( str_contains( $e->getMessage(), 'WRONG_REVISION' ) ) {
-				throw new Action_Exception( esc_html__( 'Apple News Error: It seems like the article was updated by another call. If the problem persists, try removing and pushing again.', 'apple-news' ) );
+			$original_error_message = $e->getMessage();
+
+			if ( str_contains( $original_error_message, 'WRONG_REVISION' ) ) {
+				$error_message = __( 'Apple News Error: It seems like the article was updated by another call. If the problem persists, try removing and pushing again.', 'apple-news' );
+			} elseif ( str_contains( $original_error_message, 'NOT_FOUND (keyPath articleId)' ) ) {
+				// Reset the API postmeta if the article is deleted in Apple News.
+				$this->delete_post_meta( $this->id );
+
+				$error_message = __( 'The article seems to be deleted in Apple News. Reindexing the article in Apple News.', 'apple-news' );
 			} else {
-				throw new Action_Exception( esc_html__( 'There has been an error with the Apple News API: ', 'apple-news' ) . esc_html( $e->getMessage() ) );
+				$error_message = __( 'There has been an error with the Apple News API: ', 'apple-news' ) . esc_html( $original_error_message );
 			}
+
+			throw new Action_Exception( esc_html( $error_message ) );
 		}
 
 		// Print success message.

@@ -305,4 +305,45 @@ class Apple_News_Admin_Action_Index_Push_Test extends Apple_News_Testcase {
 		$body    = $this->get_body_from_request( $request );
 		$this->assertEquals( 'Test New Title', $body['title'] );
 	}
+
+	/**
+	 * Test that the action is able to handle a deleted article.
+	 */
+	public function test_update_with_deleted_article(): void {
+		$article_id = self::factory()->post->create();
+		$api_id     = 'efabcdef123456';
+
+		add_post_meta( $article_id, 'apple_news_api_id', $api_id );
+
+		// Fake the API response for the GET request.
+		$this->add_http_response(
+			verb: 'GET',
+			url: 'https://news-api.apple.com/articles/' . $api_id,
+			body: wp_json_encode(
+				[
+					'errors' => [
+						[
+							'code'    => 'NOT_FOUND',
+							'keyPath' => [ 'articleId' ],
+							'value'   => $api_id,
+						],
+					],
+				]
+			),
+			response: [
+				'code'    => 404,
+				'message' => 'Not Found',
+			]
+		);
+
+		$action = new Apple_Actions\Index\Push( $this->settings, $article_id );
+
+		try {
+			$action->perform();
+		} catch ( Action_Exception $e ) {
+			$this->assertSame( 'The article seems to be deleted in Apple News. Reindexing the article in Apple News.', $e->getMessage() );
+		}
+
+		$this->assertEmpty( get_post_meta( $article_id, 'apple_news_api_id', true ) );
+	}
 }
