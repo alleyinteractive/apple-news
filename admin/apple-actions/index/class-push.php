@@ -446,7 +446,7 @@ class Push extends API_Action {
 				// Reset the API postmeta if the article is deleted in Apple News.
 				$this->delete_post_meta( $this->id );
 
-				$error_message = __( 'The article seems to be deleted in Apple News. Reindexing the article in Apple News.', 'apple-news' );
+				$error_message = __( 'Publish to Apple News: This article was previously deleted in iCloud News Publisher. Due to your automatic publishing settings, it has been recreated on Apple News.', 'apple-news' );
 			} else {
 				$error_message = __( 'There has been an error with the Apple News API: ', 'apple-news' ) . esc_html( $original_error_message );
 			}
