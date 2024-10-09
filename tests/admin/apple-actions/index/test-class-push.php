@@ -341,7 +341,7 @@ class Apple_News_Admin_Action_Index_Push_Test extends Apple_News_Testcase {
 		try {
 			$action->perform();
 		} catch ( Action_Exception $e ) {
-			$this->assertSame( 'The article seems to be deleted in Apple News. Reindexing the article in Apple News.', $e->getMessage() );
+			$this->assertSame( 'Publish to Apple News: This article was previously deleted in iCloud News Publisher. Due to your automatic publishing settings, it has been recreated on Apple News.', $e->getMessage() );
 		}
 
 		$this->assertEmpty( get_post_meta( $article_id, 'apple_news_api_id', true ) );
