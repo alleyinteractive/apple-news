@@ -9,17 +9,8 @@ namespace Apple_News\REST;
 
 use WP_Error;
 use WP_REST_Request;
-
-/**
- * Handle a REST POST request to the /apple-news/v1/delete endpoint.
- *
- * @param WP_REST_Request $data Data from query args.
- *
- * @return array|WP_Error Response to the request - either data about a successfully deleted article, or error.
- */
-function rest_post_delete( $data ) {
-	return modify_post( (int) $data->get_param( 'id' ), 'delete' );
-}
+use WP_REST_Response;
+use WP_REST_Server;
 
 /**
  * Initialize this REST Endpoint.
@@ -27,15 +18,30 @@ function rest_post_delete( $data ) {
 add_action(
 	'rest_api_init',
 	function () {
-		// Register route count argument.
 		register_rest_route(
 			'apple-news/v1',
 			'/delete',
 			[
-				'methods'             => 'POST',
+				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => __NAMESPACE__ . '\rest_post_delete',
 				'permission_callback' => '__return_true',
 			]
 		);
 	}
 );
+
+/**
+ * Handle a REST POST request to the /apple-news/v1/delete endpoint.
+ *
+ * @param WP_REST_Request $request Full details about the request.
+ * @return WP_REST_Response|WP_Error
+ */
+function rest_post_delete( $request ): WP_REST_Response|WP_Error {
+	$post = modify_post( (int) $request->get_param( 'id' ), 'delete' );
+
+	if ( is_wp_error( $post ) ) {
+		return $post;
+	}
+
+	return rest_ensure_response( $post );
+}

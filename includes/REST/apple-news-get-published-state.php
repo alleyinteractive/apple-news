@@ -44,7 +44,7 @@ add_action(
  * Get the published state of a post.
  *
  * @param WP_REST_Request $request Full details about the request.
- * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+ * @return WP_REST_Response|WP_Error
  */
 function get_published_state_response( $request ): WP_REST_Response|WP_Error {
 	$id = $request->get_param( 'id' );
