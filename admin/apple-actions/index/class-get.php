@@ -52,16 +52,7 @@ class Get extends API_Action {
 		}
 
 		// Get the article from the API.
-		try {
-			$article = $this->get_api()->get_article( $apple_id );
-		} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
-			$article = $e->getMessage();
-
-			// Reset the API postmeta if the article is deleted in Apple News.
-			if ( is_string( $article ) && str_contains( $article, 'NOT_FOUND (keyPath articleId)' ) ) {
-				$this->delete_post_meta( $this->id );
-			}
-		}
+		$article = $this->get_api()->get_article( $apple_id );
 
 		if ( empty( $article->data ) ) {
 			return null;

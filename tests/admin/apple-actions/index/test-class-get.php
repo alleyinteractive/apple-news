@@ -57,43 +57,4 @@ class Apple_News_Admin_Action_Index_Get_Test extends Apple_News_Testcase {
 		$this->assertSame( $response['data']['revision'], $data->data->revision );
 		$this->assertSame( $response['data']['type'], $data->data->type );
 	}
-
-	/**
-	 * Test the behavior of the get action with a deleted Apple News article assigned to the post.
-	 */
-	public function test_get_deleted_article(): void {
-		$api_id  = 'def456';
-		$post_id = self::factory()->post->create();
-		$action  = new Apple_Actions\Index\Get( $this->settings, $post_id );
-
-		$this->assertNull( $action->perform() );
-
-		add_post_meta( $post_id, 'apple_news_api_id', $api_id );
-
-		// Fake the API response for the GET request.
-		$this->add_http_response(
-			verb: 'GET',
-			url: 'https://news-api.apple.com/articles/' . $api_id,
-			body: wp_json_encode(
-				[
-					'errors' => [
-						[
-							'code'    => 'NOT_FOUND',
-							'keyPath' => [ 'articleId' ],
-							'value'   => $api_id,
-						],
-					],
-				]
-			),
-			response: [
-				'code'    => 404,
-				'message' => 'Not Found',
-			]
-		);
-
-		$action = new Apple_Actions\Index\Get( $this->settings, $post_id );
-
-		$this->assertNull( $action->perform() );
-		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_id', true ) );
-	}
 }
