@@ -451,6 +451,14 @@ class Push extends API_Action {
 				$error_message = __( 'There has been an error with the Apple News API: ', 'apple-news' ) . esc_html( $original_error_message );
 			}
 
+			/**
+			 * Actions to be taken after an article failed to be pushed to Apple News.
+			 *
+			 * @param int $post_id The ID of the post.
+			 * @param string $original_error_message The original error message.
+			 */
+			do_action( 'apple_news_after_push_failure', $this->id, $original_error_message );
+
 			throw new Action_Exception( esc_html( $error_message ) );
 		}
 
