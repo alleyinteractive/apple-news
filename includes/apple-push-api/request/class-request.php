@@ -171,9 +171,17 @@ class Request {
 			&& 'yes' === $settings['apple_news_enable_debugging']
 			&& 'get' !== $type ) {
 
-			// Get the admin email.
-			$admin_email = filter_var( $settings['apple_news_admin_email'], FILTER_VALIDATE_EMAIL );
-			if ( empty( $admin_email ) ) {
+			$emails = $settings['apple_news_admin_email'] ?? '';
+
+			if ( str_contains( $emails, ',' ) ) {
+				$emails = array_map( 'trim', explode( ',', $emails ) );
+			} else {
+				$emails = [ $emails ];
+			}
+
+			$to = array_filter( $emails, 'is_email' );
+
+			if ( empty( $to ) ) {
 				return; // TODO Fix inconsistent return value.
 			}
 
@@ -217,7 +225,7 @@ class Request {
 			// Send the email.
 			if ( ! empty( $body ) ) {
 				wp_mail( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
-					$admin_email,
+					$to,
 					esc_html__( 'Apple News Notification', 'apple-news' ),
 					$body,
 					$headers
