@@ -199,8 +199,8 @@ class Request {
 			if ( 'yes' === $settings['use_remote_images'] ) {
 				$body .= esc_html__( 'Use Remote images enabled ', 'apple-news' );
 			} elseif ( ! empty( $bundles ) ) {
-					$body .= "\n" . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
-					$body .= implode( "\n", $bundles );
+				$body .= "\n" . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
+				$body .= implode( "\n", $bundles );
 			} else {
 				$body .= esc_html__( 'No bundled images found.', 'apple-news' );
 			}
@@ -218,7 +218,7 @@ class Request {
 			 *
 			 * @since 1.4.4
 			 *
-			 * @param string|array $headers     Optional. Additional headers.
+			 * @param string|array $headers Optional. Additional headers.
 			 */
 			$headers = apply_filters( 'apple_news_notification_headers', '' );
 
