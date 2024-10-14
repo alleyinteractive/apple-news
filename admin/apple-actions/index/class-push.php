@@ -472,6 +472,15 @@ class Push extends API_Action {
 			}
 
 			if ( $error_message ) {
+				/**
+				 * Actions to be taken after an article failed to be pushed to Apple News.
+				 *
+				 * @param int $post_id The ID of the post.
+				 * @param string|null $original_error_message The original error message, if available.
+				 * @param string $error_message The error message to be displayed.
+				 */
+				do_action( 'apple_news_after_push_failure', $this->id, $original_error_message, $error_message );
+
 				throw new Action_Exception( esc_html( $error_message ) );
 			}
 		}
