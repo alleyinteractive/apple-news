@@ -126,6 +126,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			'max'         => [],
 			'step'        => [],
 			'type'        => [],
+			'multiple'    => [],
 			'required'    => [],
 			'size'        => [],
 			'id'          => [],
@@ -324,6 +325,14 @@ class Admin_Apple_Settings_Section extends Apple_News {
 			$field = '<textarea id="%s" name="%s">%s</textarea>';
 		} elseif ( 'number' === $type ) {
 			$field = '<input type="number" id="%s" name="%s" value="%s" size="%s" min="%s" max="%s" step="%s" %s>';
+		} elseif ( 'email' === $type ) {
+			$field = '<input type="email" id="%s" name="%s" value="%s" size="%s"';
+
+			if ( $this->is_multiple( $name ) ) {
+				$field .= ' multiple %s>';
+			} else {
+				$field .= ' %s>';
+			}
 		} else {
 			// If nothing else matches, it's a string.
 			$field = '<input type="text" id="%s" name="%s" value="%s" size="%s" %s>';
@@ -403,9 +412,9 @@ class Admin_Apple_Settings_Section extends Apple_News {
 	protected function get_type_for( $name ) {
 		if ( $this->hidden ) {
 			return 'hidden';
-		} else {
-			return empty( $this->settings[ $name ]['type'] ) ? 'string' : $this->settings[ $name ]['type'];
 		}
+
+		return empty( $this->settings[ $name ]['type'] ) ? 'string' : $this->settings[ $name ]['type'];
 	}
 
 	/**

@@ -41,10 +41,11 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 				'type'  => [ 'no', 'yes' ],
 			],
 			'apple_news_admin_email'      => [
-				'label'    => __( 'Administrator Email', 'apple-news' ),
+				'label'    => __( 'Email(s)', 'apple-news' ),
 				'required' => false,
-				'type'     => 'string',
+				'type'     => 'email',
 				'size'     => 40,
+				'multiple' => true,
 			],
 		];
 
@@ -70,7 +71,7 @@ class Admin_Apple_Settings_Section_Developer_Tools extends Admin_Apple_Settings_
 	 */
 	public function get_section_info() {
 		return __(
-			'If debugging is enabled, emails will be sent to an administrator for every publish, update or delete action with a detailed API response.',
+			'If debugging is enabled (and valid emails are provided), emails will be sent for every publish, update or delete action with a detailed API response.',
 			'apple-news'
 		);
 	}
