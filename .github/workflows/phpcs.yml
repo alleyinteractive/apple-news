@@ -19,4 +19,3 @@ jobs:
       php: '8.3'
       command: |
         phpcs
-        # phpstan
