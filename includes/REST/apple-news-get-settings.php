@@ -1,6 +1,6 @@
 <?php
 /**
- * This adds custom endpoints for perspective posts.
+ * A custom endpoint for getting settings.
  *
  * @package Apple_News
  */
@@ -9,26 +9,52 @@ namespace Apple_News\REST;
 
 use Apple_Exporter\Settings;
 use Apple_News\Admin\Automation;
+use WP_Error;
+use WP_REST_Response;
+use WP_REST_Server;
+
+/**
+ * Initialize this REST Endpoint.
+ */
+add_action(
+	'rest_api_init',
+	function () {
+		register_rest_route(
+			'apple-news/v1',
+			'/get-settings',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => __NAMESPACE__ . '\get_settings_response',
+				'permission_callback' => '__return_true',
+			]
+		);
+	}
+);
 
 /**
  * Get API response.
  *
- * @param array $data data from query args.
- * @return array updated response.
+ * @return WP_REST_Response|WP_Error
  */
-function get_settings_response( $data ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+function get_settings_response(): WP_REST_Response|WP_Error {
+
 	// Ensure Apple News is first initialized.
-	\Apple_News::has_uninitialized_error();
+	$retval = \Apple_News::has_uninitialized_error();
+
+	if ( is_wp_error( $retval ) ) {
+		return $retval;
+	}
 
 	if ( empty( get_current_user_id() ) ) {
-		return [];
+		return rest_ensure_response( [] );
 	}
 
 	// Compile non-sensitive plugin settings into a JS-friendly format and return.
 	$admin_settings   = new \Admin_Apple_Settings();
 	$settings         = $admin_settings->fetch_settings();
 	$default_settings = ( new Settings() )->all();
-	return [
+
+	$response = [
 		'adminUrl'            => esc_url_raw( admin_url( 'admin.php?page=apple-news-options' ) ),
 		'automaticAssignment' => ! empty( Automation::get_automation_rules() ),
 		'apiAsync'            => 'yes' === $settings->api_async,
@@ -42,23 +68,6 @@ function get_settings_response( $data ) { // phpcs:ignore Generic.CodeAnalysis.U
 		'showMetabox'         => 'yes' === $settings->show_metabox,
 		'useRemoteImages'     => 'yes' === $settings->use_remote_images,
 	];
-}
 
-/**
- * Initialize this REST Endpoint.
- */
-add_action(
-	'rest_api_init',
-	function () {
-		// Register route count argument.
-		register_rest_route(
-			'apple-news/v1',
-			'/get-settings',
-			[
-				'methods'             => 'GET',
-				'callback'            => __NAMESPACE__ . '\get_settings_response',
-				'permission_callback' => '__return_true',
-			]
-		);
-	}
-);
+	return rest_ensure_response( $response );
+}
