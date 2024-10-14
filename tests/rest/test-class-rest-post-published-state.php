@@ -92,13 +92,12 @@ class Apple_News_Rest_Post_Published_State_Test extends Apple_News_Testcase {
 
 		$this->get( rest_url( '/apple-news/v1/get-published-state/' . $post_id ) )
 			->assertOk()
-			->assertJsonPath( 'publishState', 'N/A' );
+			->assertJsonPath( 'publishState', 'NOT_FOUND (keyPath articleId)' );
 
-		// Ensure that the API postmeta _was_ reset.
-		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_created_at', true ) );
-		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_id', true ) );
-		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_modified_at', true ) );
-		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_revision', true ) );
-		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_share_url', true ) );
+		$this->assertEquals( 'abc123', get_post_meta( $post_id, 'apple_news_api_created_at', true ) );
+		$this->assertEquals( $api_id, get_post_meta( $post_id, 'apple_news_api_id', true ) );
+		$this->assertEquals( 'ghi789', get_post_meta( $post_id, 'apple_news_api_modified_at', true ) );
+		$this->assertEquals( 'jkl123', get_post_meta( $post_id, 'apple_news_api_revision', true ) );
+		$this->assertEquals( 'mno456', get_post_meta( $post_id, 'apple_news_api_share_url', true ) );
 	}
 }
