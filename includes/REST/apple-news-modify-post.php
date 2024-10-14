@@ -23,9 +23,13 @@ use WP_Error;
  *
  * @return array|WP_Error Response to the request - either data about a successful operation, or error.
  */
-function modify_post( $post_id, $operation ) {
+function modify_post( $post_id, $operation ): array|WP_Error {
 	// Ensure Apple News is first initialized.
-	\Apple_News::has_uninitialized_error();
+	$retval = \Apple_News::has_uninitialized_error();
+
+	if ( is_wp_error( $retval ) ) {
+		return $retval;
+	}
 
 	// Ensure there is a post ID provided in the data.
 	if ( empty( $post_id ) ) {
@@ -85,6 +89,7 @@ function modify_post( $post_id, $operation ) {
 				]
 			);
 	}
+
 	try {
 		$action->perform();
 

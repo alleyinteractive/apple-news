@@ -14,10 +14,10 @@ require_once __DIR__ . '/class-export.php';
 use Admin_Apple_Async;
 use Admin_Apple_Notice;
 use Admin_Apple_Sections;
-use Apple_Actions\Action_Exception;
-use Apple_Actions\API_Action;
 use Apple_Exporter\Exporter;
 use Apple_Exporter\Settings;
+use Apple_Actions\API_Action;
+use Apple_Actions\Action_Exception;
 use Apple_Push_API\Request\Request_Exception;
 
 /**
@@ -212,11 +212,12 @@ class Push extends API_Action {
 	/**
 	 * Push the post using the API data.
 	 *
-	 * @param int $user_id Optional. The ID of the user performing the push. Defaults to current user.
+	 * @param int  $user_id Optional. The ID of the user performing the push. Defaults to current user.
+	 * @param bool $display_notices Optional. Whether to display notices. Defaults to true.
 	 *
 	 * @throws Action_Exception If unable to push.
 	 */
-	private function push( $user_id = null ): void {
+	private function push( $user_id = null, $display_notices = true ): void {
 		if ( ! $this->is_api_configuration_valid() ) {
 			throw new Action_Exception( esc_html__( 'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
 		}
@@ -387,6 +388,9 @@ class Push extends API_Action {
 			);
 		}
 
+		$original_error_message = null;
+		$error_message          = null;
+
 		try {
 			if ( $remote_id ) {
 				// Update the current article from the API in case the revision changed.
@@ -450,39 +454,60 @@ class Push extends API_Action {
 			} else {
 				$error_message = __( 'There has been an error with the Apple News API: ', 'apple-news' ) . esc_html( $original_error_message );
 			}
-
+		} finally {
 			/**
-			 * Actions to be taken after an article failed to be pushed to Apple News.
+			 * Reindex the article if it was deleted in the iCloud News Publisher dashboard.
 			 *
-			 * @param int $post_id The ID of the post.
-			 * @param string $original_error_message The original error message.
+			 * @see https://github.com/alleyinteractive/apple-news/issues/1154
 			 */
-			do_action( 'apple_news_after_push_failure', $this->id, $original_error_message );
+			if ( $original_error_message && str_contains( $original_error_message, 'NOT_FOUND (keyPath articleId)' ) ) {
+				try {
+					self::push(
+						user_id: $user_id,
+						display_notices: false
+					);
+				} catch ( Action_Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+					// Do nothing, even if the second push fails.
+				}
+			}
 
-			throw new Action_Exception( esc_html( $error_message ) );
+			if ( $error_message ) {
+				/**
+				 * Actions to be taken after an article failed to be pushed to Apple News.
+				 *
+				 * @param int $post_id The ID of the post.
+				 * @param string|null $original_error_message The original error message, if available.
+				 * @param string $error_message The error message to be displayed.
+				 */
+				do_action( 'apple_news_after_push_failure', $this->id, $original_error_message, $error_message );
+
+				throw new Action_Exception( esc_html( $error_message ) );
+			}
+		}
+
+		// If we're not supposed to display notices, bail out.
+		if ( false === $display_notices ) {
+			return;
 		}
 
 		// Print success message.
 		$post = get_post( $this->id );
+
+		$success_message = sprintf(
+			// translators: token is the post title.
+			__( 'Article %s has been pushed successfully to Apple News!', 'apple-news' ),
+			$post->post_title
+		);
+
 		if ( $remote_id ) {
-			Admin_Apple_Notice::success(
-				sprintf(
+			$success_message = sprintf(
 				// translators: token is the post title.
-					__( 'Article %s has been successfully updated on Apple News!', 'apple-news' ),
-					$post->post_title
-				),
-				$user_id
-			);
-		} else {
-			Admin_Apple_Notice::success(
-				sprintf(
-				// translators: token is the post title.
-					__( 'Article %s has been pushed successfully to Apple News!', 'apple-news' ),
-					$post->post_title
-				),
-				$user_id
+				__( 'Article %s has been successfully updated on Apple News!', 'apple-news' ),
+				$post->post_title
 			);
 		}
+
+		Admin_Apple_Notice::success( $success_message, $user_id );
 
 		$this->clean_workspace();
 	}
