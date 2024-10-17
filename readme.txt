@@ -3,9 +3,9 @@ Contributors: potatomaster, kevinfodness, jomurgel, tylermachado, benpbolton, al
 Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 6.3
-Tested up to: 6.6.1
+Tested up to: 6.6.2
 Requires PHP: 8.0
-Stable tag: 2.5.1
+Stable tag: 2.6.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -45,7 +45,19 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
+= 2.6.0 =
+
+* Enhancement: Support added for PHP 8.3.
+* Enhancement: Support added for handling deleted articles (in iCloud News Publisher).
+* Enhancement: Add a new hook, `apple_news_after_push_failure`, that fires when a post fails to be pushed to Apple News.
+* Enhancement: Debugging Settings: support added for sending notification to multiple email accounts.
+* Enhancement: Debugging Settings: support added for client side validation of the email accounts.
+* Enhancement: REST Endpoints actually return a `WP_Error` if Apple News *is not* initialized.
+* Bugfix: Fixed an issue where a root-relative image URL used the URL to the WordPress installation instead of the URL to the front-end, which WordPress allows admins to configure to be different URLs.
+* Bugfix: API Settings: fixed an issue where the latest `value` was not rendered after an update.
+
 = 2.5.1 =
+
 * Bugfix: Fixed an issue where the plugin would crash if the Apple News API returned an error when fetching information about the configured channel. Now surfaces an admin notice with the error message instead.
 
 = 2.5.0 =
