@@ -47,15 +47,14 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 = 2.6.0 =
 
+* Enhancement: Support added for PHP 8.3.
+* Enhancement: Support added for handling deleted articles (in iCloud News Publisher).
+* Enhancement: Add a new hook, `apple_news_after_push_failure`, that fires when a post fails to be pushed to Apple News.
 * Enhancement: Debugging Settings: support added for sending notification to multiple email accounts.
 * Enhancement: Debugging Settings: support added for client side validation of the email accounts.
-* Enhancement: Support added for handling deleted articles (in iCloud News Publisher).
 * Enhancement: REST Endpoints actually return a `WP_Error` if Apple News *is not* initialized.
-* Enhancement: Add a new hook, `apple_news_after_push_failure`, that fires when a post fails to be pushed to Apple News.
-* Enhancement: Support added for PHP 8.3.
-* Enhancement: Support added for PHPStan.
+* Bugfix: Fixed an issue where a root-relative image URL used the URL to the WordPress installation instead of the URL to the front-end, which WordPress allows admins to configure to be different URLs.
 * Bugfix: API Settings: fixed an issue where the latest `value` was not rendered after an update.
-* Bugfix: Fixed an issue where a root-relative image url used the wrong base url.
 
 = 2.5.1 =
 
