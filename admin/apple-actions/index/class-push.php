@@ -78,7 +78,7 @@ class Push extends API_Action {
 	 * @param boolean $doing_async Optional. Whether the action is being performed asynchronously.
 	 * @param int     $user_id Optional. The ID of the user performing the action. Defaults to the current user ID.
 	 *
-	 * @return boolean
+	 * @return false|null
 	 * @throws Action_Exception If the push fails.
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
@@ -95,9 +95,9 @@ class Push extends API_Action {
 			update_post_meta( $this->id, 'apple_news_api_pending', time() );
 
 			wp_schedule_single_event( time(), Admin_Apple_Async::ASYNC_PUSH_HOOK, [ $this->id, get_current_user_id() ] );
+		} else {
+			return $this->push( $user_id );
 		}
-
-		return $this->push( $user_id );
 	}
 
 	/**
