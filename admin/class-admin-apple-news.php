@@ -20,6 +20,7 @@ require_once __DIR__ . '/class-admin-apple-themes.php';
 require_once __DIR__ . '/class-admin-apple-preview.php';
 require_once __DIR__ . '/class-admin-apple-json.php';
 require_once __DIR__ . '/class-automation.php';
+require_once __DIR__ . '/class-section-mappings.php';
 
 // REST Includes.
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-delete.php';
@@ -92,6 +93,9 @@ class Admin_Apple_News extends Apple_News {
 
 		// Add automation support.
 		Apple_News\Admin\Automation::init();
+
+		// Add section mappings support.
+		Apple_News\Admin\Section_Mappings::init();
 
 		// Enhancements if the block editor is available.
 		if ( apple_news_block_editor_is_active() ) {
