@@ -15,7 +15,7 @@ module.exports = (env, { mode }) => ({
   entry: {
     pluginSidebar: './assets/js/pluginsidebar/index.jsx',
     adminSettings: './assets/js/admin-settings/frontend.jsx',
-    sectionMappings: './assets/js/admin-section-mappings/index.jsx',
+    sectionMappings: './assets/js/admin-settings/section-mappings/index.jsx',
   },
 
   // Configure loaders based on extension.
