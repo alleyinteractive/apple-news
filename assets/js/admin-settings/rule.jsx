@@ -21,6 +21,7 @@ function Rule({
   taxonomy,
   termId,
   value,
+  hideFields = [],
 }) {
   const {
     fields,
@@ -70,89 +71,99 @@ function Rule({
           termId={termId}
         />
       </td>
-      <td>
-        <SelectControl
-          aria-labelledby="apple-news-automation-column-field"
-          disabled={busy}
-          onChange={(next) => onUpdate('field', next)}
-          options={[
-            { value: '', label: __('Select Field', 'apple-news') },
-            ...Object.keys(fields).map((fieldSlug) => ({
-              label: fields[fieldSlug].label,
-              value: fieldSlug,
-            })),
-          ]}
-          value={field}
-        />
-      </td>
-      <td>
-        {fieldType === 'contentGenerationType' ? (
-          <SelectControl
-            aria-labelledby="apple-news-automation-column-value"
-            disabled={busy}
-            onChange={(next) => onUpdate('value', next)}
-            options={[
-              { value: '', label: __('None', 'apple-news') },
-              { value: 'AI', label: __('AI', 'apple-news') },
-            ]}
-            value={value}
-          />
-        ) : null}
-        {fieldType === 'sections' ? (
-          <SelectControl
-            aria-labelledby="apple-news-automation-column-value"
-            disabled={busy}
-            onChange={(next) => onUpdate('value', next)}
-            options={[
-              { value: '', label: __('Select Section', 'apple-news') },
-              ...sections.map((sect) => ({ value: sect.id, label: sect.name })),
-            ]}
-            value={value}
-          />
-        ) : null}
-        {fieldType === 'boolean-select' ? (
-          <SelectControl
-            aria-labelledby="apple-news-automation-column-value"
-            disabled={busy}
-            onChange={(next) => onUpdate('value', next)}
-            options={[
-              { value: '', label: __('Channel Default', 'apple-news') },
-              { value: 'true', label: __('True', 'apple-news') },
-              { value: 'false', label: __('False', 'apple-news') },
-            ]}
-            value={value}
-          />
-        ) : null}
-        {fieldType === 'boolean' ? (
-          <ToggleControl
-            aria-labelledby="apple-news-automation-column-value"
-            checked={value === 'true'}
-            disabled={busy}
-            label=""
-            onChange={(next) => onUpdate('value', next.toString())}
-          />
-        ) : null}
-        {fieldType === 'string' ? (
-          <TextControl
-            aria-labelledby="apple-news-automation-column-value"
-            disabled={busy}
-            onChange={(next) => onUpdate('value', next)}
-            value={value}
-          />
-        ) : null}
-        {fieldType === 'themes' ? (
-          <SelectControl
-            aria-labelledby="apple-news-automation-column-value"
-            disabled={busy}
-            onChange={(next) => onUpdate('value', next)}
-            options={[
-              { value: '', label: __('Select Theme', 'apple-news') },
-              ...themes.map((name) => ({ value: name, label: name })),
-            ]}
-            value={value}
-          />
-        ) : null}
-      </td>
+      {hideFields.includes('field')
+        ? null
+        : (
+          <td>
+            <SelectControl
+              aria-labelledby="apple-news-automation-column-field"
+              disabled={busy}
+              onChange={(next) => onUpdate('field', next)}
+              options={[
+                { value: '', label: __('Select Field', 'apple-news') },
+                ...Object.keys(fields).map((fieldSlug) => ({
+                  label: fields[fieldSlug].label,
+                  value: fieldSlug,
+                })),
+              ]}
+              value={field}
+            />
+          </td>
+        )}
+      {
+        hideFields.includes('value')
+          ? null
+          : (
+            <td>
+              {fieldType === 'contentGenerationType' ? (
+                <SelectControl
+                  aria-labelledby="apple-news-automation-column-value"
+                  disabled={busy}
+                  onChange={(next) => onUpdate('value', next)}
+                  options={[
+                    { value: '', label: __('None', 'apple-news') },
+                    { value: 'AI', label: __('AI', 'apple-news') },
+                  ]}
+                  value={value}
+                />
+              ) : null}
+              {fieldType === 'sections' ? (
+                <SelectControl
+                  aria-labelledby="apple-news-automation-column-value"
+                  disabled={busy}
+                  onChange={(next) => onUpdate('value', next)}
+                  options={[
+                    { value: '', label: __('Select Section', 'apple-news') },
+                    ...sections.map((sect) => ({ value: sect.id, label: sect.name })),
+                  ]}
+                  value={value}
+                />
+              ) : null}
+              {fieldType === 'boolean-select' ? (
+                <SelectControl
+                  aria-labelledby="apple-news-automation-column-value"
+                  disabled={busy}
+                  onChange={(next) => onUpdate('value', next)}
+                  options={[
+                    { value: '', label: __('Channel Default', 'apple-news') },
+                    { value: 'true', label: __('True', 'apple-news') },
+                    { value: 'false', label: __('False', 'apple-news') },
+                  ]}
+                  value={value}
+                />
+              ) : null}
+              {fieldType === 'boolean' ? (
+                <ToggleControl
+                  aria-labelledby="apple-news-automation-column-value"
+                  checked={value === 'true'}
+                  disabled={busy}
+                  label=""
+                  onChange={(next) => onUpdate('value', next.toString())}
+                />
+              ) : null}
+              {fieldType === 'string' ? (
+                <TextControl
+                  aria-labelledby="apple-news-automation-column-value"
+                  disabled={busy}
+                  onChange={(next) => onUpdate('value', next)}
+                  value={value}
+                />
+              ) : null}
+              {fieldType === 'themes' ? (
+                <SelectControl
+                  aria-labelledby="apple-news-automation-column-value"
+                  disabled={busy}
+                  onChange={(next) => onUpdate('value', next)}
+                  options={[
+                    { value: '', label: __('Select Theme', 'apple-news') },
+                    ...themes.map((name) => ({ value: name, label: name })),
+                  ]}
+                  value={value}
+                />
+              ) : null}
+            </td>
+          )
+      }
       <td>
         <Button
           disabled={busy}
@@ -166,9 +177,14 @@ function Rule({
   );
 }
 
+Rule.defaultProps = {
+  hideFields: [],
+};
+
 Rule.propTypes = {
   busy: PropTypes.bool.isRequired,
   field: PropTypes.string.isRequired,
+  hideFields: PropTypes.arrayOf(PropTypes.string),
   onDelete: PropTypes.func.isRequired,
   onDragEnd: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
