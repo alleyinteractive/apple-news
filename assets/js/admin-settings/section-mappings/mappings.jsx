@@ -23,10 +23,6 @@ function Mappings() {
   const { apple_news_automation: ruleList } = settings;
   const { fields, sections } = AppleNewsAutomationConfig;
   /**
-   * TODO: Loop over sections and create a new area for adding rules.
-   */
-
-  /**
    * Helper function for pushing to in-memory settings inside useSiteOptions.
    * @param {array} updatedRules - The new array of rules.
    */
@@ -37,14 +33,14 @@ function Mappings() {
   /**
    * Adds a new empty rule to the end of the list.
    */
-  const addRule = () => {
+  const addRule = (value) => {
     updateSettings([
       ...(ruleList ?? []),
       {
-        field: '',
+        field: 'links.sections',
         taxonomy: '',
         term_id: 0,
-        value: '',
+        value,
       },
     ]);
   };
@@ -131,7 +127,7 @@ function Mappings() {
                 <Button
                   disabled={busy}
                   isSecondary
-                  onClick={addRule}
+                  onClick={() => addRule(section.id)}
                   style={{ marginTop: '10px' }}
                 >
                   {__('Add Rule', 'apple-news')}
