@@ -89,46 +89,41 @@ function Mappings() {
             <h2 className="title">{section.name}</h2>
             <table className="wp-list-table widefat fixed striped">
               <thead>
-              <tr>
-                <th id="apple-news-section-mappings-column-taxonomy"
-                    scope="col">{__('Taxonomy', 'apple-news')}</th>
-                <th id="apple-news-section-mappings-column-term"
-                    scope="col">{__('Term', 'apple-news')}</th>
-                <th id="apple-news-section-mappings-column-field"
-                    scope="col">{__('Field', 'apple-news')}</th>
-                <th id="apple-news-section-mappings-column-value"
-                    scope="col">{__('Value', 'apple-news')}</th>
-                <th id="apple-news-section-mappings-column-delete"
-                    scope="col">{__('Delete?', 'apple-news')}</th>
-              </tr>
+                <tr>
+                  <th id="apple-news-section-mappings-column-taxonomy" scope="col">{__('Taxonomy', 'apple-news')}</th>
+                  <th id="apple-news-section-mappings-column-term" scope="col">{__('Term', 'apple-news')}</th>
+                  <th id="apple-news-section-mappings-column-field" scope="col">{__('Field', 'apple-news')}</th>
+                  <th id="apple-news-section-mappings-column-value" scope="col">{__('Value', 'apple-news')}</th>
+                  <th id="apple-news-section-mappings-column-delete" scope="col">{__('Delete?', 'apple-news')}</th>
+                </tr>
               </thead>
               <tbody>
-              {!loading && ruleList ? (
-                ruleList.map((item, index) => (
-                  <Rule
-                    busy={busy}
-                    field={item.field}
-                    key={index} // eslint-disable-line react/no-array-index-key
-                    onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}
-                    onDragEnd={(e) => {
-                      const targetRow = document
-                        .elementFromPoint(e.clientX, e.clientY)
-                        .closest('.apple-news-section-mappings-row');
-                      if (targetRow) {
-                        reorderRule(
-                          index,
-                          Array.from(targetRow.parentElement.querySelectorAll('tr'))
-                            .indexOf(targetRow),
-                        );
-                      }
-                    }}
-                    onUpdate={(key, value) => updateRule(index, key, value)}
-                    taxonomy={item.taxonomy}
-                    termId={item.term_id}
-                    value={item.value}
-                  />
-                ))
-              ) : null}
+                {!loading && ruleList ? (
+                  ruleList.map((item, index) => (
+                    <Rule
+                      busy={busy}
+                      field={item.field}
+                      key={index} // eslint-disable-line react/no-array-index-key
+                      onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}
+                      onDragEnd={(e) => {
+                        const targetRow = document
+                          .elementFromPoint(e.clientX, e.clientY)
+                          .closest('.apple-news-section-mappings-row');
+                        if (targetRow) {
+                          reorderRule(
+                            index,
+                            Array.from(targetRow.parentElement.querySelectorAll('tr'))
+                              .indexOf(targetRow),
+                          );
+                        }
+                      }}
+                      onUpdate={(key, value) => updateRule(index, key, value)}
+                      taxonomy={item.taxonomy}
+                      termId={item.term_id}
+                      value={item.value}
+                    />
+                  ))
+                ) : null}
               </tbody>
             </table>
             <div className="tablenav bottom" style={{ height: '50px' }}>
@@ -137,7 +132,7 @@ function Mappings() {
                   disabled={busy}
                   isSecondary
                   onClick={addRule}
-                  style={{marginTop: '10px'}}
+                  style={{ marginTop: '10px' }}
                 >
                   {__('Add Rule', 'apple-news')}
                 </Button>
