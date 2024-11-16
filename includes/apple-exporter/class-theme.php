@@ -886,7 +886,7 @@ class Theme {
 				'type'        => 'integer',
 			],
 			'cover_caption'                      => [
-				'default' => false,
+				'default' => true,
 				'label'   => __( 'Enable caption on the Cover component', 'apple-news' ),
 				'type'    => 'boolean',
 			],
