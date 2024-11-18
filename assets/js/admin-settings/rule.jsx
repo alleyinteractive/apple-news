@@ -22,6 +22,7 @@ function Rule({
   termId,
   value,
   hideFields = [],
+  index,
 }) {
   const {
     fields,
@@ -47,6 +48,7 @@ function Rule({
   return (
     <tr
       className="apple-news-automation-row"
+      data-index={index}
       draggable
       onDragEnd={onDragEnd}
     >
@@ -191,6 +193,7 @@ Rule.propTypes = {
   taxonomy: PropTypes.string.isRequired,
   termId: PropTypes.number.isRequired,
   value: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 export default Rule;
