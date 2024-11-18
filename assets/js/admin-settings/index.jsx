@@ -22,6 +22,12 @@ function AdminSettings() {
   const busy = loading || saving;
   const { apple_news_automation: ruleList } = settings;
   const { fields } = AppleNewsAutomationConfig;
+  const sectionRows = [];
+  const nonSectionRows = [];
+
+  if (!ruleList) {
+    return null;
+  }
 
   /**
    * Helper function for pushing to in-memory settings inside useSiteOptions.
@@ -74,6 +80,39 @@ function AdminSettings() {
     }
     updateSettings(updatedRules);
   };
+
+  // Split the rows into sections and non-sections.
+  ruleList.forEach((item, index) => {
+    const row = (
+      <Rule
+        busy={busy}
+        field={item.field}
+        key={index} // eslint-disable-line react/no-array-index-key
+        onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}
+        onDragEnd={(e) => {
+          const targetRow = document
+            .elementFromPoint(e.clientX, e.clientY)
+            .closest('.apple-news-automation-row');
+          if (targetRow) {
+            reorderRule(
+              e.currentTarget.dataset.index,
+              targetRow.dataset.index,
+            );
+          }
+        }}
+        onUpdate={(key, value) => updateRule(index, key, value)}
+        taxonomy={item.taxonomy}
+        termId={item.term_id}
+        value={item.value}
+        index={index}
+      />
+    );
+    if (item.field === 'links.sections') {
+      sectionRows.push(row);
+    } else {
+      nonSectionRows.push(row);
+    }
+  });
 
   return (
     <div className="apple-news-options__wrapper">
