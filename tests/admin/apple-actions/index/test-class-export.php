@@ -260,6 +260,34 @@ class Apple_News_Admin_Action_Index_Export_Test extends Apple_News_Testcase {
 	}
 
 	/**
+	 * Tests the ability to remove selectors from the content.
+	 */
+	public function test_remove_selectors() {
+		$post_id = $this->factory->post->create(
+			[
+				'post_content' => <<<HTML
+<p class="foo">First paragraph</p>
+<p class="bar">Second paragraph</p>
+<p class="foo bar">Third paragraph</p>
+<p class="foobar">Fourth paragraph</p>
+<p id="foo">Fifth paragraph</p>
+<p id="bar">Sixth paragraph</p>
+HTML,
+			]
+		);
+
+		$this->settings->excluded_selectors = '.foo, #foo';
+
+		$export   = new Export( $this->settings, $post_id );
+		$exporter = $export->fetch_exporter();
+		$content  = $exporter->get_content()->content();
+
+		$this->assertStringNotContainsString( 'First paragraph', $content );
+		$this->assertStringNotContainsString( 'Third paragraph', $content );
+		$this->assertStringNotContainsString( 'Fifth paragraph', $content );
+	}
+
+	/**
 	 * Tests the behavior of the apple_news_is_exporting() function.
 	 */
 	public function test_is_exporting() {

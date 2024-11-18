@@ -606,6 +606,7 @@ class Export extends Action {
 		$content = apply_filters( 'the_content', $content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		// Clean up the HTML a little.
+		$content = $this->exclude_selectors( $content );
 		$content = $this->remove_tags( $content );
 		$content = $this->remove_entities( $content );
 
@@ -641,6 +642,52 @@ class Export extends Action {
 
 		// Correct ampersand output.
 		return str_replace( '&amp;', '&', $content );
+	}
+
+	/**
+	 * Remove excluded selectors from the content.
+	 *
+	 * @param string $content The content to be filtered.
+	 * @return string
+	 */
+	private function exclude_selectors( $content ) {
+		$raw_selectors = $this->get_setting( 'excluded_selectors' );
+
+		$selectors = explode( ',', $raw_selectors );
+		$selectors = array_map( 'trim', $selectors );
+		$selectors = array_filter( $selectors );
+
+		if ( count( $selectors ) === 0 ) {
+			return $content;
+		}
+
+		libxml_use_internal_errors( true );
+		$dom = new \DOMDocument();
+		$dom->loadHTML( '<?xml encoding="utf-8" ?>'. $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		$xpath = new \DOMXPath( $dom );
+		libxml_clear_errors();
+
+		foreach ( $selectors as $selector ) {
+			$nodes = [];
+
+			if ( str_starts_with( $selector, '#' ) ) {
+				$nodes = $xpath->query( '//*[@id="' . substr( $selector, 1 ) . '"]' );
+			}
+
+			if ( str_starts_with( $selector, '.' ) ) {
+				$nodes = $xpath->query( '//*[contains(concat(" ", normalize-space(@class), " "), " ' . substr( $selector, 1 ) . ' ")]' );
+			}
+
+			if ( is_iterable( $nodes ) ) {
+				foreach ( $nodes as $node ) {
+					$node->parentNode->removeChild( $node );
+				}
+			}
+		}
+
+		$content = $dom->saveHTML();
+
+		return $content;
 	}
 
 	/**
