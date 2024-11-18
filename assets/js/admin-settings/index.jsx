@@ -22,12 +22,14 @@ function AdminSettings() {
   const busy = loading || saving;
   const { apple_news_automation: ruleList } = settings;
   const { fields } = AppleNewsAutomationConfig;
-  const sectionAutomationRows = [];
-  const additionalAutomationRows = [];
 
   if (!ruleList) {
     return null;
   }
+
+  const LINK_SECTIONS = 'links.sections';
+  const allFieldsButSections = Object.keys(fields).filter((field) => field !== LINK_SECTIONS);
+  const sectionsOnly = [LINK_SECTIONS];
 
   /**
    * Helper function for pushing to in-memory settings inside useSiteOptions.
@@ -85,45 +87,54 @@ function AdminSettings() {
    * Generates a rule component.
    * @param {object} item - The rule object.
    * @param {number} index - The index of the rule.
-   * @param {array} hideFieldValues - An array of field values to hide.
    * @return {React.JSX.Element}
    */
-  const generateRule = (item, index, hideFieldValues = []) => (
-    <Rule
-      busy={busy}
-      field={item.field}
-      key={index} // eslint-disable-line react/no-array-index-key
-      onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}
-      onDragEnd={(e) => {
-        const targetRow = document
-          .elementFromPoint(e.clientX, e.clientY)
-          .closest('.apple-news-automation-row');
-        // Checking for the parent element ensures that the row is in the same table.
-        if (targetRow && targetRow.parentElement === e.currentTarget.parentElement) {
-          reorderRule(
-            Number(e.currentTarget.dataset.index),
-            Number(targetRow.dataset.index),
-          );
-        }
-      }}
-      onUpdate={(key, value) => updateRule(index, key, value)}
-      taxonomy={item.taxonomy}
-      termId={item.term_id}
-      value={item.value}
-      index={index}
-      hideFieldTypes={hideFieldValues}
-    />
-  );
+  const generateRule = (item, index) => {
+    const hideFieldTypes = item.field === LINK_SECTIONS ? allFieldsButSections : sectionsOnly;
+
+    return (
+      <Rule
+        busy={busy}
+        field={item.field}
+        key={index} // eslint-disable-line react/no-array-index-key
+        onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}
+        onDragEnd={(e) => {
+          const targetRow = document
+            .elementFromPoint(e.clientX, e.clientY)
+            .closest('.apple-news-automation-row');
+          // Checking for the parent element ensures that the row is in the same table.
+          if (targetRow && targetRow.parentElement === e.currentTarget.parentElement) {
+            reorderRule(
+              Number(e.currentTarget.dataset.index),
+              Number(targetRow.dataset.index),
+            );
+          }
+        }}
+        onUpdate={(key, value) => updateRule(index, key, value)}
+        taxonomy={item.taxonomy}
+        termId={item.term_id}
+        value={item.value}
+        index={index}
+        hideFieldTypes={hideFieldTypes}
+      />
+    );
+  };
 
   // Split the rows into sections and non-sections.
-  ruleList.forEach((item, index) => {
-    if (item.field === 'links.sections') {
-      const allFieldsButSections = Object.keys(fields).filter((field) => field !== 'links.sections');
-      sectionAutomationRows.push(generateRule(item, index, allFieldsButSections));
-    } else {
-      additionalAutomationRows.push(generateRule(item, index, ['links.sections']));
-    }
-  });
+  const { sectionAutomationRows, additionalAutomationRows } = ruleList.reduce(
+    (acc, item, index) => {
+      const ruleComponent = generateRule(item, index);
+
+      if (item.field === LINK_SECTIONS) {
+        acc.sectionAutomationRows.push(ruleComponent);
+      } else {
+        acc.additionalAutomationRows.push(ruleComponent);
+      }
+
+      return acc;
+    },
+    { sectionAutomationRows: [], additionalAutomationRows: [] }
+  );
 
   return (
     <div className="apple-news-options__wrapper">
@@ -151,7 +162,7 @@ function AdminSettings() {
           <Button
             disabled={busy}
             isSecondary
-            onClick={() => addRule('links.sections')}
+            onClick={() => addRule(LINK_SECTIONS)}
           >
             {__('Add Rule', 'apple-news')}
           </Button>
