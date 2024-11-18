@@ -93,7 +93,8 @@ function AdminSettings() {
           const targetRow = document
             .elementFromPoint(e.clientX, e.clientY)
             .closest('.apple-news-automation-row');
-          if (targetRow) {
+          // Checking for the parent element ensures that the row is in the same table.
+          if (targetRow && targetRow.parentElement === e.currentTarget.parentElement) {
             reorderRule(
               e.currentTarget.dataset.index,
               targetRow.dataset.index,
