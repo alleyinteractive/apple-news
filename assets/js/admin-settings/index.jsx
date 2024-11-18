@@ -122,6 +122,7 @@ function AdminSettings() {
       <p>
         <a target="_blank" rel="noreferrer" href="https://github.com/alleyinteractive/apple-news/wiki/Automation">{__('For more information on how automation works, visit our wiki.', 'apple-news')}</a>
       </p>
+      <h2 className="title">{__('Section Mapping Automation', 'apple-news')}</h2>
       <table className="wp-list-table widefat fixed striped">
         <thead>
           <tr>
@@ -156,7 +157,7 @@ function AdminSettings() {
         </div>
       </div>
       <hr />
-      <h2 className="title">Additional Automation</h2>
+      <h2 className="title">{__('Additional Automation', 'apple-news')}</h2>
       <table className="wp-list-table widefat fixed striped">
         <thead>
           <tr>
