@@ -133,7 +133,7 @@ function AdminSettings() {
 
       return acc;
     },
-    { sectionAutomationRows: [], additionalAutomationRows: [] }
+    { sectionAutomationRows: [], additionalAutomationRows: [] },
   );
 
   return (
