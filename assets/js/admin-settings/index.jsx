@@ -135,13 +135,12 @@ function AdminSettings() {
           {sectionRows}
         </tbody>
       </table>
-      <div className="tablenav bottom">
+      <div className="tablenav bottom" style={{ height: '50px' }}>
         <div className="alignleft actions">
           <Button
             disabled={busy}
             isSecondary
             onClick={() => addRule('links.sections')}
-            style={{ marginTop: '10px' }}
           >
             {__('Add Rule', 'apple-news')}
           </Button>
@@ -155,6 +154,7 @@ function AdminSettings() {
           </Button>
         </div>
       </div>
+      <hr />
       <h2 className="title">Additional Automation</h2>
       <table className="wp-list-table widefat fixed striped">
         <thead>
