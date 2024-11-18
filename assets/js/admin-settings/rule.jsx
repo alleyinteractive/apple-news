@@ -22,6 +22,7 @@ function Rule({
   termId,
   value,
   index,
+  hideFieldTypes,
 }) {
   const {
     fields,
@@ -43,6 +44,27 @@ function Rule({
   } else if (fields[field]?.type === 'string') {
     fieldType = 'string';
   }
+
+  /**
+   * Get field type options.
+   */
+  const getFieldTypes = () => {
+    // Filter out field types that should be hidden.
+    const filteredFieldsObject = Object.keys(fields).reduce((acc, fieldSlug) => {
+      if (!hideFieldTypes.includes(fieldSlug)) {
+        acc[fieldSlug] = fields[fieldSlug];
+      }
+      return acc;
+    }, {});
+
+    return [
+      { value: '', label: __('Select Field', 'apple-news') },
+      ...Object.keys(filteredFieldsObject).map((fieldSlug) => ({
+        label: fields[fieldSlug].label,
+        value: fieldSlug,
+      })),
+    ];
+  };
 
   return (
     <tr
@@ -77,13 +99,7 @@ function Rule({
           aria-labelledby="apple-news-automation-column-field"
           disabled={busy}
           onChange={(next) => onUpdate('field', next)}
-          options={[
-            { value: '', label: __('Select Field', 'apple-news') },
-            ...Object.keys(fields).map((fieldSlug) => ({
-              label: fields[fieldSlug].label,
-              value: fieldSlug,
-            })),
-          ]}
+          options={getFieldTypes()}
           value={field}
         />
       </td>
@@ -168,16 +184,21 @@ function Rule({
   );
 }
 
+Rule.defaultProps = {
+  hideFieldTypes: [],
+};
+
 Rule.propTypes = {
   busy: PropTypes.bool.isRequired,
   field: PropTypes.string.isRequired,
+  hideFieldTypes: PropTypes.arrayOf(PropTypes.string),
+  index: PropTypes.number.isRequired,
   onDelete: PropTypes.func.isRequired,
   onDragEnd: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
   taxonomy: PropTypes.string.isRequired,
   termId: PropTypes.number.isRequired,
   value: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
 };
 
 export default Rule;

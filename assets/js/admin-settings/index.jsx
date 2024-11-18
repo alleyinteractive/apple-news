@@ -81,37 +81,47 @@ function AdminSettings() {
     updateSettings(updatedRules);
   };
 
+  /**
+   * Generates a rule component.
+   * @param {object} item - The rule object.
+   * @param {number} index - The index of the rule.
+   * @param {array} hideFieldValues - An array of field values to hide.
+   * @return {React.JSX.Element}
+   */
+  const generateRule = (item, index, hideFieldValues = []) => (
+    <Rule
+      busy={busy}
+      field={item.field}
+      key={index} // eslint-disable-line react/no-array-index-key
+      onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}
+      onDragEnd={(e) => {
+        const targetRow = document
+          .elementFromPoint(e.clientX, e.clientY)
+          .closest('.apple-news-automation-row');
+        // Checking for the parent element ensures that the row is in the same table.
+        if (targetRow && targetRow.parentElement === e.currentTarget.parentElement) {
+          reorderRule(
+            Number(e.currentTarget.dataset.index),
+            Number(targetRow.dataset.index),
+          );
+        }
+      }}
+      onUpdate={(key, value) => updateRule(index, key, value)}
+      taxonomy={item.taxonomy}
+      termId={item.term_id}
+      value={item.value}
+      index={index}
+      hideFieldTypes={hideFieldValues}
+    />
+  );
+
   // Split the rows into sections and non-sections.
   ruleList.forEach((item, index) => {
-    const row = (
-      <Rule
-        busy={busy}
-        field={item.field}
-        key={index} // eslint-disable-line react/no-array-index-key
-        onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}
-        onDragEnd={(e) => {
-          const targetRow = document
-            .elementFromPoint(e.clientX, e.clientY)
-            .closest('.apple-news-automation-row');
-          // Checking for the parent element ensures that the row is in the same table.
-          if (targetRow && targetRow.parentElement === e.currentTarget.parentElement) {
-            reorderRule(
-              Number(e.currentTarget.dataset.index),
-              Number(targetRow.dataset.index),
-            );
-          }
-        }}
-        onUpdate={(key, value) => updateRule(index, key, value)}
-        taxonomy={item.taxonomy}
-        termId={item.term_id}
-        value={item.value}
-        index={index}
-      />
-    );
     if (item.field === 'links.sections') {
-      sectionAutomationRows.push(row);
+      const allFieldsButSections = Object.keys(fields).filter((field) => field !== 'links.sections');
+      sectionAutomationRows.push(generateRule(item, index, allFieldsButSections));
     } else {
-      additionalAutomationRows.push(row);
+      additionalAutomationRows.push(generateRule(item, index, ['links.sections']));
     }
   });
 
@@ -128,7 +138,6 @@ function AdminSettings() {
           <tr>
             <th id="apple-news-automation-column-taxonomy" scope="col">{__('Taxonomy', 'apple-news')}</th>
             <th id="apple-news-automation-column-term" scope="col">{__('Term', 'apple-news')}</th>
-            <th id="apple-news-automation-column-field" scope="col">{__('Field', 'apple-news')}</th>
             <th id="apple-news-automation-column-value" scope="col">{__('Value', 'apple-news')}</th>
             <th id="apple-news-automation-column-delete" scope="col">{__('Delete?', 'apple-news')}</th>
           </tr>
