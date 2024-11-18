@@ -22,8 +22,8 @@ function AdminSettings() {
   const busy = loading || saving;
   const { apple_news_automation: ruleList } = settings;
   const { fields } = AppleNewsAutomationConfig;
-  const sectionRows = [];
-  const nonSectionRows = [];
+  const sectionAutomationRows = [];
+  const additionalAutomationRows = [];
 
   if (!ruleList) {
     return null;
@@ -108,9 +108,9 @@ function AdminSettings() {
       />
     );
     if (item.field === 'links.sections') {
-      sectionRows.push(row);
+      sectionAutomationRows.push(row);
     } else {
-      nonSectionRows.push(row);
+      additionalAutomationRows.push(row);
     }
   });
 
@@ -132,7 +132,7 @@ function AdminSettings() {
           </tr>
         </thead>
         <tbody>
-          {sectionRows}
+          {sectionAutomationRows}
         </tbody>
       </table>
       <div className="tablenav bottom" style={{ height: '50px' }}>
@@ -167,7 +167,7 @@ function AdminSettings() {
           </tr>
         </thead>
         <tbody>
-          {nonSectionRows}
+          {additionalAutomationRows}
         </tbody>
       </table>
       <div className="tablenav bottom">
