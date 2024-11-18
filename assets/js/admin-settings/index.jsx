@@ -41,6 +41,7 @@ function AdminSettings() {
 
   /**
    * Adds a new empty rule to the end of the list.
+   * @param {string} field - The field to add a rule for.
    */
   const addRule = (field = '') => {
     updateSettings([
