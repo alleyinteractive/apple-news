@@ -71,25 +71,40 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'description' => __( 'Enter a CSS class name that will be used to generate the Aside component. Do not prefix with a period.', 'apple-news' ),
 				'required'    => false,
 			],
+			'excluded_selectors'    => [
+				'label'       => __( 'Selectors', 'apple-news' ),
+				'type'        => 'text',
+				'size'        => 150,
+				'description' => sprintf(
+					/* translators: %s: <code> tag */
+					__( 'Enter a comma-separated list of CSS class or ID selectors, like %s. Elements in post content matching these selectors will be removed from the content published to Apple News.', 'apple-news' ),
+					'<code>.my-class, #my-id</code>',
+				),
+				'required'    => false,
+			],
 		];
 
 		// Add the groups.
 		$this->groups = [
-			'alerts' => [
+			'alerts'    => [
 				'label'    => __( 'Alerts', 'apple-news' ),
 				'settings' => [ 'component_alerts' ],
 			],
-			'images' => [
+			'images'    => [
 				'label'    => __( 'Image Settings', 'apple-news' ),
 				'settings' => [ 'use_remote_images', 'full_bleed_images' ],
 			],
-			'format' => [
+			'format'    => [
 				'label'    => __( 'Format Settings', 'apple-news' ),
 				'settings' => [ 'html_support', 'in_article_position' ],
 			],
-			'aside'  => [
+			'aside'     => [
 				'label'    => __( 'Aside Component', 'apple-news' ),
 				'settings' => [ 'aside_component_class' ],
+			],
+			'selectors' => [
+				'label'    => __( 'Excluded Elements', 'apple-news' ),
+				'settings' => [ 'excluded_selectors' ],
 			],
 		];
 

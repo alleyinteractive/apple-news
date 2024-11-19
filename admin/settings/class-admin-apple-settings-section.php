@@ -135,6 +135,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		'b'        => [],
 		'strong'   => [],
 		'i'        => [],
+		'code'     => [],
 		'em'       => [],
 		'a'        => [
 			'href'   => [],

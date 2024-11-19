@@ -49,6 +49,7 @@ class Settings {
 		'post_types'                  => [ 'post' ],
 		'show_metabox'                => 'yes',
 		'use_remote_images'           => 'yes',
+		'excluded_selectors'          => '',
 	];
 
 	/**
