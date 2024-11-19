@@ -663,7 +663,7 @@ class Export extends Action {
 
 		libxml_use_internal_errors( true );
 		$dom = new \DOMDocument();
-		$dom->loadHTML( '<?xml encoding="utf-8" ?>'. $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		$dom->loadHTML( '<?xml encoding="utf-8" ?>' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 		$xpath = new \DOMXPath( $dom );
 		libxml_clear_errors();
 
@@ -680,7 +680,7 @@ class Export extends Action {
 
 			if ( is_iterable( $nodes ) ) {
 				foreach ( $nodes as $node ) {
-					$node->parentNode->removeChild( $node );
+					$node->parentNode->removeChild( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				}
 			}
 		}
