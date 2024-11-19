@@ -92,6 +92,7 @@ function AdminSettings() {
    */
   const generateRule = (item, index) => {
     const hideFieldTypes = item.field === LINK_SECTIONS ? allFieldsButSections : sectionsOnly;
+    const hideColumns = item.field === LINK_SECTIONS ? ['field'] : [];
 
     return (
       <Rule
@@ -117,6 +118,7 @@ function AdminSettings() {
         value={item.value}
         index={index}
         hideFieldTypes={hideFieldTypes}
+        hideColumns={hideColumns}
       />
     );
   };
@@ -150,7 +152,7 @@ function AdminSettings() {
           <tr>
             <th id="apple-news-automation-column-taxonomy" scope="col">{__('Taxonomy', 'apple-news')}</th>
             <th id="apple-news-automation-column-term" scope="col">{__('Term', 'apple-news')}</th>
-            <th id="apple-news-automation-column-value" scope="col">{__('Value', 'apple-news')}</th>
+            <th id="apple-news-automation-column-value" scope="col">{__('Section', 'apple-news')}</th>
             <th id="apple-news-automation-column-delete" scope="col">{__('Delete?', 'apple-news')}</th>
           </tr>
         </thead>
