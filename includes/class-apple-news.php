@@ -50,7 +50,7 @@ class Apple_News {
 	 * @var string
 	 * @access public
 	 */
-	public static string $version = '2.5.1';
+	public static string $version = '2.6.1';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.
@@ -339,6 +339,7 @@ class Apple_News {
 
 			self::$is_initialized = $has_api_settings || $has_api_config;
 		}
+
 
 		return self::$is_initialized;
 	}

@@ -21,10 +21,9 @@ use Apple_Actions\API_Action;
 class Get extends API_Action {
 
 	/**
-	 * Current content ID being retrieved.
+	 * Post ID of the content being retrieved.
 	 *
 	 * @var int
-	 * @access private
 	 */
 	private $id;
 
@@ -32,8 +31,7 @@ class Get extends API_Action {
 	 * Constructor.
 	 *
 	 * @param \Apple_Exporter\Settings $settings Settings in use during this run.
-	 * @param int                      $id       Current content ID being retrieved.
-	 * @access public
+	 * @param int                      $id       Post ID of the content being retrieved.
 	 */
 	public function __construct( $settings, $id ) {
 		parent::__construct( $settings );
@@ -43,18 +41,19 @@ class Get extends API_Action {
 	/**
 	 * Get the post data from Apple News.
 	 *
-	 * @access public
-	 * @return object
+	 * @return object|null
 	 */
 	public function perform() {
 		// Ensure we have a valid ID.
 		$apple_id = get_post_meta( $this->id, 'apple_news_api_id', true );
+
 		if ( empty( $apple_id ) ) {
 			return null;
 		}
 
 		// Get the article from the API.
 		$article = $this->get_api()->get_article( $apple_id );
+
 		if ( empty( $article->data ) ) {
 			return null;
 		}
@@ -67,7 +66,6 @@ class Get extends API_Action {
 	 *
 	 * @param string $key     The key to look up in the data.
 	 * @param string $default Optional. The default value to fall back to. Defaults to null.
-	 * @access public
 	 * @return mixed
 	 */
 	public function get_data( $key, $default = null ) {

@@ -7,14 +7,40 @@
 
 namespace Apple_News\REST;
 
+use WP_Error;
+use WP_REST_Response;
+use WP_REST_Server;
+
+/**
+ * Initialize this REST Endpoint.
+ */
+add_action(
+	'rest_api_init',
+	function () {
+		register_rest_route(
+			'apple-news/v1',
+			'/sections',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => __NAMESPACE__ . '\get_sections_response',
+				'permission_callback' => '__return_true',
+			]
+		);
+	}
+);
+
 /**
  * Get API response.
  *
- * @return array An array of information about sections.
+ * @return WP_REST_Response|WP_Error
  */
-function get_sections_response() {
+function get_sections_response(): WP_REST_Response|WP_Error {
 	// Ensure Apple News is first initialized.
-	\Apple_News::has_uninitialized_error();
+	$retval = \Apple_News::has_uninitialized_error();
+
+	if ( is_wp_error( $retval ) ) {
+		return $retval;
+	}
 
 	$sections = \Admin_Apple_Sections::get_sections();
 	$response = [];
@@ -28,24 +54,5 @@ function get_sections_response() {
 		}
 	}
 
-	return $response;
+	return rest_ensure_response( $response );
 }
-
-/**
- * Initialize this REST Endpoint.
- */
-add_action(
-	'rest_api_init',
-	function () {
-		// Register route count argument.
-		register_rest_route(
-			'apple-news/v1',
-			'/sections',
-			[
-				'methods'             => 'GET',
-				'callback'            => __NAMESPACE__ . '\get_sections_response',
-				'permission_callback' => '__return_true',
-			]
-		);
-	}
-);

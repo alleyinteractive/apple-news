@@ -6,8 +6,6 @@
  * @subpackage Tests
  */
 
-use Apple_Actions\Index\Delete;
-
 /**
  * A class to test the functionality of the Apple_Actions\Index\Delete class.
  *

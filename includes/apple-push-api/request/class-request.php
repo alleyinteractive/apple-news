@@ -171,9 +171,17 @@ class Request {
 			&& 'yes' === $settings['apple_news_enable_debugging']
 			&& 'get' !== $type ) {
 
-			// Get the admin email.
-			$admin_email = filter_var( $settings['apple_news_admin_email'], FILTER_VALIDATE_EMAIL );
-			if ( empty( $admin_email ) ) {
+			$emails = $settings['apple_news_admin_email'] ?? '';
+
+			if ( str_contains( $emails, ',' ) ) {
+				$emails = array_map( 'trim', explode( ',', $emails ) );
+			} else {
+				$emails = [ $emails ];
+			}
+
+			$to = array_filter( $emails, 'is_email' );
+
+			if ( empty( $to ) ) {
 				return; // TODO Fix inconsistent return value.
 			}
 
@@ -191,8 +199,8 @@ class Request {
 			if ( 'yes' === $settings['use_remote_images'] ) {
 				$body .= esc_html__( 'Use Remote images enabled ', 'apple-news' );
 			} elseif ( ! empty( $bundles ) ) {
-					$body .= "\n" . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
-					$body .= implode( "\n", $bundles );
+				$body .= "\n" . esc_html__( 'Bundled images', 'apple-news' ) . ":\n";
+				$body .= implode( "\n", $bundles );
 			} else {
 				$body .= esc_html__( 'No bundled images found.', 'apple-news' );
 			}
@@ -210,14 +218,14 @@ class Request {
 			 *
 			 * @since 1.4.4
 			 *
-			 * @param string|array $headers     Optional. Additional headers.
+			 * @param string|array $headers Optional. Additional headers.
 			 */
 			$headers = apply_filters( 'apple_news_notification_headers', '' );
 
 			// Send the email.
 			if ( ! empty( $body ) ) {
 				wp_mail( // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_mail_wp_mail
-					$admin_email,
+					$to,
 					esc_html__( 'Apple News Notification', 'apple-news' ),
 					$body,
 					$headers
@@ -240,6 +248,7 @@ class Request {
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
 			throw new Request_Exception( esc_html( __( 'Unable to decode JSON from the response:', 'apple-news' ) ) );
 		}
+
 		if ( ! empty( $response_decoded->errors ) && is_array( $response_decoded->errors ) ) {
 			$message  = '';
 			$messages = [];
@@ -408,7 +417,7 @@ class Request {
 		}
 
 		// Parse the response.
-		$response = $this->parse_response(
+		return $this->parse_response(
 			$response,
 			true,
 			strtolower( $verb ),
@@ -417,8 +426,6 @@ class Request {
 			! empty( $data['article'] ) ? $data['article'] : '',
 			'POST' === $verb ? $this->mime_builder->get_debug_content( $args ) : ''
 		);
-
-		return $response;
 	}
 
 	/**

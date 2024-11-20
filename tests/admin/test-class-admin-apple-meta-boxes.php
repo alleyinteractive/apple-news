@@ -21,8 +21,8 @@ class Apple_News_Admin_Apple_Meta_Boxes_Test extends Apple_News_Testcase {
 	 */
 	public function test_save_no_auto_sync() {
 		// Set API settings to not auto sync and to enable the meta box.
-		$this->settings->set( 'api_autosync', 'no' );
-		$this->settings->set( 'show_metabox', 'yes' );
+		$this->settings->__set( 'api_autosync', 'no' );
+		$this->settings->__set( 'show_metabox', 'yes' );
 
 		// Create post.
 		$post_id = $this->factory->post->create();
@@ -46,7 +46,7 @@ class Apple_News_Admin_Apple_Meta_Boxes_Test extends Apple_News_Testcase {
 
 		// Create the meta box class and simulate a save.
 		$meta_box = new Admin_Apple_Meta_Boxes( $this->settings );
-		if ( 'yes' === $this->settings->get( 'show_metabox' ) ) {
+		if ( 'yes' === $this->settings->__get( 'show_metabox' ) ) {
 			$meta_box->do_publish( $post_id, get_post( $post_id ) );
 		}
 
@@ -66,8 +66,8 @@ class Apple_News_Admin_Apple_Meta_Boxes_Test extends Apple_News_Testcase {
 	 */
 	public function test_save_with_auto_sync() {
 		// Set API settings to not auto sync and to enable the meta box.
-		$this->settings->set( 'api_autosync', 'yes' );
-		$this->settings->set( 'show_metabox', 'yes' );
+		$this->settings->__set( 'api_autosync', 'yes' );
+		$this->settings->__set( 'show_metabox', 'yes' );
 
 		// Create post.
 		$post_id = $this->factory->post->create();
@@ -91,7 +91,7 @@ class Apple_News_Admin_Apple_Meta_Boxes_Test extends Apple_News_Testcase {
 
 		// Create the meta box class and simulate a save.
 		$meta_box = new Admin_Apple_Meta_Boxes( $this->settings );
-		if ( 'yes' === $this->settings->get( 'show_metabox' ) ) {
+		if ( 'yes' === $this->settings->__get( 'show_metabox' ) ) {
 			$meta_box->do_publish( $post_id, get_post( $post_id ) );
 		}
 

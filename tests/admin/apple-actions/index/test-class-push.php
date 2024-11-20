@@ -291,7 +291,6 @@ class Apple_News_Admin_Action_Index_Push_Test extends Apple_News_Testcase {
 		$this->assertEquals( null, get_post_meta( $post->ID, 'apple_news_api_deleted', true ) );
 
 		// Try to sync the post again, and verify that it bails out before attempting the sync.
-		$exception = false;
 		try {
 			$this->get_request_for_post( $post->ID );
 		} catch ( Action_Exception $e ) {
@@ -305,5 +304,46 @@ class Apple_News_Admin_Action_Index_Push_Test extends Apple_News_Testcase {
 		$request = $this->get_request_for_update( $post->ID );
 		$body    = $this->get_body_from_request( $request );
 		$this->assertEquals( 'Test New Title', $body['title'] );
+	}
+
+	/**
+	 * Test that the action is able to handle a deleted article.
+	 */
+	public function test_update_with_deleted_article(): void {
+		$article_id = self::factory()->post->create();
+		$api_id     = 'efabcdef123456';
+
+		add_post_meta( $article_id, 'apple_news_api_id', $api_id );
+
+		// Fake the API response for the GET request.
+		$this->add_http_response(
+			verb: 'GET',
+			url: 'https://news-api.apple.com/articles/' . $api_id,
+			body: wp_json_encode(
+				[
+					'errors' => [
+						[
+							'code'    => 'NOT_FOUND',
+							'keyPath' => [ 'articleId' ],
+							'value'   => $api_id,
+						],
+					],
+				]
+			),
+			response: [
+				'code'    => 404,
+				'message' => 'Not Found',
+			]
+		);
+
+		$action = new Apple_Actions\Index\Push( $this->settings, $article_id );
+
+		try {
+			$action->perform();
+		} catch ( Action_Exception $e ) {
+			$this->assertSame( 'Publish to Apple News: This article was previously deleted in iCloud News Publisher. Due to your automatic publishing settings, it has been recreated on Apple News.', $e->getMessage() );
+		}
+
+		$this->assertEmpty( get_post_meta( $article_id, 'apple_news_api_id', true ) );
 	}
 }
