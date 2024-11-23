@@ -173,17 +173,21 @@ class Admin_Apple_Meta_Boxes extends Apple_News {
 
 		// Save straightforward fields.
 		$fields = [
-			'apple_news_coverimage'          => 'integer',
-			'apple_news_coverimage_caption'  => 'textarea',
-			'apple_news_is_hidden'           => 'string',
-			'apple_news_is_paid'             => 'string',
-			'apple_news_is_preview'          => 'string',
-			'apple_news_is_sponsored'        => 'string',
-			'apple_news_pullquote'           => 'string',
-			'apple_news_pullquote_position'  => 'string',
-			'apple_news_slug'                => 'string',
-			'apple_news_suppress_video_url'  => 'boolean',
-			'apple_news_use_image_component' => 'boolean',
+			'apple_news_coverimage'              => 'integer',
+			'apple_news_coverimage_caption'      => 'textarea',
+			'apple_news_cover_embedwebvideo_url' => 'string',
+			'apple_news_cover_media_provider'    => 'string',
+			'apple_news_cover_video_id'          => 'integer',
+			'apple_news_cover_video_url'         => 'string',
+			'apple_news_is_hidden'               => 'string',
+			'apple_news_is_paid'                 => 'string',
+			'apple_news_is_preview'              => 'string',
+			'apple_news_is_sponsored'            => 'string',
+			'apple_news_pullquote'               => 'string',
+			'apple_news_pullquote_position'      => 'string',
+			'apple_news_slug'                    => 'string',
+			'apple_news_suppress_video_url'      => 'boolean',
+			'apple_news_use_image_component'     => 'boolean',
 		];
 		foreach ( $fields as $meta_key => $type ) {
 			switch ( $type ) {

@@ -420,7 +420,7 @@ class Apple_News {
 		// Enqueue the script for cover images in the classic editor.
 		wp_enqueue_script(
 			$this->plugin_slug . '_cover_image_js',
-			plugin_dir_url( __FILE__ ) . '../assets/js/cover-image.js',
+			plugin_dir_url( __FILE__ ) . '../assets/js/cover-media.js',
 			[ 'jquery' ],
 			self::$version,
 			true

@@ -220,8 +220,14 @@ class Components extends Builder {
 				}
 			}
 
+			$cover_config = $this->content_cover();
+
+			// If configured cover is not an image, don't try to replace it with an image from the post.
+			if ( isset( $cover_config['provider'] ) && 'image' !== $cover_config['provider'] ) {
+				return;
+			}
+
 			// If the normalized URL for the first image is different than the URL for the featured image, use the featured image.
-			$cover_config   = $this->content_cover();
 			$cover_url      = $this->get_image_full_size_url( isset( $cover_config['url'] ) ? $cover_config['url'] : $cover_config );
 			$normalized_url = $this->get_image_full_size_url( $original_url );
 			if ( ! empty( $cover_url ) && $normalized_url !== $cover_url ) {

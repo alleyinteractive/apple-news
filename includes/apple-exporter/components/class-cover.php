@@ -146,44 +146,65 @@ class Cover extends Component {
 	/**
 	 * Build the component.
 	 *
-	 * @param array|string $options {
-	 *    The options for the component. If a string is provided, assume it is a URL.
+	 * @param array|string $html {
+	 *    The options for the component. If a string is provided, assume it is an image URL.
 	 *
-	 *    @type string $caption The caption for the image.
-	 *    @type string $url     The URL to the featured image.
+	 *    @type string $caption  The caption for the media.
+	 *    @type string $url      The URL to the media.
+	 *    @type string $provider The provider of the media. Can be the name of a supported provider, e.g. 'youtube'. Can
+	 *                           be a media type, e.g. 'video' or 'image'. Can be blank, implying 'image'.
 	 * }
 	 * @access protected
 	 */
-	protected function build( $options ) {
-
+	protected function build( $html ) {
 		$theme = Theme::get_used();
 
 		// Handle case where options is a URL.
-		if ( ! is_array( $options ) ) {
-			$options = [
-				'url' => $options,
+		if ( ! is_array( $html ) ) {
+			$html = [
+				'url' => $html,
 			];
 		}
 
+		if ( empty( $html['provider'] ) ) {
+			$html['provider'] = 'image';
+		}
+
+		$url = match ( $html['provider'] ) {
+			'video_url', 'embedwebvideo' => $html['url'],
+			default => $this->maybe_bundle_source( $html['url'] ),
+		};
+
 		// If we can't get a valid URL, bail.
-		$url   = $this->maybe_bundle_source( $options['url'] );
 		$check = trim( $url );
 		if ( empty( $check ) ) {
 			return;
 		}
 
-		// Use postmeta to determine if component role should be registered as 'image' or 'photo'.
-		$use_image = get_post_meta( $this->workspace->content_id, 'apple_news_use_image_component', true );
-		$role      = $use_image ? 'image' : 'photo';
+		switch ( $html['provider'] ) {
+			case 'video_url':
+			case 'video_id':
+				$role = 'video';
+				break;
+			case 'embedwebvideo':
+				$role = 'embedwebvideo';
+				break;
+			default:
+				// Use postmeta to determine if component role should be registered as 'image' or 'photo'.
+				$use_image = get_post_meta( $this->workspace->content_id, 'apple_news_use_image_component', true );
+				$role      = $use_image ? 'image' : 'photo';
+				break;
+		}
 
 		// Fork for caption vs. not.
-		if ( ! empty( $options['caption'] )
+		if (
+			! empty( $html['caption'] )
 			&& true === $theme->get_value( 'cover_caption' )
 		) {
 			$this->register_json(
 				'jsonWithCaption',
 				[
-					'#caption#'          => $options['caption'],
+					'#caption#'          => $html['caption'],
 					'#role#'             => $role,
 					'#url#'              => $url,
 					'#caption_tracking#' => intval( $theme->get_value( 'caption_tracking' ) ) / 100,
