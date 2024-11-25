@@ -220,8 +220,11 @@ class Components extends Builder {
 				}
 			}
 
-			// If the normalized URL for the first image is different than the URL for the featured image, use the featured image.
+			// If the URL for the first image is different from the URL for the featured image, use the featured image.
 			$cover_config   = $this->content_cover();
+			if ( $cover_config && $original_url !== $cover_config['url'] ) {
+				return;
+			}
 
 			// If the cover is set to be displayed, remove it from the flow.
 			$cover_caption = '';
