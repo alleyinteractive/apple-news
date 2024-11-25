@@ -221,7 +221,7 @@ class Components extends Builder {
 			}
 
 			// If the URL for the first image is different from the URL for the featured image, use the featured image.
-			$cover_config   = $this->content_cover();
+			$cover_config = $this->content_cover();
 			if ( $cover_config && $original_url !== $cover_config['url'] ) {
 				return;
 			}

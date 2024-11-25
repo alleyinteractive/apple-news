@@ -129,7 +129,8 @@ class Export extends Action {
 				$cover_caption = wp_get_attachment_caption( $cover_meta_id );
 			}
 			$image_url = wp_get_attachment_image_url( $cover_meta_id, 'full' );
-			$image_url = apply_filters( 'jetpack_photon_url', $image_url );
+			// If Jetpack Boost is active, serve the cover image from the CDN.
+			$image_url  = apply_filters( 'jetpack_photon_url', $image_url ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			$post_thumb = [
 				'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
 				'url'     => $image_url ?? '',
