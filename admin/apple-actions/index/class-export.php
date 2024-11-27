@@ -128,13 +128,18 @@ class Export extends Action {
 			if ( empty( $cover_caption ) ) {
 				$cover_caption = wp_get_attachment_caption( $cover_meta_id );
 			}
+			$image_url = wp_get_attachment_image_url( $cover_meta_id, 'full' );
+			// If Jetpack Boost is active, serve the cover image from the CDN.
+			$image_url  = apply_filters( 'jetpack_photon_url', $image_url ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			$post_thumb = [
 				'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
-				'url'     => wp_get_attachment_url( $cover_meta_id ),
+				'url'     => $image_url ?? '',
 			];
 		} else {
 			$thumb_id       = get_post_thumbnail_id( $this->id );
 			$post_thumb_url = wp_get_attachment_url( $thumb_id );
+			// If Jetpack Boost is active, serve the cover image from the CDN.
+			$post_thumb_url = apply_filters( 'jetpack_photon_url', $post_thumb_url ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			if ( empty( $cover_caption ) ) {
 				$cover_caption = wp_get_attachment_caption( $thumb_id );
 			}
