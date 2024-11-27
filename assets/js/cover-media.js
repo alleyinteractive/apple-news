@@ -130,26 +130,27 @@
 
   // Set up URL validation for video URLs.
   (function () {
-    var $videoInputs = $( '[name="apple_news_cover_video_url"], [name="apple_news_cover_embedwebvideo_url"]' );
+    var $videoInputs = $( '[name="apple_news_cover_video_url"], [name="apple_news_cover_embedwebvideo_url"]' ),
+      validateVideoUrl = function () {
+        var input = $(this),
+          $container = input.closest('.apple-news-cover-media-provider-container'),
+          $notice = $container.find('.notice'),
+          options;
 
-    $videoInputs.on( 'input', function () {
-      var input = $( this ),
-        $container = input.closest( '.apple-news-cover-media-provider-container' ),
-        $notice = $container.find( '.notice' ),
-        options;
+        options = {
+          path: '/apple-news/v1/is-valid-cover-media',
+          data: {
+            url: input.val(),
+            type: $container.data('provider'),
+          },
+        };
 
-      options = {
-        path: '/apple-news/v1/is-valid-cover-media',
-        data: {
-          url: input.val(),
-          type: $container.data( 'provider' ),
-        },
+        wp.apiRequest(options).done(function (response) {
+          $notice.toggle(!response.isValidCoverMedia);
+        });
       };
 
-      wp.apiRequest(options).done( function( response ) {
-        $notice.toggle( ! response.isValidCoverMedia );
-      } );
-
-    } );
+    $videoInputs.each( validateVideoUrl );
+    $videoInputs.on( 'input', validateVideoUrl );
   })();
 })( jQuery, window );
