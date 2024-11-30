@@ -371,6 +371,10 @@ class Request {
 			$args['timeout']                   = 30; // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 		}
 
+		if ( 'DELETE' === $verb ) {
+			$args['timeout'] = 5;
+		}
+
 		/**
 		 * Allow filtering of the default arguments for the request.
 		 *
