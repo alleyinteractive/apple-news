@@ -2,6 +2,7 @@
 	'use strict';
 
 	var started = false,
+    searchParams = new URLSearchParams( window.location.search ),
     $submitButton = $( '.bulk-export-submit' );
 
 	function done() {
@@ -13,14 +14,14 @@
 		var $status = $item.find( '.bulk-export-list-item-status' );
 		var id = +$item.data( 'post-id' ); // fetch the post-id and cast to integer
 
-		$status.removeClass( 'pending' ).addClass( 'in-progress' ).text( 'Publishing...' );
+		$status.removeClass( 'pending' ).addClass( 'in-progress' ).text( 'In Progress…' );
 
 		// Send a GET request to ajaxurl, which is WordPress endpoint for AJAX
 		// requests. Expects JSON as response.
 		$.getJSON(
 			ajaxurl,
 			{
-				action: 'push_post',
+				action: searchParams.get( 'action' ),
 				id: id,
 				_ajax_nonce: nonce
 			},
@@ -28,7 +29,7 @@
 				if ( res.success ) {
 					$status.removeClass( 'in-progress' ).addClass( 'success' ).text( 'Success' );
 				} else {
-					$status.removeClass( 'in-progress' ).addClass( 'failed' ).text( res.error );
+					$status.removeClass( 'in-progress' ).addClass( 'failed' ).text( res.data );
 				}
 				next();
 			},

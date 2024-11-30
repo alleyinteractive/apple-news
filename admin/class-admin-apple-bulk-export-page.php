@@ -41,7 +41,8 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 
 		add_action( 'admin_menu', [ $this, 'register_page' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'register_assets' ] );
-		add_action( 'wp_ajax_push_post', [ $this, 'ajax_push_post' ] );
+		add_action( 'wp_ajax_apple_news_push_post', [ $this, 'ajax_push_post' ] );
+		add_action( 'wp_ajax_apple_news_delete_post', [ $this, 'ajax_delete_post' ] );
 	}
 
 	/**
@@ -108,13 +109,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Ensure the post exists and that it's published.
 		$post = get_post( $id );
 		if ( empty( $post ) ) {
-			echo wp_json_encode(
-				[
-					'success' => false,
-					'error'   => __( 'This post no longer exists.', 'apple-news' ),
-				]
-			);
-			wp_die();
+			wp_send_json_error( __( 'This post no longer exists.', 'apple-news' ) );
 		}
 
 		// Check capabilities.
@@ -122,27 +117,17 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			/** This filter is documented in admin/class-admin-apple-post-sync.php */
 			apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) )
 		) ) {
-			echo wp_json_encode(
-				[
-					'success' => false,
-					'error'   => __( 'You do not have permission to publish to Apple News', 'apple-news' ),
-				]
-			);
-			wp_die();
+			wp_send_json_error( __( 'You do not have permission to publish to Apple News', 'apple-news' ) );
 		}
 
 		if ( 'publish' !== $post->post_status ) {
-			echo wp_json_encode(
-				[
-					'success' => false,
-					'error'   => sprintf(
-						// translators: token is a post ID.
-						__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
-						$id
-					),
-				]
+			wp_send_json_error(
+				sprintf(
+					/* translators: %s: post ID */
+					__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
+					$id
+				)
 			);
-			wp_die();
 		}
 
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
@@ -153,22 +138,56 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		}
 
 		if ( $errors ) {
-			echo wp_json_encode(
-				[
-					'success' => false,
-					'error'   => $errors,
-				]
-			);
-		} else {
-			echo wp_json_encode(
-				[
-					'success' => true,
-				]
-			);
+			wp_send_json_error( $errors );
 		}
 
-		// This is required to terminate immediately and return a valid response.
-		wp_die();
+		wp_send_json_success();
+	}
+
+	/**
+	 * Handles the ajax action to delete a post from Apple News.
+	 *
+	 * @access public
+	 */
+	public function ajax_delete_post() {
+		// Check the nonce.
+		check_ajax_referer( self::ACTION );
+
+		// Sanitize input data.
+		$id = isset( $_GET['id'] ) ? (int) $_GET['id'] : -1;
+
+		$post = get_post( $id );
+
+		if ( empty( $post ) ) {
+			wp_send_json_error( __( 'This post no longer exists.', 'apple-news' ) );
+		}
+
+		/** This filter is documented in admin/class-admin-apple-post-sync.php */
+		$cap = apply_filters( 'apple_news_delete_capability', self::get_capability_for_post_type( 'delete_posts', $post->post_type ) );
+
+		// Check capabilities.
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error( __( 'You do not have permission to delete posts from Apple News', 'apple-news' ) );
+		}
+
+		$errors = null;
+
+		// Try to sync only if the post has a remote ID. Ref `Admin_Apple_Post_Sync::do_delete()`.
+		if ( get_post_meta( $id, 'apple_news_api_id', true ) ) {
+			$action = new Apple_Actions\Index\Delete( $this->settings, $id );
+
+			try {
+				$errors = $action->perform();
+			} catch ( Apple_Actions\Action_Exception $e ) {
+				$errors = $e->getMessage();
+			}
+		}
+
+		if ( $errors ) {
+			wp_send_json_error( $errors );
+		}
+
+		wp_send_json_success();
 	}
 
 	/**
