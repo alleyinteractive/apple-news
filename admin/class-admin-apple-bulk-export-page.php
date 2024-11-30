@@ -42,7 +42,6 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		add_action( 'admin_menu', [ $this, 'register_page' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'register_assets' ] );
 		add_action( 'wp_ajax_push_post', [ $this, 'ajax_push_post' ] );
-		add_filter( 'admin_title', [ $this, 'set_title' ] );
 	}
 
 	/**
@@ -64,22 +63,6 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			$this->plugin_slug . '_bulk_export', // Menu Slug.
 			[ $this, 'build_page' ]         // Function.
 		);
-	}
-
-	/**
-	 * Fix the title since WordPress doesn't set one.
-	 *
-	 * @param string $admin_title The title to be filtered.
-	 * @access public
-	 * @return string The title for the screen.
-	 */
-	public function set_title( $admin_title ) {
-		$screen = get_current_screen();
-		if ( 'admin_page_apple_news_bulk_export' === $screen->base ) {
-			$admin_title = __( 'Bulk Export', 'apple-news' ) . $admin_title;
-		}
-
-		return $admin_title;
 	}
 
 	/**
