@@ -1,10 +1,11 @@
 (function ( $, window, undefined ) {
 	'use strict';
 
-	var started = false;
+	var started = false,
+    $submitButton = $( '.bulk-export-submit' );
 
 	function done() {
-		$( '.bulk-export-submit' ).text( 'Done' );
+		$submitButton.text( 'Done' );
 	}
 
 	function pushItem( item, next, nonce ) {
@@ -56,7 +57,7 @@
 		next();
 	}
 
-	$('.bulk-export-submit').click(function (e) {
+	$submitButton.click( function ( e ) {
 		e.preventDefault();
 
 		if ( started ) {
@@ -65,6 +66,6 @@
 
 		started = true;
 		bulkPush();
-	});
+	} );
 
 })( jQuery, window );
