@@ -411,8 +411,8 @@ class Request {
 			}
 		}
 
-		// NULL is a valid response for DELETE.
-		if ( 'DELETE' === $verb && is_null( $response ) ) {
+		// Successful DELETE requests have no response body.
+		if ( 'DELETE' === $verb && 204 === wp_remote_retrieve_response_code( $response ) ) {
 			return null;
 		}
 
