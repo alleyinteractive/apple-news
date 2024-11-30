@@ -133,11 +133,14 @@ class Admin_Apple_Index_Page extends Apple_News {
 			case self::namespace_action( 'push' ): // phpcs:ignore PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
 				if ( ! $id ) {
 					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
-					if ( isset( $_GET['article'] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
-						$ids  = is_array( $_GET['article'] ) ? array_map( 'absint', $_GET['article'] ) : absint( $_GET['article'] ); //  phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
-						$url .= '&ids=' . implode( '.', $ids );
+
+					if ( isset( $_GET['article'] ) ) {
+						$post_ids = is_array( $_GET['article'] ) ? array_map( 'intval', $_GET['article'] ) : (int) $_GET['article'];
+						$url      = add_query_arg( [ 'post_ids' => implode( ',', $post_ids ) ], $url );
 					}
+
 					wp_safe_redirect( esc_url_raw( $url ) ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit
+
 					if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {
 						exit;
 					}
