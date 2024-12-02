@@ -7,6 +7,7 @@
 
 	function done() {
 		$submitButton.text( 'Done' );
+    $submitButton.attr( 'disabled', 'disabled' );
 	}
 
 	function pushItem( item, next, nonce ) {
