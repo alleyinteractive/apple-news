@@ -136,8 +136,8 @@ class Admin_Apple_Index_Page extends Apple_News {
 				} else {
 					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
 
-					if ( isset( $_GET['article'] ) ) {
-						$post_ids = is_array( $_GET['article'] ) ? array_map( 'intval', $_GET['article'] ) : (int) $_GET['article'];
+					if ( isset( $_GET['article'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						$post_ids = is_array( $_GET['article'] ) ? array_map( 'intval', $_GET['article'] ) : (int) $_GET['article']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						$url      = add_query_arg(
 							[
 								'action'   => 'apple_news_push_post',
@@ -161,8 +161,8 @@ class Admin_Apple_Index_Page extends Apple_News {
 				} else {
 					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
 
-					if ( isset( $_GET['article'] ) ) {
-						$post_ids = is_array( $_GET['article'] ) ? array_map( 'intval', $_GET['article'] ) : (int) $_GET['article'];
+					if ( isset( $_GET['article'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						$post_ids = is_array( $_GET['article'] ) ? array_map( 'intval', $_GET['article'] ) : (int) $_GET['article']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						$url      = add_query_arg(
 							[
 								'action'   => 'apple_news_delete_post',

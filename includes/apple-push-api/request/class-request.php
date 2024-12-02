@@ -372,7 +372,7 @@ class Request {
 		}
 
 		if ( 'DELETE' === $verb ) {
-			$args['timeout'] = 5;
+			$args['timeout'] = 5; // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 		}
 
 		/**
