@@ -73,6 +73,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	 */
 	public function build_page() {
 		$post_ids = isset( $_GET['post_ids'] ) ? sanitize_text_field( wp_unslash( $_GET['post_ids'] ) ) : null;
+		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 
 		if ( ! $post_ids ) {
 			wp_safe_redirect( esc_url_raw( menu_page_url( $this->plugin_slug . '_index', false ) ) );
@@ -81,15 +82,34 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			}
 		}
 
-		// Populate $articles array with a set of valid posts.
-		$articles = [];
+		// Allow only specific actions.
+		if ( ! in_array( $action, [ 'apple_news_push_post', 'apple_news_delete_post' ], true ) ) {
+			wp_die( esc_html__( 'Invalid action.', 'apple-news' ), '', [ 'response' => 400 ] );
+		}
+
+		// Populate articles array with a set of valid posts.
+		$apple_posts = [];
 		foreach ( explode( ',', $post_ids ) as $post_id ) {
 			$post = get_post( (int) $post_id );
 
 			if ( ! empty( $post ) ) {
-				$articles[] = $post;
+				$apple_posts[] = $post;
 			}
 		}
+
+		// Override text within the partial depending on the action.
+		$apple_page_title       = match ( $action ) {
+			'apple_news_push_post' => __( 'Bulk Export Articles', 'apple-news' ),
+			'apple_news_delete_post' => __( 'Bulk Delete Articles', 'apple-news' ),
+		};
+		$apple_page_description = match ( $action ) {
+			'apple_news_push_post' => __( 'The following articles will be exported.', 'apple-news' ),
+			'apple_news_delete_post' => __( 'The following articles will be deleted.', 'apple-news' ),
+		};
+		$apple_submit_text      = match ( $action ) {
+			'apple_news_push_post' => __( 'Export', 'apple-news' ),
+			'apple_news_delete_post' => __( 'Delete', 'apple-news' ),
+		};
 
 		require_once __DIR__ . '/partials/page-bulk-export.php';
 	}
