@@ -2,12 +2,12 @@
 	'use strict';
 
 	var started = false,
-    searchParams = new URLSearchParams( window.location.search ),
-    $submitButton = $( '.bulk-export-submit' );
+		searchParams = new URLSearchParams( window.location.search ),
+		$submitButton = $( '.bulk-export-submit' );
 
 	function done() {
 		$submitButton.text( 'Done' );
-    $submitButton.attr( 'disabled', 'disabled' );
+		$submitButton.attr( 'disabled', 'disabled' );
 	}
 
 	function pushItem( item, next, nonce ) {
