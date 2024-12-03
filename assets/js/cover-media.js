@@ -86,8 +86,6 @@
       $addVideoButton.removeClass( 'hidden' );
       $delVideoButton.addClass( 'hidden' );
       $videoIdInput.val( '' );
-
-      console.log('remove video');
     } );
 
     // Set up handler for add functionality.
