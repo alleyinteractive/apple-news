@@ -25,6 +25,7 @@ require_once __DIR__ . '/class-automation.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-delete.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-get-published-state.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-get-settings.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-is-valid-cover-media.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-modify-post.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-publish.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-sections.php';
@@ -99,44 +100,57 @@ class Admin_Apple_News extends Apple_News {
 
 			// Define custom postmeta fields to register.
 			$postmeta = [
-				'apple_news_api_created_at'      => [
+				'apple_news_api_created_at'          => [
 					'default' => '',
 				],
-				'apple_news_api_id'              => [
+				'apple_news_api_id'                  => [
 					'default' => '',
 				],
-				'apple_news_api_modified_at'     => [
+				'apple_news_api_modified_at'         => [
 					'default' => '',
 				],
-				'apple_news_api_revision'        => [
+				'apple_news_api_revision'            => [
 					'default' => '',
 				],
-				'apple_news_api_share_url'       => [
+				'apple_news_api_share_url'           => [
 					'default' => '',
 				],
-				'apple_news_coverimage'          => [
+				'apple_news_cover_media_provider'    => [
+					'default' => 'image',
+				],
+				'apple_news_coverimage'              => [
 					'default' => 0,
 					'type'    => 'integer',
 				],
-				'apple_news_coverimage_caption'  => [
+				'apple_news_coverimage_caption'      => [
 					'default' => '',
 				],
-				'apple_news_is_hidden'           => [
+				'apple_news_cover_video_id'          => [
+					'default' => 0,
+					'type'    => 'integer',
+				],
+				'apple_news_cover_video_url'         => [
 					'default' => '',
 				],
-				'apple_news_is_paid'             => [
+				'apple_news_cover_embedwebvideo_url' => [
 					'default' => '',
 				],
-				'apple_news_is_preview'          => [
+				'apple_news_is_hidden'               => [
 					'default' => '',
 				],
-				'apple_news_is_sponsored'        => [
+				'apple_news_is_paid'                 => [
 					'default' => '',
 				],
-				'apple_news_maturity_rating'     => [
+				'apple_news_is_preview'              => [
 					'default' => '',
 				],
-				'apple_news_metadata'            => [
+				'apple_news_is_sponsored'            => [
+					'default' => '',
+				],
+				'apple_news_maturity_rating'         => [
+					'default' => '',
+				],
+				'apple_news_metadata'                => [
 					'default'           => '',
 					'sanitize_callback' => function ( $value ) {
 						return ! empty( $value ) && is_string( $value ) ? json_decode( $value, true ) : $value;
@@ -146,16 +160,16 @@ class Admin_Apple_News extends Apple_News {
 					],
 					'type'              => 'string',
 				],
-				'apple_news_pullquote'           => [
+				'apple_news_pullquote'               => [
 					'default' => '',
 				],
-				'apple_news_pullquote_position'  => [
+				'apple_news_pullquote_position'      => [
 					'default' => '',
 				],
-				'apple_news_slug'                => [
+				'apple_news_slug'                    => [
 					'default' => '',
 				],
-				'apple_news_sections'            => [
+				'apple_news_sections'                => [
 					'default'      => [],
 					'show_in_rest' => [
 						'schema' => [
@@ -167,11 +181,11 @@ class Admin_Apple_News extends Apple_News {
 					],
 					'type'         => 'array',
 				],
-				'apple_news_suppress_video_url'  => [
+				'apple_news_suppress_video_url'      => [
 					'default' => false,
 					'type'    => 'boolean',
 				],
-				'apple_news_use_image_component' => [
+				'apple_news_use_image_component'     => [
 					'default' => false,
 					'type'    => 'boolean',
 				],

@@ -134,8 +134,8 @@ if ( ! \Apple_News::is_initialized() ) : ?>
 		<p class="description"><?php esc_html_e( 'The position in the article where the pull quote will appear.', 'apple-news' ); ?></p>
 	</div>
 	<div id="apple-news-metabox-coverimage" class="apple-news-metabox-section apple-news-metabox-section-collapsable">
-		<h3><?php esc_html_e( 'Cover Image', 'apple-news' ); ?></h3>
-		<?php require __DIR__ . '/cover-image.php'; ?>
+		<h3><?php esc_html_e( 'Cover Media', 'apple-news' ); ?></h3>
+		<?php require __DIR__ . '/cover-media.php'; ?>
 	</div>
 	<?php
 	if ( 'yes' !== $this->settings->get( 'api_autosync' )
