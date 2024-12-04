@@ -371,6 +371,10 @@ class Request {
 			$args['timeout']                   = 30; // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 		}
 
+		if ( 'DELETE' === $verb ) {
+			$args['timeout'] = 5; // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
+		}
+
 		/**
 		 * Allow filtering of the default arguments for the request.
 		 *
@@ -411,8 +415,8 @@ class Request {
 			}
 		}
 
-		// NULL is a valid response for DELETE.
-		if ( 'DELETE' === $verb && is_null( $response ) ) {
+		// Successful DELETE requests have no response body.
+		if ( 'DELETE' === $verb && 204 === wp_remote_retrieve_response_code( $response ) ) {
 			return null;
 		}
 

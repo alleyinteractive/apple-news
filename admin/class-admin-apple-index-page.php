@@ -110,7 +110,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 *
 	 * @since 0.4.0
 	 * @access public
-	 * @return mixed The result of the requested action.
+	 * @return mixed|void The result of the requested action.
 	 */
 	public function page_router() {
 		$id      = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : null; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
@@ -130,22 +130,56 @@ class Admin_Apple_Index_Page extends Apple_News {
 				return $this->export_action( $id );
 			case self::namespace_action( 'reset' ):
 				return $this->reset_action( $id );
-			case self::namespace_action( 'push' ): // phpcs:ignore PSR2.ControlStructures.SwitchDeclaration.TerminatingComment
-				if ( ! $id ) {
+			case self::namespace_action( 'push' ):
+				if ( $id ) {
+					$this->push_action( $id );
+				} else {
 					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
-					if ( isset( $_GET['article'] ) ) { // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
-						$ids  = is_array( $_GET['article'] ) ? array_map( 'absint', $_GET['article'] ) : absint( $_GET['article'] ); //  phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
-						$url .= '&ids=' . implode( '.', $ids );
+
+					if ( isset( $_GET['article'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						$post_ids = is_array( $_GET['article'] ) ? array_map( 'intval', $_GET['article'] ) : (int) $_GET['article']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						$url      = add_query_arg(
+							[
+								'action'   => 'apple_news_push_post',
+								'post_ids' => implode( ',', $post_ids ),
+							],
+							$url,
+						);
 					}
+
 					wp_safe_redirect( esc_url_raw( $url ) ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit
+
 					if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {
 						exit;
 					}
-				} else {
-					return $this->push_action( $id );
 				}
+
+				break;
 			case self::namespace_action( 'delete' ):
-				return $this->delete_action( $id );
+				if ( $id ) {
+					$this->delete_action( $id );
+				} else {
+					$url = menu_page_url( $this->plugin_slug . '_bulk_export', false );
+
+					if ( isset( $_GET['article'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						$post_ids = is_array( $_GET['article'] ) ? array_map( 'intval', $_GET['article'] ) : (int) $_GET['article']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						$url      = add_query_arg(
+							[
+								'action'   => 'apple_news_delete_post',
+								'post_ids' => implode( ',', $post_ids ),
+							],
+							$url,
+						);
+					}
+
+					wp_safe_redirect( esc_url_raw( $url ) ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit
+
+					if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {
+						exit;
+					}
+				}
+
+				break;
 		}
 	}
 
@@ -401,7 +435,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 		$action = new Apple_Actions\Index\Delete( $this->settings, $id );
 		try {
 			$action->perform();
-			$this->notice_success( __( 'Your article has been removed from apple news.', 'apple-news' ) );
+			$this->notice_success( __( 'Your article has been removed from Apple News.', 'apple-news' ) );
 		} catch ( Apple_Actions\Action_Exception $e ) {
 			$this->notice_error( $e->getMessage() );
 		}
