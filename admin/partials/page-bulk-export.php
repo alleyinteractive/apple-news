@@ -11,8 +11,8 @@
 
 ?>
 <div class="wrap">
-	<h1><?php esc_html_e( 'Bulk Export Articles', 'apple-news' ); ?></h1>
-	<p><?php esc_html_e( "The following articles will be published to Apple News. Once started, it might take a while, please don't close the browser window.", 'apple-news' ); ?></p>
+	<h1><?php esc_html_e( 'Bulk Publish/Update Articles', 'apple-news' ); ?></h1>
+	<p><?php esc_html_e( "The following articles will be published to Apple News. Articles which are already published will be updated. Once started, it might take a while to complete. Please don't close the browser window or navigate away from this page.", 'apple-news' ); ?></p>
 	<?php
 	/**
 	 * Allows for custom HTML to be printed before the bulk export table.
