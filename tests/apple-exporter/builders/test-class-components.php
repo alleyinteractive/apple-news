@@ -16,6 +16,45 @@ use Apple_Exporter\Builders\Components;
 class Apple_News_Component_Tests extends Apple_News_Testcase {
 
 	/**
+	 * A data provider for the full size image URL test.
+	 *
+	 * @return array
+	 */
+	public function data_image_full_size_url() {
+		return [
+			// An image without crops should return itself.
+			[
+				'https://www.example.org/wp-content/uploads/2020/07/sample-image.jpg',
+				'https://www.example.org/wp-content/uploads/2020/07/sample-image.jpg',
+			],
+
+			// An image with a crop should return the original image without the crop.
+			[
+				'https://www.example.org/wp-content/uploads/2020/07/sample-image-150x150.jpg',
+				'https://www.example.org/wp-content/uploads/2020/07/sample-image.jpg',
+			],
+
+			// Scaled images should return the un-scaled version.
+			[
+				'https://www.example.org/wp-content/uploads/2020/07/sample-image-scaled.jpg',
+				'https://www.example.org/wp-content/uploads/2020/07/sample-image.jpg',
+			],
+
+			// Rotated images should return the un-rotated version.
+			[
+				'https://www.example.org/wp-content/uploads/2020/07/sample-image-rotated.jpg',
+				'https://www.example.org/wp-content/uploads/2020/07/sample-image.jpg',
+			],
+
+			// Photon images should return the original.
+			[
+				'https://i1.wp.com/www.example.org/wp-content/uploads/2020/07/sample-image.jpg?w=234&crop=0%2C5px%2C100%2C134px&ssl=1',
+				'https://i1.wp.com/www.example.org/wp-content/uploads/2020/07/sample-image.jpg',
+			],
+		];
+	}
+
+	/**
 	 * A data provider for the meta component ordering test.
 	 *
 	 * @see self::test_meta_component_ordering()
@@ -214,6 +253,24 @@ class Apple_News_Component_Tests extends Apple_News_Testcase {
 		$this->assertEquals( 'photo', $json_7['components'][1]['components'][2]['role'] );
 		$this->assertEquals( wp_get_attachment_image_url( $image_2, 'full' ), $json_7['components'][1]['components'][2]['URL'] );
 		$this->assertEquals( 3, count( $json_7['components'][1]['components'] ) );
+	}
+
+	/**
+	 * Tests the functionality of the get_image_full_size_url function.
+	 *
+	 * @dataProvider data_image_full_size_url
+	 *
+	 * @param string $original The original URL to test.
+	 * @param string $expected The expected result.
+	 *
+	 * @throws ReflectionException If the reflection fails.
+	 */
+	public function test_get_image_full_size_url( $original, $expected ) {
+		$class  = new ReflectionClass( 'Apple_Exporter\Builders\Components' );
+		$method = $class->getMethod( 'get_image_full_size_url' );
+		$method->setAccessible( true );
+		$builder = new Components( $this->content, $this->content_settings );
+		$this->assertEquals( $expected, $method->invokeArgs( $builder, [ $original ] ) );
 	}
 
 	/**
