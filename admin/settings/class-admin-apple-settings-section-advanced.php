@@ -47,6 +47,11 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 				'type'        => [ 'yes', 'no' ],
 				'description' => __( 'If set to yes, images that are centered or have no alignment will span edge-to-edge rather than being constrained within the body margins.', 'apple-news' ),
 			],
+			'deduplicate_cover_media' => [
+				'label'       => __( 'Deduplicate Cover Media?', 'apple-news' ),
+				'type'        => [ 'yes', 'no' ],
+				'description' => __( 'If set to yes, any image, video, or other content selected as an article\'s Cover Media will not appear again in the article body in Apple News.', 'apple-news' ),
+			],
 			'html_support'          => [
 				'label'       => __( 'Enable HTML support?', 'apple-news' ),
 				'type'        => [ 'yes', 'no' ],
@@ -93,6 +98,10 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 			'images'    => [
 				'label'    => __( 'Image Settings', 'apple-news' ),
 				'settings' => [ 'use_remote_images', 'full_bleed_images' ],
+			],
+			'cover'     => [
+				'label'    => __( 'Cover Media Settings', 'apple-news' ),
+				'settings' => [ 'deduplicate_cover_media' ],
 			],
 			'format'    => [
 				'label'    => __( 'Format Settings', 'apple-news' ),

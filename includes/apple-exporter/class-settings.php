@@ -44,6 +44,7 @@ class Settings {
 		'apple_news_enable_debugging' => 'no',
 		'component_alerts'            => 'none',
 		'full_bleed_images'           => 'no',
+		'deduplicate_cover_media'     => 'no',
 		'html_support'                => 'yes',
 		'in_article_position'         => 3,
 		'post_types'                  => [ 'post' ],
