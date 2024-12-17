@@ -79,7 +79,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 			'excluded_selectors'    => [
 				'label'       => __( 'Selectors', 'apple-news' ),
 				'type'        => 'text',
-				'size'        => 150,
+				'size'        => 100,
 				'description' => sprintf(
 					/* translators: %s: <code> tag */
 					__( 'Enter a comma-separated list of CSS class or ID selectors, like %s. Elements in post content matching these selectors will be removed from the content published to Apple News.', 'apple-news' ),
