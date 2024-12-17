@@ -35,8 +35,7 @@ class Admin_Apple_Settings_Section_Advanced extends Admin_Apple_Settings_Section
 			'component_alerts'        => [
 				'label'       => __( 'Component Alerts', 'apple-news' ),
 				'type'        => [ 'none', 'warn', 'fail' ],
-				'description' => __( 'If a post has a component that is unsupported by Apple News, choose "none" to generate no alert, "warn" to provide an admin warning notice, or "fail" to generate a notice and stop publishing.',
-					'apple-news' ),
+				'description' => __( 'If a post has a component that is unsupported by Apple News, choose "none" to generate no alert, "warn" to provide an admin warning notice, or "fail" to generate a notice and stop publishing.', 'apple-news' ),
 			],
 			'use_remote_images'       => [
 				'label'       => __( 'Use Remote Images?', 'apple-news' ),
