@@ -122,11 +122,116 @@ class Export extends Action {
 		$excerpt = has_excerpt( $post ) ? wp_strip_all_tags( $post->post_excerpt ) : '';
 
 		// Get the cover configuration.
+		$post_thumb         = null;
+		$fall_back_to_image = false;
+
 		$cover_provider = get_post_meta( $this->id, 'apple_news_cover_media_provider', true );
 		if ( ! is_string( $cover_provider ) || ! $cover_provider ) {
 			$cover_provider = 'image';
 		}
-		$post_thumb = $this->format_cover( $cover_provider );
+
+		if ( 'embedwebvideo' === $cover_provider ) {
+			$cover_url = get_post_meta( $this->id, 'apple_news_cover_embedwebvideo_url', true );
+
+			// Test against accepted providers.
+			if ( preg_match( Embed_Web_Video::YOUTUBE_MATCH, $cover_url, $cover_matches ) ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => 'https://www.youtube.com/embed/' . end( $cover_matches ),
+				];
+			} elseif ( preg_match( Embed_Web_Video::VIMEO_MATCH, $cover_url, $cover_matches ) ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => 'https://player.vimeo.com/video/' . end( $cover_matches ),
+				];
+			} elseif ( preg_match( Embed_Web_Video::DAILYMOTION_MATCH, $cover_url, $cover_matches ) ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => 'https://geo.dailymotion.com/player.html?video=' . end( $cover_matches ),
+				];
+			} else {
+				$fall_back_to_image = true;
+			}
+		}
+
+		if ( 'video_id' === $cover_provider ) {
+			$video_id  = get_post_meta( $this->id, 'apple_news_cover_video_id', true );
+			$video_url = (string) wp_get_attachment_url( $video_id );
+
+			if ( $video_url ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => $video_url,
+				];
+			} else {
+				$fall_back_to_image = true;
+			}
+		}
+
+		if ( 'video_url' === $cover_provider ) {
+			$file_url = get_post_meta( $this->id, 'apple_news_cover_video_url', true );
+			$check    = wp_check_filetype( $file_url );
+
+			if ( isset( $check['ext'] ) && 'mp4' === $check['ext'] ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => $file_url,
+				];
+			} else {
+				$fall_back_to_image = true;
+			}
+		}
+
+		// Provide fallback behavior so there's still a cover, e.g. if the URL becomes unsupported later.
+		if ( $fall_back_to_image ) {
+			$cover_url      = '';
+			$cover_provider = 'image';
+		}
+
+		if ( 'image' === $cover_provider ) {
+			$cover_meta_id = get_post_meta( $this->id, 'apple_news_coverimage', true );
+			$cover_caption = get_post_meta( $this->id, 'apple_news_coverimage_caption', true );
+			if ( ! empty( $cover_meta_id ) ) {
+				if ( empty( $cover_caption ) ) {
+					$cover_caption = wp_get_attachment_caption( $cover_meta_id );
+				}
+				$post_thumb = [
+					'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
+					'url'     => wp_get_attachment_url( $cover_meta_id ),
+				];
+			} else {
+				$thumb_id       = get_post_thumbnail_id( $this->id );
+				$post_thumb_url = wp_get_attachment_url( $thumb_id );
+				if ( empty( $cover_caption ) ) {
+					$cover_caption = wp_get_attachment_caption( $thumb_id );
+				}
+				if ( ! empty( $post_thumb_url ) ) {
+					// If the post thumb URL is root-relative, convert it to fully-qualified.
+					if ( str_starts_with( $post_thumb_url, '/' ) ) {
+						$post_thumb_url = home_url( $post_thumb_url );
+					}
+
+					// Compile the post_thumb object using the URL and caption from the featured image.
+					$post_thumb = [
+						'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
+						'url'     => $post_thumb_url,
+					];
+				}
+			}
+		}
+
+		// If there is a cover caption but not a cover image URL, preserve it, so it can take precedence later.
+		if ( empty( $post_thumb ) && ! empty( $cover_caption ) ) {
+			$post_thumb = [
+				'caption' => $cover_caption,
+				'url'     => '',
+			];
+		}
+
+		// Attach the final provider slug.
+		if ( is_array( $post_thumb ) ) {
+			$post_thumb['provider'] = $cover_provider;
+		}
 
 		// Build the byline.
 		$byline = $this->format_byline( $post );
@@ -733,120 +838,5 @@ class Export extends Action {
 				$theme->use_this();
 			}
 		}
-	}
-
-	/**
-	 * Prepare cover URL, caption, and provider type.
-	 *
-	 * @param string $cover_provider The cover provider to use.
-	 * @return array|null
-	 */
-	public function format_cover( string $cover_provider ): ?array {
-		$post_thumb         = null;
-		$fall_back_to_image = false;
-
-		if ( 'embedwebvideo' === $cover_provider ) {
-			$cover_url = get_post_meta( $this->id, 'apple_news_cover_embedwebvideo_url', true );
-
-			// Test against accepted providers.
-			if ( preg_match( Embed_Web_Video::YOUTUBE_MATCH, $cover_url, $cover_matches ) ) {
-				$post_thumb = [
-					'caption' => '',
-					'url'     => 'https://www.youtube.com/embed/' . end( $cover_matches ),
-				];
-			} elseif ( preg_match( Embed_Web_Video::VIMEO_MATCH, $cover_url, $cover_matches ) ) {
-				$post_thumb = [
-					'caption' => '',
-					'url'     => 'https://player.vimeo.com/video/' . end( $cover_matches ),
-				];
-			} elseif ( preg_match( Embed_Web_Video::DAILYMOTION_MATCH, $cover_url, $cover_matches ) ) {
-				$post_thumb = [
-					'caption' => '',
-					'url'     => 'https://geo.dailymotion.com/player.html?video=' . end( $cover_matches ),
-				];
-			} else {
-				$fall_back_to_image = true;
-			}
-		}
-
-		if ( 'video_id' === $cover_provider ) {
-			$video_id  = get_post_meta( $this->id, 'apple_news_cover_video_id', true );
-			$video_url = (string) wp_get_attachment_url( $video_id );
-
-			if ( $video_url ) {
-				$post_thumb = [
-					'caption' => '',
-					'url'     => $video_url,
-				];
-			} else {
-				$fall_back_to_image = true;
-			}
-		}
-
-		if ( 'video_url' === $cover_provider ) {
-			$file_url = get_post_meta( $this->id, 'apple_news_cover_video_url', true );
-			$check    = wp_check_filetype( $file_url );
-
-			if ( isset( $check['ext'] ) && 'mp4' === $check['ext'] ) {
-				$post_thumb = [
-					'caption' => '',
-					'url'     => $file_url,
-				];
-			} else {
-				$fall_back_to_image = true;
-			}
-		}
-
-		// Provide fallback behavior so there's still a cover, e.g. if the URL becomes unsupported later.
-		if ( $fall_back_to_image ) {
-			$cover_provider = 'image';
-		}
-
-		if ( 'image' === $cover_provider ) {
-			$cover_meta_id = get_post_meta( $this->id, 'apple_news_coverimage', true );
-			$cover_caption = get_post_meta( $this->id, 'apple_news_coverimage_caption', true );
-			if ( ! empty( $cover_meta_id ) ) {
-				if ( empty( $cover_caption ) ) {
-					$cover_caption = wp_get_attachment_caption( $cover_meta_id );
-				}
-				$post_thumb = [
-					'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
-					'url'     => wp_get_attachment_url( $cover_meta_id ),
-				];
-			} else {
-				$thumb_id       = get_post_thumbnail_id( $this->id );
-				$post_thumb_url = wp_get_attachment_url( $thumb_id );
-				if ( empty( $cover_caption ) ) {
-					$cover_caption = wp_get_attachment_caption( $thumb_id );
-				}
-				if ( ! empty( $post_thumb_url ) ) {
-					// If the post thumb URL is root-relative, convert it to fully-qualified.
-					if ( str_starts_with( $post_thumb_url, '/' ) ) {
-						$post_thumb_url = home_url( $post_thumb_url );
-					}
-
-					// Compile the post_thumb object using the URL and caption from the featured image.
-					$post_thumb = [
-						'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
-						'url'     => $post_thumb_url,
-					];
-				}
-			}
-		}
-
-		// If there is a cover caption but not a cover image URL, preserve it, so it can take precedence later.
-		if ( empty( $post_thumb ) && ! empty( $cover_caption ) ) {
-			$post_thumb = [
-				'caption' => $cover_caption,
-				'url'     => '',
-			];
-		}
-
-		// Attach the final provider slug.
-		if ( is_array( $post_thumb ) ) {
-			$post_thumb['provider'] = $cover_provider;
-		}
-
-		return $post_thumb;
 	}
 }
