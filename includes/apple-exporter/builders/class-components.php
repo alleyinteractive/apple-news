@@ -72,6 +72,9 @@ class Components extends Builder {
 		// Remove any identifiers that are duplicated.
 		$components = $this->remove_duplicate_identifiers( $components );
 
+		// Remove any components that duplicate the cover media.
+		$components = $this->remove_cover_from_components( $components );
+
 		return $components;
 	}
 
@@ -933,5 +936,40 @@ class Components extends Builder {
 		}
 
 		return $components;
+	}
+
+	/**
+	 * Remove any components that duplicate the cover media.
+	 *
+	 * @param array $components The array of components to remove the cover from.
+	 * @return array The updated array of components.
+	 */
+	private function remove_cover_from_components( $components ) {
+		if ( 'yes' !== $this->get_setting( 'deduplicate_cover_media' ) ) {
+			return $components;
+		}
+
+		$cover = $this->content_cover();
+
+		if ( empty( $cover['url'] ) ) {
+			return $components;
+		}
+
+		foreach ( $components as $i => $component ) {
+			// Special case: Don't remove the cover from the header itself.
+			if ( isset( $component['role'] ) && 'header' === $component['role'] ) {
+				continue;
+			}
+
+			if ( isset( $component['URL'] ) && $component['URL'] === $cover['url'] ) {
+				unset( $components[ $i ] );
+			}
+
+			if ( isset( $component['components'] ) && is_array( $component['components'] ) ) {
+				$components[ $i ]['components'] = $this->remove_cover_from_components( $component['components'] );
+			}
+		}
+
+		return array_values( $components );
 	}
 }

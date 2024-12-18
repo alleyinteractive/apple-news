@@ -346,4 +346,51 @@ HTML;
 			}
 		}
 	}
+
+	/**
+	 * Tests that when a URL is set as the cover media, it doesn't appear again in the body.
+	 */
+	public function test_remove_cover_from_body_components() {
+		$video_url = 'https://www.example.com/example.mp4';
+
+		$post_id = self::factory()->post->create(
+			[
+				'post_content' => <<<HTML
+<!-- wp:paragraph -->
+<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:video -->
+<figure class="wp-block-video"><video controls src="{$video_url}"></video></figure>
+<!-- /wp:video -->
+HTML,
+			],
+		);
+
+		update_post_meta( $post_id, 'apple_news_cover_media_provider', 'video_url' );
+		update_post_meta( $post_id, 'apple_news_cover_video_url', $video_url );
+
+		$count_of_video_url_in_body = function () use ( $post_id, $video_url ) {
+			$count = 0;
+			$json  = $this->get_json_for_post( $post_id );
+
+			foreach ( $json['components'] as $component ) {
+				if ( 'container' === $component['role'] ) {
+					foreach ( $component['components'] as $subcomponent ) {
+						if ( isset( $subcomponent['URL'] ) && $video_url === $subcomponent['URL'] ) {
+							$count++;
+						}
+					}
+				}
+			}
+
+			return $count;
+		};
+
+		$this->settings->deduplicate_cover_media = 'no';
+		$this->assertSame( 1, $count_of_video_url_in_body() );
+
+		$this->settings->deduplicate_cover_media = 'yes';
+		$this->assertSame( 0, $count_of_video_url_in_body() );
+	}
 }
