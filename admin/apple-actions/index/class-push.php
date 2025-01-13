@@ -169,9 +169,9 @@ class Push extends API_Action {
 		/**
 		 * Allows for custom logic to determine if a post is in sync or not.
 		 *
-		 * By default, the plugin simply compares the last modified time to the
-		 * last time it was pushed to Apple News. If you want to apply custom
-		 * logic, you can do that by modifying `$in_sync`. The most common use case
+		 * By default, the plugin compares the checksum that is generated in this class
+		 * with the checksum stored last time it was pushed to Apple News. If you want to apply
+		 * custom logic, you can do that by modifying `$in_sync`. The most common use case
 		 * is to not update posts based on custom criteria.
 		 *
 		 * @param bool $in_sync Whether the current post is in sync or not.
