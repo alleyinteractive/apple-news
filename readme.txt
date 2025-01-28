@@ -60,7 +60,6 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 = 2.6.0 =
 
 * Enhancement: Support added for PHP 8.3.
-* Enhancement: CI: PHP 8.4 added to the matrix.
 * Enhancement: Support added for handling deleted articles (in iCloud News Publisher).
 * Enhancement: Add a new hook, `apple_news_after_push_failure`, that fires when a post fails to be pushed to Apple News.
 * Enhancement: Debugging Settings: support added for sending notification to multiple email accounts.
