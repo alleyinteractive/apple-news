@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 6.3
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -60,6 +60,7 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 = 2.6.0 =
 
 * Enhancement: Support added for PHP 8.3.
+* Enhancement: CI: PHP 8.4 added to the matrix.
 * Enhancement: Support added for handling deleted articles (in iCloud News Publisher).
 * Enhancement: Add a new hook, `apple_news_after_push_failure`, that fires when a post fails to be pushed to Apple News.
 * Enhancement: Debugging Settings: support added for sending notification to multiple email accounts.
