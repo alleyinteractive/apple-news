@@ -358,7 +358,7 @@ class Apple_News_Test extends Apple_News_Testcase {
 	 * @see Apple_News::$version
 	 */
 	public function test_version() {
-		$plugin_data = apple_news_get_plugin_data();
+		$plugin_data = apple_news_get_plugin_data( translate: false );
 		$this->assertEquals( Apple_News::$version, $plugin_data['Version'] );
 	}
 }
