@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 6.3
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.6.2
+Stable tag: 2.6.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
