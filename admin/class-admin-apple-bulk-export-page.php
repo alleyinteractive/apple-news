@@ -104,7 +104,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			'apple_news_delete_post' => __( 'Bulk Delete Articles', 'apple-news' ),
 		};
 		$apple_page_description = match ( $action ) {
-			'apple_news_push_post' => __( 'The following articles will be exported.', 'apple-news' ),
+			'apple_news_push_post' => __( 'The following articles will be exported. Articles that are already published will be updated.', 'apple-news' ),
 			'apple_news_delete_post' => __( 'The following articles will be deleted.', 'apple-news' ),
 		};
 		$apple_submit_text = match ( $action ) {

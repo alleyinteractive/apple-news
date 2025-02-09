@@ -1,24 +1,16 @@
 <?php
 /**
- * Entry point for the plugin.
- *
- * This file is read by WordPress to generate the plugin information in the
- * admin panel.
- *
- * @link    http://github.com/alleyinteractive/apple-news
- * @since   0.2.0
- * @package WP_Plugin
- */
-
-/*
- * Plugin Name: Publish to Apple News
+ * Plugin Name: Publish To Apple News
  * Plugin URI:  http://github.com/alleyinteractive/apple-news
  * Description: Export and sync posts to Apple format.
- * Version:     2.6.1
+ * Version:     2.6.2
  * Author:      Alley
  * Author URI:  https://alley.com
  * Text Domain: apple-news
- * Domain Path: lang/
+ * License:     GPLv3 or later
+ * License URI: https://www.gnu.org/licenses/gpl.html
+ *
+ * @package Apple_News
  */
 
 /**
@@ -80,28 +72,19 @@ require __DIR__ . '/includes/class-apple-news.php';
 require __DIR__ . '/admin/class-admin-apple-news.php';
 
 /**
- * Load plugin textdomain.
- *
- * @since 0.9.0
- */
-function apple_news_load_textdomain() {
-	load_plugin_textdomain( 'apple-news', false, __DIR__ . '/lang' );
-}
-add_action( 'plugins_loaded', 'apple_news_load_textdomain' );
-
-/**
  * Gets plugin data.
  * Used to provide generator info in the metadata class.
  *
- * @return array
- *
  * @since 1.0.4
+ *
+ * @param bool $translate Whether to translate the plugin data.
+ * @return array
  */
-function apple_news_get_plugin_data() {
+function apple_news_get_plugin_data( $translate = true ) {
 	if ( ! function_exists( 'get_plugin_data' ) ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	}
-	return get_plugin_data( __DIR__ . '/apple-news.php' );
+	return get_plugin_data( __DIR__ . '/apple-news.php', true, $translate );
 }
 
 new Admin_Apple_News();

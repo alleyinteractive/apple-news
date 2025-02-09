@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 6.3
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -44,6 +44,14 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 2.6.2 =
+
+* Enhancement: i18n - Remove `load_plugin_textdomain`. Since WordPress 4.6, plugins no longer need to load their own textdomain.
+* Enhancement: i18n - Moved some plugin initialization code to the `init` action hook.
+* Bugfix: i18n - Fixed the `_load_textdomain_just_in_time` error with WordPress 6.7.
+* Bugfix: Update plugin name in plugin header.
+* Enhancement: Add license to plugin header.
 
 = 2.6.1 =
 
@@ -90,4 +98,4 @@ Information on previous releases can be found on the plugin's [GitHub Releases p
 
 == Developers ==
 
-Please visit us on [github](https://github.com/alleyinteractive/apple-news) to [submit issues](https://github.com/alleyinteractive/apple-news/issues), [pull requests](https://github.com/alleyinteractive/apple-news/pulls) or [read our wiki page about contributing](https://github.com/alleyinteractive/apple-news/wiki/contributing).
+Please visit us on [GitHub](https://github.com/alleyinteractive/apple-news) to [submit issues](https://github.com/alleyinteractive/apple-news/issues), [pull requests](https://github.com/alleyinteractive/apple-news/pulls) or [read our wiki page about contributing](https://github.com/alleyinteractive/apple-news/wiki/contributing).

@@ -50,7 +50,7 @@ class Apple_News {
 	 * @var string
 	 * @access public
 	 */
-	public static string $version = '2.6.1';
+	public static string $version = '2.6.2';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.
@@ -365,34 +365,37 @@ class Apple_News {
 
 	/**
 	 * Constructor. Registers action hooks.
-	 *
-	 * @access public
 	 */
 	public function __construct() {
 		add_action(
 			'admin_enqueue_scripts',
 			[ $this, 'action_admin_enqueue_scripts' ]
 		);
+
 		add_action(
 			'enqueue_block_editor_assets',
 			[ $this, 'action_enqueue_block_editor_assets' ]
 		);
+
 		add_action(
-			'plugins_loaded',
-			[ $this, 'action_plugins_loaded' ]
+			'init',
+			[ $this, 'action_init' ]
 		);
+
 		add_filter(
 			'update_post_metadata',
 			[ $this, 'filter_update_post_metadata' ],
 			10,
 			5
 		);
+
 		add_filter(
 			'author_link',
 			[ $this, 'filter_author_link' ],
 			10,
 			3
 		);
+
 		add_filter(
 			'the_author',
 			[ $this, 'filter_the_author' ],
@@ -471,21 +474,21 @@ class Apple_News {
 	}
 
 	/**
-	 * Action hook callback for plugins_loaded.
+	 * Action hook callback for init.
 	 *
 	 * @since 1.3.0
 	 */
-	public function action_plugins_loaded(): void {
+	public function action_init(): void {
 
 		// Determine if the database version and code version are the same.
-		$current_version = get_option( 'apple_news_version' );
-		if ( version_compare( $current_version, self::$version, '>=' ) ) {
+		$current_version = get_option( 'apple_news_version', '' );
+		if ( is_string( $current_version ) && version_compare( $current_version, self::$version, '>=' ) ) {
 			return;
 		}
 
 		// Determine if this is a clean install (no settings set yet).
 		$settings = get_option( self::$option_name );
-		if ( ! empty( $settings ) ) {
+		if ( ! empty( $settings ) && is_string( $current_version ) ) {
 
 			// Handle upgrade to version 1.3.0.
 			if ( version_compare( $current_version, '1.3.0', '<' ) ) {
@@ -517,8 +520,6 @@ class Apple_News {
 
 	/**
 	 * Create the default themes, if they do not exist.
-	 *
-	 * @access public
 	 */
 	public function create_default_theme(): void {
 
@@ -529,9 +530,14 @@ class Apple_News {
 		}
 
 		// Build the theme formatting settings from the base settings array.
-		$theme          = new Theme();
-		$options        = Theme::get_options();
-		$wp_settings    = get_option( self::$option_name, [] );
+		$theme       = new Theme();
+		$options     = Theme::get_options();
+		$wp_settings = get_option( self::$option_name, [] );
+
+		if ( ! is_array( $wp_settings ) ) {
+			$wp_settings = [];
+		}
+
 		$theme_settings = [];
 		foreach ( array_keys( $options ) as $option_key ) {
 			if ( isset( $wp_settings[ $option_key ] ) ) {
