@@ -188,6 +188,7 @@ class Admin_Apple_Post_Sync {
 	public function do_delete( $id ) {
 		$post = get_post( $id );
 		if ( empty( $post->post_type )
+			|| wp_is_post_revision( $id )
 			|| ! current_user_can(
 				/**
 				 * Filters the delete capability required to delete posts from Apple News.
