@@ -1,6 +1,6 @@
 <?php
 /**
- * Publish to Apple News partials: Cover Image template
+ * Publish to Apple News partials: Cover Media template
  *
  * phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
  *
