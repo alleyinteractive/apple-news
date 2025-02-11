@@ -45,13 +45,18 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
+= 2.6.3 =
+
+* Bugfix: Fixed an issue where the deletion of a post's autosave could cause the Apple News article for that post to be deleted.
+
 = 2.6.2 =
 
 * Enhancement: i18n - Remove `load_plugin_textdomain`. Since WordPress 4.6, plugins no longer need to load their own textdomain.
 * Enhancement: i18n - Moved some plugin initialization code to the `init` action hook.
-* Bugfix: i18n - Fixed the `_load_textdomain_just_in_time` error with WordPress 6.7.
-* Bugfix: Update plugin name in plugin header.
 * Enhancement: Add license to plugin header.
+* Bugfix: i18n - Fixed the `_load_textdomain_just_in_time` error with WordPress 6.7.
+* Bugfix: Update bulk action text to clarify that the "Publish" action can also be used to update published articles.
+* Bugfix: Update plugin name in plugin header.
 
 = 2.6.1 =
 
