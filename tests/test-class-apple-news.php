@@ -353,12 +353,192 @@ class Apple_News_Test extends Apple_News_Testcase {
 	}
 
 	/**
+	 * Tests an upgrade from a version prior to 2.7.0 to version 2.7.0.
+	 */
+	public function test_upgrade_to_2_7_0(): void {
+		// Load the default theme and get its data.
+		$this->load_example_theme( 'default' );
+		$theme_data = get_option( Theme::theme_key( 'Default' ) );
+
+		// Remove all keys for the new recipe settings.
+		unset( $theme_data['recipe_background_color'] );
+		unset( $theme_data['recipe_background_color_dark'] );
+		unset( $theme_data['recipe_body_background_color'] );
+		unset( $theme_data['recipe_body_background_color_dark'] );
+		unset( $theme_data['recipe_body_color'] );
+		unset( $theme_data['recipe_body_color_dark'] );
+		unset( $theme_data['recipe_body_font'] );
+		unset( $theme_data['recipe_body_line_height'] );
+		unset( $theme_data['recipe_body_link_color'] );
+		unset( $theme_data['recipe_body_link_color_dark'] );
+		unset( $theme_data['recipe_body_size'] );
+		unset( $theme_data['recipe_body_tracking'] );
+		unset( $theme_data['recipe_caption_background_color'] );
+		unset( $theme_data['recipe_caption_background_color_dark'] );
+		unset( $theme_data['recipe_caption_color'] );
+		unset( $theme_data['recipe_caption_color_dark'] );
+		unset( $theme_data['recipe_caption_font'] );
+		unset( $theme_data['recipe_caption_line_height'] );
+		unset( $theme_data['recipe_caption_link_color'] );
+		unset( $theme_data['recipe_caption_link_color_dark'] );
+		unset( $theme_data['recipe_caption_size'] );
+		unset( $theme_data['recipe_caption_tracking'] );
+		unset( $theme_data['recipe_details_background_color'] );
+		unset( $theme_data['recipe_details_background_color_dark'] );
+		unset( $theme_data['recipe_details_color'] );
+		unset( $theme_data['recipe_details_color_dark'] );
+		unset( $theme_data['recipe_details_font'] );
+		unset( $theme_data['recipe_details_line_height'] );
+		unset( $theme_data['recipe_details_link_color'] );
+		unset( $theme_data['recipe_details_link_color_dark'] );
+		unset( $theme_data['recipe_details_size'] );
+		unset( $theme_data['recipe_details_tracking'] );
+		unset( $theme_data['recipe_header2_color'] );
+		unset( $theme_data['recipe_header2_color_dark'] );
+		unset( $theme_data['recipe_header2_font'] );
+		unset( $theme_data['recipe_header2_line_height'] );
+		unset( $theme_data['recipe_header2_size'] );
+		unset( $theme_data['recipe_header2_tracking'] );
+		unset( $theme_data['recipe_header3_color'] );
+		unset( $theme_data['recipe_header3_color_dark'] );
+		unset( $theme_data['recipe_header3_font'] );
+		unset( $theme_data['recipe_header3_line_height'] );
+		unset( $theme_data['recipe_header3_size'] );
+		unset( $theme_data['recipe_header3_tracking'] );
+		unset( $theme_data['recipe_header4_color'] );
+		unset( $theme_data['recipe_header4_color_dark'] );
+		unset( $theme_data['recipe_header4_font'] );
+		unset( $theme_data['recipe_header4_line_height'] );
+		unset( $theme_data['recipe_header4_size'] );
+		unset( $theme_data['recipe_header4_tracking'] );
+		unset( $theme_data['recipe_title_color'] );
+		unset( $theme_data['recipe_title_color_dark'] );
+		unset( $theme_data['recipe_title_font'] );
+		unset( $theme_data['recipe_title_line_height'] );
+		unset( $theme_data['recipe_title_size'] );
+		unset( $theme_data['recipe_title_tracking'] );
+
+		// Set different values for the source keys for the recipe settings so we can ensure they are migrated properly.
+		$theme_data['blockquote_background_color']      = '#abc123';
+		$theme_data['blockquote_background_color_dark'] = '#bcd234';
+		$theme_data['blockquote_color']                 = '#cde345';
+		$theme_data['blockquote_color_dark']            = '#def456';
+		$theme_data['body_font']                        = 'Papyrus';
+		$theme_data['body_line_height']                 = 123.0;
+		$theme_data['body_link_color']                  = '#aaa111';
+		$theme_data['body_link_color_dark']             = '#bbb222';
+		$theme_data['body_size']                        = 24;
+		$theme_data['body_tracking']                    = 5;
+		$theme_data['header2_color']                    = '#222222';
+		$theme_data['header2_color_dark']               = '#222ddd';
+		$theme_data['header2_font']                     = 'Zapfino';
+		$theme_data['header2_line_height']              = 48.0;
+		$theme_data['header2_size']                     = 48;
+		$theme_data['header2_tracking']                 = 15;
+		$theme_data['header3_color']                    = '#333333';
+		$theme_data['header3_color_dark']               = '#333ddd';
+		$theme_data['header3_font']                     = 'Copperplate';
+		$theme_data['header3_line_height']              = 36.0;
+		$theme_data['header3_size']                     = 36;
+		$theme_data['header3_tracking']                 = 10;
+		$theme_data['header4_color']                    = '#444444';
+		$theme_data['header4_color_dark']               = '#444ddd';
+		$theme_data['header4_font']                     = 'Baskerville';
+		$theme_data['header4_line_height']              = 34.0;
+		$theme_data['header4_size']                     = 34;
+		$theme_data['header4_tracking']                 = 9;
+		$theme_data['header5_color']                    = '#555555';
+		$theme_data['header5_color_dark']               = '#555ddd';
+		$theme_data['header5_font']                     = 'Verdana';
+		$theme_data['header5_line_height']              = 35.0;
+		$theme_data['header5_size']                     = 35;
+		$theme_data['header5_tracking']                 = 8;
+
+		// Save the updated theme data to prep for the upgrade test.
+		update_option( Theme::theme_key( 'Default' ), $theme_data );
+
+		// Run the upgrade.
+		$apple_news = new Apple_News();
+		$apple_news->upgrade_to_2_7_0();
+		$theme = Theme::get_used();
+		$theme->load();
+
+		// Check settings that are migrated from blockquote settings.
+		$this->assertEquals( '#abc123', $theme->get_value( 'recipe_background_color' ), 'Expected the blockquote background color to be applied to the recipe background color as part of the upgrade.' );
+		$this->assertEquals( '#abc123', $theme->get_value( 'recipe_body_background_color' ), 'Expected the blockquote background color to be applied to the recipe body background color as part of the upgrade.' );
+		$this->assertEquals( '#abc123', $theme->get_value( 'recipe_caption_background_color' ), 'Expected the blockquote background color to be applied to the recipe caption background color as part of the upgrade.' );
+		$this->assertEquals( '#abc123', $theme->get_value( 'recipe_details_background_color' ), 'Expected the blockquote background color to be applied to the recipe details background color as part of the upgrade.' );
+		$this->assertEquals( '#bcd234', $theme->get_value( 'recipe_background_color_dark' ), 'Expected the blockquote dark background color to be applied to the recipe dark background color as part of the upgrade.' );
+		$this->assertEquals( '#bcd234', $theme->get_value( 'recipe_body_background_color_dark' ), 'Expected the blockquote dark background color to be applied to the recipe body dark background color as part of the upgrade.' );
+		$this->assertEquals( '#bcd234', $theme->get_value( 'recipe_caption_background_color_dark' ), 'Expected the blockquote dark background color to be applied to the recipe caption dark background color as part of the upgrade.' );
+		$this->assertEquals( '#bcd234', $theme->get_value( 'recipe_details_background_color_dark' ), 'Expected the blockquote dark background color to be applied to the recipe details dark background color as part of the upgrade.' );
+		$this->assertEquals( '#cde345', $theme->get_value( 'recipe_body_color' ), 'Expected the blockquote color to be applied to the recipe body color as part of the upgrade.' );
+		$this->assertEquals( '#cde345', $theme->get_value( 'recipe_caption_color' ), 'Expected the blockquote color to be applied to the recipe caption color as part of the upgrade.' );
+		$this->assertEquals( '#cde345', $theme->get_value( 'recipe_details_color' ), 'Expected the blockquote color to be applied to the recipe details color as part of the upgrade.' );
+		$this->assertEquals( '#def456', $theme->get_value( 'recipe_body_color_dark' ), 'Expected the blockquote dark color to be applied to the recipe body dark color as part of the upgrade.' );
+		$this->assertEquals( '#def456', $theme->get_value( 'recipe_caption_color_dark' ), 'Expected the blockquote dark color to be applied to the recipe caption dark color as part of the upgrade.' );
+		$this->assertEquals( '#def456', $theme->get_value( 'recipe_details_color_dark' ), 'Expected the blockquote dark color to be applied to the recipe details dark color as part of the upgrade.' );
+
+		// Check settings that are migrated from body settings.
+		$this->assertEquals( 'Papyrus', $theme->get_value( 'recipe_body_font' ), 'Expected the body font to be applied to the recipe body font as part of the upgrade.' );
+		$this->assertEquals( 'Papyrus', $theme->get_value( 'recipe_caption_font' ), 'Expected the body font to be applied to the recipe caption font as part of the upgrade.' );
+		$this->assertEquals( 'Papyrus', $theme->get_value( 'recipe_details_font' ), 'Expected the body font to be applied to the recipe details font as part of the upgrade.' );
+		$this->assertEquals( 123.0, $theme->get_value( 'recipe_body_line_height' ), 'Expected the body line height to be applied to the recipe body line height as part of the upgrade.' );
+		$this->assertEquals( 123.0, $theme->get_value( 'recipe_caption_line_height' ), 'Expected the body line height to be applied to the recipe caption line height as part of the upgrade.' );
+		$this->assertEquals( 123.0, $theme->get_value( 'recipe_details_line_height' ), 'Expected the body line height to be applied to the recipe details line height as part of the upgrade.' );
+		$this->assertEquals( '#aaa111', $theme->get_value( 'recipe_body_link_color' ), 'Expected the body link color to be applied to the recipe body link color as part of the upgrade.' );
+		$this->assertEquals( '#aaa111', $theme->get_value( 'recipe_caption_link_color' ), 'Expected the body link color to be applied to the recipe caption link color as part of the upgrade.' );
+		$this->assertEquals( '#aaa111', $theme->get_value( 'recipe_details_link_color' ), 'Expected the body link color to be applied to the recipe details link color as part of the upgrade.' );
+		$this->assertEquals( '#bbb222', $theme->get_value( 'recipe_body_link_color_dark' ), 'Expected the body dark link color to be applied to the recipe body dark link color as part of the upgrade.' );
+		$this->assertEquals( '#bbb222', $theme->get_value( 'recipe_caption_link_color_dark' ), 'Expected the body dark link color to be applied to the recipe caption dark link color as part of the upgrade.' );
+		$this->assertEquals( '#bbb222', $theme->get_value( 'recipe_details_link_color_dark' ), 'Expected the body dark link color to be applied to the recipe details dark link color as part of the upgrade.' );
+		$this->assertEquals( 24, $theme->get_value( 'recipe_body_size' ), 'Expected the body size to be applied to the recipe body size as part of the upgrade.' );
+		$this->assertEquals( 24, $theme->get_value( 'recipe_caption_size' ), 'Expected the body size to be applied to the recipe caption size as part of the upgrade.' );
+		$this->assertEquals( 24, $theme->get_value( 'recipe_details_size' ), 'Expected the body size to be applied to the recipe details size as part of the upgrade.' );
+		$this->assertEquals( 5, $theme->get_value( 'recipe_body_tracking' ), 'Expected the body tracking to be applied to the recipe body tracking as part of the upgrade.' );
+		$this->assertEquals( 5, $theme->get_value( 'recipe_caption_tracking' ), 'Expected the body tracking to be applied to the recipe caption tracking as part of the upgrade.' );
+		$this->assertEquals( 5, $theme->get_value( 'recipe_details_tracking' ), 'Expected the body tracking to be applied to the recipe details tracking as part of the upgrade.' );
+
+		// Check settings that are migrated from h2 settings.
+		$this->assertEquals( '#222222', $theme->get_value( 'recipe_title_color' ), 'Expected the h2 color to be applied to the recipe title color as part of the upgrade.' );
+		$this->assertEquals( '#222ddd', $theme->get_value( 'recipe_title_color_dark' ), 'Expected the h2 dark color to be applied to the recipe title dark color as part of the upgrade.' );
+		$this->assertEquals( 'Zapfino', $theme->get_value( 'recipe_title_font' ), 'Expected the h2 font to be applied to the recipe title font as part of the upgrade.' );
+		$this->assertEquals( 48.0, $theme->get_value( 'recipe_title_line_height' ), 'Expected the h2 line height to be applied to the recipe title line height as part of the upgrade.' );
+		$this->assertEquals( 48, $theme->get_value( 'recipe_title_size' ), 'Expected the h2 size to be applied to the recipe title size as part of the upgrade.' );
+		$this->assertEquals( 15, $theme->get_value( 'recipe_title_tracking' ), 'Expected the h2 tracking to be applied to the recipe title tracking as part of the upgrade.' );
+
+		// Check settings that are migrated from h3 settings.
+		$this->assertEquals( '#333333', $theme->get_value( 'recipe_header2_color' ), 'Expected the h3 color to be applied to the recipe header2 color as part of the upgrade.' );
+		$this->assertEquals( '#333ddd', $theme->get_value( 'recipe_header2_color_dark' ), 'Expected the h3 dark color to be applied to the recipe header2 dark color as part of the upgrade.' );
+		$this->assertEquals( 'Copperplate', $theme->get_value( 'recipe_header2_font' ), 'Expected the h3 font to be applied to the recipe header2 font as part of the upgrade.' );
+		$this->assertEquals( 36.0, $theme->get_value( 'recipe_header2_line_height' ), 'Expected the h3 line height to be applied to the recipe header2 line height as part of the upgrade.' );
+		$this->assertEquals( 36, $theme->get_value( 'recipe_header2_size' ), 'Expected the h3 size to be applied to the recipe header2 size as part of the upgrade.' );
+		$this->assertEquals( 10, $theme->get_value( 'recipe_header2_tracking' ), 'Expected the h3 tracking to be applied to the recipe header2 tracking as part of the upgrade.' );
+
+		// Check settings that are migrated from h4 settings.
+		$this->assertEquals( '#444444', $theme->get_value( 'recipe_header3_color' ), 'Expected the h4 color to be applied to the recipe header3 color as part of the upgrade.' );
+		$this->assertEquals( '#444ddd', $theme->get_value( 'recipe_header3_color_dark' ), 'Expected the h4 dark color to be applied to the recipe header3 dark color as part of the upgrade.' );
+		$this->assertEquals( 'Baskerville', $theme->get_value( 'recipe_header3_font' ), 'Expected the h4 font to be applied to the recipe header3 font as part of the upgrade.' );
+		$this->assertEquals( 34.0, $theme->get_value( 'recipe_header3_line_height' ), 'Expected the h4 line height to be applied to the recipe header3 line height as part of the upgrade.' );
+		$this->assertEquals( 34, $theme->get_value( 'recipe_header3_size' ), 'Expected the h4 size to be applied to the recipe header3 size as part of the upgrade.' );
+		$this->assertEquals( 9, $theme->get_value( 'recipe_header3_tracking' ), 'Expected the h4 tracking to be applied to the recipe header3 tracking as part of the upgrade.' );
+
+		// Check settings that are migrated from h5 settings.
+		$this->assertEquals( '#555555', $theme->get_value( 'recipe_header4_color' ), 'Expected the h5 color to be applied to the recipe header4 color as part of the upgrade.' );
+		$this->assertEquals( '#555ddd', $theme->get_value( 'recipe_header4_color_dark' ), 'Expected the h5 dark color to be applied to the recipe header4 dark color as part of the upgrade.' );
+		$this->assertEquals( 'Verdana', $theme->get_value( 'recipe_header4_font' ), 'Expected the h5 font to be applied to the recipe header4 font as part of the upgrade.' );
+		$this->assertEquals( 35.0, $theme->get_value( 'recipe_header4_line_height' ), 'Expected the h5 line height to be applied to the recipe header4 line height as part of the upgrade.' );
+		$this->assertEquals( 35, $theme->get_value( 'recipe_header4_size' ), 'Expected the h5 size to be applied to the recipe header4 size as part of the upgrade.' );
+		$this->assertEquals( 8, $theme->get_value( 'recipe_header4_tracking' ), 'Expected the h5 tracking to be applied to the recipe header4 tracking as part of the upgrade.' );
+	}
+
+	/**
 	 * Ensures that the version in Apple_News matches the reported plugin version.
 	 *
 	 * @see Apple_News::$version
 	 */
 	public function test_version() {
-		$plugin_data = apple_news_get_plugin_data( translate: false );
+		$plugin_data = apple_news_get_plugin_data();
 		$this->assertEquals( Apple_News::$version, $plugin_data['Version'] );
 	}
 }

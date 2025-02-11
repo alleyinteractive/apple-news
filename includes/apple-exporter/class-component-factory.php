@@ -121,6 +121,7 @@ class Component_Factory {
 		self::register_component( 'author', '\\Apple_Exporter\\Components\\Author' );
 		self::register_component( 'date', '\\Apple_Exporter\\Components\\Date' );
 		self::register_component( 'slug', '\\Apple_Exporter\\Components\\Slug' );
+		self::register_component( 'recipe', '\\Apple_Exporter\\Components\\Recipe' );
 		self::register_component( 'end-of-article', '\\Apple_Exporter\\Components\\End_Of_Article' );
 		self::register_component( 'in-article', '\\Apple_Exporter\\Components\\In_Article' );
 
