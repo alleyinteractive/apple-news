@@ -45,6 +45,15 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
+= 2.7.0 =
+
+* Enhancement: Add support for the Apple News Recipe component. Please [visit our wiki for detailed documentation](https://github.com/alleyinteractive/apple-news/wiki/configuration#recipe-component).
+* Enhancement: Add "Cover Media" options, expanding on existing "Cover Image" feature, allowing YouTube or other videos to display in the Cover component.
+* Enhancement: Add setting that allows elements in post content matching CSS classes or ID selectors to be excluded from the content sent to Apple News.
+* Enhancement: Allow article deletions with Bulk Actions.
+* Enhancement: Move section mapping to its own table in the Automation settings for easier management.
+* Enhancement: Enable caption on the Cover component by default.
+
 = 2.6.3 =
 
 * Bugfix: Fixed an issue where the deletion of a post's autosave could cause the Apple News article for that post to be deleted.
