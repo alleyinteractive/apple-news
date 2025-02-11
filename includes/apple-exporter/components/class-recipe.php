@@ -797,7 +797,7 @@ class Recipe extends Component {
 		}
 
 		// Second, try to find schema in the HEAD of the post on the frontend.
-		// Could check BODY as well, but the post content is already being scanned, which might be enough?
+		// Could check BODY as well, but the post content is already being scanned. That might be enough.
 
 		/**
 		 * Filters the URL for an article that will be fetched and searched for JSON-LD Recipe items.
@@ -1082,12 +1082,12 @@ class Recipe extends Component {
 		$out = [];
 
 		if ( $hours > 0 ) {
-			// translators: %d is the number of hours.
+			/* translators: %d: number of hours */
 			$out[] = sprintf( __( '%d hr', 'apple-news' ), $hours / HOUR_IN_SECONDS );
 		}
 
 		if ( $minutes > 0 ) {
-			// translators: %d is the number of minutes.
+			/* translators: %d: number of minutes */
 			$out[] = sprintf( __( '%d mins', 'apple-news' ), (int) round( $minutes / MINUTE_IN_SECONDS ) );
 		}
 
