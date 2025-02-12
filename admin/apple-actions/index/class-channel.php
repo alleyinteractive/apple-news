@@ -26,17 +26,21 @@ class Channel extends API_Action {
 	 */
 	public function perform() {
 		$channel = get_transient( 'apple_news_channel' );
+
 		if ( false === $channel ) {
+			$channel = '';
+
 			if ( $this->is_api_configuration_valid() ) {
 				try {
 					$channel = $this->get_api()->get_channel( $this->get_setting( 'api_channel' ) );
 				} catch ( Request_Exception $e ) {
-					$channel = '';
+					// Do nothing.
+					unset( $e );
 				}
 			}
-		}
 
-		set_transient( 'apple_news_channel', $channel, 300 );
+			set_transient( 'apple_news_channel', $channel, 300 );
+		}
 
 		if ( '' === $channel ) {
 			// Unable to get channel information. This likely means the user entered their API credentials incorrectly.
