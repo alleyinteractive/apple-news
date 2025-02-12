@@ -378,8 +378,8 @@ class Apple_News {
 		);
 
 		add_action(
-			'init',
-			[ $this, 'action_init' ]
+			'admin_init',
+			[ $this, 'action_admin_init' ]
 		);
 
 		add_filter(
@@ -476,9 +476,11 @@ class Apple_News {
 	/**
 	 * Action hook callback for init.
 	 *
-	 * @since 1.3.0
+	 * @since 2.7.0
+	 * @since 2.6.2 as action_init()
+	 * @since 1.3.0 as action_plugins_loaded()
 	 */
-	public function action_init(): void {
+	public function action_admin_init(): void {
 
 		// Determine if the database version and code version are the same.
 		$current_version = get_option( 'apple_news_version', '' );
