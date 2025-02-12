@@ -13,6 +13,7 @@ require_once dirname( __DIR__ ) . '/class-action-exception.php';
 require_once dirname( __DIR__, 3 ) . '/includes/apple-exporter/autoload.php';
 
 use Apple_Actions\Action;
+use Apple_Exporter\Components\Embed_Web_Video;
 use Apple_Exporter\Exporter;
 use Apple_Exporter\Exporter_Content;
 use Apple_Exporter\Exporter_Content_Settings;
@@ -121,34 +122,101 @@ class Export extends Action {
 		$excerpt = has_excerpt( $post ) ? wp_strip_all_tags( $post->post_excerpt ) : '';
 
 		// Get the cover configuration.
-		$post_thumb    = null;
-		$cover_meta_id = get_post_meta( $this->id, 'apple_news_coverimage', true );
-		$cover_caption = get_post_meta( $this->id, 'apple_news_coverimage_caption', true );
-		if ( ! empty( $cover_meta_id ) ) {
-			if ( empty( $cover_caption ) ) {
-				$cover_caption = wp_get_attachment_caption( $cover_meta_id );
-			}
-			$post_thumb = [
-				'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
-				'url'     => wp_get_attachment_url( $cover_meta_id ),
-			];
-		} else {
-			$thumb_id       = get_post_thumbnail_id( $this->id );
-			$post_thumb_url = wp_get_attachment_url( $thumb_id );
-			if ( empty( $cover_caption ) ) {
-				$cover_caption = wp_get_attachment_caption( $thumb_id );
-			}
-			if ( ! empty( $post_thumb_url ) ) {
-				// If the post thumb URL is root-relative, convert it to fully-qualified.
-				if ( str_starts_with( $post_thumb_url, '/' ) ) {
-					$post_thumb_url = home_url( $post_thumb_url );
-				}
+		$post_thumb         = null;
+		$fall_back_to_image = false;
 
-				// Compile the post_thumb object using the URL and caption from the featured image.
+		$cover_provider = get_post_meta( $this->id, 'apple_news_cover_media_provider', true );
+		if ( ! is_string( $cover_provider ) || ! $cover_provider ) {
+			$cover_provider = 'image';
+		}
+
+		if ( 'embedwebvideo' === $cover_provider ) {
+			$cover_url = get_post_meta( $this->id, 'apple_news_cover_embedwebvideo_url', true );
+
+			// Test against accepted providers.
+			if ( preg_match( Embed_Web_Video::YOUTUBE_MATCH, $cover_url, $cover_matches ) ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => 'https://www.youtube.com/embed/' . end( $cover_matches ),
+				];
+			} elseif ( preg_match( Embed_Web_Video::VIMEO_MATCH, $cover_url, $cover_matches ) ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => 'https://player.vimeo.com/video/' . end( $cover_matches ),
+				];
+			} elseif ( preg_match( Embed_Web_Video::DAILYMOTION_MATCH, $cover_url, $cover_matches ) ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => 'https://geo.dailymotion.com/player.html?video=' . end( $cover_matches ),
+				];
+			} else {
+				$fall_back_to_image = true;
+			}
+		}
+
+		if ( 'video_id' === $cover_provider ) {
+			$video_id  = get_post_meta( $this->id, 'apple_news_cover_video_id', true );
+			$video_url = (string) wp_get_attachment_url( $video_id );
+
+			if ( $video_url ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => $video_url,
+				];
+			} else {
+				$fall_back_to_image = true;
+			}
+		}
+
+		if ( 'video_url' === $cover_provider ) {
+			$file_url = get_post_meta( $this->id, 'apple_news_cover_video_url', true );
+			$check    = wp_check_filetype( $file_url );
+
+			if ( isset( $check['ext'] ) && 'mp4' === $check['ext'] ) {
+				$post_thumb = [
+					'caption' => '',
+					'url'     => $file_url,
+				];
+			} else {
+				$fall_back_to_image = true;
+			}
+		}
+
+		// Provide fallback behavior so there's still a cover, e.g. if the URL becomes unsupported later.
+		if ( $fall_back_to_image ) {
+			$cover_url      = '';
+			$cover_provider = 'image';
+		}
+
+		if ( 'image' === $cover_provider ) {
+			$cover_meta_id = get_post_meta( $this->id, 'apple_news_coverimage', true );
+			$cover_caption = get_post_meta( $this->id, 'apple_news_coverimage_caption', true );
+			if ( ! empty( $cover_meta_id ) ) {
+				if ( empty( $cover_caption ) ) {
+					$cover_caption = wp_get_attachment_caption( $cover_meta_id );
+				}
 				$post_thumb = [
 					'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
-					'url'     => $post_thumb_url,
+					'url'     => wp_get_attachment_url( $cover_meta_id ),
 				];
+			} else {
+				$thumb_id       = get_post_thumbnail_id( $this->id );
+				$post_thumb_url = wp_get_attachment_url( $thumb_id );
+				if ( empty( $cover_caption ) ) {
+					$cover_caption = wp_get_attachment_caption( $thumb_id );
+				}
+				if ( ! empty( $post_thumb_url ) ) {
+					// If the post thumb URL is root-relative, convert it to fully-qualified.
+					if ( str_starts_with( $post_thumb_url, '/' ) ) {
+						$post_thumb_url = home_url( $post_thumb_url );
+					}
+
+					// Compile the post_thumb object using the URL and caption from the featured image.
+					$post_thumb = [
+						'caption' => ! empty( $cover_caption ) ? $cover_caption : '',
+						'url'     => $post_thumb_url,
+					];
+				}
 			}
 		}
 
@@ -158,6 +226,11 @@ class Export extends Action {
 				'caption' => $cover_caption,
 				'url'     => '',
 			];
+		}
+
+		// Attach the final provider slug.
+		if ( is_array( $post_thumb ) ) {
+			$post_thumb['provider'] = $cover_provider;
 		}
 
 		// Build the byline.
@@ -208,15 +281,39 @@ class Export extends Action {
 		 */
 		$excerpt = apply_filters( 'apple_news_exporter_excerpt', $excerpt, $post->ID );
 
+		$cover_url = ! empty( $post_thumb['url'] ) ? $post_thumb['url'] : null;
+
+		if ( isset( $post_thumb['provider'] ) && 'image' === $post_thumb['provider'] ) {
+			/**
+			 * Filters the cover image URL of an article before it is sent to Apple News.
+			 *
+			 * The cover image URL is used for the Cover component, if it is active.
+			 *
+			 * @deprecated 2.7.0 Use the `apple_news_exporter_cover_url` filter, which includes all provider types.
+			 *
+			 * @param string|null $url     The cover image URL for the post.
+			 * @param int         $post_id The ID of the post.
+			 */
+			$cover_url = apply_filters_deprecated(
+				'apple_news_exporter_post_thumb',
+				[ $cover_url, $post->ID ],
+				'2.7.0',
+				'apple_news_exporter_cover_url',
+			);
+		}
+
 		/**
-		 * Filters the cover image URL of an article before it is sent to Apple News.
+		 * Filters the URL to the cover media of an article before it is sent to Apple News.
 		 *
-		 * The cover image URL is used for the Cover component, if it is active.
+		 * The URL may be an image URL, video file URL, or a URL to an embeddable external video, depending on the provider
+		 * of cover media for the article.
 		 *
-		 * @param string|null $url     The cover image URL for the post.
-		 * @param int         $post_id The ID of the post.
+		 * @param string|null $url      The cover media URL for the post.
+		 * @param string|null $provider The provider of the cover media. Possible values include 'image', 'video_url',
+		 *                              'video_id', and 'embedwebvideo'.
+		 * @param int         $post_id  The ID of the post.
 		 */
-		$cover_url = apply_filters( 'apple_news_exporter_post_thumb', ! empty( $post_thumb['url'] ) ? $post_thumb['url'] : null, $post->ID );
+		$cover_url = apply_filters( 'apple_news_exporter_cover_url', $cover_url, $post_thumb['provider'] ?? null, $post->ID );
 
 		/**
 		 * Filters the byline of an article before it is sent to Apple News.
@@ -296,8 +393,9 @@ class Export extends Action {
 			$cover_caption = apply_filters( 'apple_news_exporter_cover_caption', $cover_caption, $post->ID );
 
 			$post_thumb = [
-				'caption' => $cover_caption,
-				'url'     => $cover_url,
+				'provider' => $cover_provider,
+				'caption'  => $cover_caption,
+				'url'      => $cover_url,
 			];
 		} else {
 			$post_thumb = null;
@@ -606,6 +704,7 @@ class Export extends Action {
 		$content = apply_filters( 'the_content', $content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		// Clean up the HTML a little.
+		$content = $this->exclude_selectors( $content );
 		$content = $this->remove_tags( $content );
 		$content = $this->remove_entities( $content );
 
@@ -641,6 +740,52 @@ class Export extends Action {
 
 		// Correct ampersand output.
 		return str_replace( '&amp;', '&', $content );
+	}
+
+	/**
+	 * Remove excluded selectors from the content.
+	 *
+	 * @param string $content The content to be filtered.
+	 * @return string
+	 */
+	private function exclude_selectors( $content ) {
+		$raw_selectors = $this->get_setting( 'excluded_selectors' );
+
+		$selectors = explode( ',', $raw_selectors );
+		$selectors = array_map( 'trim', $selectors );
+		$selectors = array_filter( $selectors );
+
+		if ( count( $selectors ) === 0 ) {
+			return $content;
+		}
+
+		libxml_use_internal_errors( true );
+		$dom = new \DOMDocument();
+		$dom->loadHTML( '<?xml encoding="utf-8" ?>' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		$xpath = new \DOMXPath( $dom );
+		libxml_clear_errors();
+
+		foreach ( $selectors as $selector ) {
+			$nodes = [];
+
+			if ( str_starts_with( $selector, '#' ) ) {
+				$nodes = $xpath->query( '//*[@id="' . substr( $selector, 1 ) . '"]' );
+			}
+
+			if ( str_starts_with( $selector, '.' ) ) {
+				$nodes = $xpath->query( '//*[contains(concat(" ", normalize-space(@class), " "), " ' . substr( $selector, 1 ) . ' ")]' );
+			}
+
+			if ( is_iterable( $nodes ) ) {
+				foreach ( $nodes as $node ) {
+					$node->parentNode->removeChild( $node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				}
+			}
+		}
+
+		$content = $dom->saveHTML();
+
+		return $content;
 	}
 
 	/**

@@ -43,10 +43,13 @@ class Settings {
 		'apple_news_admin_email'      => '',
 		'apple_news_enable_debugging' => 'no',
 		'component_alerts'            => 'none',
+		'excluded_selectors'          => '',
 		'full_bleed_images'           => 'no',
+		'deduplicate_cover_media'     => 'no',
 		'html_support'                => 'yes',
 		'in_article_position'         => 3,
 		'post_types'                  => [ 'post' ],
+		'recipe_component_use_schema' => 'yes',
 		'show_metabox'                => 'yes',
 		'use_remote_images'           => 'yes',
 	];

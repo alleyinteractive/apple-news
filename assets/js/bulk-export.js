@@ -1,10 +1,13 @@
 (function ( $, window, undefined ) {
 	'use strict';
 
-	var started = false;
+	var started = false,
+		searchParams = new URLSearchParams( window.location.search ),
+		$submitButton = $( '.bulk-export-submit' );
 
 	function done() {
-		$( '.bulk-export-submit' ).text( 'Done' );
+		$submitButton.text( 'Done' );
+		$submitButton.attr( 'disabled', 'disabled' );
 	}
 
 	function pushItem( item, next, nonce ) {
@@ -12,14 +15,14 @@
 		var $status = $item.find( '.bulk-export-list-item-status' );
 		var id = +$item.data( 'post-id' ); // fetch the post-id and cast to integer
 
-		$status.removeClass( 'pending' ).addClass( 'in-progress' ).text( 'Publishing...' );
+		$status.removeClass( 'pending' ).addClass( 'in-progress' ).text( 'In Progress…' );
 
 		// Send a GET request to ajaxurl, which is WordPress endpoint for AJAX
 		// requests. Expects JSON as response.
 		$.getJSON(
 			ajaxurl,
 			{
-				action: 'push_post',
+				action: searchParams.get( 'action' ),
 				id: id,
 				_ajax_nonce: nonce
 			},
@@ -27,7 +30,7 @@
 				if ( res.success ) {
 					$status.removeClass( 'in-progress' ).addClass( 'success' ).text( 'Success' );
 				} else {
-					$status.removeClass( 'in-progress' ).addClass( 'failed' ).text( res.error );
+					$status.removeClass( 'in-progress' ).addClass( 'failed' ).text( res.data );
 				}
 				next();
 			},
@@ -56,7 +59,7 @@
 		next();
 	}
 
-	$('.bulk-export-submit').click(function (e) {
+	$submitButton.click( function ( e ) {
 		e.preventDefault();
 
 		if ( started ) {
@@ -65,6 +68,6 @@
 
 		started = true;
 		bulkPush();
-	});
+	} );
 
 })( jQuery, window );

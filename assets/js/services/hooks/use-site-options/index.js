@@ -76,7 +76,7 @@ const useSiteOptions = () => {
         data: finalSettings,
       });
       setSettings(response || {});
-      await success(__('Settings Saved', 'bassmaster-plugin'));
+      await success(__('Settings Saved', 'apple-news'));
     } catch ({ message }) {
       await error(message);
     } finally {

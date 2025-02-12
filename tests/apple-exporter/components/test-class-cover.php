@@ -136,6 +136,76 @@ class Apple_News_Cover_Test extends Apple_News_Testcase {
 	}
 
 	/**
+	 * Tests that the cover component is populated with video or embed sources.
+	 */
+	public function test_other_cover_media_providers() {
+		// Needed to load `wp_read_video_metadata()`.
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+
+		$post_id = self::factory()->post->create();
+
+		// MP4 video URLs.
+		$video_url = 'https://www.example.com/example.mp4';
+		update_post_meta( $post_id, 'apple_news_cover_media_provider', 'video_url' );
+		update_post_meta( $post_id, 'apple_news_cover_video_url', $video_url );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertSame( 'video', $json['components'][0]['components'][0]['role'] );
+		$this->assertSame( $video_url, $json['components'][0]['components'][0]['URL'] );
+
+		// Uploaded videos.
+		$video_id = self::factory()->attachment->with_image( dirname( __DIR__, 2 ) . '/data/test-video.mp4', $post_id )->create();
+		update_post_meta( $post_id, 'apple_news_cover_media_provider', 'video_id' );
+		update_post_meta( $post_id, 'apple_news_cover_video_id', $video_id );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertSame( 'video', $json['components'][0]['components'][0]['role'] );
+		$this->assertSame( wp_get_attachment_url( $video_id ), $json['components'][0]['components'][0]['URL'] );
+
+		// YouTube videos.
+		$video_url = 'https://www.youtube.com/watch?v=example';
+		update_post_meta( $post_id, 'apple_news_cover_media_provider', 'embedwebvideo' );
+		update_post_meta( $post_id, 'apple_news_cover_embedwebvideo_url', $video_url );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertSame( 'embedwebvideo', $json['components'][0]['components'][0]['role'] );
+		$this->assertSame( 'https://www.youtube.com/embed/example', $json['components'][0]['components'][0]['URL'] );
+
+		// Vimeo videos.
+		$video_url = 'https://vimeo.com/123456789';
+		update_post_meta( $post_id, 'apple_news_cover_media_provider', 'embedwebvideo' );
+		update_post_meta( $post_id, 'apple_news_cover_embedwebvideo_url', $video_url );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertSame( 'embedwebvideo', $json['components'][0]['components'][0]['role'] );
+		$this->assertSame( 'https://player.vimeo.com/video/123456789', $json['components'][0]['components'][0]['URL'] );
+
+		// Dailymotion videos.
+		$video_url = 'https://www.dailymotion.com/video/example';
+		update_post_meta( $post_id, 'apple_news_cover_media_provider', 'embedwebvideo' );
+		update_post_meta( $post_id, 'apple_news_cover_embedwebvideo_url', $video_url );
+		$json = $this->get_json_for_post( $post_id );
+		$this->assertSame( 'embedwebvideo', $json['components'][0]['components'][0]['role'] );
+		$this->assertSame( 'https://geo.dailymotion.com/player.html?video=example', $json['components'][0]['components'][0]['URL'] );
+	}
+
+	/**
+	 * Tests that the cover component falls back to an image if the saved cover media is invalid.
+	 */
+	public function test_invalid_cover_media_falls_back_to_image() {
+		$post_id = self::factory()->post->create();
+
+		$thumbnail_id = $this->get_new_attachment( 0 );
+		set_post_thumbnail( $post_id, $thumbnail_id );
+
+		// Invalid video URL.
+		update_post_meta( $post_id, 'apple_news_cover_media_provider', 'embedwebvideo' );
+		update_post_meta( $post_id, 'apple_news_cover_embedwebvideo_url', 'https://www.example.com/example' );
+
+		$json = $this->get_json_for_post( $post_id );
+
+		// Ensure that the cover component falls back to the image.
+		$this->assertSame( 'photo', $json['components'][0]['components'][0]['role'] );
+		$this->assertSame( wp_get_attachment_url( $thumbnail_id ), $json['components'][0]['components'][0]['URL'] );
+	}
+
+	/**
 	 * Tests the render method for the component.
 	 */
 	public function test_render() {

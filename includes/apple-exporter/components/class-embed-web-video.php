@@ -29,6 +29,11 @@ class Embed_Web_Video extends Component {
 	const YOUTUBE_MATCH = '#^https?://(?:www\.)?(?:youtube\.com/((watch\?v=)|(embed/))([\w\-]+)|youtu\.be/([\w\-]+))[^ ]*$#';
 
 	/**
+	 * Regex pattern for a Dailymotion video.
+	 */
+	const DAILYMOTION_MATCH = '#^https?:\/\/(?:(?:(?:www\.)?dailymotion\.com\/video\/(\w+))|(?:geo\.dailymotion\.com\/player\.html\?video=\w+)|(?:dai\.ly\/(\w+)))$#';
+
+	/**
 	 * Look for node matches for this component.
 	 *
 	 * @param \DOMElement $node The node to examine for matches.

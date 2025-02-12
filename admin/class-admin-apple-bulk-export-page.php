@@ -41,8 +41,8 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 
 		add_action( 'admin_menu', [ $this, 'register_page' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'register_assets' ] );
-		add_action( 'wp_ajax_push_post', [ $this, 'ajax_push_post' ] );
-		add_filter( 'admin_title', [ $this, 'set_title' ] );
+		add_action( 'wp_ajax_apple_news_push_post', [ $this, 'ajax_push_post' ] );
+		add_action( 'wp_ajax_apple_news_delete_post', [ $this, 'ajax_delete_post' ] );
 	}
 
 	/**
@@ -67,43 +67,50 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 	}
 
 	/**
-	 * Fix the title since WordPress doesn't set one.
-	 *
-	 * @param string $admin_title The title to be filtered.
-	 * @access public
-	 * @return string The title for the screen.
-	 */
-	public function set_title( $admin_title ) {
-		$screen = get_current_screen();
-		if ( 'admin_page_apple_news_bulk_export' === $screen->base ) {
-			$admin_title = __( 'Bulk Export', 'apple-news' ) . $admin_title;
-		}
-
-		return $admin_title;
-	}
-
-	/**
 	 * Builds the plugin submenu page.
 	 *
 	 * @access public
 	 */
 	public function build_page() {
-		$ids = isset( $_GET['ids'] ) ? sanitize_text_field( wp_unslash( $_GET['ids'] ) ) : null; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected, WordPress.Security.NonceVerification.Recommended
-		if ( ! $ids ) {
+		$post_ids = isset( $_GET['post_ids'] ) ? sanitize_text_field( wp_unslash( $_GET['post_ids'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$action   = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( ! $post_ids ) {
 			wp_safe_redirect( esc_url_raw( menu_page_url( $this->plugin_slug . '_index', false ) ) ); // phpcs:ignore WordPressVIPMinimum.Security.ExitAfterRedirect.NoExit
+
 			if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {
 				exit;
 			}
 		}
 
-		// Populate $articles array with a set of valid posts.
-		$articles = [];
-		foreach ( explode( '.', $ids ) as $id ) {
-			$post = get_post( absint( $id ) );
+		// Allow only specific actions.
+		if ( ! in_array( $action, [ 'apple_news_push_post', 'apple_news_delete_post' ], true ) ) {
+			wp_die( esc_html__( 'Invalid action.', 'apple-news' ), '', [ 'response' => 400 ] );
+		}
+
+		// Populate articles array with a set of valid posts.
+		$apple_posts = [];
+		foreach ( explode( ',', $post_ids ) as $post_id ) {
+			$post = get_post( (int) $post_id );
+
 			if ( ! empty( $post ) ) {
-				$articles[] = $post;
+				$apple_posts[] = $post;
 			}
 		}
+
+		// Override text within the partial depending on the action.
+		$apple_page_title = match ( $action ) {
+			'apple_news_push_post' => __( 'Bulk Export Articles', 'apple-news' ),
+			'apple_news_delete_post' => __( 'Bulk Delete Articles', 'apple-news' ),
+		};
+		$apple_page_description = match ( $action ) {
+			'apple_news_push_post' => __( 'The following articles will be exported. Articles that are already published will be updated.', 'apple-news' ),
+			'apple_news_delete_post' => __( 'The following articles will be deleted.', 'apple-news' ),
+		};
+		$apple_submit_text = match ( $action ) {
+			'apple_news_push_post' => __( 'Publish All', 'apple-news' ),
+			'apple_news_delete_post' => __( 'Delete All', 'apple-news' ),
+		};
 
 		require_once __DIR__ . '/partials/page-bulk-export.php';
 	}
@@ -123,13 +130,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		// Ensure the post exists and that it's published.
 		$post = get_post( $id );
 		if ( empty( $post ) ) {
-			echo wp_json_encode(
-				[
-					'success' => false,
-					'error'   => __( 'This post no longer exists.', 'apple-news' ),
-				]
-			);
-			wp_die();
+			wp_send_json_error( __( 'This post no longer exists.', 'apple-news' ) );
 		}
 
 		// Check capabilities.
@@ -137,27 +138,17 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 			/** This filter is documented in admin/class-admin-apple-post-sync.php */
 			apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) )
 		) ) {
-			echo wp_json_encode(
-				[
-					'success' => false,
-					'error'   => __( 'You do not have permission to publish to Apple News', 'apple-news' ),
-				]
-			);
-			wp_die();
+			wp_send_json_error( __( 'You do not have permission to publish to Apple News', 'apple-news' ) );
 		}
 
 		if ( 'publish' !== $post->post_status ) {
-			echo wp_json_encode(
-				[
-					'success' => false,
-					'error'   => sprintf(
-						// translators: token is a post ID.
-						__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
-						$id
-					),
-				]
+			wp_send_json_error(
+				sprintf(
+					/* translators: %s: post ID */
+					__( 'Article %s is not published and cannot be pushed to Apple News.', 'apple-news' ),
+					$id
+				)
 			);
-			wp_die();
 		}
 
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
@@ -168,22 +159,56 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		}
 
 		if ( $errors ) {
-			echo wp_json_encode(
-				[
-					'success' => false,
-					'error'   => $errors,
-				]
-			);
-		} else {
-			echo wp_json_encode(
-				[
-					'success' => true,
-				]
-			);
+			wp_send_json_error( $errors );
 		}
 
-		// This is required to terminate immediately and return a valid response.
-		wp_die();
+		wp_send_json_success();
+	}
+
+	/**
+	 * Handles the ajax action to delete a post from Apple News.
+	 *
+	 * @access public
+	 */
+	public function ajax_delete_post() {
+		// Check the nonce.
+		check_ajax_referer( self::ACTION );
+
+		// Sanitize input data.
+		$id = isset( $_GET['id'] ) ? (int) $_GET['id'] : -1;
+
+		$post = get_post( $id );
+
+		if ( empty( $post ) ) {
+			wp_send_json_error( __( 'This post no longer exists.', 'apple-news' ) );
+		}
+
+		/** This filter is documented in admin/class-admin-apple-post-sync.php */
+		$cap = apply_filters( 'apple_news_delete_capability', self::get_capability_for_post_type( 'delete_posts', $post->post_type ) );
+
+		// Check capabilities.
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error( __( 'You do not have permission to delete posts from Apple News', 'apple-news' ) );
+		}
+
+		$errors = null;
+
+		// Try to sync only if the post has a remote ID. Ref `Admin_Apple_Post_Sync::do_delete()`.
+		if ( get_post_meta( $id, 'apple_news_api_id', true ) ) {
+			$action = new Apple_Actions\Index\Delete( $this->settings, $id );
+
+			try {
+				$errors = $action->perform();
+			} catch ( Apple_Actions\Action_Exception $e ) {
+				$errors = $e->getMessage();
+			}
+		}
+
+		if ( $errors ) {
+			wp_send_json_error( $errors );
+		}
+
+		wp_send_json_success();
 	}
 
 	/**

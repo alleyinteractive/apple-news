@@ -10,7 +10,7 @@ import DOMPurify from 'dompurify';
 import React, { useCallback, useEffect, useState } from 'react';
 
 // Panels.
-import CoverImage from './panels/cover-image';
+import CoverMedia from './panels/cover-media';
 import MaturityRating from './panels/maturity-rating';
 import Metadata from './panels/metadata';
 import PublishControls from './panels/publish-controls';
@@ -81,8 +81,12 @@ function Sidebar() {
   }] = usePostMeta();
 
   // Getters and setters for individual postmeta values.
+  const [coverMediaProvider, setCoverMediaProvider] = usePostMetaValue('apple_news_cover_media_provider');
   const [coverImageId, setCoverImageId] = usePostMetaValue('apple_news_coverimage');
   const [coverImageCaption, setCoverImageCaption] = usePostMetaValue('apple_news_coverimage_caption');
+  const [coverVideoId, setCoverVideoId] = usePostMetaValue('apple_news_cover_video_id');
+  const [coverVideoUrl, setCoverVideoUrl] = usePostMetaValue('apple_news_cover_video_url');
+  const [coverEmbedWebVideoUrl, setCoverEmbedWebVideoUrl] = usePostMetaValue('apple_news_cover_embedwebvideo_url');
   const [isHidden, setIsHidden] = usePostMetaValue('apple_news_is_hidden');
   const [isPaid, setIsPaid] = usePostMetaValue('apple_news_is_paid');
   const [isPreview, setIsPreview] = usePostMetaValue('apple_news_is_preview');
@@ -263,11 +267,19 @@ function Sidebar() {
           pullquotePosition={pullquotePosition}
           pullquoteText={pullquoteText}
         />
-        <CoverImage
+        <CoverMedia
+          coverMediaProvider={coverMediaProvider || 'image'}
           coverImageCaption={coverImageCaption}
           coverImageId={coverImageId}
+          coverVideoId={coverVideoId}
+          coverVideoUrl={coverVideoUrl}
+          coverEmbedWebVideoUrl={coverEmbedWebVideoUrl}
+          onChangeCoverMediaProvider={setCoverMediaProvider}
           onChangeCoverImageCaption={setCoverImageCaption}
           onChangeCoverImageId={setCoverImageId}
+          onChangeCoverVideoId={setCoverVideoId}
+          onChangeCoverVideoUrl={setCoverVideoUrl}
+          onChangeCoverEmbedWebVideoUrl={setCoverEmbedWebVideoUrl}
         />
         {publishState !== 'N/A' ? (
           <PublishInfo

@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 6.3
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.6.3
+Stable tag: 2.7.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -45,13 +45,27 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 
 == Changelog ==
 
+= 2.7.0 =
+
+* Enhancement: Add support for the Apple News Recipe component. Please [visit our wiki for detailed documentation](https://github.com/alleyinteractive/apple-news/wiki/configuration#recipe-component).
+* Enhancement: Add "Cover Media" options, expanding on existing "Cover Image" feature, allowing YouTube or other videos to display in the Cover component.
+* Enhancement: Add setting that allows elements in post content matching CSS classes or ID selectors to be excluded from the content sent to Apple News.
+* Enhancement: Allow article deletions with Bulk Actions.
+* Enhancement: Move section mapping to its own table in the Automation settings for easier management.
+* Enhancement: Enable caption on the Cover component by default.
+
+= 2.6.3 =
+
+* Bugfix: Fixed an issue where the deletion of a post's autosave could cause the Apple News article for that post to be deleted.
+
 = 2.6.2 =
 
 * Enhancement: i18n - Remove `load_plugin_textdomain`. Since WordPress 4.6, plugins no longer need to load their own textdomain.
 * Enhancement: i18n - Moved some plugin initialization code to the `init` action hook.
-* Bugfix: i18n - Fixed the `_load_textdomain_just_in_time` error with WordPress 6.7.
-* Bugfix: Update plugin name in plugin header.
 * Enhancement: Add license to plugin header.
+* Bugfix: i18n - Fixed the `_load_textdomain_just_in_time` error with WordPress 6.7.
+* Bugfix: Update bulk action text to clarify that the "Publish" action can also be used to update published articles.
+* Bugfix: Update plugin name in plugin header.
 
 = 2.6.1 =
 

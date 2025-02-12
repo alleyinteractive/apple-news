@@ -100,5 +100,6 @@ abstract class API_Action extends Action {
 		delete_post_meta( $post_id, 'apple_news_api_created_at' );
 		delete_post_meta( $post_id, 'apple_news_api_modified_at' );
 		delete_post_meta( $post_id, 'apple_news_api_share_url' );
+		delete_post_meta( $post_id, 'apple_news_article_checksum' );
 	}
 }

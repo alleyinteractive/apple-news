@@ -1,6 +1,6 @@
 {
   "name": "publish-to-apple-news",
-  "version": "2.6.3",
+  "version": "2.7.0",
   "license": "GPLv3",
   "main": "index.php",
   "engines": {
@@ -40,6 +40,7 @@
     "@wordpress/i18n": "^4.51.1",
     "@wordpress/plugins": "^6.19.6",
     "@wordpress/scripts": "^27.2.5",
+    "@wordpress/url": "^4.12.0",
     "dompurify": "^3.0.8",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
