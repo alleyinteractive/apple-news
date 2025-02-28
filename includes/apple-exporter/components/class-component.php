@@ -882,39 +882,5 @@ abstract class Component {
 
 		return null;
 	}
-
-	/**
-	 * Get iframe/embed node.
-	 *
-	 * @param DOMElement $node The node to examine.
-	 *
-	 * @return bool True if the figure is an iframe.
-	 */
-	public static function is_embed_figure( $node ) {
-
-		// Return false if we don't have any child nodes.
-		if ( ! $node->hasChildNodes() ) {
-			return false;
-		}
-
-		// Loop those child nodes.
-		foreach ( $node->childNodes as $child ) {
-
-			// Return false if we don't have children, or if is an image.
-			if ( ! $child->hasChildNodes() || 'img' === $child->nodeName ) {
-				return false;
-			}
-
-			foreach ( $child->childNodes as $c ) {
-
-				// Return true if we're seeing an iframe.
-				if ( 'iframe' === $c->nodeName ) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
 	/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 }
