@@ -40,8 +40,7 @@ class Image extends Component {
 		if ( self::node_has_class( $node, 'wp-block-cover' )
 			|| 'img' === $node->nodeName
 			|| ( 'figure' === $node->nodeName
-				&& ( Component::is_embed_figure( $node )
-					|| self::node_has_class( $node, 'wp-caption' )
+				&& ( self::node_has_class( $node, 'wp-caption' )
 					|| $has_image_child
 				)
 			)
