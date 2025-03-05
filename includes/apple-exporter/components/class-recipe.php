@@ -862,8 +862,8 @@ class Recipe extends Component {
 				try {
 					$json = json_decode( $node->textContent, true, 512, JSON_THROW_ON_ERROR ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
-					if ( isset( $json['@type'] ) && 'Recipe' === $json['@type'] ) {
-						$carry[] = $json;
+					if ( is_array( $json ) ) {
+						$carry = self::recipe_items_in_graph( $carry, $json );
 					}
 				} catch ( \JsonException $e ) {
 					// Do nothing.
@@ -873,6 +873,27 @@ class Recipe extends Component {
 
 			if ( $node->hasChildNodes() ) {
 				$carry = self::recipe_items_in_nodes( $carry, $node->childNodes );
+			}
+		}
+
+		return $carry;
+	}
+
+	/**
+	 * Recursively search for JSON-LD Recipe items in the given JSON-LD data.
+	 *
+	 * @param array $carry The array to accumulate recipe items.
+	 * @param array $json  The JSON to search for recipe items.
+	 * @return array The recipe items found in the JSON.
+	 */
+	private static function recipe_items_in_graph( array $carry, array $json ) {
+		if ( isset( $json['@type'] ) && 'Recipe' === $json['@type'] ) {
+			$carry[] = $json;
+		}
+
+		if ( isset( $json['@graph'] ) && is_array( $json['@graph'] ) ) {
+			foreach ( $json['@graph'] as $graph ) {
+				$carry = self::recipe_items_in_graph( $carry, $graph );
 			}
 		}
 
@@ -891,7 +912,8 @@ class Recipe extends Component {
 			isset( $schema['name'] )
 			&& is_string( $schema['name'] )
 			&& strlen( $schema['name'] ) > 0
-			&& str_contains( $html, $schema['name'] )
+			// The recipe HTML would have the name of any recipe JSON-LD items found within it, so strip tags to avoid false positives.
+			&& str_contains( wp_strip_all_tags( $html ), $schema['name'] )
 		);
 	}
 

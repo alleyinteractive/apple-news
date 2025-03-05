@@ -295,4 +295,45 @@ HTML;
 			$json['components'][3]['components'][0]['role']
 		);
 	}
+
+	/**
+	 * Test that the correct recipe JSON-LD item is found in a "@graph" array.
+	 */
+	public function test_recipe_component_find_schema_in_graph(): void {
+		$post_content = <<<HTML
+<div class="test-recipe-class">
+	<h2>Chocolate Cake</h2>
+
+	<script type="application/ld+json">
+	{
+		"@context": "https:\/\/schema.org",
+		"@graph": [
+			{
+				"@type": "Recipe",
+				"@id": "https:\/\/www.example.com\/recipes\/apple-pie\/",
+				"name": "Apple Pie"
+			},
+			{
+				"@type": "ImageObject",
+				"@id": "https:\/\/www.example.com\/recipes\/apple-pie\/image"
+			},
+			{
+				"@type": "Recipe",
+				"@id": "https:\/\/www.example.com\/recipes\/chocolate-cake\/",
+				"name": "Chocolate Cake"
+			}
+		]
+	}
+	</script>
+</div>
+HTML;
+
+		$post_id = self::factory()->post->create( [ 'post_content' => $post_content ] );
+		$json    = $this->get_json_for_post( $post_id );
+
+		$this->assertSame(
+			'Chocolate Cake',
+			$json['components'][3]['components'][0]['components'][0]['text'],
+		);
+	}
 }
