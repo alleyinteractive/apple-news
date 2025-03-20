@@ -791,7 +791,7 @@ class Recipe extends Component {
 		$items = self::recipe_items( $post_content, 'body' );
 
 		foreach ( $items as $item ) {
-			if ( self::is_recipe_item_for_recipe_html( $item, $recipe ) ) {
+			if ( self::is_allowed_recipe_item( $item ) ) {
 				return $item;
 			}
 		}
@@ -815,7 +815,7 @@ class Recipe extends Component {
 			$items = self::recipe_items( $html, 'head' );
 
 			foreach ( $items as $item ) {
-				if ( self::is_recipe_item_for_recipe_html( $item, $recipe ) ) {
+				if ( self::is_allowed_recipe_item( $item ) ) {
 					return $item;
 				}
 			}
@@ -901,19 +901,17 @@ class Recipe extends Component {
 	}
 
 	/**
-	 * Best-guess if the given schema item is for the given recipe HTML.
+	 * Confirm that the given schema item can be used for recipe HTML.
 	 *
-	 * @param array  $schema The schema item to check.
-	 * @param string $html   The recipe HTML to check.
-	 * @return bool True if the schema item is for the recipe HTML, false otherwise.
+	 * @param array $schema The schema item to check.
+	 * @return bool
 	 */
-	private static function is_recipe_item_for_recipe_html( array $schema, string $html ) {
+	private static function is_allowed_recipe_item( array $schema ) {
+		// This method used to confirm that the schema 'name' appeared in the HTML, but this was found to be too restrictive.
 		return (
 			isset( $schema['name'] )
 			&& is_string( $schema['name'] )
 			&& strlen( $schema['name'] ) > 0
-			// The recipe HTML would have the name of any recipe JSON-LD items found within it, so strip tags to avoid false positives.
-			&& str_contains( wp_strip_all_tags( $html ), $schema['name'] )
 		);
 	}
 

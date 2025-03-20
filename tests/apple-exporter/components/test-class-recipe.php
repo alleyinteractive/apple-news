@@ -309,9 +309,8 @@ HTML;
 		"@context": "https:\/\/schema.org",
 		"@graph": [
 			{
-				"@type": "Recipe",
-				"@id": "https:\/\/www.example.com\/recipes\/apple-pie\/",
-				"name": "Apple Pie"
+				"@type": "VideoObject",
+				"@id": "https:\/\/www.example.com\/recipes\/apple-pie\/video"
 			},
 			{
 				"@type": "ImageObject",
