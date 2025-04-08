@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 6.3
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.7.0
+Stable tag: 2.7.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -44,6 +44,12 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 2.7.1 =
+
+* Changed: Removed the requirement that recipe HTML contains the exact name of the recipe given in the corresponding JSON-LD item.
+* Bugfix: Fixed an issue where an error would occur when attempting to publish posts containing VideoPress embedded videos.
+* Bugfix: Fixed an issue where JSON-LD Recipe items would not be detected when they were part of JSON-LD arrays.
 
 = 2.7.0 =
 
