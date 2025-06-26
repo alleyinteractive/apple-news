@@ -537,8 +537,8 @@ class Export extends Action {
 		$theme = \Apple_Exporter\Theme::get_used();
 
 		// Get the date.
-		if ( empty( $date ) && ! empty( $post->post_date ) ) {
-			$date = $post->post_date;
+		if ( empty( $date ) && ! empty( $post->post_date_gmt ) ) {
+			$date = $post->post_date_gmt;
 		}
 
 		// Check for a custom byline format.

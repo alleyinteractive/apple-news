@@ -163,32 +163,36 @@ class Apple_News_Admin_Action_Index_Export_Test extends Apple_News_Testcase {
 	 * Tests generic byline formatting.
 	 */
 	public function test_byline_format() {
-		$this->set_theme_settings( [ 'meta_component_order' => [ 'byline' ] ] );
-		$user_id = $this->factory->user->create(
-			[
-				'role'         => 'administrator',
-				'display_name' => 'Testuser',
-			]
-		);
+		// Temporarily set the timezone Manaus (UTC-4 and does not have DST).
+		$this->with_timezone('America/Manaus', function() {
+			$this->set_theme_settings( [ 'meta_component_order' => [ 'byline' ] ] );
+			$user_id = $this->factory->user->create(
+				[
+					'role'         => 'administrator',
+					'display_name' => 'Testuser',
+				]
+			);
 
-		$title   = 'My Title';
-		$content = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tristique quis justo sit amet eleifend. Praesent id metus semper, fermentum nibh at, malesuada enim. Mauris eget faucibus lectus. Vivamus iaculis eget urna non porttitor. Donec in dignissim neque. Vivamus ut ornare magna. Nulla eros nisi, maximus nec neque at, condimentum lobortis leo. Fusce in augue arcu. Curabitur lacus elit, venenatis a laoreet sit amet, imperdiet ac lorem. Curabitur sed leo sed ligula tempor feugiat. Cras in tellus et elit volutpat.</p>';
+			$title   = 'My Title';
+			$content = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tristique quis justo sit amet eleifend. Praesent id metus semper, fermentum nibh at, malesuada enim. Mauris eget faucibus lectus. Vivamus iaculis eget urna non porttitor. Donec in dignissim neque. Vivamus ut ornare magna. Nulla eros nisi, maximus nec neque at, condimentum lobortis leo. Fusce in augue arcu. Curabitur lacus elit, venenatis a laoreet sit amet, imperdiet ac lorem. Curabitur sed leo sed ligula tempor feugiat. Cras in tellus et elit volutpat.</p>';
 
-		$post_id = $this->factory->post->create(
-			[
-				'post_title'   => $title,
-				'post_content' => $content,
-				'post_excerpt' => '',
-				'post_author'  => $user_id,
-				'post_date'    => '2016-08-26 12:00',
-			]
-		);
+			$post_id = $this->factory->post->create(
+				[
+					'post_title'   => $title,
+					'post_content' => $content,
+					'post_excerpt' => '',
+					'post_author'  => $user_id,
+					'post_date_gmt'    => '2016-08-26 16:00', // 4 hours ahead of Manaus time.
+				]
+			);
 
-		$export           = new Export( $this->settings, $post_id );
-		$exporter         = $export->fetch_exporter();
-		$exporter_content = $exporter->get_content();
+			$export           = new Export( $this->settings, $post_id );
+			$exporter         = $export->fetch_exporter();
+			$exporter_content = $exporter->get_content();
 
-		$this->assertEquals( 'By Testuser | Aug 26, 2016 | 12:00 PM', $exporter_content->byline() );
+			$this->assertEquals( 'By Testuser | Aug 26, 2016 | 12:00 PM', $exporter_content->byline() );
+		});
+
 	}
 
 	/**
