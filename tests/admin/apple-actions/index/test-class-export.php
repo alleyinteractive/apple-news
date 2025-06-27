@@ -164,7 +164,7 @@ class Apple_News_Admin_Action_Index_Export_Test extends Apple_News_Testcase {
 	 */
 	public function test_byline_format() {
 		// Temporarily set the timezone Manaus (UTC-4 and does not have DST).
-		$this->with_timezone('America/Manaus', function() {
+		$this->with_timezone( 'America/Manaus', function () {
 			$this->set_theme_settings( [ 'meta_component_order' => [ 'byline' ] ] );
 			$user_id = $this->factory->user->create(
 				[
@@ -178,11 +178,11 @@ class Apple_News_Admin_Action_Index_Export_Test extends Apple_News_Testcase {
 
 			$post_id = $this->factory->post->create(
 				[
-					'post_title'   => $title,
-					'post_content' => $content,
-					'post_excerpt' => '',
-					'post_author'  => $user_id,
-					'post_date_gmt'    => '2016-08-26 16:00', // 4 hours ahead of Manaus time.
+					'post_title'    => $title,
+					'post_content'  => $content,
+					'post_excerpt'  => '',
+					'post_author'   => $user_id,
+					'post_date_gmt' => '2016-08-26 16:00', // 4 hours ahead of Manaus time.
 				]
 			);
 
@@ -191,8 +191,7 @@ class Apple_News_Admin_Action_Index_Export_Test extends Apple_News_Testcase {
 			$exporter_content = $exporter->get_content();
 
 			$this->assertEquals( 'By Testuser | Aug 26, 2016 | 12:00 PM', $exporter_content->byline() );
-		});
-
+		} );
 	}
 
 	/**
