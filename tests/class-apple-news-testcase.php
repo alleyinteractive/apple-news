@@ -611,4 +611,26 @@ abstract class Apple_News_Testcase extends WP_UnitTestCase {
 	protected function set_workspace_post_id( $post_id ) {
 		$this->workspace = new Apple_Exporter\Workspace( $post_id );
 	}
+
+	/**
+	 * Helper that temporarily sets the timezone to the given timezone
+	 * string and runs the callback function.
+	 *
+	 * @param string   $timezone_string The timezone string to set.
+	 * @param callable $callback        The callback function to run with the new timezone.
+	 */
+	protected function with_timezone( $timezone_string, $callback ) {
+		$original_timezone_string = get_option( 'timezone_string' );
+		$original_gmt_offset      = get_option( 'gmt_offset' );
+
+		try {
+			update_option( 'timezone_string', $timezone_string );
+			update_option( 'gmt_offset', 0 );
+
+			$callback();
+		} finally {
+			update_option( 'timezone_string', $original_timezone_string );
+			update_option( 'gmt_offset', $original_gmt_offset );
+		}
+	}
 }
