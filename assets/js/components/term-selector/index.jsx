@@ -27,7 +27,7 @@ export default function TermSelector({
     const fetchTermData = async () => {
       if (debouncedSearchTerm) {
         const newSearchResults = await apiFetch({
-          path: `/${taxonomies[taxonomy].rest_namespace}/${taxonomies[taxonomy].rest_base}?search=${debouncedSearchTerm}&?per_page=50`,
+          path: `/${taxonomies[taxonomy].rest_namespace}/${taxonomies[taxonomy].rest_base}?search=${debouncedSearchTerm}&per_page=50`,
         });
         newSearchResults.forEach((result) => termCache.set(result));
         setSearchResults(newSearchResults);
