@@ -3,9 +3,9 @@ Contributors: potatomaster, kevinfodness, jomurgel, tylermachado, benpbolton, al
 Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 6.3
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.7.1
+Stable tag: 2.7.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -44,6 +44,13 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 2.7.2 =
+
+* Enhancement: Now shows up to 50 suggestions for terms in Automation settings, rather than just 10. Props to @aurooba for the fix.
+* Bugfix: Resolves an issue where the date in the standalone "Date" component had the UTC offset applied to it twice, causing the date and time to be off by the value of the UTC offset (e.g., a post published at 12:00 PM EDT would incorrectly appear as 8:00 AM EDT). Props to @naxoc for the fix.
+* Bugfix: Resolves a warning being thrown when block editor assets are being enqueued and the plugin settings haven't been loaded. Props to @s3rgiosan for the fix.
+* Bugfix: The logic for whether the plugin should update postmeta by comparing the old value to the new now compares the raw value from the database instead of the filtered value, which now accurately accounts for default postmeta values. Props to @dlh01 for the fix.
 
 = 2.7.1 =
 
