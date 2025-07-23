@@ -584,7 +584,7 @@ class Apple_News {
 	 */
 	public function filter_update_post_metadata( $check, $object_id, $meta_key, $meta_value, $prev_value ) {
 		if ( empty( $prev_value ) ) {
-			$old_value = get_metadata( 'post', $object_id, $meta_key );
+			$old_value = get_metadata_raw( 'post', $object_id, $meta_key );
 			if ( false !== $old_value && is_array( $old_value ) && 1 === count( $old_value ) ) {
 				if ( $old_value[0] === $meta_value ) {
 					return true;
