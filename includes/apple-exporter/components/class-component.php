@@ -183,7 +183,7 @@ abstract class Component {
 	 * Specs for this component.
 	 *
 	 * @since 1.2.4
-	 * @var array
+	 * @var array<string, Component_Spec>
 	 * @access public
 	 */
 	public $specs;
@@ -461,10 +461,10 @@ abstract class Component {
 
 	/**
 	 * Maybe bundles the source based on current settings.
-	 * Returns the URL to use based on current setings.
+	 * Returns the URL to use based on current settings.
 	 *
-	 * @param string $source The path or URL of the resource which is going to be bundled.
-	 * @param string $filename The name of the file to be created.
+	 * @param string      $source The path or URL of the resource which is going to be bundled.
+	 * @param string|null $filename The name of the file to be created.
 	 *
 	 * @return string The URL to use for this asset in the JSON.
 	 */
@@ -590,11 +590,11 @@ abstract class Component {
 	/**
 	 * Get a spec to use for creating component JSON.
 	 *
+	 * @since 1.2.4
+	 * @access protected
 	 * @param string $spec_name The name of the spec to fetch.
 	 *
-	 * @return array|null The spec definition.
-	 * @access protected
-	 * @since 1.2.4
+	 * @return Component_Spec|null The spec on success, or null on failure.
 	 */
 	protected function get_spec( $spec_name ) {
 		if ( ! isset( $this->specs[ $spec_name ] ) ) {
@@ -626,18 +626,21 @@ abstract class Component {
 	 * Using the style service, register a new style.
 	 *
 	 * @since 0.4.0
-	 * @param string $name      The name of the style.
-	 * @param string $spec_name The spec to use for defining the JSON.
-	 * @param array  $values    Values to substitute for placeholders in the spec.
-	 * @param array  $property  The JSON property to set with the style.
+	 * @param string      $name      The name of the style.
+	 * @param string      $spec_name The spec to use for defining the JSON.
+	 * @param array       $values    Values to substitute for placeholders in the spec.
+	 * @param string|null $property  The JSON property to set with the style.
+	 *
 	 * @access protected
 	 */
 	protected function register_style( $name, $spec_name, $values = [], $property = null ) {
 		$component_spec = $this->get_spec( $spec_name );
+
 		if ( ! empty( $component_spec ) ) {
 			$post_id = ( ! empty( $this->workspace->content_id ) )
 				? $this->workspace->content_id
 				: 0;
+
 			$json    = $component_spec->substitute_values( $values, $post_id );
 			$this->styles->register_style( $this->get_component_object_key( $name ), $json );
 			$this->set_json( $property, $this->get_component_object_key( $name ) );
@@ -649,18 +652,21 @@ abstract class Component {
 	 *
 	 * @since 1.4.0
 	 *
-	 * @param string $name      The name of the style.
-	 * @param string $spec_name The spec to use for defining the JSON.
-	 * @param array  $values    Values to substitute for placeholders in the spec.
-	 * @param array  $property  The JSON property to set with the style.
+	 * @param string      $name      The name of the style.
+	 * @param string      $spec_name The spec to use for defining the JSON.
+	 * @param array       $values    Values to substitute for placeholders in the spec.
+	 * @param string|null $property  The JSON property to set with the style.
+	 *
 	 * @access protected
 	 */
 	protected function register_component_style( $name, $spec_name, $values = [], $property = null ) {
 		$component_spec = $this->get_spec( $spec_name );
+
 		if ( ! empty( $component_spec ) ) {
 			$post_id = ( ! empty( $this->workspace->content_id ) )
 				? $this->workspace->content_id
 				: 0;
+
 			$json    = $component_spec->substitute_values( $values, $post_id );
 			$this->component_styles->register_style( $this->get_component_object_key( $name ), $json );
 			$this->set_json( $property, $this->get_component_object_key( $name ) );
@@ -671,18 +677,21 @@ abstract class Component {
 	 * Using the layouts service, register a new layout.
 	 *
 	 * @since 0.4.0
-	 * @param string $name      The name of the layout.
-	 * @param string $spec_name The spec to use for defining the JSON.
-	 * @param array  $values    Values to substitute for placeholders in the spec.
-	 * @param array  $property  The JSON property to set with the layout.
+	 * @param string      $name      The name of the layout.
+	 * @param string      $spec_name The spec to use for defining the JSON.
+	 * @param array       $values    Values to substitute for placeholders in the spec.
+	 * @param string|null $property  The JSON property to set with the layout.
+	 *
 	 * @access protected
 	 */
 	protected function register_layout( $name, $spec_name, $values = [], $property = null ) {
 		$component_spec = $this->get_spec( $spec_name );
+
 		if ( ! empty( $component_spec ) ) {
 			$post_id = ( ! empty( $this->workspace->content_id ) )
 				? $this->workspace->content_id
 				: 0;
+
 			$json    = $component_spec->substitute_values( $values, $post_id );
 			$this->layouts->register_layout( $this->get_component_object_key( $name ), $json );
 			$this->set_json( $property, $this->get_component_object_key( $name ) );
@@ -695,10 +704,10 @@ abstract class Component {
 	 * because when the body is centered, the full-width layout spans the same
 	 * columns as the body.
 	 *
-	 * @param string     $name      The name of the layout.
-	 * @param string     $spec_name The spec to use for defining the JSON.
-	 * @param array      $values    Values to substitute for placeholders in the spec.
-	 * @param array|null $property  The JSON property to set with the layout.
+	 * @param string      $name      The name of the layout.
+	 * @param string      $spec_name The spec to use for defining the JSON.
+	 * @param array       $values    Values to substitute for placeholders in the spec.
+	 * @param string|null $property  The JSON property to set with the layout.
 	 *
 	 * @access protected
 	 */
