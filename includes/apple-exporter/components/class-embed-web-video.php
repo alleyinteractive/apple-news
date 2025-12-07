@@ -24,6 +24,11 @@ class Embed_Web_Video extends Component {
 	const VIMEO_MATCH = '#^(https?:)?//(?:.+\.)?vimeo\.com/(:?.+/)?(\d+)(?:\?.*)*$#';
 
 	/**
+	 * Regex pattern for a Vimeo unlisted video query arg.
+	 */
+	const VIMEO_UNLISTED_QUERY_MATCH = '#(\?h=[a-z0-9]+)#';
+
+	/**
 	 * Regex pattern for a YouTube video.
 	 */
 	const YOUTUBE_MATCH = '#^https?://(?:www\.)?(?:youtube\.com/((watch\?v=)|(embed/))([\w\-]+)|youtu\.be/([\w\-]+))[^ ]*$#';
@@ -128,6 +133,9 @@ class Embed_Web_Video extends Component {
 					$src = 'https://www.youtube.com/embed/' . end( $matches );
 				} elseif ( preg_match( self::VIMEO_MATCH, $url, $matches ) ) {
 					$src = 'https://player.vimeo.com/video/' . end( $matches );
+					if ( preg_match( self::VIMEO_UNLISTED_QUERY_MATCH, $matches[0], $unlisted_arg ) ) {
+						$src .= $unlisted_arg[0];
+					}
 				}
 
 				// If we got a hit, register the JSON and bail out.
