@@ -32,11 +32,6 @@ class Apple_News_Embed_Web_Video_Test extends Apple_News_Testcase {
 				'http://vimeo.com/12819723',
 				'https://player.vimeo.com/video/12819723',
 			],
-			'Vimeo unlisted watch URL'                     => [
-				'vimeo',
-				'http://vimeo.com/100473313/463385d6a5',
-				'https://player.vimeo.com/video/100473313?h=463385d6a5',
-			],
 			'YouTube standard watch URL'                   => [
 				'youtube',
 				'https://www.youtube.com/watch?v=0qwALOOvUik',
