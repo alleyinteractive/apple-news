@@ -24,23 +24,14 @@
   "require-dev": {
     "alleyinteractive/alley-coding-standards": "^2.0",
     "mantle-framework/testkit": "^1.4",
-    "phpspec/prophecy": "^1.24",
-    "szepeviktor/phpstan-wordpress": "^2.0"
+    "phpspec/prophecy": "^1.24"
   },
   "scripts": {
-    "lint": [
-      "@phpcs",
-      "@phpstan"
-    ],
-    "lint:fix": [
-      "@phpcbf"
-    ],
     "phpcbf": "phpcbf .",
     "phpcs": "phpcs .",
-    "phpstan": "phpstan --memory-limit=1G",
     "phpunit": "phpunit",
     "test": [
-      "@lint",
+      "@phpcs",
       "@phpunit"
     ],
     "test-release": "rsync -rc --exclude-from=.distignore ./ ~/Desktop/publish-to-apple-news/ --delete --delete-excluded"
