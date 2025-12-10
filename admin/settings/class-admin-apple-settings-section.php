@@ -631,6 +631,18 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		 * use the default value to be safe.
 		 */
 		$default_settings = new Settings();
+
+		// Debug: Log secondary channel settings from POST.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( 'Apple News: Saving settings. POST keys: ' . implode( ', ', array_keys( $_POST ) ) );
+			error_log( 'Apple News: api_channel_2 in POST: ' . ( isset( $_POST['api_channel_2'] ) ? 'yes, value=' . $_POST['api_channel_2'] : 'no' ) );
+			error_log( 'Apple News: api_key_2 in POST: ' . ( isset( $_POST['api_key_2'] ) ? 'yes, value=' . substr( $_POST['api_key_2'], 0, 10 ) . '...' : 'no' ) );
+			error_log( 'Apple News: api_secret_2 in POST: ' . ( isset( $_POST['api_secret_2'] ) ? 'yes, value=' . substr( $_POST['api_secret_2'], 0, 10 ) . '...' : 'no' ) );
+			error_log( 'Apple News: Settings keys to iterate: ' . implode( ', ', array_keys( $this->settings ) ) );
+			// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
+
 		foreach ( $this->settings as $key => $attributes ) {
 
 			// Negotiate the value.
@@ -650,6 +662,8 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		// Clear certain caches.
 		delete_transient( 'apple_news_channel' );
 		delete_transient( 'apple_news_sections' );
+		delete_transient( 'apple_news_channel_2' );
+		delete_transient( 'apple_news_sections_2' );
 
 		// Save to options.
 		update_option( self::$section_option_name, $settings, 'no' );

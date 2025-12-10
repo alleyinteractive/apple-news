@@ -35,6 +35,36 @@ abstract class API_Action extends Action {
 	private $api;
 
 	/**
+	 * The channel key for this action.
+	 *
+	 * @var string
+	 * @access protected
+	 */
+	protected $channel_key = 'primary';
+
+	/**
+	 * Set the channel key for this action.
+	 *
+	 * @param string $channel_key The channel key ('primary' or 'secondary').
+	 * @access public
+	 */
+	public function set_channel_key( string $channel_key ): void {
+		$this->channel_key = $channel_key;
+		// Reset API instance so it uses new credentials.
+		$this->api = null;
+	}
+
+	/**
+	 * Get the channel key for this action.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_channel_key(): string {
+		return $this->channel_key;
+	}
+
+	/**
 	 * Set the instance of the API class.
 	 *
 	 * @param API $api The instance of the API class.
@@ -65,9 +95,19 @@ abstract class API_Action extends Action {
 	 * @return Credentials
 	 */
 	private function fetch_credentials() {
-		$key    = $this->get_setting( 'api_key' );
-		$secret = $this->get_setting( 'api_secret' );
-		return new Credentials( $key, $secret );
+		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
+		return new Credentials( $credentials['key'], $credentials['secret'] );
+	}
+
+	/**
+	 * Get the channel ID for the current channel.
+	 *
+	 * @access protected
+	 * @return string
+	 */
+	protected function get_channel_id(): string {
+		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
+		return $credentials['channel'];
 	}
 
 	/**
@@ -77,12 +117,10 @@ abstract class API_Action extends Action {
 	 * @return boolean
 	 */
 	protected function is_api_configuration_valid() {
-		$api_key     = $this->get_setting( 'api_key' );
-		$api_secret  = $this->get_setting( 'api_secret' );
-		$api_channel = $this->get_setting( 'api_channel' );
-		if ( empty( $api_key )
-			|| empty( $api_secret )
-			|| empty( $api_channel ) ) {
+		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
+		if ( empty( $credentials['key'] )
+			|| empty( $credentials['secret'] )
+			|| empty( $credentials['channel'] ) ) {
 			return false;
 		}
 
@@ -90,16 +128,31 @@ abstract class API_Action extends Action {
 	}
 
 	/**
+	 * Get the postmeta suffix for the current channel.
+	 *
+	 * @access protected
+	 * @return string
+	 */
+	protected function get_meta_suffix(): string {
+		return \Apple_News_Channels::get_meta_suffix( $this->channel_key );
+	}
+
+	/**
 	 * Resets the API postmeta for a given post ID.
 	 *
-	 * @param int $post_id The post ID to reset.
+	 * @param int    $post_id The post ID to reset.
+	 * @param string $suffix  Optional. Meta key suffix. Defaults to current channel suffix.
 	 */
-	protected function delete_post_meta( $post_id ): void {
-		delete_post_meta( $post_id, 'apple_news_api_id' );
-		delete_post_meta( $post_id, 'apple_news_api_revision' );
-		delete_post_meta( $post_id, 'apple_news_api_created_at' );
-		delete_post_meta( $post_id, 'apple_news_api_modified_at' );
-		delete_post_meta( $post_id, 'apple_news_api_share_url' );
-		delete_post_meta( $post_id, 'apple_news_article_checksum' );
+	protected function delete_post_meta( $post_id, $suffix = null ): void {
+		if ( null === $suffix ) {
+			$suffix = $this->get_meta_suffix();
+		}
+
+		delete_post_meta( $post_id, 'apple_news_api_id' . $suffix );
+		delete_post_meta( $post_id, 'apple_news_api_revision' . $suffix );
+		delete_post_meta( $post_id, 'apple_news_api_created_at' . $suffix );
+		delete_post_meta( $post_id, 'apple_news_api_modified_at' . $suffix );
+		delete_post_meta( $post_id, 'apple_news_api_share_url' . $suffix );
+		delete_post_meta( $post_id, 'apple_news_article_checksum' . $suffix );
 	}
 }

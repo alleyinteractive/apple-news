@@ -1,15 +1,16 @@
-import { usePostMeta, usePostMetaValue } from '@alleyinteractive/block-editor-tools';
+import {usePostMeta, usePostMetaValue} from '@alleyinteractive/block-editor-tools';
 import apiFetch from '@wordpress/api-fetch';
-import { useDispatch, useSelect } from '@wordpress/data';
+import {useDispatch, useSelect} from '@wordpress/data';
 import {
   PluginSidebar,
   PluginSidebarMoreMenuItem,
 } from '@wordpress/edit-post';
-import { __ } from '@wordpress/i18n';
+import {__} from '@wordpress/i18n';
 import DOMPurify from 'dompurify';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 // Panels.
+import ChannelSelector from './panels/channel-selector';
 import CoverMedia from './panels/cover-media';
 import MaturityRating from './panels/maturity-rating';
 import Metadata from './panels/metadata';
@@ -27,12 +28,16 @@ function Sidebar() {
     autoAssignCategories: false,
     loading: false,
     publishState: 'N/A',
+    primaryPublishState: 'N/A',
+    secondaryPublishState: 'N/A',
     sections: [],
     settings: {
       apiAutosync: false,
       apiAutosyncDelete: false,
       apiAutosyncUpdate: false,
       automaticAssignment: false,
+      multiChannelEnabled: false,
+      secondaryChannelConfigured: false,
     },
     userCanPublish: false,
   });
@@ -42,12 +47,16 @@ function Sidebar() {
     autoAssignCategories,
     loading,
     publishState,
+    primaryPublishState,
+    secondaryPublishState,
     sections,
     settings: {
       apiAutosync,
       apiAutosyncDelete,
       apiAutosyncUpdate,
       automaticAssignment,
+      multiChannelEnabled,
+      secondaryChannelConfigured,
     },
     userCanPublish,
   } = state;
@@ -81,6 +90,7 @@ function Sidebar() {
   }] = usePostMeta();
 
   // Getters and setters for individual postmeta values.
+  const [channel, setChannel] = usePostMetaValue('apple_news_channel');
   const [coverMediaProvider, setCoverMediaProvider] = usePostMetaValue('apple_news_cover_media_provider');
   const [coverImageId, setCoverImageId] = usePostMetaValue('apple_news_coverimage');
   const [coverImageCaption, setCoverImageCaption] = usePostMetaValue('apple_news_coverimage_caption');
@@ -95,13 +105,19 @@ function Sidebar() {
   const [metadataRaw, setMetadataRaw] = usePostMetaValue('apple_news_metadata');
   const [pullquoteText, setPullquoteText] = usePostMetaValue('apple_news_pullquote');
   const [pullquotePosition, setPullquotePosition] = usePostMetaValue('apple_news_pullquote_position');
-  const [selectedSections, setSelectedSectionsRaw] = usePostMetaValue('apple_news_sections');
+  const [selectedSectionsPrimary, setSelectedSectionsPrimaryRaw] = usePostMetaValue('apple_news_sections');
+  const [selectedSectionsSecondary, setSelectedSectionsSecondaryRaw] = usePostMetaValue('apple_news_sections_2');
   const [slug, setSlug] = usePostMetaValue('apple_news_slug');
   const [suppressVideoURL, setSuppressVideoURL] = usePostMetaValue('apple_news_suppress_video_url');
   const [useImageComponent, setUseImageComponent] = usePostMetaValue('apple_news_use_image_component');
 
   // Decode selected sections.
   const metadata = safeJsonParseArray(metadataRaw);
+
+  // Determine which sections to use based on channel.
+  const currentChannel = channel || 'primary';
+  const selectedSections = currentChannel === 'secondary' ? selectedSectionsSecondary : selectedSectionsPrimary;
+  const setSelectedSectionsRaw = currentChannel === 'secondary' ? setSelectedSectionsSecondaryRaw : setSelectedSectionsPrimaryRaw;
 
   /**
    * A helper function for setting metadata.
@@ -121,8 +137,8 @@ function Sidebar() {
    * @param {string} type - Optional. The type of message to display. Defaults to success.
    */
   const displayNotification = useCallback((message, type = 'success') => (type === 'success'
-    ? dispatchNotice.createInfoNotice(DOMPurify.sanitize(message), { type: 'snackbar' })
-    : dispatchNotice.createErrorNotice(message, { __unstableHTML: true })
+      ? dispatchNotice.createInfoNotice(DOMPurify.sanitize(message), {type: 'snackbar'})
+      : dispatchNotice.createErrorNotice(message, {__unstableHTML: true})
   ), [dispatchNotice]);
 
   /**
@@ -135,6 +151,17 @@ function Sidebar() {
       loading: true,
     });
 
+    // Determine the channel to use.
+    const channelToUse = channel || 'primary';
+
+    // Debug logging.
+    console.log('Apple News modifyPost:', {
+      operation,
+      postId,
+      channelFromMeta: channel,
+      channelToUse,
+    });
+
     try {
       const {
         notifications = [],
@@ -142,6 +169,7 @@ function Sidebar() {
       } = await apiFetch({
         data: {
           id: postId,
+          channel: channelToUse,
         },
         method: 'POST',
         path: `/apple-news/v1/${operation}`,
@@ -150,11 +178,21 @@ function Sidebar() {
         notification.message,
         notification.type,
       ));
-      setState({
+
+      // Update the appropriate publish state based on channel.
+      const stateUpdate = {
         ...state,
         loading: false,
         publishState: nextPublishState,
-      });
+      };
+
+      if (channelToUse === 'primary') {
+        stateUpdate.primaryPublishState = nextPublishState;
+      } else {
+        stateUpdate.secondaryPublishState = nextPublishState;
+      }
+
+      setState(stateUpdate);
     } catch (error) {
       displayNotification(error.message, 'error');
       setState({
@@ -174,14 +212,30 @@ function Sidebar() {
       : [...selectedSections, id],
   );
 
+  /**
+   * Fetches sections for a specific channel.
+   * @param {string} channelKey - The channel key ('primary' or 'secondary').
+   * @returns {Promise<Array>} The sections for the channel.
+   */
+  const fetchSectionsForChannel = async (channelKey) => {
+    try {
+      const channelParam = channelKey || 'primary';
+      return await apiFetch({path: `/apple-news/v1/sections?channel=${channelParam}`});
+    } catch (error) {
+      console.error('Error fetching sections:', error);
+      return [];
+    }
+  };
+
   // On initial load, fetch info from the API into state.
   useEffect(() => {
     (async () => {
+      const currentChannel = channel || 'primary';
       const fetches = [
-        await apiFetch({ path: `/apple-news/v1/get-published-state/${postId}` }),
-        await apiFetch({ path: '/apple-news/v1/sections' }),
-        await apiFetch({ path: '/apple-news/v1/get-settings' }),
-        await apiFetch({ path: `/apple-news/v1/user-can-publish/${postId}` }),
+        await apiFetch({path: `/apple-news/v1/get-published-state/${postId}`}),
+        await fetchSectionsForChannel(currentChannel),
+        await apiFetch({path: '/apple-news/v1/get-settings'}),
+        await apiFetch({path: `/apple-news/v1/user-can-publish/${postId}`}),
       ];
 
       // Wait for everything to load, update state, and handle errors.
@@ -201,6 +255,26 @@ function Sidebar() {
       }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Refetch sections when channel changes.
+  useEffect(() => {
+    // Skip on initial render (sections are fetched in the initial load effect).
+    if (!multiChannelEnabled || !secondaryChannelConfigured) {
+      return;
+    }
+
+    (async () => {
+      const channelToFetch = channel || 'primary';
+      const newSections = await fetchSectionsForChannel(channelToFetch);
+
+      setState((prevState) => ({
+        ...prevState,
+        sections: newSections,
+        autoAssignCategories: (!selectedSections || selectedSections.length === 0)
+          && prevState.settings?.automaticAssignment === true,
+      }));
+    })();
+  }, [channel, multiChannelEnabled, secondaryChannelConfigured]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Display notices whenever they change.
   useEffect(() => {
@@ -223,6 +297,14 @@ function Sidebar() {
         name="publish-to-apple-news"
         title={__('Publish to Apple News Options', 'apple-news')}
       >
+        <ChannelSelector
+          channel={channel || 'primary'}
+          multiChannelEnabled={multiChannelEnabled}
+          onChangeChannel={setChannel}
+          primaryPublishState={primaryPublishState}
+          secondaryChannelConfigured={secondaryChannelConfigured}
+          secondaryPublishState={secondaryPublishState}
+        />
         <Sections
           autoAssignCategories={autoAssignCategories}
           automaticAssignment={automaticAssignment}

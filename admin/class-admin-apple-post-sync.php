@@ -173,6 +173,10 @@ class Admin_Apple_Post_Sync {
 		// Proceed with the push.
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
 
+		// Set the channel key based on post meta (for multi-channel support).
+		$channel_key = Apple_News_Channels::get_channel_for_post( $id );
+		$action->set_channel_key( $channel_key );
+
 		try {
 			$action->perform();
 		} catch ( Apple_Actions\Action_Exception $e ) {
@@ -203,12 +207,18 @@ class Admin_Apple_Post_Sync {
 			return;
 		}
 
+		// Get the channel key for this post.
+		$channel_key = Apple_News_Channels::get_channel_for_post( $id );
+		$meta_suffix = Apple_News_Channels::get_meta_suffix( $channel_key );
+
 		// If it does not have a remote API ID just ignore.
-		if ( ! get_post_meta( $id, 'apple_news_api_id', true ) ) {
+		if ( ! get_post_meta( $id, 'apple_news_api_id' . $meta_suffix, true ) ) {
 			return;
 		}
 
 		$action = new Apple_Actions\Index\Delete( $this->settings, $id );
+		$action->set_channel_key( $channel_key );
+
 		try {
 			$action->perform();
 		} catch ( Apple_Actions\Action_Exception $e ) {

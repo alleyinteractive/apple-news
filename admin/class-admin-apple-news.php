@@ -191,6 +191,45 @@ class Admin_Apple_News extends Apple_News {
 				],
 			];
 
+			// Add multi-channel postmeta fields if enabled.
+			if ( Apple_News_Channels::is_enabled() ) {
+				// Channel selector field.
+				$postmeta['apple_news_channel'] = [
+					'default' => 'primary',
+				];
+
+				// Secondary channel API fields.
+				$postmeta['apple_news_api_id_2']          = [
+					'default' => '',
+				];
+				$postmeta['apple_news_api_created_at_2']  = [
+					'default' => '',
+				];
+				$postmeta['apple_news_api_modified_at_2'] = [
+					'default' => '',
+				];
+				$postmeta['apple_news_api_revision_2']    = [
+					'default' => '',
+				];
+				$postmeta['apple_news_api_share_url_2']   = [
+					'default' => '',
+				];
+
+				// Secondary channel sections.
+				$postmeta['apple_news_sections_2'] = [
+					'default'      => [],
+					'show_in_rest' => [
+						'schema' => [
+							'items' => [
+								'type' => 'string',
+							],
+							'type'  => 'array',
+						],
+					],
+					'type'         => 'array',
+				];
+			}
+
 			// Loop over postmeta fields and register each.
 			foreach ( $postmeta as $meta_key => $options ) {
 				apple_news_register_meta_helper( 'post', $post_types, $meta_key, $options );
@@ -303,18 +342,26 @@ class Admin_Apple_News extends Apple_News {
 	/**
 	 * Get post status.
 	 *
-	 * @param int $post_id The ID of the post to look up.
+	 * @param int    $post_id     The ID of the post to look up.
+	 * @param string $channel_key Optional. The channel key ('primary' or 'secondary'). Defaults to post's channel.
 	 * @return string
 	 */
-	public static function get_post_status( $post_id ) {
-		$key   = 'apple_news_post_state_' . $post_id;
-		$state = get_transient( $key );
+	public static function get_post_status( $post_id, $channel_key = null ) {
+		// Determine the channel key to use.
+		if ( null === $channel_key ) {
+			$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
+		}
+
+		$suffix = \Apple_News_Channels::get_meta_suffix( $channel_key );
+		$key    = 'apple_news_post_state_' . $post_id . $suffix;
+		$state  = get_transient( $key );
 		if ( false === $state ) {
 			// Get the state from the API.
 			// If this causes an error, display that message instead of the state.
 			try {
 				$action = new Apple_Actions\Index\Get( self::$settings, $post_id );
-				$state  = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
+				$action->set_channel_key( $channel_key );
+				$state = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
 			} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
 				$state = $e->getMessage();
 			}

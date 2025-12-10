@@ -18,13 +18,14 @@ use WP_Error;
 /**
  * Publish, update, or delete a post via the Apple News API given a post ID.
  *
- * @param int    $post_id   The post ID to modify.
- * @param string $operation The operation to perform. One of 'publish', 'update', 'delete'.
+ * @param int    $post_id     The post ID to modify.
+ * @param string $operation   The operation to perform. One of 'publish', 'update', 'delete'.
+ * @param string $channel_key Optional. The channel key ('primary' or 'secondary'). Defaults to post's channel or 'primary'.
  *
  * @return array|WP_Error Response to the request - either data about a successful operation, or error.
  */
-function modify_post( $post_id, $operation ): array|WP_Error {
-	// Ensure Apple News is first initialized.
+function modify_post( $post_id, $operation, $channel_key = null ): array|WP_Error {
+	// Ensure Apple News is first initialized (primary channel at minimum).
 	$retval = \Apple_News::has_uninitialized_error();
 
 	if ( is_wp_error( $retval ) ) {
@@ -71,6 +72,26 @@ function modify_post( $post_id, $operation ): array|WP_Error {
 		);
 	}
 
+	// Determine the channel key to use.
+	if ( null === $channel_key ) {
+		$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
+	}
+
+	// Debug logging for multi-channel.
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( 'Apple News modify_post: operation = ' . $operation );
+		error_log( 'Apple News modify_post: post_id = ' . $post_id );
+		error_log( 'Apple News modify_post: channel_key = ' . $channel_key );
+		// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+	}
+
+	// Ensure the specific channel is initialized.
+	$channel_error = \Apple_News::has_uninitialized_error( $channel_key );
+	if ( is_wp_error( $channel_error ) ) {
+		return $channel_error;
+	}
+
 	// Try to perform the action for the article against the API.
 	switch ( $operation ) {
 		case 'publish':
@@ -89,6 +110,9 @@ function modify_post( $post_id, $operation ): array|WP_Error {
 				]
 			);
 	}
+
+	// Set the channel key for the action.
+	$action->set_channel_key( $channel_key );
 
 	try {
 		$action->perform();
@@ -117,7 +141,7 @@ function modify_post( $post_id, $operation ): array|WP_Error {
 
 		return [
 			'notifications' => $notifications,
-			'publishState'  => Admin_Apple_News::get_post_status( $post_id ),
+			'publishState'  => Admin_Apple_News::get_post_status( $post_id, $channel_key ),
 		];
 	} catch ( Action_Exception $e ) {
 		// Return the error message in the JSON response also.

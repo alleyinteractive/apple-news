@@ -55,18 +55,20 @@ function get_settings_response(): WP_REST_Response|WP_Error {
 	$default_settings = ( new Settings() )->all();
 
 	$response = [
-		'adminUrl'            => esc_url_raw( admin_url( 'admin.php?page=apple-news-options' ) ),
-		'automaticAssignment' => ! empty( Automation::get_automation_rules() ),
-		'apiAsync'            => 'yes' === $settings->api_async,
-		'apiAutosync'         => 'yes' === $settings->api_autosync,
-		'apiAutosyncDelete'   => 'yes' === $settings->api_autosync_delete,
-		'apiAutosyncUpdate'   => 'yes' === $settings->api_autosync_update,
-		'fullBleedImages'     => 'yes' === $settings->full_bleed_images,
-		'htmlSupport'         => 'yes' === $settings->html_support,
-		'inArticlePosition'   => is_numeric( $settings->in_article_position ) ? (int) $settings->in_article_position : $default_settings['in_article_position'],
-		'postTypes'           => ! empty( $settings->post_types ) && is_array( $settings->post_types ) ? array_map( 'sanitize_text_field', $settings->post_types ) : [],
-		'showMetabox'         => 'yes' === $settings->show_metabox,
-		'useRemoteImages'     => 'yes' === $settings->use_remote_images,
+		'adminUrl'                   => esc_url_raw( admin_url( 'admin.php?page=apple-news-options' ) ),
+		'automaticAssignment'        => ! empty( Automation::get_automation_rules() ),
+		'apiAsync'                   => 'yes' === $settings->api_async,
+		'apiAutosync'                => 'yes' === $settings->api_autosync,
+		'apiAutosyncDelete'          => 'yes' === $settings->api_autosync_delete,
+		'apiAutosyncUpdate'          => 'yes' === $settings->api_autosync_update,
+		'fullBleedImages'            => 'yes' === $settings->full_bleed_images,
+		'htmlSupport'                => 'yes' === $settings->html_support,
+		'inArticlePosition'          => is_numeric( $settings->in_article_position ) ? (int) $settings->in_article_position : $default_settings['in_article_position'],
+		'postTypes'                  => ! empty( $settings->post_types ) && is_array( $settings->post_types ) ? array_map( 'sanitize_text_field', $settings->post_types ) : [],
+		'showMetabox'                => 'yes' === $settings->show_metabox,
+		'useRemoteImages'            => 'yes' === $settings->use_remote_images,
+		'multiChannelEnabled'        => \Apple_News_Channels::is_enabled(),
+		'secondaryChannelConfigured' => \Apple_News_Channels::is_secondary_configured( $settings ),
 	];
 
 	return rest_ensure_response( $response );

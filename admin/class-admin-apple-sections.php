@@ -21,13 +21,15 @@ class Admin_Apple_Sections extends Apple_News {
 	/**
 	 * Returns an array of section data without requiring an instance of the object.
 	 *
+	 * @param string $channel_key Optional. The channel key ('primary' or 'secondary'). Defaults to 'primary'.
 	 * @access public
 	 * @return array An array of section data.
 	 */
-	public static function get_sections() {
+	public static function get_sections( $channel_key = 'primary' ) {
 
 		// Try to load from cache.
-		$sections = get_transient( 'apple_news_sections' );
+		$transient_key = Apple_News_Channels::get_sections_transient_key( $channel_key );
+		$sections      = get_transient( $transient_key );
 		if ( false !== $sections ) {
 			return $sections;
 		}
@@ -35,7 +37,8 @@ class Admin_Apple_Sections extends Apple_News {
 		// Try to get sections. The get_sections call sets the transient.
 		$admin_settings = new Admin_Apple_Settings();
 		$section_api    = new Section( $admin_settings->fetch_settings() );
-		$sections       = $section_api->get_sections();
+		$section_api->set_channel_key( $channel_key );
+		$sections = $section_api->get_sections();
 		if ( empty( $sections ) || ! is_array( $sections ) ) {
 			$sections = [];
 			Admin_Apple_Notice::error(
@@ -52,16 +55,24 @@ class Admin_Apple_Sections extends Apple_News {
 	 * Supports overrides for manual section selection and fallback to postmeta
 	 * when no mappings are set.
 	 *
-	 * @param int    $post_id The ID of the post to query.
-	 * @param string $format The return format to use. Can be 'url' or 'raw'.
+	 * @param int    $post_id     The ID of the post to query.
+	 * @param string $format      The return format to use. Can be 'url' or 'raw'.
+	 * @param string $channel_key Optional. The channel key ('primary' or 'secondary'). Defaults to post's channel.
 	 *
 	 * @access public
 	 * @return array An array of section data according to the requested format.
 	 */
-	public static function get_sections_for_post( $post_id, $format = 'url' ) {
+	public static function get_sections_for_post( $post_id, $format = 'url', $channel_key = null ) {
+
+		// Determine the channel key to use.
+		if ( null === $channel_key ) {
+			$channel_key = Apple_News_Channels::get_channel_for_post( $post_id );
+		}
+
+		$meta_suffix = Apple_News_Channels::get_meta_suffix( $channel_key );
 
 		// Try to load sections from postmeta.
-		$meta_value = get_post_meta( $post_id, 'apple_news_sections', true );
+		$meta_value = get_post_meta( $post_id, 'apple_news_sections' . $meta_suffix, true );
 		if ( ! empty( $meta_value ) && is_array( $meta_value ) ) {
 			return $meta_value;
 		}
@@ -74,7 +85,7 @@ class Admin_Apple_Sections extends Apple_News {
 
 		// Convert sections returned from the API into the requested format.
 		$sections     = [];
-		$sections_raw = self::get_sections();
+		$sections_raw = self::get_sections( $channel_key );
 		foreach ( $sections_raw as $section ) {
 
 			// Ensure we have an ID to key off of.

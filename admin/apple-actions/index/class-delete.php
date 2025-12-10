@@ -66,7 +66,8 @@ class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWrites
 			throw new \Apple_Actions\Action_Exception( esc_html__( 'Your Apple News API settings seem to be empty. Please fill the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
 		}
 
-		$remote_id = get_post_meta( $this->id, 'apple_news_api_id', true );
+		$suffix    = $this->get_meta_suffix();
+		$remote_id = get_post_meta( $this->id, 'apple_news_api_id' . $suffix, true );
 		if ( ! $remote_id ) {
 			throw new \Apple_Actions\Action_Exception( esc_html__( 'This post has not been pushed to Apple News, cannot delete.', 'apple-news' ) );
 		}
@@ -84,10 +85,10 @@ class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWrites
 
 			// Delete the API references and mark as deleted.
 			$this->delete_post_meta( $this->id );
-			update_post_meta( $this->id, 'apple_news_api_deleted', time() );
+			update_post_meta( $this->id, 'apple_news_api_deleted' . $suffix, time() );
 
 			// Clear the cache for post status.
-			delete_transient( 'apple_news_post_state_' . $this->id );
+			delete_transient( 'apple_news_post_state_' . $this->id . $suffix );
 
 			/**
 			 * Actions to be taken after an article is deleted via the API.

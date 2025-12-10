@@ -37,7 +37,17 @@ add_action(
  * @return WP_REST_Response|WP_Error
  */
 function rest_post_publish( $request ): WP_REST_Response|WP_Error {
-	$post = modify_post( (int) $request->get_param( 'id' ), 'publish' );
+	$channel_key = $request->get_param( 'channel' );
+
+	// Debug logging.
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( 'Apple News REST publish: channel param = ' . var_export( $channel_key, true ) );
+		error_log( 'Apple News REST publish: all params = ' . var_export( $request->get_params(), true ) );
+		// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+	}
+
+	$post = modify_post( (int) $request->get_param( 'id' ), 'publish', $channel_key );
 
 	if ( is_wp_error( $post ) ) {
 		return $post;

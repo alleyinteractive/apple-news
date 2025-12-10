@@ -92,6 +92,32 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 			],
 		];
 
+	// Add secondary channel settings if multi-channel is enabled.
+		if ( Apple_News_Channels::is_enabled() ) {
+			$this->settings['api_config_file_2']       = [
+				// translators: tokens fill in <a> tags.
+				'description' => sprintf( __( 'Having trouble? %1$sEnter the contents of your .papi file manually%2$s.', 'apple-news' ), '<a href="#api_config_file_2">', '</a>' ),
+				'type'        => 'file',
+			];
+			$this->settings['api_config_file_input_2'] = [
+				'type' => 'textarea',
+			];
+			$this->settings['api_channel_2']           = [
+				'type' => 'hidden',
+			];
+			$this->settings['api_key_2']               = [
+				'type' => 'hidden',
+			];
+			$this->settings['api_secret_2']            = [
+				'type' => 'hidden',
+			];
+
+			$this->groups['apple_news_config_upload_2'] = [
+				'label'    => __( 'Upload Secondary Channel Configuration File:', 'apple-news' ),
+				'settings' => [ 'api_config_file_2', 'api_config_file_input_2', 'api_channel_2', 'api_key_2', 'api_secret_2' ],
+			];
+		}
+
 		parent::__construct( $page );
 	}
 

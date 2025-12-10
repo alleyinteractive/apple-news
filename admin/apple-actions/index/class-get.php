@@ -45,7 +45,8 @@ class Get extends API_Action {
 	 */
 	public function perform() {
 		// Ensure we have a valid ID.
-		$apple_id = get_post_meta( $this->id, 'apple_news_api_id', true );
+		$suffix   = $this->get_meta_suffix();
+		$apple_id = get_post_meta( $this->id, 'apple_news_api_id' . $suffix, true );
 
 		if ( empty( $apple_id ) ) {
 			return null;
