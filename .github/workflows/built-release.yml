@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - nyp
 
 jobs:
   built-release:
