@@ -34,11 +34,11 @@ function ChannelSelector({
         selected={channel || 'primary'}
         options={[
           {
-            label: `${__('Primary Channel', 'apple-news')} (${getStatusLabel(primaryPublishState)})`,
+            label: `${__('Primary Channel (New York Post)', 'apple-news')} (${getStatusLabel(primaryPublishState)})`,
             value: 'primary',
           },
           {
-            label: `${__('Secondary Channel', 'apple-news')} (${getStatusLabel(secondaryPublishState)})`,
+            label: `${__('Secondary Channel (California Post)', 'apple-news')} (${getStatusLabel(secondaryPublishState)})`,
             value: 'secondary',
           },
         ]}

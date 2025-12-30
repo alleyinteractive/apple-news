@@ -83,7 +83,7 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 		// Add the groups.
 		$this->groups = [
 			'apple_news_config_upload' => [
-				'label'    => __( 'Upload Channel Configuration File:', 'apple-news' ),
+				'label'    => __( 'Upload Primary Channel (New York Post) Configuration File:', 'apple-news' ),
 				'settings' => [ 'api_config_file', 'api_config_file_input', 'api_channel', 'api_key', 'api_secret' ],
 			],
 			'apple_news_options'       => [
@@ -113,7 +113,7 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 			];
 
 			$this->groups['apple_news_config_upload_2'] = [
-				'label'    => __( 'Upload Secondary Channel Configuration File:', 'apple-news' ),
+				'label'    => __( 'Upload Secondary Channel (California Post) Configuration File:', 'apple-news' ),
 				'settings' => [ 'api_config_file_2', 'api_config_file_input_2', 'api_channel_2', 'api_key_2', 'api_secret_2' ],
 			];
 		}
