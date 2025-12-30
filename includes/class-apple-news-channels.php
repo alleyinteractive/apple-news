@@ -85,14 +85,6 @@ class Apple_News_Channels {
 			$channel = self::SECONDARY;
 		}
 
-		/**
-		 * Filters the Apple News channel key for a post.
-		 *
-		 * @param string $channel The channel key ('primary' or 'secondary').
-		 * @param int    $post_id The post ID.
-		 */
-		$channel = apply_filters( 'apple_news_get_channel_for_post', $channel, $post_id );
-
 		return $channel;
 	}
 
