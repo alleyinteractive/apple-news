@@ -73,17 +73,27 @@ class Apple_News_Channels {
 	 * @return string The channel key ('primary' or 'secondary').
 	 */
 	public static function get_channel_for_post( int $post_id ): string {
+		$channel = self::PRIMARY;
+
 		if ( ! self::is_enabled() ) {
-			return self::PRIMARY;
+			$channel = self::PRIMARY;
 		}
 
 		$channel = get_post_meta( $post_id, 'apple_news_channel', true );
 
 		if ( self::SECONDARY === $channel ) {
-			return self::SECONDARY;
+			$channel = self::SECONDARY;
 		}
 
-		return self::PRIMARY;
+		/**
+		 * Filters the Apple News channel key for a post.
+		 *
+		 * @param string $channel The channel key ('primary' or 'secondary').
+		 * @param int    $post_id The post ID.
+		 */
+		$channel = apply_filters( 'apple_news_get_channel_for_post', $channel, $post_id );
+
+		return $channel;
 	}
 
 	/**
