@@ -44,7 +44,7 @@ class Apple_News_Channels {
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param bool $enabled Whether multi-channel support is enabled. Default false.
+		 * @param bool $enabled Whether multi-channel support is enabled. Default true.
 		 */
 		return (bool) apply_filters( 'apple_news_enable_multi_channel', true );
 	}
