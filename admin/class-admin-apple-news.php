@@ -195,7 +195,7 @@ class Admin_Apple_News extends Apple_News {
 			if ( Apple_News_Channels::is_enabled() ) {
 				// Channel selector field.
 				$postmeta['apple_news_channel'] = [
-					'default' => 'primary',
+					'default' => '',
 				];
 
 				// Secondary channel API fields.
