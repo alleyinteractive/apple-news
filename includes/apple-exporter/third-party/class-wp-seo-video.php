@@ -51,7 +51,7 @@ class WP_SEO_Video {
 	 */
 	public function unhook_replace_youtube_block_html() {
 		global $wpseo_video_embed;
-		if (  isset( $wpseo_video_embed ) && $wpseo_video_embed instanceof \WPSEO_Video_Embed ) {
+		if ( isset( $wpseo_video_embed ) && $wpseo_video_embed instanceof \WPSEO_Video_Embed ) {
 			remove_filter( 'render_block', [ $wpseo_video_embed, 'replace_youtube_block_html' ], 10, 2 );
 		}
 	}
