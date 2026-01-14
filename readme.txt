@@ -3,8 +3,8 @@ Contributors: potatomaster, kevinfodness, jomurgel, tylermachado, benpbolton, al
 Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 6.3
-Tested up to: 6.8
-Requires PHP: 8.0
+Tested up to: 6.9
+Requires PHP: 8.2
 Stable tag: 2.7.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
