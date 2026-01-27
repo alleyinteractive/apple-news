@@ -50,7 +50,7 @@ class Apple_News {
 	 * @var string
 	 * @access public
 	 */
-	public static string $version = '2.7.2';
+	public static string $version = '2.8.0';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.

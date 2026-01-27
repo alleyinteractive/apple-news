@@ -130,6 +130,9 @@ class Embed_Web_Video extends Component {
 					$src = 'https://player.vimeo.com/video/' . end( $matches );
 				}
 
+				// Handle any edge cases e.g., unlisted videos.
+				$src = apply_filters( 'apple_news_embed_web_video_link', $src, $url );
+
 				// If we got a hit, register the JSON and bail out.
 				if ( ! empty( $src ) ) {
 					$this->register_json(
