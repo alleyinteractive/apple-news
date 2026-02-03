@@ -11,7 +11,6 @@ namespace Apple_Actions\Index;
 require_once dirname( __DIR__ ) . '/class-api-action.php';
 
 use Apple_Actions\API_Action;
-use Apple_Exporter\Settings;
 
 /**
  * A class to handle a section request from the admin.
@@ -75,7 +74,6 @@ class Section extends API_Action {
 	 *
 	 * Cache for 5 minutes to avoid too many API requests.
 	 *
-	 * @access public
 	 * @return array
 	 */
 	public function get_sections() {

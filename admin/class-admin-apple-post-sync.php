@@ -209,10 +209,9 @@ class Admin_Apple_Post_Sync {
 
 		// Get the channel key for this post.
 		$channel_key = Apple_News_Channels::get_channel_for_post( $id );
-		$meta_suffix = Apple_News_Channels::get_meta_suffix( $channel_key );
 
 		// If it does not have a remote API ID just ignore.
-		if ( ! get_post_meta( $id, 'apple_news_api_id' . $meta_suffix, true ) ) {
+		if ( ! get_post_meta( $id, 'apple_news_api_id', true ) ) {
 			return;
 		}
 

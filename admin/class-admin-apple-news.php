@@ -352,9 +352,8 @@ class Admin_Apple_News extends Apple_News {
 			$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
 		}
 
-		$suffix = \Apple_News_Channels::get_meta_suffix( $channel_key );
-		$key    = 'apple_news_post_state_' . $post_id . $suffix;
-		$state  = get_transient( $key );
+		$key   = 'apple_news_post_state_' . $post_id;
+		$state = get_transient( $key );
 		if ( false === $state ) {
 			// Get the state from the API.
 			// If this causes an error, display that message instead of the state.

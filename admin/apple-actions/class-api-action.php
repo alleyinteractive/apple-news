@@ -108,30 +108,16 @@ abstract class API_Action extends Action {
 	}
 
 	/**
-	 * Get the postmeta suffix for the current channel.
-	 *
-	 * @return string
-	 */
-	protected function get_meta_suffix(): string {
-		return \Apple_News_Channels::get_meta_suffix( $this->channel_key );
-	}
-
-	/**
 	 * Resets the API postmeta for a given post ID.
 	 *
-	 * @param int    $post_id The post ID to reset.
-	 * @param string $suffix  Optional. Meta key suffix. Defaults to current channel suffix.
+	 * @param int $post_id The post ID to reset.
 	 */
-	protected function delete_post_meta( $post_id, $suffix = null ): void {
-		if ( null === $suffix ) {
-			$suffix = $this->get_meta_suffix();
-		}
-
-		delete_post_meta( $post_id, 'apple_news_api_id' . $suffix );
-		delete_post_meta( $post_id, 'apple_news_api_revision' . $suffix );
-		delete_post_meta( $post_id, 'apple_news_api_created_at' . $suffix );
-		delete_post_meta( $post_id, 'apple_news_api_modified_at' . $suffix );
-		delete_post_meta( $post_id, 'apple_news_api_share_url' . $suffix );
-		delete_post_meta( $post_id, 'apple_news_article_checksum' . $suffix );
+	protected function delete_post_meta( $post_id ): void {
+		delete_post_meta( $post_id, 'apple_news_api_id' );
+		delete_post_meta( $post_id, 'apple_news_api_revision' );
+		delete_post_meta( $post_id, 'apple_news_api_created_at' );
+		delete_post_meta( $post_id, 'apple_news_api_modified_at' );
+		delete_post_meta( $post_id, 'apple_news_api_share_url' );
+		delete_post_meta( $post_id, 'apple_news_article_checksum' );
 	}
 }

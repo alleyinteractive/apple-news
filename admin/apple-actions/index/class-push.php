@@ -81,19 +81,17 @@ class Push extends API_Action {
 	 * @throws Action_Exception If the push fails.
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
-		$suffix = $this->get_meta_suffix();
-
 		if ( 'yes' === $this->settings->__get( 'api_async' ) && false === $doing_async ) {
 
 			// Do not proceed if this is already pending publish.
-			$pending = get_post_meta( $this->id, 'apple_news_api_pending' . $suffix, true );
+			$pending = get_post_meta( $this->id, 'apple_news_api_pending', true );
 
 			if ( ! empty( $pending ) ) {
 				return false;
 			}
 
 			// Track this publish event as pending with the timestamp it was sent.
-			update_post_meta( $this->id, 'apple_news_api_pending' . $suffix, time() );
+			update_post_meta( $this->id, 'apple_news_api_pending', time() );
 
 			wp_schedule_single_event( time(), Admin_Apple_Async::ASYNC_PUSH_HOOK, [ $this->id, get_current_user_id() ] );
 		} else {
@@ -161,8 +159,7 @@ class Push extends API_Action {
 		}
 
 		// Compare checksums to determine whether the article is in sync or not.
-		$suffix           = $this->get_meta_suffix();
-		$current_checksum = get_post_meta( $this->id, 'apple_news_article_checksum' . $suffix, true );
+		$current_checksum = get_post_meta( $this->id, 'apple_news_article_checksum', true );
 		$new_checksum     = $this->generate_checksum( $json, $meta, $bundles );
 		if ( empty( $current_checksum ) || $current_checksum !== $new_checksum ) {
 			$in_sync = false;
@@ -196,8 +193,7 @@ class Push extends API_Action {
 	 */
 	private function get(): void {
 		// Ensure we have a valid ID.
-		$suffix   = $this->get_meta_suffix();
-		$apple_id = get_post_meta( $this->id, 'apple_news_api_id' . $suffix, true );
+		$apple_id = get_post_meta( $this->id, 'apple_news_api_id', true );
 		if ( empty( $apple_id ) ) {
 			throw new Action_Exception( esc_html__( 'This post does not have a valid Apple News ID, so it cannot be retrieved from the API.', 'apple-news' ) );
 		}
@@ -209,7 +205,7 @@ class Push extends API_Action {
 		}
 
 		// Update the revision.
-		update_post_meta( $this->id, 'apple_news_api_revision' . $suffix, sanitize_text_field( $result->data->revision ) );
+		update_post_meta( $this->id, 'apple_news_api_revision', sanitize_text_field( $result->data->revision ) );
 	}
 
 	/**
@@ -329,8 +325,7 @@ class Push extends API_Action {
 		}
 
 		// If there's an API ID, update, otherwise create.
-		$suffix    = $this->get_meta_suffix();
-		$remote_id = get_post_meta( $this->id, 'apple_news_api_id' . $suffix, true );
+		$remote_id = get_post_meta( $this->id, 'apple_news_api_id', true );
 
 		/**
 		 * Actions to be taken before the article is pushed to Apple News.
@@ -406,33 +401,33 @@ class Push extends API_Action {
 				$this->get();
 
 				// Get the current revision.
-				$revision = get_post_meta( $this->id, 'apple_news_api_revision' . $suffix, true );
+				$revision = get_post_meta( $this->id, 'apple_news_api_revision', true );
 				$result   = $this->get_api()->update_article( $remote_id, $revision, $json, $bundles, $meta, $this->id );
 			} else {
 				$result = $this->get_api()->post_article_to_channel( $json, $this->get_channel_id(), $bundles, $meta, $this->id );
 			}
 
 			// Save the ID that was assigned to this post in by the API.
-			update_post_meta( $this->id, 'apple_news_api_id' . $suffix, sanitize_text_field( $result->data->id ) );
-			update_post_meta( $this->id, 'apple_news_api_created_at' . $suffix, sanitize_text_field( $result->data->createdAt ) );
-			update_post_meta( $this->id, 'apple_news_api_modified_at' . $suffix, sanitize_text_field( $result->data->modifiedAt ) );
-			update_post_meta( $this->id, 'apple_news_api_share_url' . $suffix, sanitize_text_field( $result->data->shareUrl ) );
-			update_post_meta( $this->id, 'apple_news_api_revision' . $suffix, sanitize_text_field( $result->data->revision ) );
+			update_post_meta( $this->id, 'apple_news_api_id', sanitize_text_field( $result->data->id ) );
+			update_post_meta( $this->id, 'apple_news_api_created_at', sanitize_text_field( $result->data->createdAt ) );
+			update_post_meta( $this->id, 'apple_news_api_modified_at', sanitize_text_field( $result->data->modifiedAt ) );
+			update_post_meta( $this->id, 'apple_news_api_share_url', sanitize_text_field( $result->data->shareUrl ) );
+			update_post_meta( $this->id, 'apple_news_api_revision', sanitize_text_field( $result->data->revision ) );
 
 			// If it's marked as deleted, remove the mark. Ignore otherwise.
-			delete_post_meta( $this->id, 'apple_news_api_deleted' . $suffix );
+			delete_post_meta( $this->id, 'apple_news_api_deleted' );
 
 			// Remove the pending designation if it exists.
-			delete_post_meta( $this->id, 'apple_news_api_pending' . $suffix );
+			delete_post_meta( $this->id, 'apple_news_api_pending' );
 
 			// Remove the async in progress flag.
-			delete_post_meta( $this->id, 'apple_news_api_async_in_progress' . $suffix );
+			delete_post_meta( $this->id, 'apple_news_api_async_in_progress' );
 
 			// Clear the cache for post status.
-			delete_transient( 'apple_news_post_state_' . $this->id . $suffix );
+			delete_transient( 'apple_news_post_state_' . $this->id );
 
 			// Update the checksum for the article JSON version.
-			update_post_meta( $this->id, 'apple_news_article_checksum' . $suffix, $this->generate_checksum( $json, $meta, $bundles ) );
+			update_post_meta( $this->id, 'apple_news_article_checksum', $this->generate_checksum( $json, $meta, $bundles ) );
 
 			/**
 			 * Actions to be taken after an article was pushed to Apple News.
@@ -444,10 +439,10 @@ class Push extends API_Action {
 		} catch ( Request_Exception $e ) {
 
 			// Remove the pending designation if it exists.
-			delete_post_meta( $this->id, 'apple_news_api_pending' . $suffix );
+			delete_post_meta( $this->id, 'apple_news_api_pending' );
 
 			// Remove the async in progress flag.
-			delete_post_meta( $this->id, 'apple_news_api_async_in_progress' . $suffix );
+			delete_post_meta( $this->id, 'apple_news_api_async_in_progress' );
 
 			$this->clean_workspace();
 
@@ -457,7 +452,7 @@ class Push extends API_Action {
 				$error_message = __( 'Apple News Error: It seems like the article was updated by another call. If the problem persists, try removing and pushing again.', 'apple-news' );
 			} elseif ( str_contains( $original_error_message, 'NOT_FOUND (keyPath articleId)' ) ) {
 				// Reset the API postmeta if the article is deleted in Apple News.
-				$this->delete_post_meta( $this->id, $suffix );
+				$this->delete_post_meta( $this->id );
 
 				$error_message = __( 'Publish to Apple News: This article was previously deleted in iCloud News Publisher. Due to your automatic publishing settings, it has been recreated on Apple News.', 'apple-news' );
 			} else {
@@ -612,6 +607,7 @@ class Push extends API_Action {
 			'isPreview'   => 'apple_news_is_preview',
 			'isSponsored' => 'apple_news_is_sponsored',
 		];
+
 		foreach ( $metadata_keys as $metadata_property => $meta_key ) {
 			$meta_value = get_post_meta( $post_id, $meta_key, true );
 			if ( 'true' === $meta_value || '1' === $meta_value ) {
@@ -676,9 +672,9 @@ class Push extends API_Action {
 	 * @since 0.6.0
 	 */
 	private function generate_article() {
-
 		$export_action = new Export( $this->settings, $this->id, $this->sections );
 		Export::set_exporting( true );
+
 		$this->exporter = $export_action->fetch_exporter();
 		$this->exporter->generate();
 		Export::set_exporting( false );

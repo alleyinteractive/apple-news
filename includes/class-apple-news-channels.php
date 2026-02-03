@@ -35,14 +35,12 @@ class Apple_News_Channels {
 	 * @return bool True if multi-channel is enabled.
 	 */
 	public static function is_enabled(): bool {
+
 		/**
 		 * Filters whether multi-channel support is enabled.
 		 *
-		 * When enabled, posts can be published to a secondary Apple News channel
-		 * in addition to the primary channel. The secondary channel must be
-		 * configured in the plugin settings.
-		 *
-		 * @since 2.7.0
+		 * When enabled, posts can be published to a secondary Apple News channel.
+		 * The secondary channel must be configured in the plugin settings.
 		 *
 		 * @param bool $enabled Whether multi-channel support is enabled. Default true.
 		 */
@@ -52,7 +50,7 @@ class Apple_News_Channels {
 	/**
 	 * Check if the secondary channel is configured.
 	 *
-	 * @param \Apple_Exporter\Settings|null $settings Optional. Settings object. Defaults to fetching settings.
+	 * @param \Apple_Exporter\Settings|null $settings Optional. Settings object.
 	 * @return bool
 	 */
 	public static function is_secondary_configured( $settings = null ): bool {
@@ -73,19 +71,15 @@ class Apple_News_Channels {
 	 * @return string
 	 */
 	public static function get_channel_for_post( int $post_id ): string {
+		$channel = self::PRIMARY;
 
-		if ( ! self::is_enabled() ) {
-			return self::PRIMARY;
-		}
-
-		$channel      = self::PRIMARY;
-		$post_channel = get_post_meta( $post_id, 'apple_news_channel', true );
-
-		if ( self::SECONDARY === $post_channel ) {
-			$channel = self::SECONDARY;
-		}
-
-		return $channel;
+		/**
+		 * Filters the channel key for a specific post.
+		 *
+		 * @param string $channel The channel key ('primary' or 'secondary'). Defaults to 'primary'.
+		 * @param int    $post_id The post ID.
+		 */
+		return apply_filters( 'apple_news_channel_for_post', $channel, $post_id );
 	}
 
 	/**

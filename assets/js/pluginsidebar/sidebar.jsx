@@ -10,7 +10,6 @@ import DOMPurify from 'dompurify';
 import React, { useCallback, useEffect, useState } from 'react';
 
 // Panels.
-import ChannelSelector from './panels/channel-selector';
 import CoverMedia from './panels/cover-media';
 import MaturityRating from './panels/maturity-rating';
 import Metadata from './panels/metadata';
@@ -47,8 +46,6 @@ function Sidebar() {
     autoAssignCategories,
     loading,
     publishState,
-    primaryPublishState,
-    secondaryPublishState,
     sections,
     settings: {
       apiAutosync,
@@ -90,7 +87,7 @@ function Sidebar() {
   }] = usePostMeta();
 
   // Getters and setters for individual postmeta values.
-  const [channel, setChannel] = usePostMetaValue('apple_news_channel');
+  const [channel] = usePostMetaValue('apple_news_channel');
   const [coverMediaProvider, setCoverMediaProvider] = usePostMetaValue('apple_news_cover_media_provider');
   const [coverImageId, setCoverImageId] = usePostMetaValue('apple_news_coverimage');
   const [coverImageCaption, setCoverImageCaption] = usePostMetaValue('apple_news_coverimage_caption');
@@ -292,14 +289,6 @@ function Sidebar() {
         name="publish-to-apple-news"
         title={__('Publish to Apple News Options', 'apple-news')}
       >
-        <ChannelSelector
-          channel={channel || 'primary'}
-          multiChannelEnabled={multiChannelEnabled}
-          onChangeChannel={setChannel}
-          primaryPublishState={primaryPublishState}
-          secondaryChannelConfigured={secondaryChannelConfigured}
-          secondaryPublishState={secondaryPublishState}
-        />
         <Sections
           autoAssignCategories={autoAssignCategories}
           automaticAssignment={automaticAssignment}

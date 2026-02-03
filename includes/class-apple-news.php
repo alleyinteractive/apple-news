@@ -340,7 +340,6 @@ class Apple_News {
 			self::$is_initialized = $has_api_settings || $has_api_config;
 		}
 
-
 		return self::$is_initialized;
 	}
 
@@ -354,7 +353,7 @@ class Apple_News {
 	public static function is_channel_initialized( string $channel_key = 'primary' ): bool {
 		$settings = get_option( self::$option_name );
 
-		if ( 'secondary' === $channel_key ) {
+		if ( Apple_News_Channels::SECONDARY === $channel_key ) {
 			return ! empty( $settings['api_channel_2'] )
 				&& ! empty( $settings['api_key_2'] )
 				&& ! empty( $settings['api_secret_2'] );

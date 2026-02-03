@@ -19,6 +19,7 @@ use Apple_Push_API\Request\Request_Exception;
  * @package Apple_News
  */
 class Channel extends API_Action {
+
 	/**
 	 * Get the channel data from Apple News.
 	 *
