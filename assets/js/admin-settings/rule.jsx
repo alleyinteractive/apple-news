@@ -14,6 +14,7 @@ import TermSelector from '../components/term-selector';
 
 function Rule({
   busy,
+  channel,
   field,
   onDelete,
   onDragEnd,
@@ -26,11 +27,24 @@ function Rule({
   hideColumns,
 }) {
   const {
+    channels,
     fields,
+    multiChannelEnabled,
+    secondaryChannelConfigured,
     sections,
     taxonomies,
     themes,
   } = AppleNewsAutomationConfig;
+
+  // Determine if we should show the channel column.
+  const showChannelColumn = multiChannelEnabled && secondaryChannelConfigured;
+
+  // Get the current channel value, defaulting to 'primary'.
+  const currentChannel = channel || 'primary';
+
+  // Get sections for the current channel.
+  const channelSections = sections[currentChannel] || sections.primary || [];
+
   let fieldType = '';
   if (field === 'contentGenerationType') {
     fieldType = 'contentGenerationType';
@@ -106,6 +120,21 @@ function Rule({
         )
       }
       {
+        showChannelColumn && !hideColumns.includes('channel')
+          ? (
+            <td>
+              <SelectControl
+                aria-labelledby="apple-news-automation-column-channel"
+                disabled={busy}
+                onChange={(next) => onUpdate('channel', next)}
+                options={channels}
+                value={currentChannel}
+              />
+            </td>
+          )
+          : null
+      }
+      {
         hideColumns.includes('field') ? null : (
           <td>
             <SelectControl
@@ -140,7 +169,7 @@ function Rule({
                 onChange={(next) => onUpdate('value', next)}
                 options={[
                   { value: '', label: __('Select Section', 'apple-news') },
-                  ...sections.map((sect) => ({ value: sect.id, label: sect.name })),
+                  ...channelSections.map((sect) => ({ value: sect.id, label: sect.name })),
                 ]}
                 value={value}
               />
@@ -208,12 +237,14 @@ function Rule({
 }
 
 Rule.defaultProps = {
+  channel: 'primary',
   hideColumns: [],
   hideFieldTypes: [],
 };
 
 Rule.propTypes = {
   busy: PropTypes.bool.isRequired,
+  channel: PropTypes.string,
   field: PropTypes.string.isRequired,
   hideColumns: PropTypes.arrayOf(PropTypes.string),
   hideFieldTypes: PropTypes.arrayOf(PropTypes.string),

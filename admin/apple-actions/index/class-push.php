@@ -14,10 +14,10 @@ require_once __DIR__ . '/class-export.php';
 use Admin_Apple_Async;
 use Admin_Apple_Notice;
 use Admin_Apple_Sections;
+use Apple_Actions\Action_Exception;
+use Apple_Actions\API_Action;
 use Apple_Exporter\Exporter;
 use Apple_Exporter\Settings;
-use Apple_Actions\API_Action;
-use Apple_Actions\Action_Exception;
 use Apple_Push_API\Request\Request_Exception;
 
 /**
@@ -78,7 +78,6 @@ class Push extends API_Action {
 	 * @param boolean $doing_async Optional. Whether the action is being performed asynchronously.
 	 * @param int     $user_id Optional. The ID of the user performing the action. Defaults to the current user ID.
 	 *
-	 * @return false|null
 	 * @throws Action_Exception If the push fails.
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
@@ -98,7 +97,7 @@ class Push extends API_Action {
 
 			wp_schedule_single_event( time(), Admin_Apple_Async::ASYNC_PUSH_HOOK, [ $this->id, get_current_user_id() ] );
 		} else {
-			return $this->push( $user_id );
+			$this->push( $user_id );
 		}
 	}
 
@@ -222,17 +221,14 @@ class Push extends API_Action {
 	 * @throws Action_Exception If unable to push.
 	 */
 	private function push( $user_id = null, $display_notices = true ): void {
-		// Debug logging for multi-channel.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log
-			error_log( 'Apple News Push: channel_key = ' . $this->channel_key );
-			error_log( 'Apple News Push: channel_id = ' . $this->get_channel_id() );
-			error_log( 'Apple News Push: meta_suffix = ' . $this->get_meta_suffix() );
-			// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_error_log
-		}
 
 		if ( ! $this->is_api_configuration_valid() ) {
-			throw new Action_Exception( esc_html__( 'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
+			throw new Action_Exception(
+				esc_html__(
+					'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.',
+					'apple-news'
+				)
+			);
 		}
 
 		/**
@@ -335,7 +331,6 @@ class Push extends API_Action {
 		// If there's an API ID, update, otherwise create.
 		$suffix    = $this->get_meta_suffix();
 		$remote_id = get_post_meta( $this->id, 'apple_news_api_id' . $suffix, true );
-		$result    = null;
 
 		/**
 		 * Actions to be taken before the article is pushed to Apple News.
@@ -462,7 +457,7 @@ class Push extends API_Action {
 				$error_message = __( 'Apple News Error: It seems like the article was updated by another call. If the problem persists, try removing and pushing again.', 'apple-news' );
 			} elseif ( str_contains( $original_error_message, 'NOT_FOUND (keyPath articleId)' ) ) {
 				// Reset the API postmeta if the article is deleted in Apple News.
-				$this->delete_post_meta( $this->id );
+				$this->delete_post_meta( $this->id, $suffix );
 
 				$error_message = __( 'Publish to Apple News: This article was previously deleted in iCloud News Publisher. Due to your automatic publishing settings, it has been recreated on Apple News.', 'apple-news' );
 			} else {

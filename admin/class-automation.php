@@ -10,7 +10,10 @@
 
 namespace Apple_News\Admin;
 
+use Admin_Apple_Sections;
+use Apple_Exporter\Theme;
 use Apple_News;
+use Apple_News_Channels;
 
 /**
  * This class is in charge of handling the management of Apple News automation.
@@ -21,22 +24,32 @@ class Automation {
 
 	/**
 	 * The option name for automation.
+	 *
+	 * @var string
 	 */
-	const OPTION_KEY = 'apple_news_automation';
+	const string OPTION_KEY = 'apple_news_automation';
 
 	/**
 	 * The page name for the automation settings screen.
+	 *
+	 * @var string
 	 */
-	const PAGE_NAME = 'apple-news-automation';
+	const string PAGE_NAME = 'apple-news-automation';
 
 	/**
 	 * The schema for automation rules.
+	 *
+	 * @var array<mixed>
 	 */
-	const SCHEMA = [
+	const array SCHEMA = [
 		'type'  => 'array',
 		'items' => [
 			'type'       => 'object',
 			'properties' => [
+				'channel'  => [
+					'default' => 'primary',
+					'type'    => 'string',
+				],
 				'field'    => [
 					'default' => '',
 					'type'    => 'string',
@@ -60,7 +73,7 @@ class Automation {
 	/**
 	 * Keeps track of the original title of posts by ID so we can refer to them when prepending.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	private static array $original_titles = [];
 
@@ -151,7 +164,7 @@ class Automation {
 
 		// Loop through each matched rule and apply the value to metadata.
 		foreach ( $metadata_rules as $rule ) {
-			if ( false === strpos( $rule['field'], '.' ) ) {
+			if ( ! str_contains( $rule['field'], '.' ) ) {
 				$metadata[ $rule['field'] ] = 'true' === $rule['value'];
 			}
 		}
@@ -257,11 +270,23 @@ class Automation {
 	 * @return array An array of matching automation rules.
 	 */
 	public static function get_automation_for_post( int $post_id ): array {
+		// Get the channel for this post.
+		$post_channel = Apple_News_Channels::get_channel_for_post( $post_id );
+
 		return array_values(
 			array_filter(
 				self::get_automation_rules(),
-				function ( $rule ) use ( $post_id ) {
-					return has_term( $rule['term_id'] ?? '', $rule['taxonomy'] ?? '', $post_id );
+				static function ( $rule ) use ( $post_id, $post_channel ): bool {
+					// Check if the rule matches the post's taxonomy term.
+					$term_matches = has_term( $rule['term_id'] ?? '', $rule['taxonomy'] ?? '', $post_id );
+
+					// Get the rule's channel, defaulting to 'primary' if not set or empty.
+					$rule_channel = ! empty( $rule['channel'] ) ? $rule['channel'] : Apple_News_Channels::PRIMARY;
+
+					// Check if the rule's channel matches the post's channel.
+					$channel_matches = $rule_channel === $post_channel;
+
+					return $term_matches && $channel_matches;
 				}
 			)
 		);
@@ -356,17 +381,55 @@ class Automation {
 			Apple_News::$version,
 			true
 		);
+
 		wp_enqueue_style( 'wp-edit-blocks' );
-		wp_localize_script(
-			'apple-news-admin-settings',
-			'AppleNewsAutomationConfig',
+
+		// Build sections by channel.
+		$sections_by_channel = [
+			Apple_News_Channels::PRIMARY => Admin_Apple_Sections::get_sections( Apple_News_Channels::PRIMARY ),
+		];
+
+		// Only fetch secondary channel sections if it's configured.
+		$multi_channel_enabled        = Apple_News_Channels::is_enabled();
+		$secondary_channel_configured = Apple_News_Channels::is_secondary_configured();
+		if ( $multi_channel_enabled && $secondary_channel_configured ) {
+			$sections_by_channel[ Apple_News_Channels::SECONDARY ] = Admin_Apple_Sections::get_sections( Apple_News_Channels::SECONDARY );
+		}
+
+		// Build channels array for the dropdown.
+		$channels = [
 			[
-				'fields'     => self::get_fields(),
-				'sections'   => \Admin_Apple_Sections::get_sections(),
-				'taxonomies' => get_taxonomies( [ 'public' => 'true' ] ),
-				'themes'     => \Apple_Exporter\Theme::get_registry(),
-			]
-		);
+				'value' => Apple_News_Channels::PRIMARY,
+				'label' => Apple_News_Channels::get_channel_label( Apple_News_Channels::PRIMARY ),
+			],
+		];
+
+		if ( $multi_channel_enabled && $secondary_channel_configured ) {
+			$channels[] = [
+				'value' => Apple_News_Channels::SECONDARY,
+				'label' => Apple_News_Channels::get_channel_label( Apple_News_Channels::SECONDARY ),
+			];
+		}
+
+		$settings_data = [
+			'channels'                   => $channels,
+			'fields'                     => self::get_fields(),
+			'multiChannelEnabled'        => $multi_channel_enabled,
+			'secondaryChannelConfigured' => $secondary_channel_configured,
+			'sections'                   => $sections_by_channel,
+			'taxonomies'                 => get_taxonomies( [ 'public' => 'true' ] ),
+			'themes'                     => Theme::get_registry(),
+		];
+
+		/**
+		 * Filter the Apple News admin settings data before it is sent to the React app.
+		 *
+		 * @param array<mixed> $settings_data The admin settings data.
+		 */
+		$apple_news_admin_settings = apply_filters( 'apple_news_settings_data', $settings_data );
+
+		wp_localize_script( 'apple-news-admin-settings', 'AppleNewsAutomationConfig', $apple_news_admin_settings );
+
 		add_filter( 'should_load_block_editor_scripts_and_styles', '__return_true' );
 
 		// Render target div for React app.

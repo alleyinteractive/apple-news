@@ -92,7 +92,6 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 			],
 		];
 
-	// Add secondary channel settings if multi-channel is enabled.
 		if ( Apple_News_Channels::is_enabled() ) {
 			$this->settings['api_config_file_2']       = [
 				// translators: tokens fill in <a> tags.

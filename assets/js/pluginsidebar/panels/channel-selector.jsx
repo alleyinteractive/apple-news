@@ -1,16 +1,16 @@
-import {PanelBody, RadioControl} from '@wordpress/components';
-import {__} from '@wordpress/i18n';
+import { PanelBody, RadioControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 function ChannelSelector({
-                           channel,
-                           multiChannelEnabled,
-                           onChangeChannel,
-                           primaryPublishState,
-                           secondaryChannelConfigured,
-                           secondaryPublishState,
-                         }) {
+  channel,
+  multiChannelEnabled,
+  onChangeChannel,
+  primaryPublishState,
+  secondaryChannelConfigured,
+  secondaryPublishState,
+}) {
   // Only show if multi-channel is enabled and secondary channel is configured.
   if (!multiChannelEnabled || !secondaryChannelConfigured) {
     return null;

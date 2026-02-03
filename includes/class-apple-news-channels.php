@@ -4,8 +4,8 @@
  *
  * Contains helper methods for multi-channel support.
  *
- * @package Apple_News
  * @since 2.7.0
+ * @package Apple_News
  */
 
 /**
@@ -20,14 +20,14 @@ class Apple_News_Channels {
 	 *
 	 * @var string
 	 */
-	const PRIMARY = 'primary';
+	const string PRIMARY = 'primary';
 
 	/**
 	 * Secondary channel key.
 	 *
 	 * @var string
 	 */
-	const SECONDARY = 'secondary';
+	const string SECONDARY = 'secondary';
 
 	/**
 	 * Check if multi-channel support is enabled.
@@ -53,7 +53,7 @@ class Apple_News_Channels {
 	 * Check if the secondary channel is configured.
 	 *
 	 * @param \Apple_Exporter\Settings|null $settings Optional. Settings object. Defaults to fetching settings.
-	 * @return bool True if secondary channel has valid configuration.
+	 * @return bool
 	 */
 	public static function is_secondary_configured( $settings = null ): bool {
 		// Use the centralized check if no settings object is passed.
@@ -67,21 +67,21 @@ class Apple_News_Channels {
 	}
 
 	/**
-	 * Get the channel key for a post.
+	 * Get the channel key for a post ('primary' or 'secondary').
 	 *
 	 * @param int $post_id The post ID.
-	 * @return string The channel key ('primary' or 'secondary').
+	 * @return string
 	 */
 	public static function get_channel_for_post( int $post_id ): string {
-		$channel = self::PRIMARY;
 
 		if ( ! self::is_enabled() ) {
-			$channel = self::PRIMARY;
+			return self::PRIMARY;
 		}
 
-		$channel = get_post_meta( $post_id, 'apple_news_channel', true );
+		$channel      = self::PRIMARY;
+		$post_channel = get_post_meta( $post_id, 'apple_news_channel', true );
 
-		if ( self::SECONDARY === $channel ) {
+		if ( self::SECONDARY === $post_channel ) {
 			$channel = self::SECONDARY;
 		}
 
@@ -117,29 +117,13 @@ class Apple_News_Channels {
 	}
 
 	/**
-	 * Get the postmeta key suffix for a channel.
+	 * Get the key suffix for a channel (empty for primary, '_2' for secondary).
 	 *
 	 * @param string $channel_key The channel key.
-	 * @return string The suffix to append to postmeta keys (empty for primary, '_2' for secondary).
+	 * @return string
 	 */
 	public static function get_meta_suffix( string $channel_key ): string {
 		return self::SECONDARY === $channel_key ? '_2' : '';
-	}
-
-	/**
-	 * Get all available channels.
-	 *
-	 * @param \Apple_Exporter\Settings|null $settings Optional. Settings object.
-	 * @return array Array of available channel keys.
-	 */
-	public static function get_available_channels( $settings = null ): array {
-		$channels = [ self::PRIMARY ];
-
-		if ( self::is_enabled() && self::is_secondary_configured( $settings ) ) {
-			$channels[] = self::SECONDARY;
-		}
-
-		return $channels;
 	}
 
 	/**
@@ -163,11 +147,9 @@ class Apple_News_Channels {
 	 * @return string The transient key.
 	 */
 	public static function get_sections_transient_key( string $channel_key ): string {
-		if ( self::SECONDARY === $channel_key ) {
-			return 'apple_news_sections_2';
-		}
+		$suffix = static::get_meta_suffix( $channel_key );
 
-		return 'apple_news_sections';
+		return 'apple_news_sections' . $suffix;
 	}
 
 	/**
@@ -177,10 +159,8 @@ class Apple_News_Channels {
 	 * @return string The transient key.
 	 */
 	public static function get_channel_transient_key( string $channel_key ): string {
-		if ( self::SECONDARY === $channel_key ) {
-			return 'apple_news_channel_2';
-		}
+		$suffix = static::get_meta_suffix( $channel_key );
 
-		return 'apple_news_channel';
+		return 'apple_news_channel' . $suffix;
 	}
 }

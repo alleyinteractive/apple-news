@@ -12,7 +12,6 @@ require_once __DIR__ . '/class-action.php';
 require_once __DIR__ . '/class-action-exception.php';
 require_once dirname( __DIR__, 2 ) . '/includes/apple-push-api/autoload.php';
 
-use Apple_Actions\Action;
 use Apple_Push_API\API;
 use Apple_Push_API\Credentials;
 
@@ -23,16 +22,17 @@ abstract class API_Action extends Action {
 
 	/**
 	 * The API endpoint for all Apple News requests.
+	 *
+	 * @var string
 	 */
-	const API_ENDPOINT = 'https://news-api.apple.com';
+	const string API_ENDPOINT = 'https://news-api.apple.com';
 
 	/**
 	 * Instance of the API class.
 	 *
-	 * @var API
-	 * @access private
+	 * @var API|null
 	 */
-	private $api;
+	private ?API $api = null;
 
 	/**
 	 * The channel key for this action.
@@ -40,44 +40,23 @@ abstract class API_Action extends Action {
 	 * @var string
 	 * @access protected
 	 */
-	protected $channel_key = 'primary';
+	protected string $channel_key = 'primary';
 
 	/**
 	 * Set the channel key for this action.
 	 *
 	 * @param string $channel_key The channel key ('primary' or 'secondary').
-	 * @access public
 	 */
 	public function set_channel_key( string $channel_key ): void {
 		$this->channel_key = $channel_key;
+
 		// Reset API instance so it uses new credentials.
 		$this->api = null;
 	}
 
 	/**
-	 * Get the channel key for this action.
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_channel_key(): string {
-		return $this->channel_key;
-	}
-
-	/**
-	 * Set the instance of the API class.
-	 *
-	 * @param API $api The instance of the API class.
-	 * @access public
-	 */
-	public function set_api( $api ) {
-		$this->api = $api;
-	}
-
-	/**
 	 * Get the instance of the API class.
 	 *
-	 * @access protected
 	 * @return API
 	 */
 	protected function get_api() {
@@ -91,36 +70,37 @@ abstract class API_Action extends Action {
 	/**
 	 * Fetch the current API credentials.
 	 *
-	 * @access private
 	 * @return Credentials
 	 */
-	private function fetch_credentials() {
+	private function fetch_credentials(): Credentials {
 		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
+
 		return new Credentials( $credentials['key'], $credentials['secret'] );
 	}
 
 	/**
 	 * Get the channel ID for the current channel.
 	 *
-	 * @access protected
 	 * @return string
 	 */
 	protected function get_channel_id(): string {
 		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
-		return $credentials['channel'];
+
+		return $credentials['channel'] ?? '';
 	}
 
 	/**
 	 * Check if the API configuration is valid.
 	 *
-	 * @access protected
-	 * @return boolean
+	 * @return bool
 	 */
-	protected function is_api_configuration_valid() {
+	protected function is_api_configuration_valid(): bool {
 		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
+
 		if ( empty( $credentials['key'] )
 			|| empty( $credentials['secret'] )
-			|| empty( $credentials['channel'] ) ) {
+			|| empty( $credentials['channel'] )
+		) {
 			return false;
 		}
 
@@ -130,7 +110,6 @@ abstract class API_Action extends Action {
 	/**
 	 * Get the postmeta suffix for the current channel.
 	 *
-	 * @access protected
 	 * @return string
 	 */
 	protected function get_meta_suffix(): string {

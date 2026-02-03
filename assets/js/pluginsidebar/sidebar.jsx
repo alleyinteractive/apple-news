@@ -1,13 +1,13 @@
-import {usePostMeta, usePostMetaValue} from '@alleyinteractive/block-editor-tools';
+import { usePostMeta, usePostMetaValue } from '@alleyinteractive/block-editor-tools';
 import apiFetch from '@wordpress/api-fetch';
-import {useDispatch, useSelect} from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import {
   PluginSidebar,
   PluginSidebarMoreMenuItem,
 } from '@wordpress/edit-post';
-import {__} from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import DOMPurify from 'dompurify';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 // Panels.
 import ChannelSelector from './panels/channel-selector';
@@ -137,8 +137,8 @@ function Sidebar() {
    * @param {string} type - Optional. The type of message to display. Defaults to success.
    */
   const displayNotification = useCallback((message, type = 'success') => (type === 'success'
-      ? dispatchNotice.createInfoNotice(DOMPurify.sanitize(message), {type: 'snackbar'})
-      : dispatchNotice.createErrorNotice(message, {__unstableHTML: true})
+    ? dispatchNotice.createInfoNotice(DOMPurify.sanitize(message), { type: 'snackbar' })
+    : dispatchNotice.createErrorNotice(message, { __unstableHTML: true })
   ), [dispatchNotice]);
 
   /**
@@ -153,14 +153,6 @@ function Sidebar() {
 
     // Determine the channel to use.
     const channelToUse = channel || 'primary';
-
-    // Debug logging.
-    console.log('Apple News modifyPost:', {
-      operation,
-      postId,
-      channelFromMeta: channel,
-      channelToUse,
-    });
 
     try {
       const {
@@ -220,7 +212,7 @@ function Sidebar() {
   const fetchSectionsForChannel = async (channelKey) => {
     try {
       const channelParam = channelKey || 'primary';
-      return await apiFetch({path: `/apple-news/v1/sections?channel=${channelParam}`});
+      return await apiFetch({ path: `/apple-news/v1/sections?channel=${channelParam}` });
     } catch (error) {
       console.error('Error fetching sections:', error);
       return [];
@@ -230,12 +222,11 @@ function Sidebar() {
   // On initial load, fetch info from the API into state.
   useEffect(() => {
     (async () => {
-      const currentChannel = channel || 'primary';
       const fetches = [
-        await apiFetch({path: `/apple-news/v1/get-published-state/${postId}`}),
+        await apiFetch({ path: `/apple-news/v1/get-published-state/${postId}` }),
         await fetchSectionsForChannel(currentChannel),
-        await apiFetch({path: '/apple-news/v1/get-settings'}),
-        await apiFetch({path: `/apple-news/v1/user-can-publish/${postId}`}),
+        await apiFetch({ path: '/apple-news/v1/get-settings' }),
+        await apiFetch({ path: `/apple-news/v1/user-can-publish/${postId}` }),
       ];
 
       // Wait for everything to load, update state, and handle errors.
@@ -274,7 +265,11 @@ function Sidebar() {
           && prevState.settings?.automaticAssignment === true,
       }));
     })();
-  }, [channel, multiChannelEnabled, secondaryChannelConfigured]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
+    channel,
+    multiChannelEnabled,
+    secondaryChannelConfigured,
+  ]);
 
   // Display notices whenever they change.
   useEffect(() => {

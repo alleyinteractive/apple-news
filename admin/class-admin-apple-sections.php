@@ -22,7 +22,6 @@ class Admin_Apple_Sections extends Apple_News {
 	 * Returns an array of section data without requiring an instance of the object.
 	 *
 	 * @param string $channel_key Optional. The channel key ('primary' or 'secondary'). Defaults to 'primary'.
-	 * @access public
 	 * @return array An array of section data.
 	 */
 	public static function get_sections( $channel_key = 'primary' ) {
@@ -59,7 +58,6 @@ class Admin_Apple_Sections extends Apple_News {
 	 * @param string $format      The return format to use. Can be 'url' or 'raw'.
 	 * @param string $channel_key Optional. The channel key ('primary' or 'secondary'). Defaults to post's channel.
 	 *
-	 * @access public
 	 * @return array An array of section data according to the requested format.
 	 */
 	public static function get_sections_for_post( $post_id, $format = 'url', $channel_key = null ) {

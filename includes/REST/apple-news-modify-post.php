@@ -77,15 +77,6 @@ function modify_post( $post_id, $operation, $channel_key = null ): array|WP_Erro
 		$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
 	}
 
-	// Debug logging for multi-channel.
-	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log
-		error_log( 'Apple News modify_post: operation = ' . $operation );
-		error_log( 'Apple News modify_post: post_id = ' . $post_id );
-		error_log( 'Apple News modify_post: channel_key = ' . $channel_key );
-		// phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_error_log
-	}
-
 	// Ensure the specific channel is initialized.
 	$channel_error = \Apple_News::has_uninitialized_error( $channel_key );
 	if ( is_wp_error( $channel_error ) ) {

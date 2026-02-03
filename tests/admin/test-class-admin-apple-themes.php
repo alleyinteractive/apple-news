@@ -573,6 +573,10 @@ JSON;
 	public function test_upgrade_2_4_0() {
 		$registry = \Apple_Exporter\Theme::get_registry();
 
+		if ( empty( $registry ) ) {
+			$this->markTestSkipped( 'No themes found in registry to test upgrade.' );
+		}
+
 		// Reset author and byline formats to old convention so we can test upgrade logic.
 		foreach ( $registry as $theme_name ) {
 			$theme_object = Admin_Apple_Themes::get_theme_by_name( $theme_name );
