@@ -3,9 +3,9 @@ Contributors: potatomaster, kevinfodness, jomurgel, tylermachado, benpbolton, al
 Donate link: https://wordpress.org
 Tags: publish, apple, news, iOS
 Requires at least: 6.3
-Tested up to: 6.8
-Requires PHP: 8.0
-Stable tag: 2.7.2
+Tested up to: 6.9
+Requires PHP: 8.2
+Stable tag: 2.8.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -44,6 +44,12 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 2.8.0 =
+
+* Breaking Change: Drops support for EOL PHP versions (8.0, 8.1). The minimum required PHP version is now 8.2. 
+* Enhancement: Adds a new filter, apple_news_embed_web_video_link, to filter the final video URL for an Embed Web Video component. Props to @dphiffer for the enhancement.
+* Bugfix: Fixes a conflict with the Yoast Video SEO plugin where videos that are lazy loaded weren't being properly converted to video elements in the Apple News output (e.g., YouTube).
 
 = 2.7.2 =
 
