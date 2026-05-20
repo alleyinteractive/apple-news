@@ -11,6 +11,9 @@ on:
       - develop
       - release/*
 
+permissions:
+  contents: read
+
 jobs:
   phpcs:
     if: github.event.pull_request.draft == false

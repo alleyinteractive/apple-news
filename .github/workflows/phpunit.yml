@@ -11,6 +11,9 @@ on:
       - develop
       - release/*
 
+permissions:
+  contents: read
+
 jobs:
   php-tests:
     continue-on-error: ${{ matrix.experimental == true }}
