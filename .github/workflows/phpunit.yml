@@ -33,6 +33,7 @@ jobs:
 
   php-tests:
     continue-on-error: ${{ matrix.experimental == true }}
+    name: "phpunit ${{ matrix.php }} - ${{ matrix.wordpress }} - ubuntu-latest - multisite: ${{ matrix.multisite }}"
     strategy:
       matrix:
         multisite: [true, false]
@@ -51,9 +52,18 @@ jobs:
             wordpress: '6.3'
             multisite: false
     if: github.event.pull_request.draft == false
-    uses: alleyinteractive/.github/.github/workflows/php-tests.yml@main
-    with:
-      command: "phpunit"
-      multisite: ${{ matrix.multisite }}
-      php: ${{ matrix.php }}
-      wordpress: ${{ matrix.wordpress }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Run PHPUnit
+        uses: alleyinteractive/action-test-php@v1
+        with:
+          php-version: ${{ matrix.php }}
+          wordpress-version: ${{ matrix.wordpress }}
+          wordpress-multisite: ${{ matrix.multisite && 'true' || 'false' }}
+          skip-audit: 'true'
+          test-command: composer run phpunit
