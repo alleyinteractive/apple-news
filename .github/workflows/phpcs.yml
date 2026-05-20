@@ -16,6 +16,6 @@ jobs:
     if: github.event.pull_request.draft == false
     uses: alleyinteractive/.github/.github/workflows/php-composer-command.yml@main
     with:
-      php: '8.5'
+      php: '8.4'
       command: |
         phpcs
