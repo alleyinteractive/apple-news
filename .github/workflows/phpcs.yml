@@ -17,8 +17,16 @@ permissions:
 jobs:
   phpcs:
     if: github.event.pull_request.draft == false
-    uses: alleyinteractive/.github/.github/workflows/php-composer-command.yml@main
-    with:
-      php: '8.5'
-      command: |
-        phpcs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run PHPCS
+        uses: alleyinteractive/action-test-php@v1
+        with:
+          php-version: '8.5'
+          skip-wordpress-install: 'true'
+          skip-services: 'true'
+          skip-audit: 'true'
+          test-command: composer run phpcs
