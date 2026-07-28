@@ -86,7 +86,7 @@ HTML;
 						'layout'  => 'full-width-image-with-caption',
 						'caption' => [
 							'format'    => 'html',
-							'text'      => '<p class="has-text-align-center has-large-font-size">Testing cover block.</p>',
+							'text'      => '<p class="has-text-align-center has-large-font-size wp-block-paragraph">Testing cover block.</p>',
 							'textStyle' => [
 								'fontName' => 'AvenirNext-Italic',
 							],
@@ -94,7 +94,7 @@ HTML;
 					],
 					[
 						'role'      => 'caption',
-						'text'      => '<p class="has-text-align-center has-large-font-size">Testing cover block.</p>',
+						'text'      => '<p class="has-text-align-center has-large-font-size wp-block-paragraph">Testing cover block.</p>',
 						'format'    => 'html',
 						'textStyle' => [
 							'textAlignment' => 'left',
