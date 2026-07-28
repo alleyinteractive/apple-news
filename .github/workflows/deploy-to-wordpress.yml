@@ -10,7 +10,7 @@ jobs:
     name: Deploy plugin version to WP.org
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
         token: ${{ secrets.GH_TOKEN }}

@@ -1,0 +1,62 @@
+name: "All Pull Request Tests"
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  pr-tests:
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        php: [ 8.2, 8.3, 8.4, 8.5 ]
+        wordpress: [ "latest" ]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}-P${{ matrix.php }}-WP${{ matrix.wordpress }}
+      cancel-in-progress: true
+    name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run General Tests
+        uses: alleyinteractive/action-test-general@v1
+
+      - name: Run Node Tests
+        uses: alleyinteractive/action-test-node@v1
+        with:
+          node-version: '24'
+
+      - name: Run PHP Tests
+        uses: alleyinteractive/action-test-php@v1
+        with:
+          php-version: '${{ matrix.php }}'
+          wordpress-version: '${{ matrix.wordpress }}'
+          skip-wordpress-install: 'true'
+
+  all-pr-checks-passed:
+    name: All PR checks passed
+    needs:
+      - pr-tests
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      pull-requests: read
+      statuses: write
+      contents: read
+    steps:
+      - name: Check job statuses
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
+            echo "One or more jobs failed"
+            exit 1
+          elif [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "One or more jobs were cancelled"
+            exit 1
+          else
+            echo "All jobs passed or were skipped"
+            exit 0
+          fi
