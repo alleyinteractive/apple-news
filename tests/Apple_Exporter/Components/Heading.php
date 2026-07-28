@@ -171,10 +171,11 @@ HTML;
 	/**
 	 * Tests settings.
 	 *
-	 * @param int $level Heading level. 1-6.
+	 * @param int      $level      Heading level. 1-6.
+	 * @param string[] $meta_order The order of meta components to use. (Unused in this test. Shared data provider passes this parameter as well.)
 	 */
 	#[DataProvider( 'data_headings' )]
-	public function test_settings( $level ) {
+	public function test_settings( $level, $meta_order ) {
 		$this->set_theme_settings(
 			[
 				'header' . $level . '_font'        => 'AmericanTypewriter',

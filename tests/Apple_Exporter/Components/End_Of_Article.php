@@ -35,9 +35,10 @@ class End_Of_Article extends Component_TestCase {
 	 *
 	 * @param string[] $meta_order The order of meta components to use.
 	 * @param int      $index      The index of the component in the JSON to target.
+	 * @param int      $count      The expected number of components. (Unused in this test. Shared data provider passes this parameter as well.)
 	 */
 	#[DataProvider( 'data_default_end_of_article_setting' )]
-	public function test_default_end_of_article_setting( $meta_order, $index ) {
+	public function test_default_end_of_article_setting( $meta_order, $index, $count ) {
 		$this->set_theme_settings( [ 'meta_component_order' => $meta_order ] );
 		$post_id = self::factory()->post->create();
 		$json    = $this->get_json_for_post( $post_id );
