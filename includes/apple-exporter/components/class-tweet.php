@@ -29,7 +29,10 @@ class Tweet extends Component {
 		// Handling for a Gutenberg Twitter embed.
 		if (
 			'figure' === $node->nodeName
-			&& self::node_has_class( $node, 'wp-block-embed-twitter' )
+			&& (
+				self::node_has_class( $node, 'wp-block-embed-twitter' )
+				|| self::node_has_class( $node, 'wp-block-embed-x' )
+			)
 		) {
 			return $node;
 		}
@@ -83,13 +86,13 @@ class Tweet extends Component {
 	 */
 	protected function build( $html ) {
 		// Find Twitter URL in HTML string.
-		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?twitter.com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $html, $matches, PREG_SET_ORDER ) ) {
+		if ( ! preg_match_all( '/https?:\/\/(?:www\.)?(twitter|x).com\/(?:#!\/)?([^\/]*)\/status(?:es)?\/(\d+)/', $html, $matches, PREG_SET_ORDER ) ) {
 			return;
 		}
 
 		$matches = array_pop( $matches );
 
-		$url = 'https://twitter.com/' . $matches[1] . '/status/' . $matches[2];
+		$url = 'https://' . $matches[1] . '.com/' . $matches[2] . '/status/' . $matches[3];
 
 		$this->register_json(
 			'json',
