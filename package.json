@@ -4,24 +4,18 @@
   "license": "GPLv3",
   "main": "index.php",
   "engines": {
-    "node": "^20.x.x",
-    "npm": "^10.x.x"
+    "node": "^24.x.x",
+    "npm": "^11.x.x"
   },
-  "browserslist": [
-    "defaults",
-    "not IE 11"
-  ],
   "scripts": {
-    "preinstall": "npx check-node-version --package",
-    "build": "npx check-node-version --package && webpack --mode=production",
-    "dev": "npx check-node-version --package && webpack --mode=development --watch",
-    "lint": "npx check-node-version --package && eslint --ext .jsx --ext .js .",
-    "lint:fix": "npx check-node-version --package && eslint --ext .jsx --ext .js . --fix",
-    "scaffold": "scaffold dir ./scaffold --theme=./",
-    "test": "npx check-node-version --package && jest",
-    "test:watch": "npx check-node-version --package && jest --watch",
-    "prerelease": "check-node-version --package",
-    "release": "npx @alleyinteractive/create-release@latest"
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch",
+    "eslint": "eslint --ext .jsx --ext .js .",
+    "eslint:fix": "eslint --ext .jsx --ext .js . --fix",
+    "jest": "jest",
+    "jest:watch": "jest --watch",
+    "release": "npx @alleyinteractive/create-release@latest",
+    "test": "npm run eslint && npm run jest"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.9",
@@ -31,19 +25,19 @@
     "eslint-config-airbnb": "^19.0.4"
   },
   "dependencies": {
-    "@alleyinteractive/block-editor-tools": "^0.6.1",
-    "@wordpress/api-fetch": "^6.48.1",
-    "@wordpress/components": "^26.0.6",
-    "@wordpress/data": "^9.21.1",
-    "@wordpress/dependency-extraction-webpack-plugin": "^5.2.1",
-    "@wordpress/edit-post": "^7.28.10",
-    "@wordpress/i18n": "^4.51.1",
-    "@wordpress/plugins": "^6.19.6",
-    "@wordpress/scripts": "^27.2.5",
-    "@wordpress/url": "^4.12.0",
-    "dompurify": "^3.0.8",
+    "@alleyinteractive/block-editor-tools": "^0.17.0",
+    "@wordpress/api-fetch": "^7.40.1",
+    "@wordpress/components": "^32.2.1",
+    "@wordpress/data": "^10.40.1",
+    "@wordpress/dependency-extraction-webpack-plugin": "^6.40.1",
+    "@wordpress/edit-post": "^8.40.2",
+    "@wordpress/i18n": "^6.13.1",
+    "@wordpress/plugins": "^7.40.1",
+    "@wordpress/scripts": "^31.5.1",
+    "@wordpress/url": "^4.40.1",
+    "dompurify": "^3.4.12",
     "prop-types": "^15.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
   }
 }
