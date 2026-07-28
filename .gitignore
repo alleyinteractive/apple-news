@@ -1,5 +1,6 @@
 .DS_Store
 .phpcs-cache.json
+.phpunit.cache
 .phpunit.result.cache
 *.zip
 tags
