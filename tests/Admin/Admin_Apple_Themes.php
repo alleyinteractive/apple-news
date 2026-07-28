@@ -574,7 +574,10 @@ JSON;
 	 * Ensures that the 2.4.0 upgrade updates author_format theme values correctly.
 	 */
 	public function test_upgrade_2_4_0() {
+		$this->create_default_theme();
 		$registry = Theme::get_registry();
+
+		$this->assertNotEmpty( $registry, 'Theme registry is empty.' );
 
 		// Reset author and byline formats to old convention so we can test upgrade logic.
 		foreach ( $registry as $theme_name ) {
