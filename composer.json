@@ -13,6 +13,11 @@
     "mantle-framework/testkit": "^1.22.0",
     "phpspec/prophecy": "^1.26.1"
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Apple_News\\Tests\\": "tests/"
+    }
+  },
   "scripts": {
     "phpcbf" : "phpcbf .",
     "phpcs" : "phpcs .",

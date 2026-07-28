@@ -72,6 +72,11 @@
     <exclude-pattern>tests/</exclude-pattern>
   </rule>
 
+  <!-- Tests use a PSR-4 autoloader, so file names match their class names rather than WordPress file naming conventions. -->
+  <rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+    <exclude-pattern>tests/</exclude-pattern>
+  </rule>
+
   <rule ref="Generic.Strings.UnnecessaryHeredoc">
     <exclude-pattern>tests/</exclude-pattern>
   </rule>

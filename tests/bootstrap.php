@@ -94,6 +94,3 @@ JSON;
 			require dirname( __DIR__ ) . '/apple-news.php';
 		}
 	)->install();
-
-require_once __DIR__ . '/class-apple-news-testcase.php';
-require_once __DIR__ . '/apple-exporter/components/class-component-testcase.php';
