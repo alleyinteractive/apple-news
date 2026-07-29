@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<phpunit bootstrap="tests/bootstrap.php" backupGlobals="false" colors="true" cacheDirectory=".phpunit.cache">
+  <php>
+    <const name="APPLE_NEWS_UNIT_TESTS" value="1"/>
+  </php>
+  <testsuites>
+    <testsuite name="Unit Tests">
+      <directory suffix=".php">./tests/</directory>
+      <exclude>./tests/Apple_Exporter/Components/Component_TestCase.php</exclude>
+      <exclude>./tests/bootstrap.php</exclude>
+      <exclude>./tests/mocks</exclude>
+      <exclude>./tests/TestCase.php</exclude>
+    </testsuite>
+  </testsuites>
+</phpunit>

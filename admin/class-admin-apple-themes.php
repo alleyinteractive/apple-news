@@ -891,7 +891,7 @@ class Admin_Apple_Themes extends Apple_News {
 		}
 
 		// Get the contents of the file and clean up.
-		$file_contents = file_get_contents( $file['file'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$file_contents = file_get_contents( $file['file'] ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 		$import_data   = json_decode( $file_contents, true );
 		wp_import_cleanup( $this->file_id );
 

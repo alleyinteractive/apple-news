@@ -31,6 +31,5 @@ DOCKER_ENV
 package.json
 package-lock.json
 phpunit.xml.dist
-phpstan.neon
 README.md
 webpack.config.js

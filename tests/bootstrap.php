@@ -8,23 +8,7 @@
 
 /* phpcs:disable WordPressVIPMinimum.Files.IncludingFile.UsingVariable */
 
-/**
- * Includes a PHP file if it exists.
- *
- * @param string $file The path to the PHP file to include.
- *
- * @return void
- * @throws Exception If the file does not exist.
- */
-function apple_news_require_file( string $file ) {
-	if ( ! file_exists( $file ) ) {
-		throw new Exception( 'File not found: ' . esc_html( $file ) );
-	}
-	require_once $file;
-}
-
-// Autoloading for prophecy.
-apple_news_require_file( dirname( __DIR__ ) . '/vendor/autoload.php' );
+require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
 /**
  * Install WordPress and load the plugin.
@@ -57,9 +41,9 @@ apple_news_require_file( dirname( __DIR__ ) . '/vendor/autoload.php' );
 			$_SERVER['HTTPS'] = 1;
 
 			// Load mocks for integration tests.
-			apple_news_require_file( __DIR__ . '/mocks/class-bc-setup.php' );
+			require_once __DIR__ . '/mocks/class-bc-setup.php';
 			if ( ! function_exists( 'coauthors' ) ) {
-				apple_news_require_file( __DIR__ . '/mocks/function-coauthors.php' );
+				require_once __DIR__ . '/mocks/function-coauthors.php';
 			}
 
 			// Activate mocked Brightcove functionality.
@@ -110,6 +94,3 @@ JSON;
 			require dirname( __DIR__ ) . '/apple-news.php';
 		}
 	)->install();
-
-apple_news_require_file( __DIR__ . '/class-apple-news-testcase.php' );
-apple_news_require_file( __DIR__ . '/apple-exporter/components/class-component-testcase.php' );
