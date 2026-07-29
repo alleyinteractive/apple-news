@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 6.3
 Tested up to: 7.0
 Requires PHP: 8.3
-Stable tag: 2.8.0
+Stable tag: 2.9.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -44,6 +44,11 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 2.9.0 =
+
+* Breaking Change: Drops support for PHP version 8.2. The minimum required PHP version is now 8.3.
+* Bugfix: Fixes an issue with X embeds in WordPress 7+, where the Twitter embed block was renamed to the X embed block and X embeds were being converted into "generic" embeds (which link back to the original article) rather than a proper Twitter/X embed component in Apple News.
 
 = 2.8.0 =
 
