@@ -50,7 +50,7 @@ class Apple_News {
 	 * @var string
 	 * @access public
 	 */
-	public static string $version = '2.8.0';
+	public static string $version = '2.9.0';
 
 	/**
 	 * Link to support for the plugin on WordPress.org.
@@ -440,7 +440,7 @@ class Apple_News {
 		if ( empty( Admin_Apple_Settings_Section::$loaded_settings['post_types'] ) ) {
 			return;
 		}
-		
+
 		// Bail if the post type is not one of the Publish to Apple News post types configured in settings.
 		if ( ! in_array( get_post_type(), (array) Admin_Apple_Settings_Section::$loaded_settings['post_types'], true ) ) {
 			return;
