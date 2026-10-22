@@ -52,7 +52,6 @@ class Admin_Apple_Index_Page extends Apple_News {
 		$this->settings = $settings;
 
 		// Handle routing to various admin pages.
-		add_action( 'admin_init', array( $this, 'page_router' ) );
 		add_action( 'admin_menu', array( $this, 'setup_admin_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'setup_assets' ) );
 	}
@@ -67,7 +66,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	public function setup_admin_page() {
 		// Set up main page. This page reads parameters and handles actions.
 		// accordingly.
-		add_menu_page(
+		$hook = add_menu_page(
 			__( 'Apple News', 'apple-news' ),
 			__( 'Apple News', 'apple-news' ),
 			apply_filters( 'apple_news_list_capability', 'manage_options' ),
@@ -75,6 +74,11 @@ class Admin_Apple_Index_Page extends Apple_News {
 			array( $this, 'admin_page' ),
 			'dashicons-format-aside'
 		);
+
+		// Route actions only when the index page itself is loaded, before any output is sent.
+		if ( $hook ) {
+			add_action( 'load-' . $hook, array( $this, 'page_router' ) );
+		}
 
 		add_submenu_page(
 			$this->plugin_slug . '_index',
@@ -140,7 +144,6 @@ class Admin_Apple_Index_Page extends Apple_News {
 			return;
 		}
 
-		// This runs on admin_init, which also fires for logged-out requests to admin-ajax.php and admin-post.php.
 		if ( ! current_user_can( apply_filters( 'apple_news_list_capability', 'manage_options' ) ) ) {
 			$this->deny();
 		}

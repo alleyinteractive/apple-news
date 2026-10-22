@@ -24,6 +24,9 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setup();
 
+		// Saving mappings requires the settings capability.
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'administrator' ) ) );
+
 		// Cache default settings for future use.
 		$this->settings = new Settings();
 
@@ -211,6 +214,27 @@ class Admin_Apple_Sections_Test extends WP_UnitTestCase {
 			),
 			get_option( Admin_Apple_Sections::TAXONOMY_MAPPING_KEY )
 		);
+	}
+
+	/**
+	 * Ensures that users without the settings capability cannot save mappings.
+	 *
+	 * @access public
+	 */
+	public function testSaveMappingsRequiresCapability() {
+		$mappings = get_option( Admin_Apple_Sections::THEME_MAPPING_KEY );
+
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'editor' ) ) );
+		$_POST['theme-mapping-abcdef01-2345-6789-abcd-ef012356789a'] = 'Test Theme';
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'apple_news_sections' );
+
+		$sections = new Admin_Apple_Sections();
+		try {
+			$sections->action_router();
+			$this->fail( 'Expected the router to stop a user without the settings capability.' );
+		} catch ( WPDieException $e ) {
+			$this->assertEquals( $mappings, get_option( Admin_Apple_Sections::THEME_MAPPING_KEY ) );
+		}
 	}
 
 	/**
