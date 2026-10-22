@@ -78,6 +78,9 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 	public function setup() {
 		parent::setup();
 
+		// Theme and JSON actions require the settings capability.
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'administrator' ) ) );
+
 		// Store an instance of the Settings class for use in testing.
 		$this->settings = new Settings();
 
@@ -206,6 +209,33 @@ class Admin_Apple_Themes_Test extends WP_UnitTestCase {
 			)
 		);
 		$this->assertFalse( $test_theme->load() );
+	}
+
+	/**
+	 * Ensures that users without the settings capability cannot delete a theme.
+	 *
+	 * @access public
+	 */
+	public function testDeleteThemeRequiresCapability() {
+		$name = 'Test Theme';
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( $name );
+		$this->assertTrue( $theme->save() );
+
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'editor' ) ) );
+		$_POST['action'] = 'apple_news_delete_theme';
+		$_POST['apple_news_theme'] = $name;
+		$_POST['page'] = 'apple-news-themes';
+		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-themes';
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'apple_news_themes' );
+		$_REQUEST['action'] = $_POST['action'];
+
+		try {
+			$this->themes->action_router();
+			$this->fail( 'Expected the router to stop a user without the settings capability.' );
+		} catch ( WPDieException $e ) {
+			$this->assertTrue( $theme->load() );
+		}
 	}
 
 	/**
@@ -378,6 +408,41 @@ JSON;
 			JSON_PRETTY_PRINT
 		);
 		$this->assertEquals( $stored_json, $json );
+	}
+
+	/**
+	 * Ensures that users without the settings capability cannot save a custom spec.
+	 *
+	 * @access public
+	 */
+	public function testJSONSaveRequiresCapability() {
+		$this->createDefaultTheme();
+		$theme = new \Apple_Exporter\Theme;
+		$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+		$this->assertTrue( $theme->load() );
+		$expected_settings = $theme->all_settings();
+
+		wp_set_current_user( $this->factory->user->create( array( 'role' => 'editor' ) ) );
+		$_POST['apple_news_theme'] = \Apple_Exporter\Theme::get_active_theme_name();
+		$_POST['apple_news_component'] = 'Advertisement';
+		$_POST['apple_news_action'] = 'apple_news_save_json';
+		$_POST['apple_news_json_json'] = '{"role": "banner_advertisement", "bannerType": "double_height"}';
+		$_POST['page'] = 'apple-news-json';
+		$_POST['redirect'] = false;
+		$_REQUEST['_wp_http_referer'] = '/wp-admin/admin.php?page=apple-news-json';
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'apple_news_json' );
+		$_REQUEST['apple_news_action'] = $_POST['apple_news_action'];
+
+		$admin_json = new \Admin_Apple_JSON();
+		try {
+			$admin_json->action_router();
+			$this->fail( 'Expected the router to stop a user without the settings capability.' );
+		} catch ( WPDieException $e ) {
+			$theme = new \Apple_Exporter\Theme;
+			$theme->set_name( \Apple_Exporter\Theme::get_active_theme_name() );
+			$this->assertTrue( $theme->load() );
+			$this->assertEquals( $expected_settings, $theme->all_settings() );
+		}
 	}
 
 	/**

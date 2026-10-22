@@ -128,7 +128,10 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		}
 
 		// Check capabilities.
-		if ( ! current_user_can( apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) ) ) {
+		if (
+			! current_user_can( apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) ) )
+			|| ! current_user_can( 'edit_post', $post->ID )
+		) {
 			echo wp_json_encode(
 				array(
 					'success' => false,

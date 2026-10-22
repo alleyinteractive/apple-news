@@ -243,6 +243,10 @@ class Admin_Apple_Sections extends Apple_News {
 			return;
 		}
 
+		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'apple-news' ), '', array( 'response' => 403 ) );
+		}
+
 		// Check the nonce.
 		check_admin_referer( 'apple_news_sections' );
 

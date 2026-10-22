@@ -52,7 +52,6 @@ class Admin_Apple_Index_Page extends Apple_News {
 		$this->settings = $settings;
 
 		// Handle routing to various admin pages.
-		add_action( 'admin_init', array( $this, 'page_router' ) );
 		add_action( 'admin_menu', array( $this, 'setup_admin_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'setup_assets' ) );
 	}
@@ -67,7 +66,7 @@ class Admin_Apple_Index_Page extends Apple_News {
 	public function setup_admin_page() {
 		// Set up main page. This page reads parameters and handles actions.
 		// accordingly.
-		add_menu_page(
+		$hook = add_menu_page(
 			__( 'Apple News', 'apple-news' ),
 			__( 'Apple News', 'apple-news' ),
 			apply_filters( 'apple_news_list_capability', 'manage_options' ),
@@ -75,6 +74,11 @@ class Admin_Apple_Index_Page extends Apple_News {
 			array( $this, 'admin_page' ),
 			'dashicons-format-aside'
 		);
+
+		// Route actions only when the index page itself is loaded, before any output is sent.
+		if ( $hook ) {
+			add_action( 'load-' . $hook, array( $this, 'page_router' ) );
+		}
 
 		add_submenu_page(
 			$this->plugin_slug . '_index',
@@ -136,6 +140,21 @@ class Admin_Apple_Index_Page extends Apple_News {
 			$action = $action2;
 		}
 
+		if ( ! $this->is_router_action( $action ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( apply_filters( 'apple_news_list_capability', 'manage_options' ) ) ) {
+			$this->deny();
+		}
+
+		if ( $id ) {
+			$this->authorize_post_action( $action, $id );
+		} else {
+			// Bulk actions are submitted with the nonce that WP_List_Table adds, which uses the sanitized plural label.
+			check_admin_referer( 'bulk-' . sanitize_key( __( 'articles', 'apple-news' ) ) );
+		}
+
 		// Given an action and ID, map the attributes to corresponding actions.
 		switch ( $action ) {
 			case self::namespace_action( 'export' ):
@@ -167,6 +186,101 @@ class Admin_Apple_Index_Page extends Apple_News {
 				 */
 				do_action( 'apple_news_index_action_' . $action, $this, $id );
 		}
+	}
+
+	/**
+	 * Determines whether the page router handles the given action.
+	 *
+	 * @param string|null $action The requested action.
+	 * @access private
+	 * @return bool True if the router handles the action.
+	 */
+	private function is_router_action( $action ) {
+		if ( empty( $action ) || '-1' === $action ) {
+			return false;
+		}
+
+		$actions = array(
+			self::namespace_action( 'export' ),
+			self::namespace_action( 'reset' ),
+			self::namespace_action( 'push' ),
+			self::namespace_action( 'delete' ),
+		);
+
+		if ( in_array( $action, $actions, true ) ) {
+			return true;
+		}
+
+		return has_action( 'apple_news_index_action_' . $action );
+	}
+
+	/**
+	 * Checks that the current user may perform an action on a post, and that the request carries a valid nonce for it.
+	 *
+	 * @param string $action The namespaced action.
+	 * @param int    $id     The ID of the post.
+	 * @access private
+	 */
+	private function authorize_post_action( $action, $id ) {
+		$post = get_post( $id );
+		if ( ! $post || ! current_user_can( 'edit_post', $id ) ) {
+			$this->deny();
+		}
+
+		$capability = '';
+		if ( self::namespace_action( 'push' ) === $action ) {
+			$capability = apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) );
+		} elseif ( self::namespace_action( 'delete' ) === $action ) {
+			$capability = apply_filters( 'apple_news_delete_capability', self::get_capability_for_post_type( 'delete_posts', $post->post_type ) );
+		}
+
+		if ( $capability && ! current_user_can( $capability ) ) {
+			$this->deny();
+		}
+
+		check_admin_referer( self::get_nonce_action( $action, $id ) );
+	}
+
+	/**
+	 * Ends the request with a 403 response.
+	 *
+	 * @access private
+	 */
+	private function deny() {
+		wp_die(
+			esc_html__( 'You do not have permission to perform this action.', 'apple-news' ),
+			'',
+			array( 'response' => 403 )
+		);
+	}
+
+	/**
+	 * Gets the nonce action for a row action on a single post.
+	 *
+	 * @param string $action  The namespaced action.
+	 * @param int    $post_id The ID of the post.
+	 * @access public
+	 * @return string The nonce action.
+	 */
+	public static function get_nonce_action( $action, $post_id ) {
+		return $action . '_' . absint( $post_id );
+	}
+
+	/**
+	 * Builds the URL for a row action on a single post.
+	 *
+	 * @param string $action  The action to be performed, without the namespace.
+	 * @param int    $post_id The ID of the post.
+	 * @param string $url     The URL to be augmented with the action.
+	 * @access public
+	 * @return string The URL with query args and a nonce added.
+	 */
+	public static function row_action_url( $action, $post_id, $url ) {
+		return add_query_arg(
+			'_wpnonce',
+			wp_create_nonce( self::get_nonce_action( self::namespace_action( $action ), $post_id ) ),
+			self::action_query_params( $action, $url )
+		);
 	}
 
 	/**
