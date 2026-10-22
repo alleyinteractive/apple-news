@@ -179,7 +179,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		$actions = array(
 			'export' => sprintf(
 				"<a href='%s'>%s</a>",
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'export', $base_url ) ),
+				esc_url( Admin_Apple_Index_Page::row_action_url( 'export', $item->ID, $base_url ) ),
 				esc_html__( 'Download', 'apple-news' )
 			),
 		);
@@ -189,7 +189,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		if ( empty( $pending ) ) {
 			$actions['push'] = sprintf(
 				"<a href='%s'>%s</a>",
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'push', $base_url ) ),
+				esc_url( Admin_Apple_Index_Page::row_action_url( 'push', $item->ID, $base_url ) ),
 				esc_html__( 'Publish', 'apple-news' )
 			);
 		}
@@ -198,7 +198,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		if ( ! empty( $pending ) ) {
 			$actions['reset'] = sprintf(
 				"<a href='%s' class='reset-button'>%s</a>",
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'reset', $base_url ) ),
+				esc_url( Admin_Apple_Index_Page::row_action_url( 'reset', $item->ID, $base_url ) ),
 				esc_html__( 'Reset', 'apple-news' )
 			);
 		}
@@ -208,7 +208,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			$actions['delete'] = sprintf(
 				"<a title='%s' href='%s' class='delete-button'>%s</a>",
 				esc_html__( 'Delete from Apple News', 'apple-news' ),
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'delete', $base_url ) ),
+				esc_url( Admin_Apple_Index_Page::row_action_url( 'delete', $item->ID, $base_url ) ),
 				esc_html__( 'Delete', 'apple-news' )
 			);
 		}
