@@ -232,6 +232,12 @@ class Admin_Apple_Themes extends Apple_News {
 			return;
 		}
 
+		// Ensure the user has permission to perform this action.
+		/** This filter is documented in admin/class-admin-apple-settings.php */
+		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'apple-news' ), '', [ 'response' => 403 ] );
+		}
+
 		// Check the nonce.
 		check_admin_referer( $this->valid_actions[ $action ]['nonce'] );
 

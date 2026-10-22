@@ -35,9 +35,8 @@ class Admin_Apple_Index_Page extends TestCase {
 		update_post_meta( $post_id, 'apple_news_api_errors', time() );
 
 		// Create simulated GET data.
-		$_GET['post_id'] = $post_id; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
-		$_GET['page']    = 'apple_news_index'; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
-		$_GET['action']  = 'apple_news_reset'; // phpcs:ignore WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+		$this->become_admin();
+		$this->set_request( 'reset', $post_id, wp_create_nonce( "apple_news_reset_{$post_id}" ) );
 
 		// Simulate the action.
 		$index_page = new \Admin_Apple_Index_Page( $this->settings );
@@ -49,5 +48,29 @@ class Admin_Apple_Index_Page extends TestCase {
 		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_bundle', true ) );
 		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_json', true ) );
 		$this->assertEmpty( get_post_meta( $post_id, 'apple_news_api_errors', true ) );
+	}
+
+	/**
+	 * Builds the router for a request and returns the nonce-less request state.
+	 *
+	 * @param string   $action  The action name, without the namespace.
+	 * @param int|null $post_id The post ID, if any.
+	 * @param string   $nonce   Optional. The nonce to send.
+	 */
+	private function set_request( string $action, ?int $post_id, string $nonce = '' ): void {
+		$_GET = [
+			'page'   => 'apple_news_index',
+			'action' => 'apple_news_' . $action,
+		];
+
+		if ( $post_id ) {
+			$_GET['post_id'] = $post_id;
+		}
+
+		if ( $nonce ) {
+			$_GET['_wpnonce'] = $nonce;
+		}
+
+		$_REQUEST = $_GET; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
 }

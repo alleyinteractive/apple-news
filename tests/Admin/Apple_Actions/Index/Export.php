@@ -184,7 +184,7 @@ class Export extends TestCase {
 					'post_content'  => $content,
 					'post_excerpt'  => '',
 					'post_author'   => $user_id,
-					'post_date_gmt' => '2016-08-26 16:00', // 4 hours ahead of Manaus time.
+					'post_date_gmt' => '2016-08-26 16:00:00', // 4 hours ahead of Manaus time.
 				]
 			);
 
@@ -217,7 +217,7 @@ class Export extends TestCase {
 				'post_content' => $content,
 				'post_excerpt' => '',
 				'post_author'  => $user_id,
-				'post_date'    => '2016-08-26 12:00',
+				'post_date'    => '2016-08-26 12:00:00',
 			]
 		);
 
@@ -236,7 +236,7 @@ class Export extends TestCase {
 			[
 				'post_title'   => 'Test Title',
 				'post_content' => '<p>&amp;Lorem ipsum dolor sit amet &amp; consectetur adipiscing elit.&amp;</p>',
-				'post_date'    => '2016-08-26 12:00',
+				'post_date'    => '2016-08-26 12:00:00',
 			]
 		);
 

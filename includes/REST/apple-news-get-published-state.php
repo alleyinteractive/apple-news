@@ -24,7 +24,9 @@ add_action(
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => __NAMESPACE__ . '\get_published_state_response',
-				'permission_callback' => '__return_true',
+				'permission_callback' => function ( $request ) {
+					return rest_permission( 'get-published-state', $request );
+				},
 				'schema'              => [
 					'description' => __( 'Get the published state of a post.', 'apple-news' ),
 					'type'        => 'object',

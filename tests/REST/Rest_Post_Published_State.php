@@ -21,6 +21,11 @@ class Rest_Post_Published_State extends TestCase {
 	public function test_get_post_published_state_with_invalid_config(): void {
 		delete_option( \Apple_News::$option_name );
 
+		// Clear the cached initialized state, which may have been set by an earlier test.
+		( new \ReflectionProperty( \Apple_News::class, 'is_initialized' ) )->setValue( null, false );
+
+		$this->actingAs( $this->create_user_with_role( 'editor' ) );
+
 		$this->assertFalse( \Apple_News::is_initialized() );
 
 		$post_id = self::factory()->post->create();
@@ -45,7 +50,7 @@ class Rest_Post_Published_State extends TestCase {
 		add_post_meta( $post_id, 'apple_news_api_share_url', 'mno456' );
 
 		$this->get( rest_url( '/apple-news/v1/get-published-state/' . $post_id ) )
-			->assertOk()
+			->assertStatus( 401 )
 			->assertJsonPathMissing( 'publishState' );
 
 		// Ensure that the API postmeta was _not_ reset by the REST request.

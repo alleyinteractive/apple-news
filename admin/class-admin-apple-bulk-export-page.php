@@ -137,7 +137,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		if ( ! current_user_can(
 			/** This filter is documented in admin/class-admin-apple-post-sync.php */
 			apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) )
-		) ) {
+		) || ! current_user_can( 'edit_post', $post->ID ) ) {
 			wp_send_json_error( __( 'You do not have permission to publish to Apple News', 'apple-news' ) );
 		}
 
@@ -187,7 +187,7 @@ class Admin_Apple_Bulk_Export_Page extends Apple_News {
 		$cap = apply_filters( 'apple_news_delete_capability', self::get_capability_for_post_type( 'delete_posts', $post->post_type ) );
 
 		// Check capabilities.
-		if ( ! current_user_can( $cap ) ) {
+		if ( ! current_user_can( $cap ) || ! current_user_can( 'edit_post', $post->ID ) ) {
 			wp_send_json_error( __( 'You do not have permission to delete posts from Apple News', 'apple-news' ) );
 		}
 

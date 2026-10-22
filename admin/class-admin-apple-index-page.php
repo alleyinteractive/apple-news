@@ -52,7 +52,6 @@ class Admin_Apple_Index_Page extends Apple_News {
 		$this->settings = $settings;
 
 		// Handle routing to various admin pages.
-		add_action( 'admin_init', [ $this, 'page_router' ] );
 		add_action( 'admin_menu', [ $this, 'setup_admin_page' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'setup_assets' ] );
 	}
@@ -65,15 +64,10 @@ class Admin_Apple_Index_Page extends Apple_News {
 	 * @access public
 	 */
 	public function setup_admin_page() {
-		/**
-		 * Modifies the capability required to view the list of Apple News articles.
-		 *
-		 * @param string $capability The capability required to view the list of Apple News articles. Defaults to `manage_options`.
-		 */
-		$capability = apply_filters( 'apple_news_list_capability', 'manage_options' );
+		$capability = $this->get_list_capability();
 
 		// Set up main page. This page reads parameters and handles actions accordingly.
-		add_menu_page(
+		$hook = add_menu_page(
 			__( 'Apple News', 'apple-news' ),
 			__( 'Apple News', 'apple-news' ),
 			$capability,
@@ -81,6 +75,11 @@ class Admin_Apple_Index_Page extends Apple_News {
 			[ $this, 'admin_page' ],
 			'dashicons-format-aside'
 		);
+
+		// Route actions only when the index page itself is loaded, before any output is sent.
+		if ( $hook ) {
+			add_action( 'load-' . $hook, [ $this, 'page_router' ] );
+		}
 
 		add_submenu_page(
 			$this->plugin_slug . '_index',
@@ -90,6 +89,62 @@ class Admin_Apple_Index_Page extends Apple_News {
 			$this->plugin_slug . '_index',
 			[ $this, 'admin_page' ]
 		);
+	}
+
+	/**
+	 * Gets the capability required to view the list of Apple News articles.
+	 *
+	 * @return string The capability.
+	 */
+	private function get_list_capability(): string {
+		/**
+		 * Modifies the capability required to view the list of Apple News articles.
+		 *
+		 * @param string $capability The capability required to view the list of Apple News articles. Defaults to `manage_options`.
+		 */
+		return apply_filters( 'apple_news_list_capability', 'manage_options' );
+	}
+
+	/**
+	 * Ends the request with a 403 response.
+	 *
+	 * @access private
+	 */
+	private function deny(): void {
+		wp_die(
+			esc_html__( 'You do not have permission to perform this action.', 'apple-news' ),
+			'',
+			[ 'response' => 403 ]
+		);
+	}
+
+	/**
+	 * Checks that the current user may perform an action on a post, and that
+	 * the request carries a valid nonce for that action and post.
+	 *
+	 * @param string $action The action name, without the namespace.
+	 * @param int    $id     The post ID.
+	 * @access private
+	 */
+	private function authorize_post_action( string $action, int $id ): void {
+		$post = $id ? get_post( $id ) : null;
+		if ( ! $post || ! current_user_can( 'edit_post', $id ) ) {
+			$this->deny();
+		}
+
+		if ( 'push' === $action ) {
+			/** This filter is documented in admin/class-admin-apple-post-sync.php */
+			$capability = apply_filters( 'apple_news_publish_capability', self::get_capability_for_post_type( 'publish_posts', $post->post_type ) );
+		} elseif ( 'delete' === $action ) {
+			/** This filter is documented in admin/class-admin-apple-post-sync.php */
+			$capability = apply_filters( 'apple_news_delete_capability', self::get_capability_for_post_type( 'delete_posts', $post->post_type ) );
+		}
+
+		if ( ! empty( $capability ) && ! current_user_can( $capability ) ) {
+			$this->deny();
+		}
+
+		check_admin_referer( self::namespace_action( $action ) . '_' . $id );
 	}
 
 	/**
@@ -120,6 +175,26 @@ class Admin_Apple_Index_Page extends Apple_News {
 		// Allow for bulk actions from top or bottom.
 		if ( ( empty( $action ) || '-1' === $action ) && ! empty( $action2 ) ) {
 			$action = $action2;
+		}
+
+		// Ignore requests that do not map to an action.
+		$actions = array_map( [ self::class, 'namespace_action' ], [ 'debug', 'export', 'reset', 'push', 'delete' ] );
+		if ( ! in_array( $action, $actions, true ) ) {
+			return;
+		}
+
+		// Every action requires access to the list page.
+		if ( ! current_user_can( $this->get_list_capability() ) ) {
+			$this->deny();
+		}
+
+		// Single-post actions check the post capabilities and a per-post nonce; bulk actions check the list table nonce.
+		if ( $id ) {
+			$this->authorize_post_action( substr( $action, strlen( self::namespace_action( '' ) ) ), $id );
+		} elseif ( in_array( $action, [ self::namespace_action( 'push' ), self::namespace_action( 'delete' ) ], true ) ) {
+			check_admin_referer( 'bulk-articles' );
+		} else {
+			$this->deny();
 		}
 
 		// Given an action and ID, map the attributes to corresponding actions.
@@ -288,7 +363,9 @@ class Admin_Apple_Index_Page extends Apple_News {
 		header( 'Content-Type: application/json' );
 		header( 'Content-Disposition: attachment; filename="article-' . absint( $id ) . '.json"' );
 		echo wp_json_encode( json_decode( $json ) );
-		die();
+		if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {
+			die();
+		}
 	}
 
 	/**
@@ -422,7 +499,9 @@ class Admin_Apple_Index_Page extends Apple_News {
 		$action = new Apple_Actions\Index\Push( $this->settings, $id );
 		$action->debug();
 
-		exit( 'Debug output complete.' );
+		if ( ! defined( 'APPLE_NEWS_UNIT_TESTS' ) || ! APPLE_NEWS_UNIT_TESTS ) {
+			exit( 'Debug output complete.' );
+		}
 	}
 
 	/**

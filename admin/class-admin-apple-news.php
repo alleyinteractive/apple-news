@@ -28,6 +28,7 @@ require_once dirname( __DIR__ ) . '/includes/REST/apple-news-get-settings.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-is-valid-cover-media.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-modify-post.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-publish.php';
+require_once dirname( __DIR__ ) . '/includes/REST/apple-news-rest-permission.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-sections.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-update.php';
 require_once dirname( __DIR__ ) . '/includes/REST/apple-news-user-can-publish.php';

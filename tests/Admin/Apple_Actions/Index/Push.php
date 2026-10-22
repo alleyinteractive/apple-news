@@ -131,8 +131,9 @@ class Push extends TestCase {
 
 		// Values in the assertions here are added in the get_request_for_post function call above.
 		$this->assertEquals( 'abcd1234-ef56-ab78-cd90-efabcdef123456', get_post_meta( $post_id, 'apple_news_api_id', true ) );
-		$this->assertEquals( '2020-01-02T03:04:05Z', get_post_meta( $post_id, 'apple_news_api_created_at', true ) );
-		$this->assertEquals( '2020-01-02T03:04:05Z', get_post_meta( $post_id, 'apple_news_api_modified_at', true ) );
+		// Compare timestamps, since the SQLite driver normalizes ISO 8601 strings to 'YYYY-MM-DD HH:MM:SS' on write.
+		$this->assertEquals( strtotime( '2020-01-02T03:04:05Z' ), strtotime( get_post_meta( $post_id, 'apple_news_api_created_at', true ) ) );
+		$this->assertEquals( strtotime( '2020-01-02T03:04:05Z' ), strtotime( get_post_meta( $post_id, 'apple_news_api_modified_at', true ) ) );
 		$this->assertEquals( 'https://apple.news/ABCDEFGHIJKLMNOPQRSTUVW', get_post_meta( $post_id, 'apple_news_api_share_url', true ) );
 		$this->assertEquals( null, get_post_meta( $post_id, 'apple_news_api_deleted', true ) );
 	}
@@ -288,8 +289,9 @@ class Push extends TestCase {
 
 		// Ensure that the fake response from the API was saved to postmeta.
 		$this->assertEquals( 'abcd1234-ef56-ab78-cd90-efabcdef123456', get_post_meta( $post->ID, 'apple_news_api_id', true ) );
-		$this->assertEquals( '2020-01-02T03:04:05Z', get_post_meta( $post->ID, 'apple_news_api_created_at', true ) );
-		$this->assertEquals( '2020-01-02T03:04:05Z', get_post_meta( $post->ID, 'apple_news_api_modified_at', true ) );
+		// Compare timestamps, since the SQLite driver normalizes ISO 8601 strings to 'YYYY-MM-DD HH:MM:SS' on write.
+		$this->assertEquals( strtotime( '2020-01-02T03:04:05Z' ), strtotime( get_post_meta( $post->ID, 'apple_news_api_created_at', true ) ) );
+		$this->assertEquals( strtotime( '2020-01-02T03:04:05Z' ), strtotime( get_post_meta( $post->ID, 'apple_news_api_modified_at', true ) ) );
 		$this->assertEquals( 'https://apple.news/ABCDEFGHIJKLMNOPQRSTUVW', get_post_meta( $post->ID, 'apple_news_api_share_url', true ) );
 		$this->assertEquals( null, get_post_meta( $post->ID, 'apple_news_api_deleted', true ) );
 
