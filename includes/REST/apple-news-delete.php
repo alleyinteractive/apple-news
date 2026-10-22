@@ -24,7 +24,9 @@ add_action(
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => __NAMESPACE__ . '\rest_post_delete',
-				'permission_callback' => '__return_true',
+				'permission_callback' => function ( $request ) {
+					return rest_permission( 'delete', $request );
+				},
 			]
 		);
 	}

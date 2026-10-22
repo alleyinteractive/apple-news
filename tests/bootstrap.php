@@ -10,6 +10,11 @@
 
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
+// Use a dedicated WordPress install so a shared, MySQL-configured one in the temp directory is not reused.
+if ( false === getenv( 'WP_CORE_DIR' ) ) {
+	putenv( 'WP_CORE_DIR=' . sys_get_temp_dir() . '/wordpress-apple-news' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+}
+
 /**
  * Install WordPress and load the plugin.
  */

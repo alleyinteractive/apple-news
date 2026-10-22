@@ -12,6 +12,7 @@ namespace Apple_News\Tests\Admin;
 
 use Apple_Exporter\Theme;
 use Apple_News\Tests\TestCase;
+use Mantle\Testing\Exceptions\WP_Die_Exception;
 
 /**
  * A class to test the Admin_Apple_Themes class.
@@ -81,6 +82,9 @@ class Admin_Apple_Themes extends TestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
+
+		// Theme actions require an administrator.
+		$this->become_admin();
 
 		// Store an instance of the Admin_Apple_Themes class for use in testing.
 		$this->themes = new \Admin_Apple_Themes();
@@ -205,6 +209,70 @@ class Admin_Apple_Themes extends TestCase {
 			)
 		);
 		$this->assertFalse( $test_theme->load() );
+	}
+
+	/**
+	 * Posts a delete theme request for the test theme and routes it.
+	 */
+	private function route_delete_theme(): void {
+		$nonce = wp_create_nonce( 'apple_news_themes' );
+		/* phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized */
+		$_POST['apple_news_theme_name'] = 'Test Theme';
+		$_POST['action']                = 'apple_news_delete_theme';
+		$_POST['apple_news_theme']      = 'Test Theme';
+		$_POST['page']                  = 'apple-news-themes';
+		$_REQUEST['_wp_http_referer']   = '/wp-admin/admin.php?page=apple-news-themes';
+		$_REQUEST['_wpnonce']           = $nonce;
+		$_REQUEST['action']             = $_POST['action'];
+		/* phpcs:enable */
+		$this->themes->action_router();
+	}
+
+	/**
+	 * Ensure that a user without the settings capability cannot delete a theme.
+	 */
+	public function test_delete_theme_denied_without_capability() {
+		$this->create_default_theme();
+		$this->create_new_theme( 'Test Theme' );
+
+		$editor = $this->create_user_with_role( 'editor' );
+		wp_set_current_user( $editor->ID );
+
+		$died = false;
+		ob_start();
+		try {
+			$this->route_delete_theme();
+		} catch ( WP_Die_Exception $e ) {
+			$died = true;
+		}
+		ob_end_clean();
+
+		$this->assertTrue( $died, 'Expected wp_die to be triggered.' );
+		$this->assertTrue( in_array( 'Test Theme', Theme::get_registry(), true ) );
+		$test_theme = new Theme();
+		$test_theme->set_name( 'Test Theme' );
+		$this->assertTrue( $test_theme->load() );
+	}
+
+	/**
+	 * Ensure that the settings capability filter is honored by the router.
+	 */
+	public function test_delete_theme_allowed_with_filtered_capability() {
+		$this->create_default_theme();
+		$this->create_new_theme( 'Test Theme' );
+
+		$editor = $this->create_user_with_role( 'editor' );
+		wp_set_current_user( $editor->ID );
+		add_filter(
+			'apple_news_settings_capability',
+			function () {
+				return 'edit_posts';
+			}
+		);
+
+		$this->route_delete_theme();
+
+		$this->assertFalse( in_array( 'Test Theme', Theme::get_registry(), true ) );
 	}
 
 	/**

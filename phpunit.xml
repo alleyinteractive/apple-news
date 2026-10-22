@@ -2,6 +2,7 @@
 <phpunit bootstrap="tests/bootstrap.php" backupGlobals="false" colors="true" cacheDirectory=".phpunit.cache">
   <php>
     <const name="APPLE_NEWS_UNIT_TESTS" value="1"/>
+    <env name="MANTLE_USE_SQLITE" value="true" />
   </php>
   <testsuites>
     <testsuite name="Unit Tests">
