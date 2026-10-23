@@ -55,19 +55,37 @@ function modify_post( $post_id, $operation, $channel_key = null ): array|WP_Erro
 		);
 	}
 
-	// Ensure the user is authorized to make changes to Apple News posts.
-	if ( ! current_user_can(
-		/** This filter is documented in admin/class-admin-apple-post-sync.php */
-		apply_filters(
+	// Ensure the user is authorized to make changes to this post on Apple News.
+	if ( 'delete' === $operation ) {
+		$capability = apply_filters(
+			'apple_news_delete_capability',
+			Apple_News::get_capability_for_post_type( 'delete_posts', $post->post_type )
+		);
+	} else {
+		$capability = apply_filters(
+			/** This filter is documented in admin/class-admin-apple-post-sync.php */
 			'apple_news_publish_capability',
 			Apple_News::get_capability_for_post_type( 'publish_posts', $post->post_type )
-		)
-	) ) {
+		);
+	}
+
+	if ( ! current_user_can( 'edit_post', $post->ID ) || ! current_user_can( $capability ) ) {
 		return new WP_Error(
 			'apple_news_failed_cap_check',
 			__( 'Your user account is not permitted to modify posts on Apple News.', 'apple-news' ),
 			[
 				'status' => 401,
+			]
+		);
+	}
+
+	// Only published posts can be sent to Apple News. Deleting is allowed for any status.
+	if ( 'delete' !== $operation && 'publish' !== get_post_status( $post ) ) {
+		return new WP_Error(
+			'apple_news_post_not_published',
+			__( 'Only published posts can be sent to Apple News.', 'apple-news' ),
+			[
+				'status' => 400,
 			]
 		);
 	}

@@ -42,7 +42,9 @@ add_action(
 
 					return rest_ensure_response( [ 'isValidCoverMedia' => $valid ] );
 				},
-				'permission_callback' => '__return_true',
+				'permission_callback' => function ( $request ) {
+					return rest_permission( 'is-valid-cover-media', $request );
+				},
 				'args'                => [
 					'type' => [
 						'type'     => 'string',
