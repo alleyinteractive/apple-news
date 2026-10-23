@@ -153,6 +153,21 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Builds the URL for a row action, including a nonce scoped to the action and post.
+	 *
+	 * @param string $action   The action to be performed.
+	 * @param int    $post_id  The post the action applies to.
+	 * @param string $base_url The base URL for the row.
+	 * @return string The action URL.
+	 */
+	private function get_action_url( string $action, int $post_id, string $base_url ): string {
+		return wp_nonce_url(
+			Admin_Apple_Index_Page::action_query_params( $action, $base_url ),
+			Admin_Apple_Index_Page::namespace_action( $action ) . '_' . $post_id
+		);
+	}
+
+	/**
 	 * This method is responsible for what is rendered in any column with a
 	 * name/slug of 'title'.
 	 *
@@ -187,13 +202,13 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		$actions = [
 			'export' => sprintf(
 				"<a href='%s'>%s</a>",
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'export', $base_url ) ),
+				esc_url( $this->get_action_url( 'export', $item->ID, $base_url ) ),
 				esc_html__( 'Download', 'apple-news' )
 			),
 			'debug'  => sprintf(
 				"<a title='%s' href='%s' target='_blank'>%s</a>",
 				esc_html__( 'Show API request for debugging', 'apple-news' ),
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'debug', $base_url ) ),
+				esc_url( $this->get_action_url( 'debug', $item->ID, $base_url ) ),
 				esc_html__( 'Debug', 'apple-news' )
 			),
 		];
@@ -203,7 +218,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		if ( empty( $pending ) ) {
 			$actions['push'] = sprintf(
 				"<a href='%s'>%s</a>",
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'push', $base_url ) ),
+				esc_url( $this->get_action_url( 'push', $item->ID, $base_url ) ),
 				$apple_news_api_id ? esc_html__( 'Update', 'apple-news' ) : esc_html__( 'Publish', 'apple-news' )
 			);
 		}
@@ -212,7 +227,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 		if ( ! empty( $pending ) ) {
 			$actions['reset'] = sprintf(
 				"<a href='%s' class='reset-button'>%s</a>",
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'reset', $base_url ) ),
+				esc_url( $this->get_action_url( 'reset', $item->ID, $base_url ) ),
 				esc_html__( 'Reset', 'apple-news' )
 			);
 		}
@@ -222,7 +237,7 @@ class Admin_Apple_News_List_Table extends WP_List_Table {
 			$actions['delete'] = sprintf(
 				"<a title='%s' href='%s' class='delete-button'>%s</a>",
 				esc_html__( 'Delete from Apple News', 'apple-news' ),
-				esc_url( Admin_Apple_Index_Page::action_query_params( 'delete', $base_url ) ),
+				esc_url( $this->get_action_url( 'delete', $item->ID, $base_url ) ),
 				esc_html__( 'Delete', 'apple-news' )
 			);
 		}
