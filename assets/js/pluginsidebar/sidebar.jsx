@@ -27,12 +27,16 @@ function Sidebar() {
     autoAssignCategories: false,
     loading: false,
     publishState: 'N/A',
+    primaryPublishState: 'N/A',
+    secondaryPublishState: 'N/A',
     sections: [],
     settings: {
       apiAutosync: false,
       apiAutosyncDelete: false,
       apiAutosyncUpdate: false,
       automaticAssignment: false,
+      multiChannelEnabled: false,
+      secondaryChannelConfigured: false,
     },
     userCanPublish: false,
   });
@@ -48,6 +52,8 @@ function Sidebar() {
       apiAutosyncDelete,
       apiAutosyncUpdate,
       automaticAssignment,
+      multiChannelEnabled,
+      secondaryChannelConfigured,
     },
     userCanPublish,
   } = state;
@@ -81,6 +87,7 @@ function Sidebar() {
   }] = usePostMeta();
 
   // Getters and setters for individual postmeta values.
+  const [channel] = usePostMetaValue('apple_news_channel');
   const [coverMediaProvider, setCoverMediaProvider] = usePostMetaValue('apple_news_cover_media_provider');
   const [coverImageId, setCoverImageId] = usePostMetaValue('apple_news_coverimage');
   const [coverImageCaption, setCoverImageCaption] = usePostMetaValue('apple_news_coverimage_caption');
@@ -95,13 +102,19 @@ function Sidebar() {
   const [metadataRaw, setMetadataRaw] = usePostMetaValue('apple_news_metadata');
   const [pullquoteText, setPullquoteText] = usePostMetaValue('apple_news_pullquote');
   const [pullquotePosition, setPullquotePosition] = usePostMetaValue('apple_news_pullquote_position');
-  const [selectedSections, setSelectedSectionsRaw] = usePostMetaValue('apple_news_sections');
+  const [selectedSectionsPrimary, setSelectedSectionsPrimaryRaw] = usePostMetaValue('apple_news_sections');
+  const [selectedSectionsSecondary, setSelectedSectionsSecondaryRaw] = usePostMetaValue('apple_news_sections_2');
   const [slug, setSlug] = usePostMetaValue('apple_news_slug');
   const [suppressVideoURL, setSuppressVideoURL] = usePostMetaValue('apple_news_suppress_video_url');
   const [useImageComponent, setUseImageComponent] = usePostMetaValue('apple_news_use_image_component');
 
   // Decode selected sections.
   const metadata = safeJsonParseArray(metadataRaw);
+
+  // Determine which sections to use based on channel.
+  const currentChannel = channel || 'primary';
+  const selectedSections = currentChannel === 'secondary' ? selectedSectionsSecondary : selectedSectionsPrimary;
+  const setSelectedSectionsRaw = currentChannel === 'secondary' ? setSelectedSectionsSecondaryRaw : setSelectedSectionsPrimaryRaw;
 
   /**
    * A helper function for setting metadata.
@@ -135,6 +148,9 @@ function Sidebar() {
       loading: true,
     });
 
+    // Determine the channel to use.
+    const channelToUse = channel || 'primary';
+
     try {
       const {
         notifications = [],
@@ -142,6 +158,7 @@ function Sidebar() {
       } = await apiFetch({
         data: {
           id: postId,
+          channel: channelToUse,
         },
         method: 'POST',
         path: `/apple-news/v1/${operation}`,
@@ -150,11 +167,21 @@ function Sidebar() {
         notification.message,
         notification.type,
       ));
-      setState({
+
+      // Update the appropriate publish state based on channel.
+      const stateUpdate = {
         ...state,
         loading: false,
         publishState: nextPublishState,
-      });
+      };
+
+      if (channelToUse === 'primary') {
+        stateUpdate.primaryPublishState = nextPublishState;
+      } else {
+        stateUpdate.secondaryPublishState = nextPublishState;
+      }
+
+      setState(stateUpdate);
     } catch (error) {
       displayNotification(error.message, 'error');
       setState({
@@ -174,12 +201,27 @@ function Sidebar() {
       : [...selectedSections, id],
   );
 
+  /**
+   * Fetches sections for a specific channel.
+   * @param {string} channelKey - The channel key ('primary' or 'secondary').
+   * @returns {Promise<Array>} The sections for the channel.
+   */
+  const fetchSectionsForChannel = async (channelKey) => {
+    try {
+      const channelParam = channelKey || 'primary';
+      return await apiFetch({ path: `/apple-news/v1/sections?channel=${channelParam}` });
+    } catch (error) {
+      console.error('Error fetching sections:', error);
+      return [];
+    }
+  };
+
   // On initial load, fetch info from the API into state.
   useEffect(() => {
     (async () => {
       const fetches = [
         await apiFetch({ path: `/apple-news/v1/get-published-state/${postId}` }),
-        await apiFetch({ path: '/apple-news/v1/sections' }),
+        await fetchSectionsForChannel(currentChannel),
         await apiFetch({ path: '/apple-news/v1/get-settings' }),
         await apiFetch({ path: `/apple-news/v1/user-can-publish/${postId}` }),
       ];
@@ -201,6 +243,30 @@ function Sidebar() {
       }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Refetch sections when channel changes.
+  useEffect(() => {
+    // Skip on initial render (sections are fetched in the initial load effect).
+    if (!multiChannelEnabled || !secondaryChannelConfigured) {
+      return;
+    }
+
+    (async () => {
+      const channelToFetch = channel || 'primary';
+      const newSections = await fetchSectionsForChannel(channelToFetch);
+
+      setState((prevState) => ({
+        ...prevState,
+        sections: newSections,
+        autoAssignCategories: (!selectedSections || selectedSections.length === 0)
+          && prevState.settings?.automaticAssignment === true,
+      }));
+    })();
+  }, [ // eslint-disable-line react-hooks/exhaustive-deps
+    channel,
+    multiChannelEnabled,
+    secondaryChannelConfigured,
+  ]);
 
   // Display notices whenever they change.
   useEffect(() => {

@@ -21,7 +21,14 @@ function AdminSettings() {
   }, saveSettings] = useSiteOptions();
   const busy = loading || saving;
   const { apple_news_automation: ruleList } = settings;
-  const { fields } = AppleNewsAutomationConfig;
+  const {
+    fields,
+    multiChannelEnabled,
+    secondaryChannelConfigured,
+  } = AppleNewsAutomationConfig;
+
+  // Determine if we should show the channel column.
+  const showChannelColumn = multiChannelEnabled && secondaryChannelConfigured;
 
   if (!ruleList) {
     return null;
@@ -47,6 +54,7 @@ function AdminSettings() {
     updateSettings([
       ...(ruleList ?? []),
       {
+        channel: 'primary',
         field,
         taxonomy: '',
         term_id: 0,
@@ -81,6 +89,10 @@ function AdminSettings() {
     if (key === 'field') {
       updatedRules = updateValueAtIndex(updatedRules, 'value', fields[value]?.type === 'boolean' ? 'false' : '', index);
     }
+    // Reset value when channel changes for section rules to prevent invalid section selection.
+    if (key === 'channel' && ruleList[index]?.field === LINK_SECTIONS) {
+      updatedRules = updateValueAtIndex(updatedRules, 'value', '', index);
+    }
     updateSettings(updatedRules);
   };
 
@@ -97,6 +109,7 @@ function AdminSettings() {
     return (
       <Rule
         busy={busy}
+        channel={item.channel || 'primary'}
         field={item.field}
         key={index} // eslint-disable-line react/no-array-index-key
         onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}
@@ -144,7 +157,13 @@ function AdminSettings() {
       <h1>{__('Apple News Automation', 'apple-news')}</h1>
       <p>{__('Configure automation rules below to automatically apply certain settings based on the taxonomy terms applied to each post.', 'apple-news')}</p>
       <p>
-        <a target="_blank" rel="noreferrer" href="https://github.com/alleyinteractive/apple-news/wiki/Automation">{__('For more information on how automation works, visit our wiki.', 'apple-news')}</a>
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://github.com/alleyinteractive/apple-news/wiki/Automation"
+        >
+          {__('For more information on how automation works, visit our wiki.', 'apple-news')}
+        </a>
       </p>
       <h2 className="title">{__('Section Mapping Automation', 'apple-news')}</h2>
       <table className="wp-list-table widefat fixed striped">
@@ -152,6 +171,9 @@ function AdminSettings() {
           <tr>
             <th id="apple-news-automation-column-taxonomy" scope="col">{__('Taxonomy', 'apple-news')}</th>
             <th id="apple-news-automation-column-term" scope="col">{__('Term', 'apple-news')}</th>
+            {showChannelColumn ? (
+              <th id="apple-news-automation-column-channel" scope="col">{__('Channel', 'apple-news')}</th>
+            ) : null}
             <th id="apple-news-automation-column-value" scope="col">{__('Section', 'apple-news')}</th>
             <th id="apple-news-automation-column-delete" scope="col">{__('Delete?', 'apple-news')}</th>
           </tr>
@@ -186,6 +208,9 @@ function AdminSettings() {
           <tr>
             <th id="apple-news-automation-column-taxonomy" scope="col">{__('Taxonomy', 'apple-news')}</th>
             <th id="apple-news-automation-column-term" scope="col">{__('Term', 'apple-news')}</th>
+            {showChannelColumn ? (
+              <th id="apple-news-automation-column-channel" scope="col">{__('Channel', 'apple-news')}</th>
+            ) : null}
             <th id="apple-news-automation-column-field" scope="col">{__('Field', 'apple-news')}</th>
             <th id="apple-news-automation-column-value" scope="col">{__('Value', 'apple-news')}</th>
             <th id="apple-news-automation-column-delete" scope="col">{__('Delete?', 'apple-news')}</th>

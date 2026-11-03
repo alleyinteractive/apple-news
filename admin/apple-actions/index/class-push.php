@@ -14,10 +14,10 @@ require_once __DIR__ . '/class-export.php';
 use Admin_Apple_Async;
 use Admin_Apple_Notice;
 use Admin_Apple_Sections;
+use Apple_Actions\Action_Exception;
+use Apple_Actions\API_Action;
 use Apple_Exporter\Exporter;
 use Apple_Exporter\Settings;
-use Apple_Actions\API_Action;
-use Apple_Actions\Action_Exception;
 use Apple_Push_API\Request\Request_Exception;
 
 /**
@@ -78,7 +78,6 @@ class Push extends API_Action {
 	 * @param boolean $doing_async Optional. Whether the action is being performed asynchronously.
 	 * @param int     $user_id Optional. The ID of the user performing the action. Defaults to the current user ID.
 	 *
-	 * @return false|null
 	 * @throws Action_Exception If the push fails.
 	 */
 	public function perform( $doing_async = false, $user_id = null ) {
@@ -96,7 +95,7 @@ class Push extends API_Action {
 
 			wp_schedule_single_event( time(), Admin_Apple_Async::ASYNC_PUSH_HOOK, [ $this->id, get_current_user_id() ] );
 		} else {
-			return $this->push( $user_id );
+			$this->push( $user_id );
 		}
 	}
 
@@ -218,8 +217,14 @@ class Push extends API_Action {
 	 * @throws Action_Exception If unable to push.
 	 */
 	private function push( $user_id = null, $display_notices = true ): void {
+
 		if ( ! $this->is_api_configuration_valid() ) {
-			throw new Action_Exception( esc_html__( 'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.', 'apple-news' ) );
+			throw new Action_Exception(
+				esc_html__(
+					'Your Apple News API settings seem to be empty. Please fill in the API key, API secret and API channel fields in the plugin configuration page.',
+					'apple-news'
+				)
+			);
 		}
 
 		/**
@@ -300,8 +305,8 @@ class Push extends API_Action {
 		 */
 		$this->clean_workspace();
 
-		// Get sections.
-		$this->sections = Admin_Apple_Sections::get_sections_for_post( $this->id );
+		// Get sections for the current channel.
+		$this->sections = Admin_Apple_Sections::get_sections_for_post( $this->id, 'url', $this->channel_key );
 
 		// Generate the JSON for the article.
 		[ $json, $bundles, $errors ] = $this->generate_article();
@@ -321,7 +326,6 @@ class Push extends API_Action {
 
 		// If there's an API ID, update, otherwise create.
 		$remote_id = get_post_meta( $this->id, 'apple_news_api_id', true );
-		$result    = null;
 
 		/**
 		 * Actions to be taken before the article is pushed to Apple News.
@@ -400,7 +404,7 @@ class Push extends API_Action {
 				$revision = get_post_meta( $this->id, 'apple_news_api_revision', true );
 				$result   = $this->get_api()->update_article( $remote_id, $revision, $json, $bundles, $meta, $this->id );
 			} else {
-				$result = $this->get_api()->post_article_to_channel( $json, $this->get_setting( 'api_channel' ), $bundles, $meta, $this->id );
+				$result = $this->get_api()->post_article_to_channel( $json, $this->get_channel_id(), $bundles, $meta, $this->id );
 			}
 
 			// Save the ID that was assigned to this post in by the API.
@@ -584,7 +588,7 @@ class Push extends API_Action {
 			return;
 		}
 
-		$this->sections              = Admin_Apple_Sections::get_sections_for_post( $post_id );
+		$this->sections              = Admin_Apple_Sections::get_sections_for_post( $post_id, 'url', $this->channel_key );
 		[ $json, $bundles, $errors ] = $this->generate_article();
 
 		// Retrieve the metadata using the same method as in the push() function.
@@ -603,6 +607,7 @@ class Push extends API_Action {
 			'isPreview'   => 'apple_news_is_preview',
 			'isSponsored' => 'apple_news_is_sponsored',
 		];
+
 		foreach ( $metadata_keys as $metadata_property => $meta_key ) {
 			$meta_value = get_post_meta( $post_id, $meta_key, true );
 			if ( 'true' === $meta_value || '1' === $meta_value ) {
@@ -667,9 +672,9 @@ class Push extends API_Action {
 	 * @since 0.6.0
 	 */
 	private function generate_article() {
-
 		$export_action = new Export( $this->settings, $this->id, $this->sections );
 		Export::set_exporting( true );
+
 		$this->exporter = $export_action->fetch_exporter();
 		$this->exporter->generate();
 		Export::set_exporting( false );
