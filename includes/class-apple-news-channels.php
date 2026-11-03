@@ -131,11 +131,11 @@ class Apple_News_Channels {
 	 * @return string The human-readable label.
 	 */
 	public static function get_channel_label( string $channel_key ): string {
-		if ( self::SECONDARY === $channel_key ) {
-			return __( 'Secondary Channel', 'apple-news' );
+		if ( self::PRIMARY === $channel_key ) {
+			return __( 'Primary Channel', 'apple-news' );
 		}
 
-		return __( 'Primary Channel', 'apple-news' );
+		return self::get_channels()[ $channel_key ]['label'] ?? $channel_key;
 	}
 
 	/**

@@ -48,6 +48,25 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * A channel's label is the one saved with it.
+	 */
+	public function test_channel_label_comes_from_list(): void {
+		update_option(
+			'apple_news_channels',
+			[
+				'california' => [
+					'label'   => 'California',
+					'channel' => 'foo3',
+					'key'     => 'bar3',
+					'secret'  => 'baz3',
+				],
+			]
+		);
+
+		$this->assertSame( 'California', Apple_News_Channels::get_channel_label( 'california' ) );
+	}
+
+	/**
 	 * An API client set from outside is the one the action uses.
 	 */
 	public function test_action_uses_injected_api(): void {
