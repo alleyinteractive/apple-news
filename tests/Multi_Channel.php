@@ -48,6 +48,62 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Each channel keeps its own cached sections list.
+	 */
+	public function test_sections_are_cached_per_channel(): void {
+		$this->add_california_channel();
+		set_transient( 'apple_news_sections', [ (object) [ 'id' => 'primary-section' ] ] );
+		$this->add_http_response(
+			'GET',
+			'https://news-api.apple.com/channels/foo3/sections',
+			wp_json_encode( [ 'data' => [ [ 'id' => 'california-section' ] ] ] )
+		);
+
+		$sections = \Admin_Apple_Sections::get_sections( 'california' );
+
+		$this->assertSame( 'california-section', $sections[0]->id );
+	}
+
+	/**
+	 * The automation page offers every configured channel, each with its own sections.
+	 */
+	public function test_automation_page_lists_channels_from_list(): void {
+		$this->add_california_channel();
+		set_transient( 'apple_news_sections', [ 'primary-sections' ] );
+		set_transient( 'apple_news_sections_secondary', [ 'secondary-sections' ] );
+		set_transient( 'apple_news_sections_california', [ 'california-sections' ] );
+
+		ob_start();
+		Automation::render_submenu_page();
+		ob_end_clean();
+		$data = wp_scripts()->get_data( 'apple-news-admin-settings', 'data' );
+
+		$this->assertStringContainsString( '{"value":"california","label":"California"}', $data );
+		$this->assertStringContainsString( '"california":["california-sections"]', $data );
+		$this->assertStringContainsString( '"secondary":["secondary-sections"]', $data );
+	}
+
+	/**
+	 * Adds a "california" channel next to the "secondary" one.
+	 */
+	private function add_california_channel(): void {
+		update_option(
+			'apple_news_channels',
+			array_merge(
+				get_option( 'apple_news_channels' ),
+				[
+					'california' => [
+						'label'   => 'California',
+						'channel' => 'foo3',
+						'key'     => 'bar3',
+						'secret'  => 'baz3',
+					],
+				]
+			)
+		);
+	}
+
+	/**
 	 * A channel's label is the one saved with it.
 	 */
 	public function test_channel_label_comes_from_list(): void {
