@@ -1293,6 +1293,30 @@ class Apple_News {
 	}
 
 	/**
+	 * Upgrades settings and data formats to be compatible with version 2.10.0.
+	 */
+	public function upgrade_to_2_10_0(): void {
+		$settings = get_option( self::$option_name );
+
+		if ( empty( $settings['api_channel_2'] ) ) {
+			return;
+		}
+
+		// The api_*_2 settings stay in place so that downgrading to an earlier version keeps working.
+		update_option(
+			'apple_news_channels',
+			[
+				'secondary' => [
+					'label'   => 'Secondary',
+					'channel' => $settings['api_channel_2'],
+					'key'     => $settings['api_key_2'] ?? '',
+					'secret'  => $settings['api_secret_2'] ?? '',
+				],
+			]
+		);
+	}
+
+	/**
 	 * Load example themes into the theme list.
 	 *
 	 * @access protected
