@@ -37,6 +37,58 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Saved channel rows are keyed by slug, and incomplete rows or the reserved primary slug are dropped.
+	 */
+	public function test_save_channels_keeps_valid_rows(): void {
+		Apple_News_Channels::save_channels(
+			[
+				[
+					'slug'    => 'California Edition',
+					'label'   => 'California <b>Post</b>',
+					'channel' => 'foo3',
+					'key'     => 'bar3',
+					'secret'  => 'baz3',
+				],
+				[
+					'slug'    => 'primary',
+					'label'   => 'Clash',
+					'channel' => 'x',
+					'key'     => 'y',
+					'secret'  => 'z',
+				],
+				[
+					'slug'    => 'empty',
+					'label'   => 'Empty',
+					'channel' => '',
+					'key'     => '',
+					'secret'  => '',
+				],
+			]
+		);
+
+		$this->assertSame(
+			[
+				'californiaedition' => [
+					'label'   => 'California Post',
+					'channel' => 'foo3',
+					'key'     => 'bar3',
+					'secret'  => 'baz3',
+				],
+			],
+			Apple_News_Channels::get_channels()
+		);
+	}
+
+	/**
+	 * Saving no rows turns multi-channel off.
+	 */
+	public function test_save_channels_with_no_rows_turns_multi_channel_off(): void {
+		Apple_News_Channels::save_channels( [] );
+
+		$this->assertFalse( Apple_News_Channels::is_enabled() );
+	}
+
+	/**
 	 * The API settings section has no fields for the old fixed secondary channel.
 	 */
 	public function test_api_settings_have_no_secondary_channel_fields(): void {
