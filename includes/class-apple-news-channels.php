@@ -39,23 +39,6 @@ class Apple_News_Channels {
 	}
 
 	/**
-	 * Check if the secondary channel is configured.
-	 *
-	 * @param \Apple_Exporter\Settings|null $settings Optional. Settings object.
-	 * @return bool
-	 */
-	public static function is_secondary_configured( $settings = null ): bool {
-		// Use the centralized check if no settings object is passed.
-		if ( null === $settings ) {
-			return \Apple_News::is_channel_initialized( self::SECONDARY );
-		}
-
-		return ! empty( $settings->api_channel_2 )
-			&& ! empty( $settings->api_key_2 )
-			&& ! empty( $settings->api_secret_2 );
-	}
-
-	/**
 	 * Get the channel key for a post ('primary' or 'secondary').
 	 *
 	 * @param int $post_id The post ID.
@@ -115,13 +98,13 @@ class Apple_News_Channels {
 	}
 
 	/**
-	 * Get the key suffix for a channel (empty for primary, '_2' for secondary).
+	 * Get the suffix that keeps a channel's cached data apart from other channels'.
 	 *
-	 * @param string $channel_key The channel key.
-	 * @return string
+	 * @param string $channel_key The channel slug.
+	 * @return string Empty for the primary channel, so its cache keys match single-channel sites.
 	 */
-	public static function get_meta_suffix( string $channel_key ): string {
-		return self::SECONDARY === $channel_key ? '_2' : '';
+	private static function get_cache_suffix( string $channel_key ): string {
+		return self::PRIMARY === $channel_key ? '' : '_' . $channel_key;
 	}
 
 	/**
@@ -145,9 +128,7 @@ class Apple_News_Channels {
 	 * @return string The transient key.
 	 */
 	public static function get_sections_transient_key( string $channel_key ): string {
-		$suffix = static::get_meta_suffix( $channel_key );
-
-		return 'apple_news_sections' . $suffix;
+		return 'apple_news_sections' . self::get_cache_suffix( $channel_key );
 	}
 
 	/**
@@ -157,8 +138,6 @@ class Apple_News_Channels {
 	 * @return string The transient key.
 	 */
 	public static function get_channel_transient_key( string $channel_key ): string {
-		$suffix = static::get_meta_suffix( $channel_key );
-
-		return 'apple_news_channel' . $suffix;
+		return 'apple_news_channel' . self::get_cache_suffix( $channel_key );
 	}
 }

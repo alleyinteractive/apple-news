@@ -30,14 +30,12 @@ function Rule({
     channels,
     fields,
     multiChannelEnabled,
-    secondaryChannelConfigured,
     sections,
     taxonomies,
     themes,
   } = AppleNewsAutomationConfig;
 
-  // Determine if we should show the channel column.
-  const showChannelColumn = multiChannelEnabled && secondaryChannelConfigured;
+  const showChannelColumn = multiChannelEnabled;
 
   // Get the current channel value, defaulting to 'primary'.
   const currentChannel = channel || 'primary';

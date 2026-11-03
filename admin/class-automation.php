@@ -384,41 +384,24 @@ class Automation {
 
 		wp_enqueue_style( 'wp-edit-blocks' );
 
-		// Build sections by channel.
-		$sections_by_channel = [
-			Apple_News_Channels::PRIMARY => Admin_Apple_Sections::get_sections( Apple_News_Channels::PRIMARY ),
-		];
-
-		// Only fetch secondary channel sections if it's configured.
-		$multi_channel_enabled        = Apple_News_Channels::is_enabled();
-		$secondary_channel_configured = Apple_News_Channels::is_secondary_configured();
-		if ( $multi_channel_enabled && $secondary_channel_configured ) {
-			$sections_by_channel[ Apple_News_Channels::SECONDARY ] = Admin_Apple_Sections::get_sections( Apple_News_Channels::SECONDARY );
-		}
-
-		// Build channels array for the dropdown.
-		$channels = [
-			[
-				'value' => Apple_News_Channels::PRIMARY,
-				'label' => Apple_News_Channels::get_channel_label( Apple_News_Channels::PRIMARY ),
-			],
-		];
-
-		if ( $multi_channel_enabled && $secondary_channel_configured ) {
-			$channels[] = [
-				'value' => Apple_News_Channels::SECONDARY,
-				'label' => Apple_News_Channels::get_channel_label( Apple_News_Channels::SECONDARY ),
+		$channels            = [];
+		$sections_by_channel = [];
+		$channel_keys        = array_merge( [ Apple_News_Channels::PRIMARY ], array_keys( Apple_News_Channels::get_channels() ) );
+		foreach ( $channel_keys as $channel_key ) {
+			$channels[]                          = [
+				'value' => $channel_key,
+				'label' => Apple_News_Channels::get_channel_label( $channel_key ),
 			];
+			$sections_by_channel[ $channel_key ] = Admin_Apple_Sections::get_sections( $channel_key );
 		}
 
 		$settings_data = [
-			'channels'                   => $channels,
-			'fields'                     => self::get_fields(),
-			'multiChannelEnabled'        => $multi_channel_enabled,
-			'secondaryChannelConfigured' => $secondary_channel_configured,
-			'sections'                   => $sections_by_channel,
-			'taxonomies'                 => get_taxonomies( [ 'public' => 'true' ] ),
-			'themes'                     => Theme::get_registry(),
+			'channels'            => $channels,
+			'fields'              => self::get_fields(),
+			'multiChannelEnabled' => Apple_News_Channels::is_enabled(),
+			'sections'            => $sections_by_channel,
+			'taxonomies'          => get_taxonomies( [ 'public' => 'true' ] ),
+			'themes'              => Theme::get_registry(),
 		];
 
 		/**

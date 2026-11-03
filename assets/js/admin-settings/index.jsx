@@ -24,11 +24,9 @@ function AdminSettings() {
   const {
     fields,
     multiChannelEnabled,
-    secondaryChannelConfigured,
   } = AppleNewsAutomationConfig;
 
-  // Determine if we should show the channel column.
-  const showChannelColumn = multiChannelEnabled && secondaryChannelConfigured;
+  const showChannelColumn = multiChannelEnabled;
 
   if (!ruleList) {
     return null;
