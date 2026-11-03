@@ -114,6 +114,19 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * The API settings section shows a row for each saved channel.
+	 */
+	public function test_api_settings_show_channel_rows(): void {
+		ob_start();
+		( new \Admin_Apple_Settings_Section_API( 'apple-news-options' ) )->after_section();
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( 'name="apple_news_channels_submitted"', $html );
+		$this->assertStringContainsString( 'name="apple_news_channels[0][label]" value="Secondary"', $html );
+		$this->assertStringContainsString( 'name="apple_news_channels[0][slug]" value="secondary" readonly', $html );
+	}
+
+	/**
 	 * The API settings section has no fields for the old fixed secondary channel.
 	 */
 	public function test_api_settings_have_no_secondary_channel_fields(): void {

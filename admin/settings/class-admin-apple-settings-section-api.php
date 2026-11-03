@@ -127,6 +127,16 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 	}
 
 	/**
+	 * Shows the additional channels after the section's fields.
+	 *
+	 * @access public
+	 */
+	public function after_section() {
+		$channels = Apple_News_Channels::get_channels();
+		include dirname( __DIR__ ) . '/partials/field-channels.php';
+	}
+
+	/**
 	 * Saves the section's settings, then the additional channels submitted with them.
 	 *
 	 * @access public
