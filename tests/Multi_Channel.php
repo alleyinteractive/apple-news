@@ -255,6 +255,32 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Publishing a post records which channel its article lives on.
+	 */
+	public function test_push_records_article_channel(): void {
+		$post_id = self::factory()->post->create();
+
+		$this->push_to_channel( $post_id, 'foo2', Apple_News_Channels::SECONDARY );
+
+		$this->assertSame( Apple_News_Channels::SECONDARY, get_post_meta( $post_id, 'apple_news_api_channel', true ) );
+	}
+
+	/**
+	 * An article isn't updated through a different channel from the one it was published on.
+	 */
+	public function test_update_is_refused_when_channel_changed(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		update_post_meta( $post_id, 'apple_news_api_channel', Apple_News_Channels::PRIMARY );
+		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+
+		$this->expectException( \Apple_Actions\Action_Exception::class );
+		$this->expectExceptionMessage( 'was published to the Primary Channel' );
+
+		( new Push( $this->settings, $post_id ) )->perform();
+	}
+
+	/**
 	 * Deleting a post's article uses the post's channel credentials.
 	 */
 	public function test_delete_uses_post_channel(): void {
