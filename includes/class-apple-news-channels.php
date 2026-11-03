@@ -85,22 +85,24 @@ class Apple_News_Channels {
 	/**
 	 * Get the API credentials for a specific channel.
 	 *
-	 * @param string                        $channel_key The channel key ('primary' or 'secondary').
-	 * @param \Apple_Exporter\Settings|null $settings    Optional. Settings object.
-	 * @return array{channel: string, key: string, secret: string} The API credentials.
+	 * @param string                        $channel_key The channel slug: 'primary' or a slug from get_channels().
+	 * @param \Apple_Exporter\Settings|null $settings    Optional. Settings object, used for the primary channel.
+	 * @return array{channel: string, key: string, secret: string} The API credentials, empty for an unknown slug.
 	 */
 	public static function get_credentials( string $channel_key, $settings = null ): array {
+		if ( self::PRIMARY !== $channel_key ) {
+			$channel = self::get_channels()[ $channel_key ] ?? [];
+
+			return [
+				'channel' => $channel['channel'] ?? '',
+				'key'     => $channel['key'] ?? '',
+				'secret'  => $channel['secret'] ?? '',
+			];
+		}
+
 		if ( null === $settings ) {
 			$admin_settings = new Admin_Apple_Settings();
 			$settings       = $admin_settings->fetch_settings();
-		}
-
-		if ( self::SECONDARY === $channel_key ) {
-			return [
-				'channel' => $settings->api_channel_2 ?? '',
-				'key'     => $settings->api_key_2 ?? '',
-				'secret'  => $settings->api_secret_2 ?? '',
-			];
 		}
 
 		return [
@@ -108,6 +110,17 @@ class Apple_News_Channels {
 			'key'     => $settings->api_key ?? '',
 			'secret'  => $settings->api_secret ?? '',
 		];
+	}
+
+	/**
+	 * Get the channels a post can be sent to besides the primary one, keyed by slug.
+	 *
+	 * @return array<string, array{label: string, channel: string, key: string, secret: string}>
+	 */
+	public static function get_channels(): array {
+		$channels = get_option( 'apple_news_channels', [] );
+
+		return is_array( $channels ) ? $channels : [];
 	}
 
 	/**

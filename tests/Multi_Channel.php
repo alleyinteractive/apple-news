@@ -21,9 +21,17 @@ class Multi_Channel extends TestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->settings->api_channel_2 = 'foo2';
-		$this->settings->api_key_2     = 'bar2';
-		$this->settings->api_secret_2  = 'baz2';
+		update_option(
+			'apple_news_channels',
+			[
+				'secondary' => [
+					'label'   => 'Secondary',
+					'channel' => 'foo2',
+					'key'     => 'bar2',
+					'secret'  => 'baz2',
+				],
+			]
+		);
 	}
 
 	/**
@@ -96,6 +104,42 @@ class Multi_Channel extends TestCase {
 		$args = $this->push_to_channel( $post_id, 'foo' );
 
 		$this->assertStringContainsString( 'key=bar;', $args['headers']['Authorization'] );
+	}
+
+	/**
+	 * A push to any channel in the list uses that channel's ID and key.
+	 */
+	public function test_push_uses_credentials_from_channel_list(): void {
+		update_option(
+			'apple_news_channels',
+			[
+				'california' => [
+					'label'   => 'California',
+					'channel' => 'foo3',
+					'key'     => 'bar3',
+					'secret'  => 'baz3',
+				],
+			]
+		);
+		$post_id = self::factory()->post->create();
+
+		$args = $this->push_to_channel( $post_id, 'foo3', 'california' );
+
+		$this->assertStringContainsString( 'key=bar3;', $args['headers']['Authorization'] );
+	}
+
+	/**
+	 * A channel slug that isn't configured has no credentials.
+	 */
+	public function test_unknown_channel_has_no_credentials(): void {
+		$this->assertSame(
+			[
+				'channel' => '',
+				'key'     => '',
+				'secret'  => '',
+			],
+			Apple_News_Channels::get_credentials( 'missing', $this->settings )
+		);
 	}
 
 	/**
