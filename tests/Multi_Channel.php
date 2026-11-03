@@ -89,6 +89,31 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Saving the settings form saves the channel rows submitted with it.
+	 */
+	public function test_settings_form_saves_channel_rows(): void {
+		$this->become_admin();
+		$_REQUEST['action']   = 'apple_news_options';
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'apple_news_options' );
+		$_POST                = [
+			'apple_news_channels_submitted' => '1',
+			'apple_news_channels'           => [
+				[
+					'slug'    => 'california',
+					'label'   => 'California',
+					'channel' => 'foo3',
+					'key'     => 'bar3',
+					'secret'  => 'baz3',
+				],
+			],
+		];
+
+		( new \Admin_Apple_Settings_Section_API( 'apple-news-options' ) )->save_settings();
+
+		$this->assertSame( [ 'california' ], array_keys( Apple_News_Channels::get_channels() ) );
+	}
+
+	/**
 	 * The API settings section has no fields for the old fixed secondary channel.
 	 */
 	public function test_api_settings_have_no_secondary_channel_fields(): void {
@@ -213,6 +238,16 @@ class Multi_Channel extends TestCase {
 		$action->set_api( $api );
 
 		$this->assertSame( 'article-1', $action->perform()->data->id );
+	}
+
+	/**
+	 * Clears the form submission a test may have set up.
+	 */
+	public function tearDown(): void {
+		$_POST = [];
+		unset( $_REQUEST['action'], $_REQUEST['_wpnonce'] );
+
+		parent::tearDown();
 	}
 
 	/**

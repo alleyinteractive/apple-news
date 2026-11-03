@@ -125,4 +125,24 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 
 		return __( 'This will cause publishing to happen asynchronously using a single scheduled event.', 'apple-news' );
 	}
+
+	/**
+	 * Saves the section's settings, then the additional channels submitted with them.
+	 *
+	 * @access public
+	 */
+	public function save_settings() {
+		parent::save_settings();
+
+		// Nonce verified in parent::save_settings(). An empty channel list submits no rows, so the marker field tells it apart from a form without the channel rows.
+		if ( empty( $_POST['apple_news_channels_submitted'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			return;
+		}
+
+		$rows = isset( $_POST['apple_news_channels'] ) && is_array( $_POST['apple_news_channels'] ) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			? wp_unslash( $_POST['apple_news_channels'] ) // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized in save_channels().
+			: [];
+
+		Apple_News_Channels::save_channels( $rows );
+	}
 }
