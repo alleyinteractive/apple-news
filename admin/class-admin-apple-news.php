@@ -192,45 +192,6 @@ class Admin_Apple_News extends Apple_News {
 				],
 			];
 
-			// Add multi-channel postmeta fields if enabled.
-			if ( Apple_News_Channels::is_enabled() ) {
-				// Channel selector field.
-				$postmeta['apple_news_channel'] = [
-					'default' => 'primary',
-				];
-
-				// Secondary channel API fields.
-				$postmeta['apple_news_api_id_2']          = [
-					'default' => '',
-				];
-				$postmeta['apple_news_api_created_at_2']  = [
-					'default' => '',
-				];
-				$postmeta['apple_news_api_modified_at_2'] = [
-					'default' => '',
-				];
-				$postmeta['apple_news_api_revision_2']    = [
-					'default' => '',
-				];
-				$postmeta['apple_news_api_share_url_2']   = [
-					'default' => '',
-				];
-
-				// Secondary channel sections.
-				$postmeta['apple_news_sections_2'] = [
-					'default'      => [],
-					'show_in_rest' => [
-						'schema' => [
-							'items' => [
-								'type' => 'string',
-							],
-							'type'  => 'array',
-						],
-					],
-					'type'         => 'array',
-				];
-			}
-
 			// Loop over postmeta fields and register each.
 			foreach ( $postmeta as $meta_key => $options ) {
 				apple_news_register_meta_helper( 'post', $post_types, $meta_key, $options );

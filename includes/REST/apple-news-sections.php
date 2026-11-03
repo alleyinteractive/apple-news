@@ -8,7 +8,6 @@
 namespace Apple_News\REST;
 
 use WP_Error;
-use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
@@ -35,10 +34,9 @@ add_action(
 /**
  * Get API response.
  *
- * @param WP_REST_Request $request Full details about the request.
  * @return WP_REST_Response|WP_Error
  */
-function get_sections_response( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+function get_sections_response(): WP_REST_Response|WP_Error {
 	// Ensure Apple News is first initialized.
 	$retval = \Apple_News::has_uninitialized_error();
 
@@ -46,9 +44,8 @@ function get_sections_response( WP_REST_Request $request ): WP_REST_Response|WP_
 		return $retval;
 	}
 
-	$channel_key = $request->get_param( 'channel' ) ?? 'primary';
-	$sections    = \Admin_Apple_Sections::get_sections( $channel_key );
-	$response    = [];
+	$sections = \Admin_Apple_Sections::get_sections();
+	$response = [];
 
 	if ( ! empty( $sections ) && ! empty( get_current_user_id() ) ) {
 		foreach ( $sections as $section ) {

@@ -37,6 +37,17 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * The plugin registers no per-channel post meta, since articles keep one ID whatever their channel.
+	 */
+	public function test_no_per_channel_post_meta_is_registered(): void {
+		new \Admin_Apple_News();
+
+		foreach ( [ 'apple_news_channel', 'apple_news_api_id_2', 'apple_news_sections_2' ] as $meta_key ) {
+			$this->assertFalse( registered_meta_key_exists( 'post', $meta_key, 'post' ), $meta_key );
+		}
+	}
+
+	/**
 	 * Fakes a successful article creation on the given channel and runs the push.
 	 *
 	 * @param int         $post_id     The post to push.
