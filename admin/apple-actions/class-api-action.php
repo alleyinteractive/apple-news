@@ -45,13 +45,22 @@ abstract class API_Action extends Action {
 	/**
 	 * Set the channel key for this action.
 	 *
-	 * @param string $channel_key The channel key ('primary' or 'secondary').
+	 * @param string $channel_key The channel slug: 'primary' or a slug from Apple_News_Channels::get_channels().
 	 */
 	public function set_channel_key( string $channel_key ): void {
 		$this->channel_key = $channel_key;
 
 		// Reset API instance so it uses new credentials.
 		$this->api = null;
+	}
+
+	/**
+	 * Set the instance of the API class.
+	 *
+	 * @param API $api The instance of the API class.
+	 */
+	public function set_api( $api ) {
+		$this->api = $api;
 	}
 
 	/**

@@ -48,6 +48,30 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * An API client set from outside is the one the action uses.
+	 */
+	public function test_action_uses_injected_api(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		$api = new class( 'https://news-api.apple.com', new \Apple_Push_API\Credentials( 'k', 's' ) ) extends \Apple_Push_API\API {
+			/**
+			 * Returns a canned article.
+			 *
+			 * @param string $article_id The article ID.
+			 * @return object
+			 */
+			public function get_article( $article_id ) {
+				return (object) [ 'data' => (object) [ 'id' => $article_id ] ];
+			}
+		};
+
+		$action = new Get( $this->settings, $post_id );
+		$action->set_api( $api );
+
+		$this->assertSame( 'article-1', $action->perform()->data->id );
+	}
+
+	/**
 	 * Fakes a successful article creation on the given channel and runs the push.
 	 *
 	 * @param int         $post_id     The post to push.
