@@ -70,6 +70,7 @@ class Push extends API_Action {
 		parent::__construct( $settings );
 		$this->id       = $id;
 		$this->exporter = null;
+		$this->set_channel_key( \Apple_News_Channels::get_channel_for_post( (int) $id ) );
 	}
 
 	/**

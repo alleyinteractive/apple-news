@@ -95,15 +95,15 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
-	 * A push that never sets a channel key uses primary, even when the post resolves to secondary.
+	 * A push that never sets a channel key goes to the post's channel.
 	 */
-	public function test_push_without_channel_key_uses_primary(): void {
+	public function test_push_without_channel_key_uses_post_channel(): void {
 		$post_id = self::factory()->post->create();
 		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
 
-		$args = $this->push_to_channel( $post_id, 'foo' );
+		$args = $this->push_to_channel( $post_id, 'foo2' );
 
-		$this->assertStringContainsString( 'key=bar;', $args['headers']['Authorization'] );
+		$this->assertStringContainsString( 'key=bar2;', $args['headers']['Authorization'] );
 	}
 
 	/**
