@@ -38,6 +38,7 @@ class Delete extends API_Action { // phpcs:ignore WordPress.VIP.FileSystemWrites
 	public function __construct( $settings, $id ) {
 		parent::__construct( $settings );
 		$this->id = $id;
+		$this->set_channel_key( \Apple_News_Channels::get_channel_for_post( (int) $id ) );
 	}
 
 	/**

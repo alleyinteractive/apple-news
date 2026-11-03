@@ -7,6 +7,8 @@
 
 namespace Apple_News\Tests;
 
+use Apple_Actions\Index\Delete;
+use Apple_Actions\Index\Get;
 use Apple_Actions\Index\Push;
 use Apple_News\Admin\Automation;
 use Apple_News_Channels;
@@ -104,6 +106,50 @@ class Multi_Channel extends TestCase {
 		$args = $this->push_to_channel( $post_id, 'foo2' );
 
 		$this->assertStringContainsString( 'key=bar2;', $args['headers']['Authorization'] );
+	}
+
+	/**
+	 * Deleting a post's article uses the post's channel credentials.
+	 */
+	public function test_delete_uses_post_channel(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		$sent = [];
+		add_filter(
+			'apple_news_delete_args',
+			function ( $args ) use ( &$sent ) {
+				$sent = $args;
+				return $args;
+			}
+		);
+		$this->add_http_response( 'DELETE', 'https://news-api.apple.com/articles/article-1' );
+
+		( new Delete( $this->settings, $post_id ) )->perform();
+
+		$this->assertStringContainsString( 'key=bar2;', $sent['headers']['Authorization'] );
+	}
+
+	/**
+	 * Fetching a post's article uses the post's channel credentials.
+	 */
+	public function test_get_uses_post_channel(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		$sent = [];
+		add_filter(
+			'apple_news_get_args',
+			function ( $args ) use ( &$sent ) {
+				$sent = $args;
+				return $args;
+			}
+		);
+		$this->add_http_response( 'GET', 'https://news-api.apple.com/articles/article-1', wp_json_encode( $this->fake_article_response() ) );
+
+		( new Get( $this->settings, $post_id ) )->perform();
+
+		$this->assertStringContainsString( 'key=bar2;', $sent['headers']['Authorization'] );
 	}
 
 	/**
