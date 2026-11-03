@@ -569,6 +569,11 @@ class Apple_News {
 			if ( version_compare( $current_version, '2.7.0', '<' ) ) {
 				$this->upgrade_to_2_7_0();
 			}
+
+			// Handle upgrade to version 2.10.0.
+			if ( version_compare( $current_version, '2.10.0', '<' ) ) {
+				$this->upgrade_to_2_10_0();
+			}
 		}
 
 		// Ensure the default themes are created.

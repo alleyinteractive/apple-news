@@ -592,6 +592,20 @@ class Apple_News extends TestCase {
 	}
 
 	/**
+	 * Tests that loading the admin on a site last upgraded before 2.10.0 runs the 2.10.0 upgrade.
+	 */
+	public function test_admin_init_runs_2_10_0_upgrade(): void {
+		$settings                  = get_option( 'apple_news_settings' );
+		$settings['api_channel_2'] = 'channel-two';
+		update_option( 'apple_news_settings', $settings );
+		update_option( 'apple_news_version', '2.9.0' );
+
+		( new \Apple_News() )->action_admin_init();
+
+		$this->assertArrayHasKey( 'secondary', get_option( 'apple_news_channels' ) );
+	}
+
+	/**
 	 * Tests that the 2.10.0 upgrade adds no channels to a single-channel site.
 	 */
 	public function test_upgrade_to_2_10_0_without_secondary_channel(): void {
