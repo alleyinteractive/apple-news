@@ -30,21 +30,12 @@ class Apple_News_Channels {
 	const string SECONDARY = 'secondary';
 
 	/**
-	 * Check if multi-channel support is enabled.
+	 * Whether posts can go to any channel besides the primary one.
 	 *
-	 * @return bool True if multi-channel is enabled.
+	 * @return bool True when at least one extra channel is configured.
 	 */
 	public static function is_enabled(): bool {
-
-		/**
-		 * Filters whether multi-channel support is enabled.
-		 *
-		 * When enabled, posts can be published to a secondary Apple News channel.
-		 * The secondary channel must be configured in the plugin settings.
-		 *
-		 * @param bool $enabled Whether multi-channel support is enabled. Default true.
-		 */
-		return (bool) apply_filters( 'apple_news_enable_multi_channel', true );
+		return ! empty( self::get_channels() );
 	}
 
 	/**

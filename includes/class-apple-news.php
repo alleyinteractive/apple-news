@@ -347,17 +347,19 @@ class Apple_News {
 	 * Determines whether a specific channel is initialized with valid credentials.
 	 *
 	 * @access public
-	 * @param string $channel_key The channel key ('primary' or 'secondary').
+	 * @param string $channel_key The channel slug: 'primary' or a slug from Apple_News_Channels::get_channels().
 	 * @return bool True if the channel is initialized, false if not.
 	 */
 	public static function is_channel_initialized( string $channel_key = 'primary' ): bool {
-		$settings = get_option( self::$option_name );
+		if ( Apple_News_Channels::PRIMARY !== $channel_key ) {
+			$credentials = Apple_News_Channels::get_credentials( $channel_key );
 
-		if ( Apple_News_Channels::SECONDARY === $channel_key ) {
-			return ! empty( $settings['api_channel_2'] )
-				&& ! empty( $settings['api_key_2'] )
-				&& ! empty( $settings['api_secret_2'] );
+			return ! empty( $credentials['channel'] )
+				&& ! empty( $credentials['key'] )
+				&& ! empty( $credentials['secret'] );
 		}
+
+		$settings = get_option( self::$option_name );
 
 		// Primary channel check.
 		$has_api_settings = ! empty( $settings['api_channel'] )

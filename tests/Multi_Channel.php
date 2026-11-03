@@ -67,6 +67,42 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Multi-channel is off on a site with only the primary channel.
+	 */
+	public function test_multi_channel_is_off_without_channels(): void {
+		delete_option( 'apple_news_channels' );
+
+		$this->assertFalse( Apple_News_Channels::is_enabled() );
+	}
+
+	/**
+	 * Configuring a channel turns multi-channel on.
+	 */
+	public function test_multi_channel_is_on_with_a_channel(): void {
+		$this->assertTrue( Apple_News_Channels::is_enabled() );
+	}
+
+	/**
+	 * Any channel in the list with complete credentials counts as initialized.
+	 */
+	public function test_channel_in_list_is_initialized(): void {
+		update_option(
+			'apple_news_channels',
+			[
+				'california' => [
+					'label'   => 'California',
+					'channel' => 'foo3',
+					'key'     => 'bar3',
+					'secret'  => 'baz3',
+				],
+			]
+		);
+
+		$this->assertTrue( \Apple_News::is_channel_initialized( 'california' ) );
+		$this->assertFalse( \Apple_News::is_channel_initialized( 'missing' ) );
+	}
+
+	/**
 	 * Posts go to the primary channel unless a filter says otherwise.
 	 */
 	public function test_channel_for_post_defaults_to_primary(): void {
