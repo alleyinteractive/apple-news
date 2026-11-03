@@ -39,8 +39,7 @@ add_action(
  * @return WP_REST_Response|WP_Error
  */
 function rest_post_update( $request ): WP_REST_Response|WP_Error {
-	$channel_key = $request->get_param( 'channel' );
-	$post        = modify_post( (int) $request->get_param( 'id' ), 'update', $channel_key );
+	$post = modify_post( (int) $request->get_param( 'id' ), 'update' );
 
 	if ( is_wp_error( $post ) ) {
 		return $post;

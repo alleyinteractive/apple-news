@@ -189,6 +189,35 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Publishing through the REST API goes to the post's channel, whatever channel the request names.
+	 */
+	public function test_rest_publish_ignores_requested_channel(): void {
+		$this->become_admin();
+		$post_id = self::factory()->post->create();
+		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		$this->add_http_response(
+			'POST',
+			'https://news-api.apple.com/channels/foo2/articles',
+			wp_json_encode( $this->fake_article_response() ),
+			[],
+			[
+				'code'    => 201,
+				'message' => 'Created',
+			]
+		);
+
+		$this->post(
+			rest_url( '/apple-news/v1/publish' ),
+			[
+				'id'      => $post_id,
+				'channel' => Apple_News_Channels::PRIMARY,
+			]
+		)->assertOk();
+
+		$this->assertStringContainsString( 'key=bar2;', array_pop( $this->post_args )['headers']['Authorization'] );
+	}
+
+	/**
 	 * A push to any channel in the list uses that channel's ID and key.
 	 */
 	public function test_push_uses_credentials_from_channel_list(): void {

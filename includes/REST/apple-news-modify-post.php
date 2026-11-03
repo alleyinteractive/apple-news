@@ -18,13 +18,12 @@ use WP_Error;
 /**
  * Publish, update, or delete a post via the Apple News API given a post ID.
  *
- * @param int    $post_id     The post ID to modify.
- * @param string $operation   The operation to perform. One of 'publish', 'update', 'delete'.
- * @param string $channel_key Optional. The channel key ('primary' or 'secondary'). Defaults to post's channel or 'primary'.
+ * @param int    $post_id   The post ID to modify.
+ * @param string $operation The operation to perform. One of 'publish', 'update', 'delete'.
  *
  * @return array|WP_Error Response to the request - either data about a successful operation, or error.
  */
-function modify_post( $post_id, $operation, $channel_key = null ): array|WP_Error {
+function modify_post( $post_id, $operation ): array|WP_Error {
 	// Ensure Apple News is first initialized (primary channel at minimum).
 	$retval = \Apple_News::has_uninitialized_error();
 
@@ -90,10 +89,7 @@ function modify_post( $post_id, $operation, $channel_key = null ): array|WP_Erro
 		);
 	}
 
-	// Determine the channel key to use.
-	if ( null === $channel_key ) {
-		$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
-	}
+	$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
 
 	// Ensure the specific channel is initialized.
 	$channel_error = \Apple_News::has_uninitialized_error( $channel_key );
@@ -119,9 +115,6 @@ function modify_post( $post_id, $operation, $channel_key = null ): array|WP_Erro
 				]
 			);
 	}
-
-	// Set the channel key for the action.
-	$action->set_channel_key( $channel_key );
 
 	try {
 		$action->perform();
