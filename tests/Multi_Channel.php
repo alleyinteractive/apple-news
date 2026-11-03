@@ -127,6 +127,15 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * The settings page loads the script that manages the channel rows.
+	 */
+	public function test_settings_page_loads_channel_script(): void {
+		( new \Admin_Apple_Settings() )->register_assets( 'apple-news_page_apple-news-options' );
+
+		$this->assertTrue( wp_script_is( 'apple-news-channel-settings', 'enqueued' ) );
+	}
+
+	/**
 	 * The API settings section has no fields for the old fixed secondary channel.
 	 */
 	public function test_api_settings_have_no_secondary_channel_fields(): void {

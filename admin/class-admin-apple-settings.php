@@ -204,6 +204,14 @@ class Admin_Apple_Settings extends Apple_News {
 			self::$version,
 			true
 		);
+
+		wp_enqueue_script(
+			'apple-news-channel-settings',
+			plugin_dir_url( __FILE__ ) . '../build/channelSettings.js',
+			[],
+			self::$version,
+			true
+		);
 	}
 
 	/**
