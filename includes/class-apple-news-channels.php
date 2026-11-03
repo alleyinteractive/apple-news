@@ -98,6 +98,36 @@ class Apple_News_Channels {
 	}
 
 	/**
+	 * Replace the extra channels with the rows submitted from the settings screen.
+	 *
+	 * @param array<int, array<string, string>> $rows Rows with slug, label, channel, key and secret.
+	 */
+	public static function save_channels( array $rows ): void {
+		$channels = [];
+		foreach ( $rows as $row ) {
+			$slug    = sanitize_key( $row['slug'] ?? '' );
+			$channel = sanitize_text_field( $row['channel'] ?? '' );
+			if ( '' === $slug || self::PRIMARY === $slug || '' === $channel ) {
+				continue;
+			}
+
+			$channels[ $slug ] = [
+				'label'   => sanitize_text_field( $row['label'] ?? '' ),
+				'channel' => $channel,
+				'key'     => sanitize_text_field( $row['key'] ?? '' ),
+				'secret'  => sanitize_text_field( $row['secret'] ?? '' ),
+			];
+		}
+
+		foreach ( array_keys( array_merge( self::get_channels(), $channels ) ) as $slug ) {
+			delete_transient( self::get_sections_transient_key( $slug ) );
+			delete_transient( self::get_channel_transient_key( $slug ) );
+		}
+
+		update_option( 'apple_news_channels', $channels, false );
+	}
+
+	/**
 	 * Get the suffix that keeps a channel's cached data apart from other channels'.
 	 *
 	 * @param string $channel_key The channel slug.
