@@ -37,6 +37,23 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * The API settings section has no fields for the old fixed secondary channel.
+	 */
+	public function test_api_settings_have_no_secondary_channel_fields(): void {
+		$section = new \Admin_Apple_Settings_Section_API( 'apple-news-options' );
+
+		$this->assertArrayNotHasKey( 'api_channel_2', $section->get_settings() );
+		$this->assertContains( 'Upload Channel Configuration File:', array_column( $section->groups(), 'label' ) );
+	}
+
+	/**
+	 * Settings defaults have no keys for the old fixed secondary channel.
+	 */
+	public function test_settings_defaults_have_no_secondary_channel_keys(): void {
+		$this->assertArrayNotHasKey( 'api_channel_2', ( new \Apple_Exporter\Settings() )->all() );
+	}
+
+	/**
 	 * The plugin registers no per-channel post meta, since articles keep one ID whatever their channel.
 	 */
 	public function test_no_per_channel_post_meta_is_registered(): void {

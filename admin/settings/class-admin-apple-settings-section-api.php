@@ -83,7 +83,7 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 		// Add the groups.
 		$this->groups = [
 			'apple_news_config_upload' => [
-				'label'    => __( 'Upload Primary Channel (New York Post) Configuration File:', 'apple-news' ),
+				'label'    => __( 'Upload Channel Configuration File:', 'apple-news' ),
 				'settings' => [ 'api_config_file', 'api_config_file_input', 'api_channel', 'api_key', 'api_secret' ],
 			],
 			'apple_news_options'       => [
@@ -91,31 +91,6 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 				'settings' => [ 'api_autosync', 'api_autosync_update', 'api_autosync_delete', 'api_autosync_unpublish', 'api_autosync_trash', 'api_async', 'api_autosync_skip' ],
 			],
 		];
-
-		if ( Apple_News_Channels::is_enabled() ) {
-			$this->settings['api_config_file_2']       = [
-				// translators: tokens fill in <a> tags.
-				'description' => sprintf( __( 'Having trouble? %1$sEnter the contents of your .papi file manually%2$s.', 'apple-news' ), '<a href="#api_config_file_2">', '</a>' ),
-				'type'        => 'file',
-			];
-			$this->settings['api_config_file_input_2'] = [
-				'type' => 'textarea',
-			];
-			$this->settings['api_channel_2']           = [
-				'type' => 'hidden',
-			];
-			$this->settings['api_key_2']               = [
-				'type' => 'hidden',
-			];
-			$this->settings['api_secret_2']            = [
-				'type' => 'hidden',
-			];
-
-			$this->groups['apple_news_config_upload_2'] = [
-				'label'    => __( 'Upload Secondary Channel (California Post) Configuration File:', 'apple-news' ),
-				'settings' => [ 'api_config_file_2', 'api_config_file_input_2', 'api_channel_2', 'api_key_2', 'api_secret_2' ],
-			];
-		}
 
 		parent::__construct( $page );
 	}
