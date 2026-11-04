@@ -543,4 +543,74 @@ class Apple_News extends TestCase {
 		$plugin_data = apple_news_get_plugin_data();
 		$this->assertEquals( \Apple_News::$version, $plugin_data['Version'] );
 	}
+
+	/**
+	 * Tests that the 2.10.0 upgrade turns the secondary channel settings into a channel entry.
+	 */
+	public function test_upgrade_to_2_10_0_creates_secondary_channel(): void {
+		$settings = get_option( 'apple_news_settings' );
+		update_option(
+			'apple_news_settings',
+			array_merge(
+				$settings,
+				[
+					'api_channel_2' => 'channel-two',
+					'api_key_2'     => 'key-two',
+					'api_secret_2'  => 'secret-two',
+				]
+			)
+		);
+
+		( new \Apple_News() )->upgrade_to_2_10_0();
+
+		$this->assertSame(
+			[
+				'secondary' => [
+					'label'   => 'Secondary',
+					'channel' => 'channel-two',
+					'key'     => 'key-two',
+					'secret'  => 'secret-two',
+				],
+			],
+			get_option( 'apple_news_channels' )
+		);
+	}
+
+	/**
+	 * Tests that the 2.10.0 upgrade keeps the old secondary channel settings so a downgrade still works.
+	 */
+	public function test_upgrade_to_2_10_0_keeps_old_secondary_settings(): void {
+		$settings                  = get_option( 'apple_news_settings' );
+		$settings['api_channel_2'] = 'channel-two';
+		$settings['api_key_2']     = 'key-two';
+		$settings['api_secret_2']  = 'secret-two';
+		update_option( 'apple_news_settings', $settings );
+
+		( new \Apple_News() )->upgrade_to_2_10_0();
+
+		$this->assertSame( 'channel-two', get_option( 'apple_news_settings' )['api_channel_2'] );
+	}
+
+	/**
+	 * Tests that loading the admin on a site last upgraded before 2.10.0 runs the 2.10.0 upgrade.
+	 */
+	public function test_admin_init_runs_2_10_0_upgrade(): void {
+		$settings                  = get_option( 'apple_news_settings' );
+		$settings['api_channel_2'] = 'channel-two';
+		update_option( 'apple_news_settings', $settings );
+		update_option( 'apple_news_version', '2.9.0' );
+
+		( new \Apple_News() )->action_admin_init();
+
+		$this->assertArrayHasKey( 'secondary', get_option( 'apple_news_channels' ) );
+	}
+
+	/**
+	 * Tests that the 2.10.0 upgrade adds no channels to a single-channel site.
+	 */
+	public function test_upgrade_to_2_10_0_without_secondary_channel(): void {
+		( new \Apple_News() )->upgrade_to_2_10_0();
+
+		$this->assertFalse( get_option( 'apple_news_channels' ) );
+	}
 }

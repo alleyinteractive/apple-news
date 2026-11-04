@@ -1,0 +1,173 @@
+<?php
+/**
+ * Publish to Apple News: Apple_News_Channels class
+ *
+ * Contains helper methods for multi-channel support.
+ *
+ * @since 2.7.0
+ * @package Apple_News
+ */
+
+/**
+ * Helper class for multi-channel functionality.
+ *
+ * @since 2.7.0
+ */
+class Apple_News_Channels {
+
+	/**
+	 * Primary channel key.
+	 *
+	 * @var string
+	 */
+	const string PRIMARY = 'primary';
+
+	/**
+	 * Secondary channel key.
+	 *
+	 * @var string
+	 */
+	const string SECONDARY = 'secondary';
+
+	/**
+	 * Whether posts can go to any channel besides the primary one.
+	 *
+	 * @return bool True when at least one extra channel is configured.
+	 */
+	public static function is_enabled(): bool {
+		return ! empty( self::get_channels() );
+	}
+
+	/**
+	 * Get the channel key for a post ('primary' or 'secondary').
+	 *
+	 * @param int $post_id The post ID.
+	 * @return string
+	 */
+	public static function get_channel_for_post( int $post_id ): string {
+		$channel = self::PRIMARY;
+
+		/**
+		 * Filters the channel key for a specific post.
+		 *
+		 * @param string $channel The channel key ('primary' or 'secondary'). Defaults to 'primary'.
+		 * @param int    $post_id The post ID.
+		 */
+		return apply_filters( 'apple_news_channel_for_post', $channel, $post_id );
+	}
+
+	/**
+	 * Get the API credentials for a specific channel.
+	 *
+	 * @param string                        $channel_key The channel slug: 'primary' or a slug from get_channels().
+	 * @param \Apple_Exporter\Settings|null $settings    Optional. Settings object, used for the primary channel.
+	 * @return array{channel: string, key: string, secret: string} The API credentials, empty for an unknown slug.
+	 */
+	public static function get_credentials( string $channel_key, $settings = null ): array {
+		if ( self::PRIMARY !== $channel_key ) {
+			$channel = self::get_channels()[ $channel_key ] ?? [];
+
+			return [
+				'channel' => $channel['channel'] ?? '',
+				'key'     => $channel['key'] ?? '',
+				'secret'  => $channel['secret'] ?? '',
+			];
+		}
+
+		if ( null === $settings ) {
+			$admin_settings = new Admin_Apple_Settings();
+			$settings       = $admin_settings->fetch_settings();
+		}
+
+		return [
+			'channel' => $settings->api_channel ?? '',
+			'key'     => $settings->api_key ?? '',
+			'secret'  => $settings->api_secret ?? '',
+		];
+	}
+
+	/**
+	 * Get the channels a post can be sent to besides the primary one, keyed by slug.
+	 *
+	 * @return array<string, array{label: string, channel: string, key: string, secret: string}>
+	 */
+	public static function get_channels(): array {
+		$channels = get_option( 'apple_news_channels', [] );
+
+		return is_array( $channels ) ? $channels : [];
+	}
+
+	/**
+	 * Replace the extra channels with the rows submitted from the settings screen.
+	 *
+	 * @param array<int, array<string, string>> $rows Rows with slug, label, channel, key and secret.
+	 */
+	public static function save_channels( array $rows ): void {
+		$channels = [];
+		foreach ( $rows as $row ) {
+			$slug    = sanitize_key( $row['slug'] ?? '' );
+			$channel = sanitize_text_field( $row['channel'] ?? '' );
+			if ( '' === $slug || self::PRIMARY === $slug || '' === $channel ) {
+				continue;
+			}
+
+			$channels[ $slug ] = [
+				'label'   => sanitize_text_field( $row['label'] ?? '' ),
+				'channel' => $channel,
+				'key'     => sanitize_text_field( $row['key'] ?? '' ),
+				'secret'  => sanitize_text_field( $row['secret'] ?? '' ),
+			];
+		}
+
+		foreach ( array_keys( array_merge( self::get_channels(), $channels ) ) as $slug ) {
+			delete_transient( self::get_sections_transient_key( $slug ) );
+			delete_transient( self::get_channel_transient_key( $slug ) );
+		}
+
+		update_option( 'apple_news_channels', $channels, false );
+	}
+
+	/**
+	 * Get the suffix that keeps a channel's cached data apart from other channels'.
+	 *
+	 * @param string $channel_key The channel slug.
+	 * @return string Empty for the primary channel, so its cache keys match single-channel sites.
+	 */
+	private static function get_cache_suffix( string $channel_key ): string {
+		return self::PRIMARY === $channel_key ? '' : '_' . $channel_key;
+	}
+
+	/**
+	 * Get the channel label for display.
+	 *
+	 * @param string $channel_key The channel key.
+	 * @return string The human-readable label.
+	 */
+	public static function get_channel_label( string $channel_key ): string {
+		if ( self::PRIMARY === $channel_key ) {
+			return __( 'Primary Channel', 'apple-news' );
+		}
+
+		return self::get_channels()[ $channel_key ]['label'] ?? $channel_key;
+	}
+
+	/**
+	 * Get the transient key for sections cache.
+	 *
+	 * @param string $channel_key The channel key.
+	 * @return string The transient key.
+	 */
+	public static function get_sections_transient_key( string $channel_key ): string {
+		return 'apple_news_sections' . self::get_cache_suffix( $channel_key );
+	}
+
+	/**
+	 * Get the transient key for channel cache.
+	 *
+	 * @param string $channel_key The channel key.
+	 * @return string The transient key.
+	 */
+	public static function get_channel_transient_key( string $channel_key ): string {
+		return 'apple_news_channel' . self::get_cache_suffix( $channel_key );
+	}
+}

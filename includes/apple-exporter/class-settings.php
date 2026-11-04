@@ -40,6 +40,7 @@ class Settings {
 		'api_channel'                 => '',
 		'api_key'                     => '',
 		'api_secret'                  => '',
+		'api_config_file_input'       => '',
 		'apple_news_admin_email'      => '',
 		'apple_news_enable_debugging' => 'no',
 		'component_alerts'            => 'none',

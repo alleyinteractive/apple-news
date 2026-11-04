@@ -125,4 +125,47 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 
 		return __( 'This will cause publishing to happen asynchronously using a single scheduled event.', 'apple-news' );
 	}
+
+	/**
+	 * Shows the additional channels after the section's fields.
+	 *
+	 * @access public
+	 */
+	public function after_section() {
+		$channels = Apple_News_Channels::get_channels();
+		include dirname( __DIR__ ) . '/partials/field-channels.php';
+	}
+
+	/**
+	 * Saves the section's settings, then the additional channels submitted with them.
+	 *
+	 * @access public
+	 */
+	public function save_settings() {
+		parent::save_settings();
+
+		// Sections are built, and so saved, on every admin request; only the settings form may change the channels.
+		$action = isset( $_REQUEST['action'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( $this->save_action !== $action ) {
+			return;
+		}
+
+		check_admin_referer( $this->save_action );
+
+		/** This filter is documented in admin/class-admin-apple-settings.php */
+		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
+			return;
+		}
+
+		// An empty channel list submits no rows, so the marker field tells it apart from a form without the channel rows.
+		if ( empty( $_POST['apple_news_channels_submitted'] ) ) {
+			return;
+		}
+
+		$rows = isset( $_POST['apple_news_channels'] ) && is_array( $_POST['apple_news_channels'] )
+			? wp_unslash( $_POST['apple_news_channels'] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized in save_channels().
+			: [];
+
+		Apple_News_Channels::save_channels( $rows );
+	}
 }

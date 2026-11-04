@@ -4,6 +4,7 @@
 # Directories
 .git
 assets/js/admin-settings
+assets/js/channel-settings
 assets/js/components
 assets/js/config
 assets/js/pluginsidebar
@@ -25,7 +26,6 @@ vendor
 .phpcs-cache.json
 .phpunit.result.cache
 babel.config.json
-composer.json
 composer.lock
 DOCKER_ENV
 package.json

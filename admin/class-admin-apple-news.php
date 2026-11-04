@@ -304,10 +304,16 @@ class Admin_Apple_News extends Apple_News {
 	/**
 	 * Get post status.
 	 *
-	 * @param int $post_id The ID of the post to look up.
+	 * @param int    $post_id     The ID of the post to look up.
+	 * @param string $channel_key Optional. The channel key ('primary' or 'secondary'). Defaults to post's channel.
 	 * @return string
 	 */
-	public static function get_post_status( $post_id ) {
+	public static function get_post_status( $post_id, $channel_key = null ) {
+		// Determine the channel key to use.
+		if ( null === $channel_key ) {
+			$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
+		}
+
 		$key   = 'apple_news_post_state_' . $post_id;
 		$state = get_transient( $key );
 		if ( false === $state ) {
@@ -315,7 +321,8 @@ class Admin_Apple_News extends Apple_News {
 			// If this causes an error, display that message instead of the state.
 			try {
 				$action = new Apple_Actions\Index\Get( self::$settings, $post_id );
-				$state  = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
+				$action->set_channel_key( $channel_key );
+				$state = $action->get_data( 'state', __( 'N/A', 'apple-news' ) );
 			} catch ( \Apple_Push_API\Request\Request_Exception $e ) {
 				$state = $e->getMessage();
 			}

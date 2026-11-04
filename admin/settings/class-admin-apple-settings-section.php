@@ -631,6 +631,7 @@ class Admin_Apple_Settings_Section extends Apple_News {
 		 * use the default value to be safe.
 		 */
 		$default_settings = new Settings();
+
 		foreach ( $this->settings as $key => $attributes ) {
 
 			// Negotiate the value.

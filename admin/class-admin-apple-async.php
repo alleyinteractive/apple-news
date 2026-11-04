@@ -92,6 +92,11 @@ class Admin_Apple_Async extends Apple_News {
 		}
 
 		$action = new Apple_Actions\Index\Push( $this->settings, $post_id );
+
+		// Set the channel key based on post meta (for multi-channel support).
+		$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
+		$action->set_channel_key( $channel_key );
+
 		try {
 			$action->perform( true, $user_id );
 		} catch ( Apple_Actions\Action_Exception $e ) {

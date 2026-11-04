@@ -340,26 +340,76 @@ class Apple_News {
 			self::$is_initialized = $has_api_settings || $has_api_config;
 		}
 
-
 		return self::$is_initialized;
+	}
+
+	/**
+	 * Determines whether a specific channel is initialized with valid credentials.
+	 *
+	 * @access public
+	 * @param string $channel_key The channel slug: 'primary' or a slug from Apple_News_Channels::get_channels().
+	 * @return bool True if the channel is initialized, false if not.
+	 */
+	public static function is_channel_initialized( string $channel_key = 'primary' ): bool {
+		if ( Apple_News_Channels::PRIMARY !== $channel_key ) {
+			$credentials = Apple_News_Channels::get_credentials( $channel_key );
+
+			return ! empty( $credentials['channel'] )
+				&& ! empty( $credentials['key'] )
+				&& ! empty( $credentials['secret'] );
+		}
+
+		$settings = get_option( self::$option_name );
+
+		// Primary channel check.
+		$has_api_settings = ! empty( $settings['api_channel'] )
+			&& ! empty( $settings['api_key'] )
+			&& ! empty( $settings['api_secret'] );
+
+		$has_api_config = ! empty( $settings['api_config_file'] )
+			|| ! empty( $settings['api_config_file_input'] );
+
+		return $has_api_settings || $has_api_config;
 	}
 
 	/**
 	 * Returns new WP_Error if uninitialized.
 	 *
 	 * @access public
+	 * @param string|null $channel_key Optional. The channel key to check. Defaults to null (primary).
 	 * @return WP_Error|null error if uninitialized.
 	 */
-	public static function has_uninitialized_error(): WP_Error|null {
-		if ( ! self::is_initialized() ) {
+	public static function has_uninitialized_error( ?string $channel_key = null ): WP_Error|null {
+		// If no channel specified, use the standard is_initialized check for backward compatibility.
+		if ( null === $channel_key ) {
+			if ( ! self::is_initialized() ) {
+				return new WP_Error(
+					'apple_news_bad_operation',
+					__( 'You must enter your API information on the settings page before using Publish to Apple News.', 'apple-news' ),
+					[
+						'status' => 400,
+					]
+				);
+			}
+			return null;
+		}
+
+		// Channel-specific check.
+		if ( ! self::is_channel_initialized( $channel_key ) ) {
+			$channel_label = \Apple_News_Channels::get_channel_label( $channel_key );
 			return new WP_Error(
-				'apple_news_bad_operation',
-				__( 'You must enter your API information on the settings page before using Publish to Apple News.', 'apple-news' ),
+				'apple_news_channel_not_configured',
+				sprintf(
+					/* translators: %s: channel label (e.g., "Primary Channel" or "Secondary Channel") */
+					__( 'The %s is not configured. Please enter API credentials on the settings page.', 'apple-news' ),
+					$channel_label
+				),
 				[
 					'status' => 400,
 				]
 			);
 		}
+
 		return null;
 	}
 
@@ -520,6 +570,11 @@ class Apple_News {
 			// Handle upgrade to version 2.7.0.
 			if ( version_compare( $current_version, '2.7.0', '<' ) ) {
 				$this->upgrade_to_2_7_0();
+			}
+
+			// Handle upgrade to version 2.10.0.
+			if ( version_compare( $current_version, '2.10.0', '<' ) ) {
+				$this->upgrade_to_2_10_0();
 			}
 		}
 
@@ -1242,6 +1297,30 @@ class Apple_News {
 			// Save our changes.
 			$theme_object->save();
 		}
+	}
+
+	/**
+	 * Upgrades settings and data formats to be compatible with version 2.10.0.
+	 */
+	public function upgrade_to_2_10_0(): void {
+		$settings = get_option( self::$option_name );
+
+		if ( empty( $settings['api_channel_2'] ) ) {
+			return;
+		}
+
+		// The api_*_2 settings stay in place so that downgrading to an earlier version keeps working.
+		update_option(
+			'apple_news_channels',
+			[
+				'secondary' => [
+					'label'   => 'Secondary',
+					'channel' => $settings['api_channel_2'],
+					'key'     => $settings['api_key_2'] ?? '',
+					'secret'  => $settings['api_secret_2'] ?? '',
+				],
+			]
+		);
 	}
 
 	/**
