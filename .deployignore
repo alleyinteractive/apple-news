@@ -4,6 +4,7 @@
 # Directories
 .git
 assets/js/admin-settings
+assets/js/channel-settings
 assets/js/components
 assets/js/config
 assets/js/pluginsidebar
