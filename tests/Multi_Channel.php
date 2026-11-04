@@ -153,6 +153,38 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Channel rows posted to any other admin request are ignored.
+	 */
+	public function test_channel_rows_without_settings_form_action_are_ignored(): void {
+		$this->become_admin();
+		$_POST = [
+			'apple_news_channels_submitted' => '1',
+			'apple_news_channels'           => [],
+		];
+
+		new \Admin_Apple_Settings_Section_API( 'apple-news-options' );
+
+		$this->assertSame( [ 'secondary' ], array_keys( Apple_News_Channels::get_channels() ) );
+	}
+
+	/**
+	 * A user who can't manage Apple News settings can't change the channels, even with a valid nonce.
+	 */
+	public function test_channel_rows_from_user_without_settings_capability_are_ignored(): void {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+		$_REQUEST['action']   = 'apple_news_options';
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'apple_news_options' );
+		$_POST                = [
+			'apple_news_channels_submitted' => '1',
+			'apple_news_channels'           => [],
+		];
+
+		new \Admin_Apple_Settings_Section_API( 'apple-news-options' );
+
+		$this->assertSame( [ 'secondary' ], array_keys( Apple_News_Channels::get_channels() ) );
+	}
+
+	/**
 	 * The plugin registers no per-channel post meta, since articles keep one ID whatever their channel.
 	 */
 	public function test_no_per_channel_post_meta_is_registered(): void {
