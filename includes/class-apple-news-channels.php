@@ -4,14 +4,14 @@
  *
  * Contains helper methods for multi-channel support.
  *
- * @since 2.7.0
+ * @since 2.10.0
  * @package Apple_News
  */
 
 /**
  * Helper class for multi-channel functionality.
  *
- * @since 2.7.0
+ * @since 2.10.0
  */
 class Apple_News_Channels {
 
