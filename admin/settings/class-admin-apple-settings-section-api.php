@@ -150,15 +150,15 @@ class Admin_Apple_Settings_Section_API extends Admin_Apple_Settings_Section {
 			return;
 		}
 
+		// An empty channel list submits no rows, so the marker field tells it apart from a form without the channel rows.
+		if ( empty( $_POST['apple_news_channels_submitted'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			return;
+		}
+
 		check_admin_referer( $this->save_action );
 
 		/** This filter is documented in admin/class-admin-apple-settings.php */
 		if ( ! current_user_can( apply_filters( 'apple_news_settings_capability', 'manage_options' ) ) ) {
-			return;
-		}
-
-		// An empty channel list submits no rows, so the marker field tells it apart from a form without the channel rows.
-		if ( empty( $_POST['apple_news_channels_submitted'] ) ) {
 			return;
 		}
 
