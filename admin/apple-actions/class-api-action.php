@@ -48,6 +48,10 @@ abstract class API_Action extends Action {
 	 * @param string $channel_key The channel slug: 'primary' or a slug from Apple_News_Channels::get_channels().
 	 */
 	public function set_channel_key( string $channel_key ): void {
+		if ( $channel_key === $this->channel_key ) {
+			return;
+		}
+
 		$this->channel_key = $channel_key;
 
 		// Reset API instance so it uses new credentials.

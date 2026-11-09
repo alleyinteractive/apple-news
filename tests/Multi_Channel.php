@@ -295,6 +295,31 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Setting the channel key the action already has keeps its API client.
+	 */
+	public function test_setting_same_channel_key_keeps_api(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		$api = new class( 'https://news-api.apple.com', new \Apple_Push_API\Credentials( 'k', 's' ) ) extends \Apple_Push_API\API {
+			/**
+			 * Returns a canned article.
+			 *
+			 * @param string $article_id The article ID.
+			 * @return object
+			 */
+			public function get_article( $article_id ) {
+				return (object) [ 'data' => (object) [ 'id' => $article_id ] ];
+			}
+		};
+
+		$action = new Get( $this->settings, $post_id );
+		$action->set_api( $api );
+		$action->set_channel_key( Apple_News_Channels::get_channel_for_post( $post_id ) );
+
+		$this->assertSame( 'article-1', $action->perform()->data->id );
+	}
+
+	/**
 	 * Clears the form submission a test may have set up.
 	 */
 	public function tearDown(): void {
