@@ -128,10 +128,13 @@ class Apple_News_Channels {
 	/**
 	 * Replace the extra channels with the rows submitted from the settings screen.
 	 *
+	 * A row without a secret keeps the one already saved for its channel.
+	 *
 	 * @param array<int, array<string, string>> $rows Rows with label, channel, key and secret.
 	 */
 	public static function save_channels( array $rows ): void {
 		$primary_id = self::get_primary_channel_id();
+		$saved      = self::get_channels();
 		$channels   = [];
 		foreach ( $rows as $row ) {
 			$channel_id = sanitize_text_field( $row['channel'] ?? '' );
@@ -144,9 +147,14 @@ class Apple_News_Channels {
 				'key'    => sanitize_text_field( $row['key'] ?? '' ),
 				'secret' => sanitize_text_field( $row['secret'] ?? '' ),
 			];
+
+			// The settings screen never prints a saved secret, so a row comes back without one unless a new .papi was loaded.
+			if ( '' === $channels[ $channel_id ]['secret'] ) {
+				$channels[ $channel_id ]['secret'] = $saved[ $channel_id ]['secret'] ?? '';
+			}
 		}
 
-		foreach ( array_keys( array_merge( self::get_channels(), $channels ) ) as $channel_id ) {
+		foreach ( array_keys( array_merge( $saved, $channels ) ) as $channel_id ) {
 			delete_transient( self::get_sections_transient_key( (string) $channel_id ) );
 			delete_transient( self::get_channel_transient_key( (string) $channel_id ) );
 		}

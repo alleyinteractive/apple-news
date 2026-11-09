@@ -121,6 +121,53 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * The channel rows never print a saved secret.
+	 */
+	public function test_api_settings_do_not_print_channel_secret(): void {
+		ob_start();
+		( new \Admin_Apple_Settings_Section_API( 'apple-news-options' ) )->after_section();
+		$html = ob_get_clean();
+
+		$this->assertStringNotContainsString( 'baz2', $html );
+	}
+
+	/**
+	 * A row submitted without a secret keeps the channel's saved one.
+	 */
+	public function test_save_channels_keeps_saved_secret_when_none_submitted(): void {
+		Apple_News_Channels::save_channels(
+			[
+				[
+					'label'   => 'Secondary',
+					'channel' => 'foo2',
+					'key'     => 'bar2',
+					'secret'  => '',
+				],
+			]
+		);
+
+		$this->assertSame( 'baz2', Apple_News_Channels::get_channels()['foo2']['secret'] );
+	}
+
+	/**
+	 * A row submitted with a new secret replaces the saved one.
+	 */
+	public function test_save_channels_replaces_secret_when_submitted(): void {
+		Apple_News_Channels::save_channels(
+			[
+				[
+					'label'   => 'Secondary',
+					'channel' => 'foo2',
+					'key'     => 'bar2',
+					'secret'  => 'new-secret',
+				],
+			]
+		);
+
+		$this->assertSame( 'new-secret', Apple_News_Channels::get_channels()['foo2']['secret'] );
+	}
+
+	/**
 	 * The channel rows can render more than once in a request.
 	 */
 	public function test_api_settings_render_channel_rows_twice(): void {

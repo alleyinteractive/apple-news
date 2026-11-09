@@ -28,7 +28,7 @@ if ( ! function_exists( 'apple_news_channel_row' ) ) {
 				<textarea class="apple-news-channel-papi-input" aria-label="<?php esc_attr_e( 'Channel configuration file contents', 'apple-news' ); ?>"></textarea>
 				<input type="hidden" class="apple-news-channel-id" name="<?php echo esc_attr( $name . '[channel]' ); ?>" value="<?php echo esc_attr( $channel_id ); ?>" />
 				<input type="hidden" class="apple-news-channel-key" name="<?php echo esc_attr( $name . '[key]' ); ?>" value="<?php echo esc_attr( $channel['key'] ?? '' ); ?>" />
-				<input type="hidden" class="apple-news-channel-secret" name="<?php echo esc_attr( $name . '[secret]' ); ?>" value="<?php echo esc_attr( $channel['secret'] ?? '' ); ?>" />
+				<input type="hidden" class="apple-news-channel-secret" name="<?php echo esc_attr( $name . '[secret]' ); ?>" value="" />
 				<?php if ( '' !== $channel_id ) : ?>
 					<p class="description">
 						<?php
