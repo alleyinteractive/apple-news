@@ -454,18 +454,79 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
-	 * An article isn't updated through a different channel from the one it was published on.
+	 * A post with an article stays on the article's channel when the filter now picks another one.
 	 */
-	public function test_update_is_refused_when_channel_changed(): void {
+	public function test_channel_for_post_prefers_article_channel(): void {
 		$post_id = self::factory()->post->create();
 		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
-		update_post_meta( $post_id, 'apple_news_api_channel', 'foo' );
-		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
+		update_post_meta( $post_id, 'apple_news_api_channel', 'foo2' );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo' );
 
-		$this->expectException( \Apple_Actions\Action_Exception::class );
-		$this->expectExceptionMessage( 'was published to the Primary Channel' );
+		$this->assertSame( 'foo2', Apple_News_Channels::get_channel_for_post( $post_id ) );
+	}
 
-		( new Push( $this->settings, $post_id ) )->perform();
+	/**
+	 * A stored channel without an article left on Apple News doesn't hold the post.
+	 */
+	public function test_channel_for_post_ignores_channel_without_article(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_channel', 'foo2' );
+
+		$this->assertSame( 'foo', Apple_News_Channels::get_channel_for_post( $post_id ) );
+	}
+
+	/**
+	 * Updating an article goes through the channel it was published on, whatever the filter now says.
+	 */
+	public function test_update_uses_article_channel_when_filter_changes(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		update_post_meta( $post_id, 'apple_news_api_channel', 'foo2' );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo' );
+		$sent = [];
+		add_filter(
+			'apple_news_get_args',
+			function ( $args ) use ( &$sent ) {
+				$sent = $args;
+				return $args;
+			}
+		);
+		$this->add_http_response( 'GET', 'https://news-api.apple.com/articles/article-1', wp_json_encode( $this->fake_article_response() ) );
+
+		( new Get( $this->settings, $post_id ) )->perform();
+
+		$this->assertStringContainsString( 'key=bar2;', $sent['headers']['Authorization'] );
+	}
+
+	/**
+	 * Deleting a post's article forgets the channel it was on.
+	 */
+	public function test_delete_forgets_article_channel(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		update_post_meta( $post_id, 'apple_news_api_channel', 'foo2' );
+
+		// add_http_response() answers DELETE with null, which the API client rejects, so the delete would never succeed.
+		add_filter(
+			'pre_http_request',
+			fn ( $preempt, $args ) => 'DELETE' === ( $args['method'] ?? '' )
+				? [
+					'body'     => '',
+					'cookies'  => [],
+					'headers'  => [],
+					'response' => [
+						'code'    => 204,
+						'message' => 'No Content',
+					],
+				]
+				: $preempt,
+			20,
+			2
+		);
+
+		( new Delete( $this->settings, $post_id ) )->perform();
+
+		$this->assertSame( '', get_post_meta( $post_id, 'apple_news_api_channel', true ) );
 	}
 
 	/**

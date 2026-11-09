@@ -55,12 +55,18 @@ class Apple_News_Channels {
 	}
 
 	/**
-	 * Get the ID of the channel a post goes to.
+	 * Get the ID of the channel a post goes to: the one its article is on, if it has one, otherwise the filtered one.
 	 *
 	 * @param int $post_id The post ID.
 	 * @return string The channel ID.
 	 */
 	public static function get_channel_for_post( int $post_id ): string {
+		// An article can only be read, updated or deleted through the channel it was published to.
+		$article_channel = get_post_meta( $post_id, 'apple_news_api_channel', true );
+		if ( is_string( $article_channel ) && '' !== $article_channel && get_post_meta( $post_id, 'apple_news_api_id', true ) ) {
+			return $article_channel;
+		}
+
 		/**
 		 * Filters the channel a post goes to.
 		 *

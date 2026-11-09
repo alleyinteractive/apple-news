@@ -328,19 +328,6 @@ class Push extends API_Action {
 		// If there's an API ID, update, otherwise create.
 		$remote_id = get_post_meta( $this->id, 'apple_news_api_id', true );
 
-		// Articles published before channels were recorded have no stored channel and are updated as before.
-		$article_channel = get_post_meta( $this->id, 'apple_news_api_channel', true );
-		if ( $remote_id && ! empty( $article_channel ) && $article_channel !== $this->get_channel_id() ) {
-			throw new Action_Exception(
-				sprintf(
-					// Translators: 1: label of the channel the article is on, 2: label of the channel the post now belongs to.
-					esc_html__( 'This article was published to the %1$s, but the post now belongs to the %2$s. Delete it from Apple News before publishing it again.', 'apple-news' ),
-					esc_html( \Apple_News_Channels::get_channel_label( $article_channel ) ),
-					esc_html( \Apple_News_Channels::get_channel_label( $this->get_channel_id() ) )
-				)
-			);
-		}
-
 		/**
 		 * Actions to be taken before the article is pushed to Apple News.
 		 *
