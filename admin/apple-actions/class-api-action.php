@@ -35,24 +35,23 @@ abstract class API_Action extends Action {
 	private ?API $api = null;
 
 	/**
-	 * The channel key for this action.
+	 * The ID of the channel this action talks to, or null for the primary channel.
 	 *
-	 * @var string
-	 * @access protected
+	 * @var string|null
 	 */
-	protected string $channel_key = 'primary';
+	protected ?string $channel_id = null;
 
 	/**
-	 * Set the channel key for this action.
+	 * Set the channel this action talks to.
 	 *
-	 * @param string $channel_key The channel slug: 'primary' or a slug from Apple_News_Channels::get_channels().
+	 * @param string|null $channel_id The channel ID, or null for the primary channel.
 	 */
-	public function set_channel_key( string $channel_key ): void {
-		if ( $channel_key === $this->channel_key ) {
+	public function set_channel_id( ?string $channel_id ): void {
+		if ( $channel_id === $this->channel_id ) {
 			return;
 		}
 
-		$this->channel_key = $channel_key;
+		$this->channel_id = $channel_id;
 
 		// Reset API instance so it uses new credentials.
 		$this->api = null;
@@ -86,7 +85,7 @@ abstract class API_Action extends Action {
 	 * @return Credentials
 	 */
 	private function fetch_credentials(): Credentials {
-		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
+		$credentials = \Apple_News_Channels::get_credentials( $this->channel_id, $this->settings );
 
 		return new Credentials( $credentials['key'], $credentials['secret'] );
 	}
@@ -97,7 +96,7 @@ abstract class API_Action extends Action {
 	 * @return string
 	 */
 	protected function get_channel_id(): string {
-		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
+		$credentials = \Apple_News_Channels::get_credentials( $this->channel_id, $this->settings );
 
 		return $credentials['channel'] ?? '';
 	}
@@ -108,7 +107,7 @@ abstract class API_Action extends Action {
 	 * @return bool
 	 */
 	protected function is_api_configuration_valid(): bool {
-		$credentials = \Apple_News_Channels::get_credentials( $this->channel_key, $this->settings );
+		$credentials = \Apple_News_Channels::get_credentials( $this->channel_id, $this->settings );
 
 		if ( empty( $credentials['key'] )
 			|| empty( $credentials['secret'] )

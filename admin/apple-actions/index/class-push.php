@@ -70,7 +70,7 @@ class Push extends API_Action {
 		parent::__construct( $settings );
 		$this->id       = $id;
 		$this->exporter = null;
-		$this->set_channel_key( \Apple_News_Channels::get_channel_for_post( (int) $id ) );
+		$this->set_channel_id( \Apple_News_Channels::get_channel_for_post( (int) $id ) );
 	}
 
 	/**
@@ -307,7 +307,7 @@ class Push extends API_Action {
 		$this->clean_workspace();
 
 		// Get sections for the current channel.
-		$this->sections = Admin_Apple_Sections::get_sections_for_post( $this->id, 'url', $this->channel_key );
+		$this->sections = Admin_Apple_Sections::get_sections_for_post( $this->id, 'url', $this->channel_id );
 
 		// Generate the JSON for the article.
 		[ $json, $bundles, $errors ] = $this->generate_article();
@@ -330,13 +330,13 @@ class Push extends API_Action {
 
 		// Articles published before channels were recorded have no stored channel and are updated as before.
 		$article_channel = get_post_meta( $this->id, 'apple_news_api_channel', true );
-		if ( $remote_id && ! empty( $article_channel ) && $article_channel !== $this->channel_key ) {
+		if ( $remote_id && ! empty( $article_channel ) && $article_channel !== $this->get_channel_id() ) {
 			throw new Action_Exception(
 				sprintf(
 					// Translators: 1: label of the channel the article is on, 2: label of the channel the post now belongs to.
 					esc_html__( 'This article was published to the %1$s, but the post now belongs to the %2$s. Delete it from Apple News before publishing it again.', 'apple-news' ),
 					esc_html( \Apple_News_Channels::get_channel_label( $article_channel ) ),
-					esc_html( \Apple_News_Channels::get_channel_label( $this->channel_key ) )
+					esc_html( \Apple_News_Channels::get_channel_label( $this->get_channel_id() ) )
 				)
 			);
 		}
@@ -427,7 +427,7 @@ class Push extends API_Action {
 			update_post_meta( $this->id, 'apple_news_api_modified_at', sanitize_text_field( $result->data->modifiedAt ) );
 			update_post_meta( $this->id, 'apple_news_api_share_url', sanitize_text_field( $result->data->shareUrl ) );
 			update_post_meta( $this->id, 'apple_news_api_revision', sanitize_text_field( $result->data->revision ) );
-			update_post_meta( $this->id, 'apple_news_api_channel', $this->channel_key );
+			update_post_meta( $this->id, 'apple_news_api_channel', $this->get_channel_id() );
 
 			// If it's marked as deleted, remove the mark. Ignore otherwise.
 			delete_post_meta( $this->id, 'apple_news_api_deleted' );
@@ -603,7 +603,7 @@ class Push extends API_Action {
 			return;
 		}
 
-		$this->sections              = Admin_Apple_Sections::get_sections_for_post( $post_id, 'url', $this->channel_key );
+		$this->sections              = Admin_Apple_Sections::get_sections_for_post( $post_id, 'url', $this->channel_id );
 		[ $json, $bundles, $errors ] = $this->generate_article();
 
 		// Retrieve the metadata using the same method as in the push() function.

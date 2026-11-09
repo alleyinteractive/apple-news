@@ -347,12 +347,12 @@ class Apple_News {
 	 * Determines whether a specific channel is initialized with valid credentials.
 	 *
 	 * @access public
-	 * @param string $channel_key The channel slug: 'primary' or a slug from Apple_News_Channels::get_channels().
+	 * @param string|null $channel_id Optional. The channel ID. Defaults to the primary channel.
 	 * @return bool True if the channel is initialized, false if not.
 	 */
-	public static function is_channel_initialized( string $channel_key = 'primary' ): bool {
-		if ( Apple_News_Channels::PRIMARY !== $channel_key ) {
-			$credentials = Apple_News_Channels::get_credentials( $channel_key );
+	public static function is_channel_initialized( ?string $channel_id = null ): bool {
+		if ( ! Apple_News_Channels::is_primary( $channel_id ) ) {
+			$credentials = Apple_News_Channels::get_credentials( $channel_id );
 
 			return ! empty( $credentials['channel'] )
 				&& ! empty( $credentials['key'] )
@@ -376,12 +376,12 @@ class Apple_News {
 	 * Returns new WP_Error if uninitialized.
 	 *
 	 * @access public
-	 * @param string|null $channel_key Optional. The channel key to check. Defaults to null (primary).
+	 * @param string|null $channel_id Optional. The channel ID to check. Defaults to null, which checks that the plugin has any API settings.
 	 * @return WP_Error|null error if uninitialized.
 	 */
-	public static function has_uninitialized_error( ?string $channel_key = null ): WP_Error|null {
+	public static function has_uninitialized_error( ?string $channel_id = null ): WP_Error|null {
 		// If no channel specified, use the standard is_initialized check for backward compatibility.
-		if ( null === $channel_key ) {
+		if ( null === $channel_id ) {
 			if ( ! self::is_initialized() ) {
 				return new WP_Error(
 					'apple_news_bad_operation',
@@ -395,8 +395,8 @@ class Apple_News {
 		}
 
 		// Channel-specific check.
-		if ( ! self::is_channel_initialized( $channel_key ) ) {
-			$channel_label = \Apple_News_Channels::get_channel_label( $channel_key );
+		if ( ! self::is_channel_initialized( $channel_id ) ) {
+			$channel_label = \Apple_News_Channels::get_channel_label( $channel_id );
 			return new WP_Error(
 				'apple_news_channel_not_configured',
 				sprintf(
@@ -1309,18 +1309,36 @@ class Apple_News {
 			return;
 		}
 
+		$secondary_id = (string) $settings['api_channel_2'];
+
 		// The api_*_2 settings stay in place so that downgrading to an earlier version keeps working.
 		update_option(
 			'apple_news_channels',
 			[
-				'secondary' => [
-					'label'   => 'Secondary',
-					'channel' => $settings['api_channel_2'],
-					'key'     => $settings['api_key_2'] ?? '',
-					'secret'  => $settings['api_secret_2'] ?? '',
+				$secondary_id => [
+					'label'  => 'Secondary',
+					'key'    => $settings['api_key_2'] ?? '',
+					'secret' => $settings['api_secret_2'] ?? '',
 				],
 			]
 		);
+
+		// Automation rules saved before 2.10.0 name their channel 'primary' or 'secondary'.
+		$rules = get_option( \Apple_News\Admin\Automation::OPTION_KEY );
+		if ( ! is_array( $rules ) ) {
+			return;
+		}
+
+		foreach ( $rules as &$rule ) {
+			if ( 'secondary' === ( $rule['channel'] ?? '' ) ) {
+				$rule['channel'] = $secondary_id;
+			} elseif ( 'primary' === ( $rule['channel'] ?? '' ) ) {
+				$rule['channel'] = '';
+			}
+		}
+		unset( $rule );
+
+		update_option( \Apple_News\Admin\Automation::OPTION_KEY, $rules );
 	}
 
 	/**

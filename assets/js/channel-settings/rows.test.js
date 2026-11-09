@@ -4,7 +4,7 @@
 import { addChannelRow, applyPapiToRow, removeChannelRow } from './rows';
 
 const rowHtml = (index) => `<tr class="apple-news-channel-row">
-  <td><input name="apple_news_channels[${index}][slug]" /></td>
+  <td><input name="apple_news_channels[${index}][label]" /></td>
   <td><input type="hidden" class="apple-news-channel-id" name="apple_news_channels[${index}][channel]" />
   <input type="hidden" class="apple-news-channel-key" />
   <input type="hidden" class="apple-news-channel-secret" />
@@ -21,7 +21,7 @@ describe('channel rows', () => {
 
     const rows = document.querySelectorAll('.apple-news-channels tbody tr');
     expect(rows).toHaveLength(2);
-    expect(rows[1].querySelector('input').name).toBe('apple_news_channels[1][slug]');
+    expect(rows[1].querySelector('input').name).toBe('apple_news_channels[1][label]');
   });
 
   it('removes the row a remove button belongs to', () => {

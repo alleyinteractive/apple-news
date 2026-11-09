@@ -47,7 +47,7 @@ class Automation {
 			'type'       => 'object',
 			'properties' => [
 				'channel'  => [
-					'default' => 'primary',
+					'default' => '',
 					'type'    => 'string',
 				],
 				'field'    => [
@@ -271,20 +271,20 @@ class Automation {
 	 */
 	public static function get_automation_for_post( int $post_id ): array {
 		// Get the channel for this post.
-		$post_channel = Apple_News_Channels::get_channel_for_post( $post_id );
+		$post_channel    = Apple_News_Channels::get_channel_for_post( $post_id );
+		$post_is_primary = Apple_News_Channels::is_primary( $post_channel );
 
 		return array_values(
 			array_filter(
 				self::get_automation_rules(),
-				static function ( $rule ) use ( $post_id, $post_channel ): bool {
+				static function ( $rule ) use ( $post_id, $post_channel, $post_is_primary ): bool {
 					// Check if the rule matches the post's taxonomy term.
 					$term_matches = has_term( $rule['term_id'] ?? '', $rule['taxonomy'] ?? '', $post_id );
 
-					// Get the rule's channel, defaulting to 'primary' if not set or empty.
-					$rule_channel = ! empty( $rule['channel'] ) ? $rule['channel'] : Apple_News_Channels::PRIMARY;
-
-					// Check if the rule's channel matches the post's channel.
-					$channel_matches = $rule_channel === $post_channel;
+					// Rules without a channel belong to the primary channel.
+					$channel_matches = empty( $rule['channel'] )
+						? $post_is_primary
+						: $rule['channel'] === $post_channel;
 
 					return $term_matches && $channel_matches;
 				}
@@ -386,19 +386,21 @@ class Automation {
 
 		$channels            = [];
 		$sections_by_channel = [];
-		$channel_keys        = array_merge( [ Apple_News_Channels::PRIMARY ], array_keys( Apple_News_Channels::get_channels() ) );
-		foreach ( $channel_keys as $channel_key ) {
-			$channels[]                          = [
-				'value' => $channel_key,
-				'label' => Apple_News_Channels::get_channel_label( $channel_key ),
+		$primary_channel     = Apple_News_Channels::get_primary_channel_id();
+		$channel_ids         = array_merge( [ $primary_channel ], array_keys( Apple_News_Channels::get_channels() ) );
+		foreach ( $channel_ids as $channel_id ) {
+			$channels[]                         = [
+				'value' => $channel_id,
+				'label' => Apple_News_Channels::get_channel_label( $channel_id ),
 			];
-			$sections_by_channel[ $channel_key ] = Admin_Apple_Sections::get_sections( $channel_key );
+			$sections_by_channel[ $channel_id ] = Admin_Apple_Sections::get_sections( $channel_id );
 		}
 
 		$settings_data = [
 			'channels'            => $channels,
 			'fields'              => self::get_fields(),
 			'multiChannelEnabled' => Apple_News_Channels::is_enabled(),
+			'primaryChannel'      => $primary_channel,
 			'sections'            => $sections_by_channel,
 			'taxonomies'          => get_taxonomies( [ 'public' => 'true' ] ),
 			'themes'              => Theme::get_registry(),

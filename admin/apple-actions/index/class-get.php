@@ -36,7 +36,7 @@ class Get extends API_Action {
 	public function __construct( $settings, $id ) {
 		parent::__construct( $settings );
 		$this->id = $id;
-		$this->set_channel_key( \Apple_News_Channels::get_channel_for_post( (int) $id ) );
+		$this->set_channel_id( \Apple_News_Channels::get_channel_for_post( (int) $id ) );
 	}
 
 	/**

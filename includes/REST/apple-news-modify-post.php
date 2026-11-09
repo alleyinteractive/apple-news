@@ -89,10 +89,10 @@ function modify_post( $post_id, $operation ): array|WP_Error {
 		);
 	}
 
-	$channel_key = \Apple_News_Channels::get_channel_for_post( $post_id );
+	$channel_id = \Apple_News_Channels::get_channel_for_post( $post_id );
 
 	// Ensure the specific channel is initialized.
-	$channel_error = \Apple_News::has_uninitialized_error( $channel_key );
+	$channel_error = \Apple_News::has_uninitialized_error( $channel_id );
 	if ( is_wp_error( $channel_error ) ) {
 		return $channel_error;
 	}
@@ -143,7 +143,7 @@ function modify_post( $post_id, $operation ): array|WP_Error {
 
 		return [
 			'notifications' => $notifications,
-			'publishState'  => Admin_Apple_News::get_post_status( $post_id, $channel_key ),
+			'publishState'  => Admin_Apple_News::get_post_status( $post_id, $channel_id ),
 		];
 	} catch ( Action_Exception $e ) {
 		// Return the error message in the JSON response also.

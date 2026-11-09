@@ -24,6 +24,7 @@ function AdminSettings() {
   const {
     fields,
     multiChannelEnabled,
+    primaryChannel,
   } = AppleNewsAutomationConfig;
 
   const showChannelColumn = multiChannelEnabled;
@@ -52,7 +53,7 @@ function AdminSettings() {
     updateSettings([
       ...(ruleList ?? []),
       {
-        channel: 'primary',
+        channel: primaryChannel,
         field,
         taxonomy: '',
         term_id: 0,
@@ -107,7 +108,7 @@ function AdminSettings() {
     return (
       <Rule
         busy={busy}
-        channel={item.channel || 'primary'}
+        channel={item.channel || primaryChannel}
         field={item.field}
         key={index} // eslint-disable-line react/no-array-index-key
         onDelete={() => updateSettings(deleteAtIndex(ruleList, index))}

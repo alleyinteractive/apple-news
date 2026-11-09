@@ -26,38 +26,34 @@ class Multi_Channel extends TestCase {
 		update_option(
 			'apple_news_channels',
 			[
-				'secondary' => [
-					'label'   => 'Secondary',
-					'channel' => 'foo2',
-					'key'     => 'bar2',
-					'secret'  => 'baz2',
+				'foo2' => [
+					'label'  => 'Secondary',
+					'key'    => 'bar2',
+					'secret' => 'baz2',
 				],
 			]
 		);
 	}
 
 	/**
-	 * Saved channel rows are keyed by slug, and incomplete rows or the reserved primary slug are dropped.
+	 * Saved channel rows are keyed by channel ID, and rows without one or repeating the primary channel are dropped.
 	 */
 	public function test_save_channels_keeps_valid_rows(): void {
 		Apple_News_Channels::save_channels(
 			[
 				[
-					'slug'    => 'Sports Desk',
 					'label'   => 'Sports <b>Desk</b>',
 					'channel' => 'foo3',
 					'key'     => 'bar3',
 					'secret'  => 'baz3',
 				],
 				[
-					'slug'    => 'primary',
 					'label'   => 'Clash',
-					'channel' => 'x',
+					'channel' => 'foo',
 					'key'     => 'y',
 					'secret'  => 'z',
 				],
 				[
-					'slug'    => 'empty',
 					'label'   => 'Empty',
 					'channel' => '',
 					'key'     => '',
@@ -68,11 +64,10 @@ class Multi_Channel extends TestCase {
 
 		$this->assertSame(
 			[
-				'sportsdesk' => [
-					'label'   => 'Sports Desk',
-					'channel' => 'foo3',
-					'key'     => 'bar3',
-					'secret'  => 'baz3',
+				'foo3' => [
+					'label'  => 'Sports Desk',
+					'key'    => 'bar3',
+					'secret' => 'baz3',
 				],
 			],
 			Apple_News_Channels::get_channels()
@@ -99,7 +94,6 @@ class Multi_Channel extends TestCase {
 			'apple_news_channels_submitted' => '1',
 			'apple_news_channels'           => [
 				[
-					'slug'    => 'sports',
 					'label'   => 'Sports',
 					'channel' => 'foo3',
 					'key'     => 'bar3',
@@ -110,7 +104,7 @@ class Multi_Channel extends TestCase {
 
 		( new \Admin_Apple_Settings_Section_API( 'apple-news-options' ) )->save_settings();
 
-		$this->assertSame( [ 'sports' ], array_keys( Apple_News_Channels::get_channels() ) );
+		$this->assertSame( [ 'foo3' ], array_keys( Apple_News_Channels::get_channels() ) );
 	}
 
 	/**
@@ -123,7 +117,7 @@ class Multi_Channel extends TestCase {
 
 		$this->assertStringContainsString( 'name="apple_news_channels_submitted"', $html );
 		$this->assertStringContainsString( 'name="apple_news_channels[0][label]" value="Secondary"', $html );
-		$this->assertStringContainsString( 'name="apple_news_channels[0][slug]" value="secondary" readonly', $html );
+		$this->assertStringContainsString( 'name="apple_news_channels[0][channel]" value="foo2"', $html );
 	}
 
 	/**
@@ -178,7 +172,7 @@ class Multi_Channel extends TestCase {
 
 		new \Admin_Apple_Settings_Section_API( 'apple-news-options' );
 
-		$this->assertSame( [ 'secondary' ], array_keys( Apple_News_Channels::get_channels() ) );
+		$this->assertSame( [ 'foo2' ], array_keys( Apple_News_Channels::get_channels() ) );
 	}
 
 	/**
@@ -195,7 +189,7 @@ class Multi_Channel extends TestCase {
 
 		new \Admin_Apple_Settings_Section_API( 'apple-news-options' );
 
-		$this->assertSame( [ 'secondary' ], array_keys( Apple_News_Channels::get_channels() ) );
+		$this->assertSame( [ 'foo2' ], array_keys( Apple_News_Channels::get_channels() ) );
 	}
 
 	/**
@@ -221,7 +215,7 @@ class Multi_Channel extends TestCase {
 			wp_json_encode( [ 'data' => [ [ 'id' => 'sports-section' ] ] ] )
 		);
 
-		$sections = \Admin_Apple_Sections::get_sections( 'sports' );
+		$sections = \Admin_Apple_Sections::get_sections( 'foo3' );
 
 		$this->assertSame( 'sports-section', $sections[0]->id );
 	}
@@ -232,21 +226,21 @@ class Multi_Channel extends TestCase {
 	public function test_automation_page_lists_channels_from_list(): void {
 		$this->add_sports_channel();
 		set_transient( 'apple_news_sections', [ 'primary-sections' ] );
-		set_transient( 'apple_news_sections_secondary', [ 'secondary-sections' ] );
-		set_transient( 'apple_news_sections_sports', [ 'sports-sections' ] );
+		set_transient( 'apple_news_sections_foo2', [ 'secondary-sections' ] );
+		set_transient( 'apple_news_sections_foo3', [ 'sports-sections' ] );
 
 		ob_start();
 		Automation::render_submenu_page();
 		ob_end_clean();
 		$data = wp_scripts()->get_data( 'apple-news-admin-settings', 'data' );
 
-		$this->assertStringContainsString( '{"value":"sports","label":"Sports"}', $data );
-		$this->assertStringContainsString( '"sports":["sports-sections"]', $data );
-		$this->assertStringContainsString( '"secondary":["secondary-sections"]', $data );
+		$this->assertStringContainsString( '{"value":"foo3","label":"Sports"}', $data );
+		$this->assertStringContainsString( '"foo3":["sports-sections"]', $data );
+		$this->assertStringContainsString( '"foo2":["secondary-sections"]', $data );
 	}
 
 	/**
-	 * Adds a "sports" channel next to the "secondary" one.
+	 * Adds a third channel next to the secondary one.
 	 */
 	private function add_sports_channel(): void {
 		update_option(
@@ -254,11 +248,10 @@ class Multi_Channel extends TestCase {
 			array_merge(
 				get_option( 'apple_news_channels' ),
 				[
-					'sports' => [
-						'label'   => 'Sports',
-						'channel' => 'foo3',
-						'key'     => 'bar3',
-						'secret'  => 'baz3',
+					'foo3' => [
+						'label'  => 'Sports',
+						'key'    => 'bar3',
+						'secret' => 'baz3',
 					],
 				]
 			)
@@ -272,16 +265,15 @@ class Multi_Channel extends TestCase {
 		update_option(
 			'apple_news_channels',
 			[
-				'sports' => [
-					'label'   => 'Sports',
-					'channel' => 'foo3',
-					'key'     => 'bar3',
-					'secret'  => 'baz3',
+				'foo3' => [
+					'label'  => 'Sports',
+					'key'    => 'bar3',
+					'secret' => 'baz3',
 				],
 			]
 		);
 
-		$this->assertSame( 'Sports', Apple_News_Channels::get_channel_label( 'sports' ) );
+		$this->assertSame( 'Sports', Apple_News_Channels::get_channel_label( 'foo3' ) );
 	}
 
 	/**
@@ -328,7 +320,7 @@ class Multi_Channel extends TestCase {
 
 		$action = new Get( $this->settings, $post_id );
 		$action->set_api( $api );
-		$action->set_channel_key( Apple_News_Channels::get_channel_for_post( $post_id ) );
+		$action->set_channel_id( Apple_News_Channels::get_channel_for_post( $post_id ) );
 
 		$this->assertSame( 'article-1', $action->perform()->data->id );
 	}
@@ -348,11 +340,11 @@ class Multi_Channel extends TestCase {
 	 *
 	 * @param int         $post_id     The post to push.
 	 * @param string      $channel_id  The Apple channel ID the request is expected to target.
-	 * @param string|null $channel_key The channel key to set on the action, or null to leave the default.
+	 * @param string|null $set_channel The channel ID to set on the action, or null to leave the default.
 	 *
 	 * @return array The arguments of the request sent to Apple.
 	 */
-	private function push_to_channel( int $post_id, string $channel_id, ?string $channel_key = null ): array {
+	private function push_to_channel( int $post_id, string $channel_id, ?string $set_channel = null ): array {
 		$this->add_http_response(
 			'POST',
 			'https://news-api.apple.com/channels/' . $channel_id . '/articles',
@@ -365,8 +357,8 @@ class Multi_Channel extends TestCase {
 		);
 
 		$action = new Push( $this->settings, $post_id );
-		if ( null !== $channel_key ) {
-			$action->set_channel_key( $channel_key );
+		if ( null !== $set_channel ) {
+			$action->set_channel_id( $set_channel );
 		}
 		$action->perform();
 
@@ -396,16 +388,15 @@ class Multi_Channel extends TestCase {
 		update_option(
 			'apple_news_channels',
 			[
-				'sports' => [
-					'label'   => 'Sports',
-					'channel' => 'foo3',
-					'key'     => 'bar3',
-					'secret'  => 'baz3',
+				'foo3' => [
+					'label'  => 'Sports',
+					'key'    => 'bar3',
+					'secret' => 'baz3',
 				],
 			]
 		);
 
-		$this->assertTrue( \Apple_News::is_channel_initialized( 'sports' ) );
+		$this->assertTrue( \Apple_News::is_channel_initialized( 'foo3' ) );
 		$this->assertFalse( \Apple_News::is_channel_initialized( 'missing' ) );
 	}
 
@@ -415,7 +406,7 @@ class Multi_Channel extends TestCase {
 	public function test_channel_for_post_defaults_to_primary(): void {
 		$post_id = self::factory()->post->create();
 
-		$this->assertSame( Apple_News_Channels::PRIMARY, Apple_News_Channels::get_channel_for_post( $post_id ) );
+		$this->assertSame( 'foo', Apple_News_Channels::get_channel_for_post( $post_id ) );
 	}
 
 	/**
@@ -423,28 +414,28 @@ class Multi_Channel extends TestCase {
 	 */
 	public function test_channel_for_post_follows_filter(): void {
 		$post_id = self::factory()->post->create();
-		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
 
-		$this->assertSame( Apple_News_Channels::SECONDARY, Apple_News_Channels::get_channel_for_post( $post_id ) );
+		$this->assertSame( 'foo2', Apple_News_Channels::get_channel_for_post( $post_id ) );
 	}
 
 	/**
-	 * A push with the secondary channel key uses the secondary channel ID and key.
+	 * A push to the secondary channel uses the secondary channel ID and key.
 	 */
 	public function test_push_with_secondary_key_uses_secondary_credentials(): void {
 		$post_id = self::factory()->post->create();
 
-		$args = $this->push_to_channel( $post_id, 'foo2', Apple_News_Channels::SECONDARY );
+		$args = $this->push_to_channel( $post_id, 'foo2', 'foo2' );
 
 		$this->assertStringContainsString( 'key=bar2;', $args['headers']['Authorization'] );
 	}
 
 	/**
-	 * A push that never sets a channel key goes to the post's channel.
+	 * A push that never sets a channel goes to the post's channel.
 	 */
 	public function test_push_without_channel_key_uses_post_channel(): void {
 		$post_id = self::factory()->post->create();
-		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
 
 		$args = $this->push_to_channel( $post_id, 'foo2' );
 
@@ -457,9 +448,9 @@ class Multi_Channel extends TestCase {
 	public function test_push_records_article_channel(): void {
 		$post_id = self::factory()->post->create();
 
-		$this->push_to_channel( $post_id, 'foo2', Apple_News_Channels::SECONDARY );
+		$this->push_to_channel( $post_id, 'foo2', 'foo2' );
 
-		$this->assertSame( Apple_News_Channels::SECONDARY, get_post_meta( $post_id, 'apple_news_api_channel', true ) );
+		$this->assertSame( 'foo2', get_post_meta( $post_id, 'apple_news_api_channel', true ) );
 	}
 
 	/**
@@ -468,8 +459,8 @@ class Multi_Channel extends TestCase {
 	public function test_update_is_refused_when_channel_changed(): void {
 		$post_id = self::factory()->post->create();
 		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
-		update_post_meta( $post_id, 'apple_news_api_channel', Apple_News_Channels::PRIMARY );
-		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		update_post_meta( $post_id, 'apple_news_api_channel', 'foo' );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
 
 		$this->expectException( \Apple_Actions\Action_Exception::class );
 		$this->expectExceptionMessage( 'was published to the Primary Channel' );
@@ -483,7 +474,7 @@ class Multi_Channel extends TestCase {
 	public function test_delete_uses_post_channel(): void {
 		$post_id = self::factory()->post->create();
 		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
-		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
 		$sent = [];
 		add_filter(
 			'apple_news_delete_args',
@@ -505,7 +496,7 @@ class Multi_Channel extends TestCase {
 	public function test_get_uses_post_channel(): void {
 		$post_id = self::factory()->post->create();
 		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
-		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
 		$sent = [];
 		add_filter(
 			'apple_news_get_args',
@@ -527,7 +518,7 @@ class Multi_Channel extends TestCase {
 	public function test_rest_publish_ignores_requested_channel(): void {
 		$this->become_admin();
 		$post_id = self::factory()->post->create();
-		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
 		$this->add_http_response(
 			'POST',
 			'https://news-api.apple.com/channels/foo2/articles',
@@ -543,7 +534,7 @@ class Multi_Channel extends TestCase {
 			rest_url( '/apple-news/v1/publish' ),
 			[
 				'id'      => $post_id,
-				'channel' => Apple_News_Channels::PRIMARY,
+				'channel' => 'foo',
 			]
 		)->assertOk();
 
@@ -557,23 +548,22 @@ class Multi_Channel extends TestCase {
 		update_option(
 			'apple_news_channels',
 			[
-				'sports' => [
-					'label'   => 'Sports',
-					'channel' => 'foo3',
-					'key'     => 'bar3',
-					'secret'  => 'baz3',
+				'foo3' => [
+					'label'  => 'Sports',
+					'key'    => 'bar3',
+					'secret' => 'baz3',
 				],
 			]
 		);
 		$post_id = self::factory()->post->create();
 
-		$args = $this->push_to_channel( $post_id, 'foo3', 'sports' );
+		$args = $this->push_to_channel( $post_id, 'foo3', 'foo3' );
 
 		$this->assertStringContainsString( 'key=bar3;', $args['headers']['Authorization'] );
 	}
 
 	/**
-	 * A channel slug that isn't configured has no credentials.
+	 * A channel ID that isn't configured has no credentials.
 	 */
 	public function test_unknown_channel_has_no_credentials(): void {
 		$this->assertSame(
@@ -596,7 +586,7 @@ class Multi_Channel extends TestCase {
 			'apple_news_automation',
 			[
 				[
-					'channel'  => Apple_News_Channels::SECONDARY,
+					'channel'  => 'foo2',
 					'field'    => 'isHidden',
 					'taxonomy' => 'category',
 					'term_id'  => $term['term_id'],
@@ -607,7 +597,7 @@ class Multi_Channel extends TestCase {
 
 		$this->assertSame( [], Automation::get_automation_for_post( $post_id ) );
 
-		add_filter( 'apple_news_channel_for_post', fn () => Apple_News_Channels::SECONDARY );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
 		$this->assertCount( 1, Automation::get_automation_for_post( $post_id ) );
 	}
 

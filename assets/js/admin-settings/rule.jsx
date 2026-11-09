@@ -30,6 +30,7 @@ function Rule({
     channels,
     fields,
     multiChannelEnabled,
+    primaryChannel,
     sections,
     taxonomies,
     themes,
@@ -37,11 +38,9 @@ function Rule({
 
   const showChannelColumn = multiChannelEnabled;
 
-  // Get the current channel value, defaulting to 'primary'.
-  const currentChannel = channel || 'primary';
-
-  // Get sections for the current channel.
-  const channelSections = sections[currentChannel] || sections.primary || [];
+  // Rules without a channel belong to the primary channel.
+  const currentChannel = channel || primaryChannel;
+  const channelSections = sections[currentChannel] || sections[primaryChannel] || [];
 
   let fieldType = '';
   if (field === 'contentGenerationType') {
@@ -235,7 +234,7 @@ function Rule({
 }
 
 Rule.defaultProps = {
-  channel: 'primary',
+  channel: '',
   hideColumns: [],
   hideFieldTypes: [],
 };

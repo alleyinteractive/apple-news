@@ -77,7 +77,7 @@ class Section extends API_Action {
 	 * @return array
 	 */
 	public function get_sections() {
-		$transient_key = \Apple_News_Channels::get_sections_transient_key( $this->channel_key );
+		$transient_key = \Apple_News_Channels::get_sections_transient_key( $this->channel_id );
 		$sections      = get_transient( $transient_key );
 		if ( false === $sections ) {
 			$sections = [];

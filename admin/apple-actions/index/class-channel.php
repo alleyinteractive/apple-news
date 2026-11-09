@@ -26,7 +26,7 @@ class Channel extends API_Action {
 	 * @return object|null An object containing the response from the API or null on failure.
 	 */
 	public function perform() {
-		$transient_key = \Apple_News_Channels::get_channel_transient_key( $this->channel_key );
+		$transient_key = \Apple_News_Channels::get_channel_transient_key( $this->channel_id );
 		$channel       = get_transient( $transient_key );
 
 		if ( false === $channel ) {

@@ -565,11 +565,10 @@ class Apple_News extends TestCase {
 
 		$this->assertSame(
 			[
-				'secondary' => [
-					'label'   => 'Secondary',
-					'channel' => 'channel-two',
-					'key'     => 'key-two',
-					'secret'  => 'secret-two',
+				'channel-two' => [
+					'label'  => 'Secondary',
+					'key'    => 'key-two',
+					'secret' => 'secret-two',
 				],
 			],
 			get_option( 'apple_news_channels' )
@@ -602,7 +601,35 @@ class Apple_News extends TestCase {
 
 		( new \Apple_News() )->action_admin_init();
 
-		$this->assertArrayHasKey( 'secondary', get_option( 'apple_news_channels' ) );
+		$this->assertArrayHasKey( 'channel-two', get_option( 'apple_news_channels' ) );
+	}
+
+	/**
+	 * Tests that the 2.10.0 upgrade points automation rules at channel IDs instead of 'primary' and 'secondary'.
+	 */
+	public function test_upgrade_to_2_10_0_moves_automation_rules_to_channel_ids(): void {
+		$settings                  = get_option( 'apple_news_settings' );
+		$settings['api_channel_2'] = 'channel-two';
+		update_option( 'apple_news_settings', $settings );
+		update_option(
+			'apple_news_automation',
+			[
+				[ 'channel' => 'primary' ],
+				[ 'channel' => 'secondary' ],
+				[ 'field' => 'isHidden' ],
+			]
+		);
+
+		( new \Apple_News() )->upgrade_to_2_10_0();
+
+		$this->assertSame(
+			[
+				[ 'channel' => '' ],
+				[ 'channel' => 'channel-two' ],
+				[ 'field' => 'isHidden' ],
+			],
+			get_option( 'apple_news_automation' )
+		);
 	}
 
 	/**
