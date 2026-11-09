@@ -127,6 +127,20 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * The channel rows can render more than once in a request.
+	 */
+	public function test_api_settings_render_channel_rows_twice(): void {
+		$section = new \Admin_Apple_Settings_Section_API( 'apple-news-options' );
+
+		ob_start();
+		$section->after_section();
+		$section->after_section();
+		$html = ob_get_clean();
+
+		$this->assertSame( 2, substr_count( $html, 'name="apple_news_channels[0][label]"' ) );
+	}
+
+	/**
 	 * The settings page loads the script that manages the channel rows.
 	 */
 	public function test_settings_page_loads_channel_script(): void {
