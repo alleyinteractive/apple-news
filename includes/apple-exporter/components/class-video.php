@@ -114,7 +114,7 @@ class Video extends Component {
 		if ( preg_match( '/poster="([^"]+)"/', $html, $poster ) ) {
 			$still_url = Exporter_Content::format_src_url( $poster[1] );
 			if ( ! empty( $still_url ) ) {
-				$values['#still_url#'] = $this->maybe_bundle_source( $poster[1] );
+				$values['#still_url#'] = $this->maybe_bundle_source( $still_url );
 			}
 		}
 

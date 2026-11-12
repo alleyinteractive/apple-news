@@ -120,6 +120,33 @@ HTML;
 	}
 
 	/**
+	 * Ensure that a root-relative poster is bundled as an absolute URL, never as a local path.
+	 */
+	public function test_relative_poster_is_bundled_as_url() {
+		$this->settings->use_remote_images = 'no';
+
+		$sources = [];
+		add_filter(
+			'apple_news_bundle_source',
+			function ( $source ) use ( &$sources ) {
+				$sources[] = $source;
+
+				return $source;
+			}
+		);
+
+		$component = $this->get_component(
+			'<video poster="/etc/passwd" src="https://www.example.org/wp-content/uploads/2017/02/example-video.mp4"></video>'
+		);
+		$component->to_array();
+
+		$this->assertNotEmpty( $sources );
+		foreach ( $sources as $source ) {
+			$this->assertStringStartsWith( 'http', $source );
+		}
+	}
+
+	/**
 	 * A function to get a basic component for testing using defined content.
 	 *
 	 * @param string $content HTML for the component.
