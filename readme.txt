@@ -5,7 +5,7 @@ Tags: publish, apple, news, iOS
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 8.3
-Stable tag: 2.9.1
+Stable tag: 2.9.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl.html
 
@@ -44,6 +44,10 @@ Please visit our [wiki](https://github.com/alleyinteractive/apple-news/wiki) for
 4. Manage posts in Apple News right from the post edit screen
 
 == Changelog ==
+
+= 2.9.2 =
+
+* Security: Restricts who can modify Apple News sync metadata through the REST API, stops exposing it to users who cannot edit the post, and hardens how remote and local image sources are fetched when bundling images.
 
 = 2.9.1 =
 

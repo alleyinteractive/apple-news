@@ -102,19 +102,24 @@ class Admin_Apple_News extends Apple_News {
 			// Define custom postmeta fields to register.
 			$postmeta = [
 				'apple_news_api_created_at'          => [
-					'default' => '',
+					'auth_callback' => '__return_false',
+					'default'       => '',
 				],
 				'apple_news_api_id'                  => [
-					'default' => '',
+					'auth_callback' => '__return_false',
+					'default'       => '',
 				],
 				'apple_news_api_modified_at'         => [
-					'default' => '',
+					'auth_callback' => '__return_false',
+					'default'       => '',
 				],
 				'apple_news_api_revision'            => [
-					'default' => '',
+					'auth_callback' => '__return_false',
+					'default'       => '',
 				],
 				'apple_news_api_share_url'           => [
-					'default' => '',
+					'auth_callback' => '__return_false',
+					'default'       => '',
 				],
 				'apple_news_cover_media_provider'    => [
 					'default' => 'image',
@@ -238,6 +243,12 @@ class Admin_Apple_News extends Apple_News {
 						10,
 						2
 					);
+					add_filter(
+						'rest_prepare_' . $post_type,
+						[ $this, 'filter_rest_prepare_post' ],
+						10,
+						2
+					);
 				}
 			}
 		}
@@ -284,6 +295,42 @@ class Admin_Apple_News extends Apple_News {
 
 		// Overwrite the meta property with the new value.
 		$request->set_param( 'meta', $new_meta );
+	}
+
+	/**
+	 * A callback function for the rest_prepare_{$this->post_type} filter hook.
+	 *
+	 * Removes the Apple News sync meta (including the remote article ID) from REST
+	 * responses for users who are not allowed to edit the post, so the values are
+	 * not exposed publicly.
+	 *
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Post          $post     The post object.
+	 * @return WP_REST_Response The filtered response object.
+	 */
+	public function filter_rest_prepare_post( $response, $post ) {
+		if ( ! $response instanceof \WP_REST_Response || ! $post instanceof \WP_Post ) {
+			return $response;
+		}
+
+		if ( current_user_can( 'edit_post', $post->ID ) ) {
+			return $response;
+		}
+
+		$data = $response->get_data();
+		if ( empty( $data['meta'] ) || ! is_array( $data['meta'] ) ) {
+			return $response;
+		}
+
+		foreach ( array_keys( $data['meta'] ) as $key ) {
+			if ( str_starts_with( $key, 'apple_news_api_' ) ) {
+				unset( $data['meta'][ $key ] );
+			}
+		}
+
+		$response->set_data( $data );
+
+		return $response;
 	}
 
 	/**

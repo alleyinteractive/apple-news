@@ -119,6 +119,40 @@ class MIME_Builder {
 	}
 
 	/**
+	 * Determines whether a path refers to an existing local file inside the uploads directory.
+	 *
+	 * Bundle sources are normally URLs, so local files are only read when they live in
+	 * the uploads directory. This prevents arbitrary files on the server from being read
+	 * and uploaded to Apple News.
+	 *
+	 * @param string $filepath The path to check.
+	 * @return bool True if the path is an existing file inside the uploads directory, false if not.
+	 */
+	private function is_allowed_local_path( $filepath ): bool {
+		if ( ! is_string( $filepath ) || '' === $filepath ) {
+			return false;
+		}
+
+		// A result of 2 means a Windows drive path (e.g. C:\...), which is valid on Windows Server.
+		if ( ! in_array( validate_file( $filepath ), [ 0, 2 ], true ) ) {
+			return false;
+		}
+
+		$real_path = realpath( $filepath );
+		$uploads   = wp_get_upload_dir();
+		$base_dir  = ! empty( $uploads['basedir'] ) ? realpath( $uploads['basedir'] ) : false;
+		if ( false === $real_path || false === $base_dir || ! is_file( $real_path ) ) {
+			return false;
+		}
+
+		// Normalize separators, since realpath() returns backslashes on Windows.
+		$real_path = wp_normalize_path( $real_path );
+		$base_dir  = wp_normalize_path( $base_dir );
+
+		return str_starts_with( $real_path, trailingslashit( $base_dir ) );
+	}
+
+	/**
 	 * Add file contents to the MIME request.
 	 *
 	 * @param string $filepath The filepath of the file to add.
@@ -135,12 +169,12 @@ class MIME_Builder {
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
 			$request = vip_safe_wp_remote_get( $filepath );
 		} else {
-			$request = wp_remote_get( $filepath ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
+			$request = wp_safe_remote_get( $filepath ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 		}
 
 		if ( is_wp_error( $request ) ) {
-			// Try file_get_contents if this is a local path.
-			if ( 0 === validate_file( $filepath ) && file_exists( $filepath ) ) {
+			// Try file_get_contents if this is a local path inside the uploads directory.
+			if ( $this->is_allowed_local_path( $filepath ) ) {
 				$contents = file_get_contents( $filepath ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
 			}
 		} else {
@@ -153,13 +187,11 @@ class MIME_Builder {
 		// If this fails for some reason, try alternate methods.
 		if ( empty( $size ) ) {
 			if ( filter_var( $filepath, FILTER_VALIDATE_URL ) ) {
-				$headers = get_headers( $filepath );
-				foreach ( $headers as $header ) {
-					if ( preg_match( '/Content-Length: ([0-9]+)/i', $header, $matches ) ) {
-						$size = intval( $matches[1] );
-					}
-				}
-			} else {
+				$size = (int) wp_remote_retrieve_header(
+					wp_safe_remote_head( $filepath ),
+					'content-length'
+				);
+			} elseif ( $this->is_allowed_local_path( $filepath ) ) {
 				// This will be the final catch for local files.
 				$size = filesize( $filepath );
 			}
