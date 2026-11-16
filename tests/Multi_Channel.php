@@ -734,6 +734,59 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * Rules saved with the old 'secondary' channel name apply to the channel that was the secondary one.
+	 */
+	public function test_automation_rule_with_secondary_alias_applies_to_old_secondary_channel(): void {
+		$settings                  = get_option( 'apple_news_settings' );
+		$settings['api_channel_2'] = 'foo2';
+		update_option( 'apple_news_settings', $settings );
+		$term    = wp_insert_term( 'Secondary Alias', 'category' );
+		$post_id = self::factory()->post->create( [ 'post_category' => [ $term['term_id'] ] ] );
+		update_option(
+			'apple_news_automation',
+			[
+				[
+					'channel'  => 'secondary',
+					'field'    => 'isHidden',
+					'taxonomy' => 'category',
+					'term_id'  => $term['term_id'],
+					'value'    => 'true',
+				],
+			]
+		);
+
+		$this->assertSame( [], Automation::get_automation_for_post( $post_id ) );
+
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
+		$this->assertCount( 1, Automation::get_automation_for_post( $post_id ) );
+	}
+
+	/**
+	 * Rules saved with the old 'primary' channel name apply to the primary channel.
+	 */
+	public function test_automation_rule_with_primary_alias_applies_to_primary(): void {
+		$term    = wp_insert_term( 'Primary Alias', 'category' );
+		$post_id = self::factory()->post->create( [ 'post_category' => [ $term['term_id'] ] ] );
+		update_option(
+			'apple_news_automation',
+			[
+				[
+					'channel'  => 'primary',
+					'field'    => 'isHidden',
+					'taxonomy' => 'category',
+					'term_id'  => $term['term_id'],
+					'value'    => 'true',
+				],
+			]
+		);
+
+		$this->assertCount( 1, Automation::get_automation_for_post( $post_id ) );
+
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
+		$this->assertSame( [], Automation::get_automation_for_post( $post_id ) );
+	}
+
+	/**
 	 * Rules saved before channels existed apply to the primary channel.
 	 */
 	public function test_automation_rule_without_channel_applies_to_primary(): void {

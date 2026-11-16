@@ -27,6 +27,7 @@ function Rule({
   hideColumns,
 }) {
   const {
+    channelAliases,
     channels,
     fields,
     multiChannelEnabled,
@@ -38,8 +39,8 @@ function Rule({
 
   const showChannelColumn = multiChannelEnabled;
 
-  // Rules without a channel belong to the primary channel.
-  const currentChannel = channel || primaryChannel;
+  // Rules with no channel or the old 'primary'/'secondary' names map to a channel ID.
+  const currentChannel = channelAliases?.[channel] || channel || primaryChannel;
   const channelSections = sections[currentChannel] || sections[primaryChannel] || [];
 
   let fieldType = '';

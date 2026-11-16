@@ -1322,23 +1322,6 @@ class Apple_News {
 				],
 			]
 		);
-
-		// Automation rules saved before 2.10.0 name their channel 'primary' or 'secondary'.
-		$rules = get_option( \Apple_News\Admin\Automation::OPTION_KEY );
-		if ( ! is_array( $rules ) ) {
-			return;
-		}
-
-		foreach ( $rules as &$rule ) {
-			if ( 'secondary' === ( $rule['channel'] ?? '' ) ) {
-				$rule['channel'] = $secondary_id;
-			} elseif ( 'primary' === ( $rule['channel'] ?? '' ) ) {
-				$rule['channel'] = '';
-			}
-		}
-		unset( $rule );
-
-		update_option( \Apple_News\Admin\Automation::OPTION_KEY, $rules );
 	}
 
 	/**

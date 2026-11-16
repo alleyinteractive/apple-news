@@ -271,25 +271,47 @@ class Automation {
 	 */
 	public static function get_automation_for_post( int $post_id ): array {
 		// Get the channel for this post.
-		$post_channel    = Apple_News_Channels::get_channel_for_post( $post_id );
-		$post_is_primary = Apple_News_Channels::is_primary( $post_channel );
+		$post_channel = Apple_News_Channels::get_channel_for_post( $post_id );
+		$aliases      = self::get_channel_aliases();
 
 		return array_values(
 			array_filter(
 				self::get_automation_rules(),
-				static function ( $rule ) use ( $post_id, $post_channel, $post_is_primary ): bool {
+				static function ( $rule ) use ( $post_id, $post_channel, $aliases ): bool {
 					// Check if the rule matches the post's taxonomy term.
 					$term_matches = has_term( $rule['term_id'] ?? '', $rule['taxonomy'] ?? '', $post_id );
 
-					// Rules without a channel belong to the primary channel.
-					$channel_matches = empty( $rule['channel'] )
-						? $post_is_primary
-						: $rule['channel'] === $post_channel;
+					$rule_channel    = (string) ( $rule['channel'] ?? '' );
+					$channel_matches = ( $aliases[ $rule_channel ] ?? $rule_channel ) === $post_channel;
 
 					return $term_matches && $channel_matches;
 				}
 			)
 		);
+	}
+
+	/**
+	 * Get the channel IDs that rule channel values other than a channel ID stand for.
+	 *
+	 * Rules without a channel belong to the primary channel. Rules saved by the nyp fork name their channel
+	 * 'primary' or 'secondary', and keep those names so that a downgrade to the fork still reads them.
+	 *
+	 * @return array<string, string> Channel IDs keyed by the value a rule stores.
+	 */
+	public static function get_channel_aliases(): array {
+		$primary  = Apple_News_Channels::get_primary_channel_id();
+		$aliases  = [
+			''        => $primary,
+			'primary' => $primary,
+		];
+		$settings = get_option( Apple_News::$option_name );
+
+		// The 2.10.0 upgrade keeps api_channel_2, the fork's secondary channel, in the settings.
+		if ( ! empty( $settings['api_channel_2'] ) ) {
+			$aliases['secondary'] = (string) $settings['api_channel_2'];
+		}
+
+		return $aliases;
 	}
 
 	/**
@@ -397,6 +419,7 @@ class Automation {
 		}
 
 		$settings_data = [
+			'channelAliases'      => self::get_channel_aliases(),
 			'channels'            => $channels,
 			'fields'              => self::get_fields(),
 			'multiChannelEnabled' => Apple_News_Channels::is_enabled(),

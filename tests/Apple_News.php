@@ -605,31 +605,22 @@ class Apple_News extends TestCase {
 	}
 
 	/**
-	 * Tests that the 2.10.0 upgrade points automation rules at channel IDs instead of 'primary' and 'secondary'.
+	 * Tests that the 2.10.0 upgrade leaves automation rules as they are, so a downgrade still reads them.
 	 */
-	public function test_upgrade_to_2_10_0_moves_automation_rules_to_channel_ids(): void {
+	public function test_upgrade_to_2_10_0_leaves_automation_rules_alone(): void {
 		$settings                  = get_option( 'apple_news_settings' );
 		$settings['api_channel_2'] = 'channel-two';
 		update_option( 'apple_news_settings', $settings );
-		update_option(
-			'apple_news_automation',
-			[
-				[ 'channel' => 'primary' ],
-				[ 'channel' => 'secondary' ],
-				[ 'field' => 'isHidden' ],
-			]
-		);
+		$rules = [
+			[ 'channel' => 'primary' ],
+			[ 'channel' => 'secondary' ],
+			[ 'field' => 'isHidden' ],
+		];
+		update_option( 'apple_news_automation', $rules );
 
 		( new \Apple_News() )->upgrade_to_2_10_0();
 
-		$this->assertSame(
-			[
-				[ 'channel' => '' ],
-				[ 'channel' => 'channel-two' ],
-				[ 'field' => 'isHidden' ],
-			],
-			get_option( 'apple_news_automation' )
-		);
+		$this->assertSame( $rules, get_option( 'apple_news_automation' ) );
 	}
 
 	/**
