@@ -523,6 +523,30 @@ class Multi_Channel extends TestCase {
 	}
 
 	/**
+	 * A stored channel that isn't configured, like the slugs earlier builds saved, falls back to the filter.
+	 */
+	public function test_channel_for_post_ignores_unknown_article_channel(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		update_post_meta( $post_id, 'apple_news_api_channel', 'secondary' );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
+
+		$this->assertSame( 'foo2', Apple_News_Channels::get_channel_for_post( $post_id ) );
+	}
+
+	/**
+	 * A post whose article is on the primary channel stays there.
+	 */
+	public function test_channel_for_post_keeps_primary_article_channel(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, 'apple_news_api_id', 'article-1' );
+		update_post_meta( $post_id, 'apple_news_api_channel', 'foo' );
+		add_filter( 'apple_news_channel_for_post', fn () => 'foo2' );
+
+		$this->assertSame( 'foo', Apple_News_Channels::get_channel_for_post( $post_id ) );
+	}
+
+	/**
 	 * Updating an article goes through the channel it was published on, whatever the filter now says.
 	 */
 	public function test_update_uses_article_channel_when_filter_changes(): void {

@@ -64,7 +64,10 @@ class Apple_News_Channels {
 		// An article can only be read, updated or deleted through the channel it was published to.
 		$article_channel = get_post_meta( $post_id, 'apple_news_api_channel', true );
 		if ( is_string( $article_channel ) && '' !== $article_channel && get_post_meta( $post_id, 'apple_news_api_id', true ) ) {
-			return $article_channel;
+			// Builds before channel IDs saved slugs such as 'secondary' here, which match no configured channel.
+			if ( isset( self::get_channels()[ $article_channel ] ) || self::get_primary_channel_id() === $article_channel ) {
+				return $article_channel;
+			}
 		}
 
 		/**
