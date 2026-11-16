@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - feature/FAM-3780/multi-channel
 
 jobs:
   built-release:
