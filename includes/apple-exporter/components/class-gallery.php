@@ -165,7 +165,7 @@ class Gallery extends Component {
 			$caption_regex = '/<(dd|figcaption).*?>(.*)<\/\g1>/s';
 			preg_match( $caption_regex, $item_html, $matches );
 			$this->register_json(
-				! empty( trim( $matches[2] ) ) ? 'item-with-caption-json' : 'item-json',
+				! empty( trim( $matches[2] ?? '' ) ) ? 'item-with-caption-json' : 'item-json',
 				[
 					'#caption_font#'                       => $theme->get_value( 'caption_font' ),
 					'#gallery_item_accessibility_caption#' => sanitize_text_field( $accessibility_caption ),
