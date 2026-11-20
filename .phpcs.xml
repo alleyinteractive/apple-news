@@ -39,14 +39,20 @@
   <!-- Set the text domain for i18n. -->
   <rule ref="WordPress.WP.I18n">
     <properties>
-      <property name="text_domain" type="array" value="apple-news"/>
+      <property name="text_domain" type="array">
+        <element value="apple-news" />
+      </property>
     </properties>
   </rule>
 
   <!-- Set the prefixes for functions etc. -->
   <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
     <properties>
-      <property name="prefixes" type="array" value="apple_,Apple_,Admin_Apple_"/>
+      <property name="prefixes" type="array">
+        <element value="apple_" />
+        <element value="Apple_" />
+        <element value="Admin_Apple_" />
+      </property>
     </properties>
   </rule>
 
