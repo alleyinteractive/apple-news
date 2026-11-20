@@ -15,6 +15,7 @@ module.exports = (env, { mode }) => ({
   entry: {
     pluginSidebar: './assets/js/pluginsidebar/index.jsx',
     adminSettings: './assets/js/admin-settings/frontend.jsx',
+    channelSettings: './assets/js/channel-settings/index.js',
   },
 
   // Configure loaders based on extension.
