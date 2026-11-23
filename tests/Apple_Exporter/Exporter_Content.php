@@ -113,4 +113,25 @@ class Exporter_Content extends TestCase {
 		// Reset the home URL.
 		update_option( 'home', 'https://www.example.org' );
 	}
+
+	/**
+	 * Text at the start of the content, with the inline elements after it, becomes one paragraph node.
+	 */
+	public function test_nodes_wrap_leading_text_in_a_paragraph(): void {
+		$content = new \Apple_Exporter\Exporter_Content( 1, 'Title', 'Lead <a href="#">link</a> text<h2>Heading</h2><p>Body</p>' );
+
+		$nodes = $content->nodes();
+
+		$this->assertSame( [ 'p', 'h2', 'p' ], array_map( fn ( $node ) => $node->nodeName, iterator_to_array( $nodes ) ) );
+		$this->assertSame( 'Lead link text', $nodes->item( 0 )->textContent );
+	}
+
+	/**
+	 * Content that starts with an element keeps its nodes as they are.
+	 */
+	public function test_nodes_leave_content_starting_with_an_element_alone(): void {
+		$content = new \Apple_Exporter\Exporter_Content( 1, 'Title', '<p>One</p><p>Two</p>' );
+
+		$this->assertSame( [ 'p', 'p' ], array_map( fn ( $node ) => $node->nodeName, iterator_to_array( $content->nodes() ) ) );
+	}
 }
