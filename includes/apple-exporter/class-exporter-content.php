@@ -291,6 +291,48 @@ class Exporter_Content {
 
 		// Find the first-level nodes of the body tag.
 		$body = $dom->getElementsByTagName( 'body' )->item( 0 );
-		return $body ? $body->childNodes : new \DOMNodeList(); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		if ( ! $body ) {
+			return new \DOMNodeList();
+		}
+
+		self::wrap_leading_text( $dom, $body );
+
+		return $body->childNodes; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+	}
+
+	/**
+	 * Wrap text at the start of the content, and the inline elements that follow it, in a paragraph.
+	 *
+	 * Before 2.14, libxml2 adds this paragraph while parsing, and components expect it; later versions leave the text bare.
+	 *
+	 * @param \DOMDocument $dom  The document the body belongs to.
+	 * @param \DOMElement  $body The body element.
+	 */
+	private static function wrap_leading_text( \DOMDocument $dom, \DOMElement $body ): void {
+		$first = $body->firstChild; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		if ( ! $first instanceof \DOMText || '' === trim( $first->nodeValue ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			return;
+		}
+
+		$paragraph = $dom->createElement( 'p' );
+		$body->insertBefore( $paragraph, $first );
+
+		while ( $paragraph->nextSibling && self::is_inline( $paragraph->nextSibling ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$paragraph->appendChild( $paragraph->nextSibling ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+	}
+
+	/**
+	 * Whether a node can sit inside a paragraph, which is anything but an element whose start tag closes one.
+	 *
+	 * @param \DOMNode $node The node.
+	 * @return bool
+	 */
+	private static function is_inline( \DOMNode $node ): bool {
+		return ! $node instanceof \DOMElement || ! in_array(
+			strtolower( $node->nodeName ), // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			[ 'address', 'article', 'aside', 'blockquote', 'details', 'dialog', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'li', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul' ],
+			true
+		);
 	}
 }
