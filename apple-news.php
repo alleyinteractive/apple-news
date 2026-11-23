@@ -69,6 +69,7 @@ if ( ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV ) {
 
 // Initialize plugin class.
 require __DIR__ . '/includes/class-apple-news.php';
+require __DIR__ . '/includes/class-apple-news-channels.php';
 require __DIR__ . '/admin/class-admin-apple-news.php';
 
 /**
